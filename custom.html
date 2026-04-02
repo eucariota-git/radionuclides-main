@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NM Radionuclide Planner — Custom Nuclide</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="inner">
+    <div class="site-logo">&#9762; <span>NM</span> Radionuclide Planner</div>
+    <nav class="site-nav">
+      <a href="index.html">Properties</a>
+      <a href="decay.html">Decay</a>
+      <a href="dose.html">Dose</a>
+      <a href="custom.html" class="active">Custom</a>
+    </nav>
+  </div>
+</header>
+
+<main class="page-body">
+  <div class="page-title">Custom Nuclide — &#915; Calculator</div>
+  <div class="page-subtitle">
+    Upload an IAEA LiveChart CSV to calculate &#915;<sup>H*(10)</sup> and &#915;<sup>H'(0.07)</sup>
+    using the Cornejo et al. methodology (ICRU 57 / ICRP 74).
+  </div>
+
+  <div class="alert alert-info">
+    <strong>Methodology:</strong>
+    <div style="margin:.5rem 0; line-height:1.5;">
+      &#915; = (1 / 4&#960;) × &#931;<sub>i</sub>[n<sub>i</sub> · h(E<sub>i</sub>)] · K
+    </div>
+    <div class="text-sm">
+      Filter: photons (G, X) with E ≥ 20 keV and yield ≥ 0.01%/decay. h(E) from ICRU 57 / ICRP 74.
+      K = 28.648 μSv·h⁻¹·GBq⁻¹·m² / (pSv·cm²).
+    </div>
+  </div>
+
+  <!-- Step 1: Upload -->
+  <div class="card">
+    <div class="card-title">&#10122; Upload IAEA LiveChart CSV</div>
+    <div class="drop-zone" id="dropZone">
+      <div class="drop-zone-icon">&#128196;</div>
+      <div class="drop-zone-text">Drag &amp; drop CSV file here, or click to browse</div>
+      <div class="drop-zone-hint">
+        LiveChart format: energy, intensity_%, type, …, symbol, half_life [s], decay, …
+      </div>
+      <input type="file" id="csvInput" accept=".csv,.txt" style="display:none;">
+    </div>
+    <div class="mt-1 text-sm text-muted" id="fileStatus"></div>
+  </div>
+
+  <!-- Step 2: Review parsed data -->
+  <div class="card mt-2 hidden" id="parseCard">
+    <div class="card-title">&#10123; Review Parsed Data</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Nuclide ID (e.g. Ra-223)</label>
+        <input type="text" class="form-input" id="customId" placeholder="e.g. Ra-223">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Full name</label>
+        <input type="text" class="form-input" id="customName" placeholder="e.g. Radium-223">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Symbol (HTML, e.g. ²²³Ra)</label>
+        <input type="text" class="form-input" id="customSymbol" placeholder="²²³Ra">
+        <div class="text-sm text-muted">If the CSV does not include a symbol, enter it manually here.</div>
+        <div class="text-sm text-warning hidden" id="symbolWarning">CSV did not include a nuclide symbol. Please enter it manually.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Half-life (from CSV)</label>
+        <input type="text" class="form-input" id="customHalfLifeDisplay" readonly>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Half-life [s]</label>
+        <input type="number" class="form-input" id="customHalfLifeS" step="any">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Clinical use (optional)</label>
+        <input type="text" class="form-input" id="customClinicalUse" placeholder="Therapy / diagnostic / …">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Modality</label>
+        <select class="form-select" id="customModality">
+          <option value="other">Other</option>
+          <option value="PET">PET</option>
+          <option value="SPECT">SPECT</option>
+          <option value="therapy">Therapy</option>
+          <option value="brachytherapy">Brachytherapy</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card-title mt-2">Emissions parsed (all photons)</div>
+    <div style="overflow-x:auto; max-height:300px; overflow-y:auto;">
+      <table class="data-table" id="emissionsTable">
+        <thead>
+          <tr>
+            <th>Include?</th>
+            <th>Energy (keV)</th>
+            <th>Yield (%)</th>
+            <th>Type</th>
+            <th>Meets criteria?</th>
+            <th>h*(10) [pSv&#183;cm&#178;]</th>
+            <th>h'(0.07) [pSv&#183;cm&#178;]</th>
+          </tr>
+        </thead>
+        <tbody id="emissionsBody"></tbody>
+      </table>
+    </div>
+    <div class="text-sm text-muted mt-1" id="emissionsCount"></div>
+
+    <div class="mt-2">
+      <button class="btn btn-primary" id="btnCalcGamma">&#9889; Calculate &#915; Constants</button>
+    </div>
+  </div>
+
+  <!-- Step 3: Results -->
+  <div class="card mt-2 hidden" id="gammaCard">
+    <div class="card-title">&#10124; Calculated &#915; Constants</div>
+    <div class="result-grid" id="gammaResults"></div>
+
+    <div class="mt-2">
+      <div class="card-title">Emission contributions</div>
+      <div style="overflow-x:auto;">
+        <table class="data-table" id="contribTable">
+          <thead>
+            <tr>
+              <th>Energy (keV)</th>
+              <th>Yield (%)</th>
+              <th>Type</th>
+              <th>h*(10)</th>
+              <th>h'(0.07)</th>
+              <th>&#916;&#915;<sup>H*(10)</sup></th>
+              <th>&#916;&#915;<sup>H'(0.07)</sup></th>
+              <th>% of total H*(10)</th>
+            </tr>
+          </thead>
+          <tbody id="contribBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="mt-2 d-flex gap-2 flex-wrap">
+      <button class="btn btn-primary" id="btnAddToDb">&#10010; Add to session database</button>
+      <button class="btn btn-secondary" id="btnExportJson">&#11123; Export as JSON</button>
+    </div>
+    <div class="alert alert-success mt-2 hidden" id="addedAlert">
+      Nuclide added to session database. It will be available in the Properties, Decay, and Dose pages until you close the browser tab.
+    </div>
+  </div>
+
+  <!-- Session custom nuclides -->
+  <div class="card mt-2">
+    <div class="card-title">&#128203; Session Custom Nuclides</div>
+    <div id="customList"><span class="text-sm text-muted">No custom nuclides added yet.</span></div>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  NM Radionuclide Planner &mdash; &#915; calculation: ICRU 57 / ICRP 74 methodology &mdash;
+  <a href="https://github.com/eucariota-git/radionuclides" target="_blank">GitHub</a>
+</footer>
+
+<script src="data/nuclides-data.js"></script>
+<script src="js/data.js"></script>
+<script src="js/physics.js"></script>
+<script src="js/db.js"></script>
+<script src="js/csv-parser.js"></script>
+<script>
+(async () => {
+  await DB.load();
+  refreshCustomList();
+
+  let parsedEmissions = [];
+  let parsedNuclide   = {};
+  let calcResult      = null;
+
+  // ---- Drop zone ----
+  const dropZone = document.getElementById('dropZone');
+  const fileInput = document.getElementById('csvInput');
+
+  dropZone.addEventListener('click', () => fileInput.click());
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) processFile(file);
+  });
+  fileInput.addEventListener('change', e => {
+    if (e.target.files[0]) processFile(e.target.files[0]);
+  });
+
+  function processFile(file) {
+    document.getElementById('fileStatus').textContent = `Reading: ${file.name} (${(file.size / 1024).toFixed(1)} kB)…`;
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const result = CSV_PARSER.parse(e.target.result);
+        parsedNuclide   = result.nuclide;
+        parsedEmissions = result.emissions;
+
+        document.getElementById('fileStatus').textContent =
+          `Loaded ${file.name}: ${parsedEmissions.length} emission lines${parsedNuclide.symbol ? `, parent = ${parsedNuclide.symbol}` : ''}`;
+
+        populateParseCard(file.name);
+        document.getElementById('parseCard').classList.remove('hidden');
+        document.getElementById('gammaCard').classList.add('hidden');
+      } catch (err) {
+        document.getElementById('fileStatus').textContent = 'Error: ' + err.message;
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  // ---- Populate parse card ----
+  function populateParseCard(filename) {
+    // Suggest ID from filename (e.g. "177lu_gammas.csv" → "Lu-177")
+    const match = filename.match(/(\d+)([a-z]+)/i);
+    const suggestedId = match ? `${match[2].charAt(0).toUpperCase() + match[2].slice(1)}-${match[1]}` : (parsedNuclide.symbol || '');
+
+    document.getElementById('customId').value            = suggestedId;
+    document.getElementById('customName').value          = suggestedId;
+    const symbolField = document.getElementById('customSymbol');
+    symbolField.value        = parsedNuclide.symbol || '';
+    document.getElementById('customHalfLifeDisplay').value = parsedNuclide.half_life_display || '';
+    document.getElementById('customHalfLifeS').value     = parsedNuclide.half_life_s || '';
+
+    const symbolWarning = document.getElementById('symbolWarning');
+    if (!parsedNuclide.symbol) {
+      symbolWarning.classList.remove('hidden');
+    } else {
+      symbolWarning.classList.add('hidden');
+    }
+
+    // Render emissions table
+    const filtered = CSV_PARSER.filterEmissions(parsedEmissions);
+    const filteredSet = new Set(filtered.map(e => `${e.energy_keV}|${e.yield_percent}|${e.type}`));
+
+    let rows = '';
+    let included = 0;
+    // Show unique rows, sort by energy
+    const seen = new Set();
+    const unique = parsedEmissions
+      .filter(e => {
+        const k = `${e.energy_keV}|${e.yield_percent}|${e.type}`;
+        if (seen.has(k)) return false;
+        seen.add(k);
+        return true;
+      })
+      .sort((a, b) => a.energy_keV - b.energy_keV);
+
+    for (const em of unique) {
+      const key = `${em.energy_keV}|${em.yield_percent}|${em.type}`;
+      const meets = filteredSet.has(key);
+      const checked = meets ? 'checked' : '';
+      const rowCls = meets ? '' : 'style="opacity:.55;"';
+      const h10  = PHYSICS.getH10(em.energy_keV / 1000).toFixed(3);
+      const h007 = PHYSICS.getH007(em.energy_keV / 1000).toFixed(3);
+      const meetsLabel = meets
+        ? '<span style="color:var(--green-700);font-weight:700;">&#10003; Yes</span>'
+        : `<span style="color:var(--gray-500);">&#10007; ${em.energy_keV < 20 ? 'E<20keV' : em.yield_percent < 0.01 ? 'yield<0.01%' : 'not G/X'}</span>`;
+      if (meets) included++;
+      rows += `<tr ${rowCls}>
+        <td><input type="checkbox" class="em-check" data-idx="${unique.indexOf(em)}" ${checked}></td>
+        <td class="num">${em.energy_keV.toFixed(4)}</td>
+        <td class="num">${em.yield_percent.toFixed(4)}</td>
+        <td>${em.type}</td>
+        <td>${meetsLabel}</td>
+        <td class="num">${meets ? h10 : '—'}</td>
+        <td class="num">${meets ? h007 : '—'}</td>
+      </tr>`;
+    }
+    document.getElementById('emissionsBody').innerHTML = rows;
+    document.getElementById('emissionsCount').textContent =
+      `${unique.length} unique emission lines | ${included} meet Cornejo et al. criteria (E ≥ 20 keV, yield ≥ 0.01%, type G or X)`;
+
+    window._parsedUnique = unique;
+  }
+
+  // ---- Calculate gamma constants ----
+  document.getElementById('btnCalcGamma').addEventListener('click', () => {
+    const unique = window._parsedUnique || [];
+    // Get checked emissions
+    const checked = [];
+    document.querySelectorAll('.em-check:checked').forEach(cb => {
+      const idx = parseInt(cb.dataset.idx);
+      checked.push(unique[idx]);
+    });
+
+    if (checked.length === 0) {
+      alert('No emissions selected. Check at least one emission to include in the calculation.');
+      return;
+    }
+
+    const result = PHYSICS.calcGammaConstants
+      ? calcGammaFromPhysics(checked)
+      : calcGammaFallback(checked);
+
+    calcResult = result;
+    showGammaResults(result, checked);
+    document.getElementById('gammaCard').classList.remove('hidden');
+    document.getElementById('addedAlert').classList.add('hidden');
+    document.getElementById('gammaCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+
+  function calcGammaFromPhysics(emissions) {
+    // Use PHYSICS.calcGammaConstants from data.js
+    return PHYSICS.calcGammaConstants(emissions);
+  }
+
+  // Standalone fallback (same math, directly here)
+  function calcGammaFallback(emissions) {
+    const K = 28.648;
+    let sumH10 = 0, sumH007 = 0;
+    const contributions = [];
+    for (const em of emissions) {
+      const E = em.energy_keV / 1000;
+      const n = em.yield_percent / 100;
+      if (E < 0.020 || n < 0.0001) continue;
+      const h10  = PHYSICS.getH10  ? PHYSICS.getH10(E)  : PHYSICS.getH10(E);
+      const h007 = PHYSICS.getH007 ? PHYSICS.getH007(E) : PHYSICS.getH007(E);
+      const c10  = n * h10;
+      const c007 = n * h007;
+      sumH10  += c10;
+      sumH007 += c007;
+      contributions.push({ energy_keV: em.energy_keV, yield_percent: em.yield_percent,
+        type: em.type, h10_pSvcm2: h10, h007_pSvcm2: h007,
+        contrib_H10: c10 * K, contrib_H007: c007 * K });
+    }
+    return { gammaH10: sumH10 * K, gammaH007: sumH007 * K, contributions };
+  }
+
+  function showGammaResults(result, emissions) {
+    const { gammaH10, gammaH007, contributions } = result;
+    const T = PHYSICS;
+
+    // Dominant energy (highest H10 contribution)
+    let domE = emissions.length > 0
+      ? emissions.reduce((a, b) => a.yield_percent > b.yield_percent ? a : b).energy_keV
+      : 140;
+
+    document.getElementById('gammaResults').innerHTML = `
+      <div class="result-box">
+        <div class="result-label">&#915;<sup>H*(10)</sup></div>
+        <div class="result-value">${gammaH10.toPrecision(4)}</div>
+        <div class="result-unit">&#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;</div>
+      </div>
+      <div class="result-box">
+        <div class="result-label">&#915;<sup>H'(0.07)</sup></div>
+        <div class="result-value">${gammaH007.toPrecision(4)}</div>
+        <div class="result-unit">&#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;</div>
+      </div>
+      <div class="result-box">
+        <div class="result-label">H'(0.07) / H*(10)</div>
+        <div class="result-value">${gammaH10 > 0 ? (gammaH007 / gammaH10).toFixed(3) : '—'}</div>
+        <div class="result-unit">${gammaH007 > gammaH10 ? '&#9888; H\'(0.07) > H*(10)' : 'H*(10) dominant'}</div>
+      </div>
+      <div class="result-box">
+        <div class="result-label">Emissions used</div>
+        <div class="result-value">${contributions.length}</div>
+        <div class="result-unit">photon lines</div>
+      </div>
+    `;
+
+    const totalH10 = contributions.reduce((s, c) => s + c.contrib_H10, 0);
+    const tbody = contributions
+      .sort((a, b) => b.contrib_H10 - a.contrib_H10)
+      .map(c => `<tr>
+        <td class="num">${c.energy_keV.toFixed(3)}</td>
+        <td class="num">${c.yield_percent.toFixed(4)}</td>
+        <td>${c.type}</td>
+        <td class="num">${c.h10_pSvcm2.toFixed(4)}</td>
+        <td class="num">${c.h007_pSvcm2.toFixed(4)}</td>
+        <td class="num">${c.contrib_H10.toFixed(4)}</td>
+        <td class="num">${c.contrib_H007.toFixed(4)}</td>
+        <td class="num">${(c.contrib_H10 / totalH10 * 100).toFixed(2)}%</td>
+      </tr>`).join('');
+    document.getElementById('contribBody').innerHTML = tbody;
+
+    // Store dominant energy
+    window._calcDomE = domE;
+  }
+
+  // ---- Add to session DB ----
+  document.getElementById('btnAddToDb').addEventListener('click', () => {
+    if (!calcResult) return;
+    const id   = document.getElementById('customId').value.trim();
+    const name = document.getElementById('customName').value.trim();
+    if (!id || !name) { alert('Please fill in Nuclide ID and Full name.'); return; }
+
+    const hlS    = parseFloat(document.getElementById('customHalfLifeS').value);
+    const hlDisp = document.getElementById('customHalfLifeDisplay').value;
+    const modality = document.getElementById('customModality').value;
+    const use    = document.getElementById('customClinicalUse').value;
+
+    const nuclide = {
+      id,
+      symbol: document.getElementById('customSymbol').value || id,
+      name,
+      Z: parsedNuclide.Z || null,
+      A: null,
+      half_life_s:       hlS,
+      half_life_display: hlDisp,
+      decay_modes: [{ mode: parsedNuclide.decay_mode || '?', fraction: 1 }],
+      clinical_use:    use,
+      category:        ['therapy','brachytherapy'].includes(modality) ? 'therapeutic' : 'diagnostic',
+      modality,
+      gamma_Kair:  null,
+      gamma_H10:   parseFloat(calcResult.gammaH10.toPrecision(4)),
+      gamma_H007:  parseFloat(calcResult.gammaH007.toPrecision(4)),
+      H007_from_cornejo: false,
+      representative_energy_keV: window._calcDomE || 140,
+      source: `Calculated from IAEA LiveChart CSV — ICRU 57 methodology`,
+    };
+
+    DB.addCustomNuclide(nuclide);
+    document.getElementById('addedAlert').classList.remove('hidden');
+    refreshCustomList();
+  });
+
+  // ---- Export JSON ----
+  document.getElementById('btnExportJson').addEventListener('click', () => {
+    if (!calcResult) return;
+    const id   = document.getElementById('customId').value.trim() || 'custom';
+    const obj  = {
+      id,
+      gamma_H10:  +calcResult.gammaH10.toPrecision(4),
+      gamma_H007: +calcResult.gammaH007.toPrecision(4),
+      methodology: 'ICRU 57 / ICRP 74 via Cornejo et al.',
+      contributions: calcResult.contributions,
+    };
+    const blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
+    const a    = document.createElement('a');
+    a.href     = URL.createObjectURL(blob);
+    a.download = `gamma_constants_${id}.json`;
+    a.click();
+  });
+
+  // ---- Refresh custom list ----
+  function refreshCustomList() {
+    const customs = DB.getCustomNuclides();
+    const el = document.getElementById('customList');
+    if (customs.length === 0) {
+      el.innerHTML = '<span class="text-sm text-muted">No custom nuclides added yet.</span>';
+      return;
+    }
+    el.innerHTML = `
+      <table class="data-table">
+        <thead><tr>
+          <th>ID</th><th>Name</th><th>T&#189;</th>
+          <th>&#915;<sup>H*(10)</sup></th><th>&#915;<sup>H'(0.07)</sup></th>
+          <th>Actions</th>
+        </tr></thead>
+        <tbody>${customs.map(n => `<tr>
+          <td class="sym">${n.symbol || n.id}</td>
+          <td>${n.name}</td>
+          <td>${n.half_life_display || CALC.formatHalfLife(n.half_life_s)}</td>
+          <td class="num">${n.gamma_H10}</td>
+          <td class="num">${n.gamma_H007}</td>
+          <td>
+            <a class="btn btn-secondary btn-sm" href="decay.html?id=${encodeURIComponent(n.id)}">Decay</a>
+            <a class="btn btn-secondary btn-sm" href="dose.html?id=${encodeURIComponent(n.id)}">Dose</a>
+            <button class="btn btn-danger btn-sm" onclick="removeCustom('${n.id}')">Remove</button>
+          </td>
+        </tr>`).join('')}</tbody>
+      </table>`;
+  }
+
+  window.removeCustom = (id) => {
+    if (confirm(`Remove custom nuclide "${id}" from session?`)) {
+      DB.removeCustomNuclide(id);
+      refreshCustomList();
+    }
+  };
+
+  // Wire up calcGammaConstants from data.js
+  PHYSICS.calcGammaConstants = PHYSICS.calcGammaConstants || function(em) {
+    return calcGammaFallback(em);
+  };
+
+  // Re-add the calcGammaConstants to PHYSICS if not already there
+  function calcGammaFallback(emissions) {
+    const K = 28.648;
+    let sumH10 = 0, sumH007 = 0;
+    const contributions = [];
+    for (const em of emissions) {
+      const E = em.energy_keV / 1000;
+      const n = em.yield_percent / 100;
+      if (E < 0.020 || n < 0.0001) continue;
+      if (!['G','X','g','x'].includes(em.type)) continue;
+      const h10  = PHYSICS.getH10(E);
+      const h007 = PHYSICS.getH007(E);
+      const c10  = n * h10;
+      const c007 = n * h007;
+      sumH10  += c10;
+      sumH007 += c007;
+      contributions.push({ energy_keV: em.energy_keV, yield_percent: em.yield_percent,
+        type: em.type, h10_pSvcm2: h10, h007_pSvcm2: h007,
+        contrib_H10: c10 * K, contrib_H007: c007 * K });
+    }
+    return { gammaH10: sumH10 * K, gammaH007: sumH007 * K, contributions };
+  }
+
+  // Replace PHYSICS.calcGammaConstants to include type filter
+  PHYSICS.calcGammaConstants = calcGammaFallback;
+
+})();
+</script>
+</body>
+</html>

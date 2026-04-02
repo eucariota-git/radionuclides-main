@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NM Radionuclide Planner — Dose Estimator</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="inner">
+    <div class="site-logo">&#9762; <span>NM</span> Radionuclide Planner</div>
+    <nav class="site-nav">
+      <a href="index.html">Properties</a>
+      <a href="decay.html">Decay</a>
+      <a href="dose.html" class="active">Dose</a>
+      <a href="custom.html">Custom</a>
+    </nav>
+  </div>
+</header>
+
+<main class="page-body">
+  <div class="page-title">External Dose Estimator</div>
+  <div class="page-subtitle">
+    Point source geometry.
+    <strong>H*(10)</strong> for whole body (d &ge; 25 cm) &nbsp;|&nbsp;
+    <strong>H'(0.07)</strong> for extremities (d &lt; 25 cm).
+  </div>
+
+  <div class="alert alert-warning">
+    <strong>Note:</strong> These calculations are estimates for radiation protection purposes using point-source geometry.
+    Shielding uses the <strong>Archer broad-beam method</strong> (Monte Carlo, Oumano et al. 2025) for Tc-99m, F-18, I-131 and Lu-177 —
+    all other nuclides fall back to narrow-beam attenuation.
+    Geometry, scatter, and source distribution effects are not modelled. Not suitable for dosimetric treatment planning.
+  </div>
+
+  <!-- Parameters -->
+  <div class="card">
+    <div class="card-title">&#9881; Source Parameters</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Radionuclide</label>
+        <select class="form-select" id="nuclideSelect"></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Activity A&#8320;</label>
+        <div class="d-flex gap-1">
+          <input type="number" class="form-input" id="A0" value="1000" min="0" step="any">
+          <select class="form-select" id="A0unit" style="width:90px;">
+            <option value="MBq" selected>MBq</option>
+            <option value="GBq">GBq</option>
+            <option value="mCi">mCi</option>
+            <option value="Ci">Ci</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Distance d [m]</label>
+        <input type="number" class="form-input" id="distance" value="0.30" min="0.01" step="0.01">
+        <div class="form-hint" id="distHint">d &ge; 0.25 m &rarr; whole body H*(10)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shielding -->
+  <div class="card mt-2">
+    <div class="card-title">&#127959; Shielding</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Material</label>
+        <select class="form-select" id="shieldMaterial">
+          <option value="none">None</option>
+          <option value="Pb">Lead (Pb) — &#961; = 11.35 g/cm&#179;</option>
+          <option value="concrete_NW">Concrete, normal-weight — &#961; = 2.35 g/cm&#179;</option>
+          <option value="concrete_LW">Concrete, light-weight — &#961; = 1.60 g/cm&#179;</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Thickness [cm]</label>
+        <input type="number" class="form-input" id="shieldThickness" value="0" min="0" step="0.1">
+      </div>
+    </div>
+    <div id="hvlInfo" class="alert alert-info mt-2 hidden"></div>
+  </div>
+
+  <!-- Exposure -->
+  <div class="card mt-2">
+    <div class="card-title">&#8987; Exposure Time</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Exposure time</label>
+        <div class="d-flex gap-1">
+          <input type="number" class="form-input" id="expTime" value="1" min="0" step="any">
+          <select class="form-select" id="expUnit" style="width:90px;">
+            <option value="h" selected>h</option>
+            <option value="min">min</option>
+            <option value="d">d</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Include radioactive decay?</label>
+        <select class="form-select" id="decayMode">
+          <option value="with_decay" selected>Yes — integrate A(t) over time</option>
+          <option value="no_decay">No — constant activity (worst case)</option>
+        </select>
+        <div class="form-hint">Recommended: include decay for cumulative dose</div>
+      </div>
+    </div>
+    <div class="mt-2">
+      <button class="btn btn-primary" id="btnCalc">Calculate Dose</button>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="card mt-2" id="resultsCard" style="display:none;">
+    <div class="card-title">&#128202; Results</div>
+    <div id="nuclideInfo" class="alert alert-info mb-1"></div>
+
+    <div style="overflow-x:auto;">
+      <table class="data-table" id="resultsTable">
+        <thead>
+          <tr>
+            <th>Quantity</th>
+            <th>Dose rate at t=0</th>
+            <th>Cumulative dose</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="resultsBody"></tbody>
+      </table>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Shielding summary -->
+    <div id="shieldingInfo" class="hidden">
+      <div class="card-title">Shielding details</div>
+      <div class="prop-grid" id="shieldingProps"></div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Dose vs distance chart -->
+    <div class="card-title" id="chartTitle">Dose Rate vs Distance (unshielded)</div>
+    <div class="chart-wrap">
+      <canvas id="distChart"></canvas>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Dose limit comparison -->
+    <div class="card-title">Annual dose limit comparison</div>
+    <div id="limitComparison"></div>
+    <div class="alert alert-warning mt-1">
+      Annual limits: workers 20 mSv/y effective, 500 mSv/y extremities; public 1 mSv/y (RD 783/2001 / EURATOM 2013/59).
+      These are regulatory limits, not design targets.
+    </div>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  NM Radionuclide Planner &mdash; Dose rate constants: Cornejo et al. (2006) &mdash;
+  <a href="https://github.com/eucariota-git/radionuclides" target="_blank">GitHub</a>
+</footer>
+
+<script src="data/nuclides-data.js"></script>
+<script src="js/data.js"></script>
+<script src="js/physics.js"></script>
+<script src="js/db.js"></script>
+<script>
+(async () => {
+  await DB.load();
+  const nuclides = DB.getAll();
+
+  const sel = document.getElementById('nuclideSelect');
+  sel.innerHTML = nuclides.map(n =>
+    `<option value="${n.id}">${n.symbol} — ${n.name}</option>`
+  ).join('');
+
+  const urlId = new URLSearchParams(location.search).get('id');
+  if (urlId) sel.value = urlId;
+
+  // Distance hint
+  document.getElementById('distance').addEventListener('input', () => {
+    const d = parseFloat(document.getElementById('distance').value);
+    const hint = document.getElementById('distHint');
+    if (d < 0.25) {
+      hint.textContent = 'd < 0.25 m → extremities scenario: H\'(0.07) used';
+      hint.style.color = 'var(--warning)';
+    } else {
+      hint.textContent = 'd ≥ 0.25 m → whole body scenario: H*(10) used';
+      hint.style.color = '';
+    }
+  });
+
+  // Helper: get Archer params for current nuclide + material (or null)
+  function getArcherParams(n, mat) {
+    if (!n || !n.archer_params || mat === 'none') return null;
+    return n.archer_params[mat] || null;
+  }
+
+  // Material display name
+  function matLabel(mat) {
+    return { Pb: 'Lead (Pb)', concrete_NW: 'Concrete NW', concrete_LW: 'Concrete LW' }[mat] || mat;
+  }
+
+  // Shielding HVL info
+  function updateHvlInfo() {
+    const mat = document.getElementById('shieldMaterial').value;
+    const n   = DB.getById(sel.value);
+    if (!n || mat === 'none') {
+      document.getElementById('hvlInfo').classList.add('hidden');
+      return;
+    }
+    const E           = n.representative_energy_keV / 1000;
+    const ap          = getArcherParams(n, mat);
+    const { hvl_cm, tvl_cm, mu_cm, method } = CALC.hvlTvl(E, mat, ap);
+    const thickness   = parseFloat(document.getElementById('shieldThickness').value) || 0;
+    const T           = CALC.getTransmission(thickness, E, mat, ap);
+    const methodBadge = method === 'archer'
+      ? '<span class="tag tag-pet" style="font-size:.72rem;vertical-align:middle;">Archer</span>'
+      : '<span class="tag tag-other" style="font-size:.72rem;vertical-align:middle;">Narrow beam</span>';
+
+    const el = document.getElementById('hvlInfo');
+    el.classList.remove('hidden');
+    el.innerHTML = `
+      <strong>${matLabel(mat)}</strong> at ${n.representative_energy_keV} keV ${methodBadge} —
+      HVL = <strong>${hvl_cm.toFixed(3)} cm</strong> &nbsp;|&nbsp;
+      TVL = <strong>${tvl_cm.toFixed(3)} cm</strong>
+      ${mu_cm !== null ? `&nbsp;|&nbsp; &mu; = ${mu_cm.toFixed(3)} cm&#8315;&#185;` : ''}
+      ${thickness > 0 ? `&nbsp;|&nbsp; Transmission = <strong>${(T * 100).toFixed(3)}%</strong> (${thickness} cm)` : ''}
+    `;
+  }
+
+  document.getElementById('shieldMaterial').addEventListener('change', updateHvlInfo);
+  document.getElementById('shieldThickness').addEventListener('input', updateHvlInfo);
+  sel.addEventListener('change', updateHvlInfo);
+  updateHvlInfo();
+
+  // ---- Calculate ----
+  let distChart = null;
+
+  document.getElementById('btnCalc').addEventListener('click', () => {
+    const n = DB.getById(sel.value);
+    if (!n) return;
+
+    const A0raw   = parseFloat(document.getElementById('A0').value);
+    const A0unit  = document.getElementById('A0unit').value;
+    const A0_GBq  = CALC.convertActivity(A0raw, A0unit, 'GBq');
+
+    const d_m     = parseFloat(document.getElementById('distance').value);
+    const mat     = document.getElementById('shieldMaterial').value;
+    const thick   = parseFloat(document.getElementById('shieldThickness').value) || 0;
+    const E_MeV   = n.representative_energy_keV / 1000;
+    const ap      = getArcherParams(n, mat);  // Archer params or null
+
+    const expRaw  = parseFloat(document.getElementById('expTime').value);
+    const expUnit = document.getElementById('expUnit').value;
+    const expMul  = { h: 1, min: 1/60, d: 24 };
+    const t_h     = expRaw * (expMul[expUnit] || 1);
+
+    const T_half_h = DB.halfLifeHours(n);
+    const withDecay = document.getElementById('decayMode').value === 'with_decay';
+
+    // Select dose rate constant based on distance
+    const isExtremity = d_m < 0.25;
+    const gammaWB  = n.gamma_H10;
+    const gammaExt = n.gamma_H007 || n.gamma_H10;
+    const shieldMethod = (mat !== 'none' && thick > 0)
+      ? (ap ? 'Archer (broad beam, Oumano et al. 2025)' : 'Narrow beam (fallback)')
+      : null;
+
+    const card = document.getElementById('resultsCard');
+    card.style.display = 'block';
+
+    // Info header
+    document.getElementById('nuclideInfo').innerHTML =
+      `<strong>${n.symbol} — ${n.name}</strong> &nbsp;|&nbsp; T&#189; = ${n.half_life_display} &nbsp;|&nbsp;
+       A&#8320; = ${A0raw} ${A0unit} (${A0_GBq.toPrecision(4)} GBq) &nbsp;|&nbsp;
+       d = ${d_m} m &nbsp;|&nbsp; t = ${t_h.toFixed(2)} h &nbsp;|&nbsp;
+       &#915;<sup>H*(10)</sup> = ${gammaWB} &nbsp;|&nbsp; &#915;<sup>H'(0.07)</sup> = ${gammaExt} &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;`;
+
+    // Dose rate at t=0
+    const Hdot_WB  = CALC.doseRate(gammaWB,  A0_GBq, d_m, thick, E_MeV, mat, ap);
+    const Hdot_Ext = CALC.doseRate(gammaExt, A0_GBq, d_m, thick, E_MeV, mat, ap);
+
+    // Cumulative dose
+    let H_WB_cum, H_Ext_cum;
+    if (withDecay) {
+      H_WB_cum  = CALC.cumulativeDose(gammaWB,  A0_GBq, d_m, t_h, T_half_h, thick, E_MeV, mat, ap);
+      H_Ext_cum = CALC.cumulativeDose(gammaExt, A0_GBq, d_m, t_h, T_half_h, thick, E_MeV, mat, ap);
+    } else {
+      H_WB_cum  = Hdot_WB  * t_h;
+      H_Ext_cum = Hdot_Ext * t_h;
+    }
+
+    function fmt(v) {
+      const f = CALC.formatDose(v);
+      return `<strong>${f.display}</strong>`;
+    }
+    function fmtR(v) {
+      const f = CALC.formatDoseRate(v);
+      return `<strong>${f.display}</strong>`;
+    }
+
+    const highlight = (use) => use ? 'style="background:var(--green-100);font-weight:700;"' : '';
+
+    document.getElementById('resultsBody').innerHTML = `
+      <tr ${highlight(!isExtremity)}>
+        <td>
+          <strong>Whole body H*(10)</strong>
+          ${!isExtremity ? '<span class="tag tag-spect" style="margin-left:.5rem;">ACTIVE</span>' : ''}
+          <div class="text-sm text-muted">d &ge; 0.25 m</div>
+        </td>
+        <td class="num">${fmtR(Hdot_WB)}</td>
+        <td class="num">${fmt(H_WB_cum)}</td>
+        <td class="text-sm text-muted">&#915;<sup>H*(10)</sup> = ${gammaWB} &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;</td>
+      </tr>
+      <tr ${highlight(isExtremity)}>
+        <td>
+          <strong>Extremities H'(0.07)</strong>
+          ${isExtremity ? '<span class="tag tag-spect" style="margin-left:.5rem;">ACTIVE</span>' : ''}
+          <div class="text-sm text-muted">d &lt; 0.25 m | hands</div>
+        </td>
+        <td class="num">${fmtR(Hdot_Ext)}</td>
+        <td class="num">${fmt(H_Ext_cum)}</td>
+        <td class="text-sm text-muted">
+          &#915;<sup>H'(0.07)</sup> = ${gammaExt} &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;
+          ${n.H007_from_cornejo ? '<br><span style="color:var(--warning);">&#9888; H\'(0.07) from Cornejo et al.</span>' : ''}
+        </td>
+      </tr>
+    `;
+
+    // Shielding info
+    const shieldEl    = document.getElementById('shieldingInfo');
+    const shieldProps = document.getElementById('shieldingProps');
+    if (mat !== 'none') {
+      const { hvl_cm, tvl_cm, mu_cm, method } = CALC.hvlTvl(E_MeV, mat, ap);
+      const T = CALC.getTransmission(thick, E_MeV, mat, ap);
+      const methodLabel = method === 'archer'
+        ? '<span class="tag tag-pet" style="font-size:.72rem;">Archer broad-beam</span>'
+        : '<span class="tag tag-other" style="font-size:.72rem;">Narrow beam</span>';
+      shieldEl.classList.remove('hidden');
+      shieldProps.innerHTML = `
+        <div class="prop-item"><div class="prop-key">Material</div><div class="prop-val">${matLabel(mat)}</div></div>
+        <div class="prop-item"><div class="prop-key">Method</div><div class="prop-val">${methodLabel}</div>
+          <div class="prop-note">${method === 'archer' ? 'Monte Carlo, Oumano et al. 2025' : 'e⁻ᵘˣ, NIST XCOM'}</div></div>
+        <div class="prop-item"><div class="prop-key">Thickness</div><div class="prop-val">${thick} cm</div><div class="prop-note">${(thick * 10).toFixed(1)} mm</div></div>
+        ${mu_cm !== null ? `<div class="prop-item"><div class="prop-key">&#956; (${(E_MeV * 1000).toFixed(0)} keV)</div><div class="prop-val">${mu_cm.toFixed(4)} cm&#8315;&#185;</div></div>` : ''}
+        <div class="prop-item"><div class="prop-key">HVL</div><div class="prop-val">${hvl_cm.toFixed(3)} cm</div><div class="prop-note">${(hvl_cm * 10).toFixed(2)} mm</div></div>
+        <div class="prop-item"><div class="prop-key">TVL</div><div class="prop-val">${tvl_cm.toFixed(3)} cm</div><div class="prop-note">${(tvl_cm * 10).toFixed(2)} mm</div></div>
+        <div class="prop-item"><div class="prop-key">Transmission</div><div class="prop-val">${(T * 100).toFixed(4)}%</div><div class="prop-note">Attenuation factor: ${(1/T).toExponential(3)}</div></div>
+        <div class="prop-item"><div class="prop-key">n HVLs</div><div class="prop-val">${(thick / hvl_cm).toFixed(2)}</div></div>
+      `;
+    } else {
+      shieldEl.classList.add('hidden');
+    }
+
+    // ---- Dose vs distance chart ----
+    document.getElementById('chartTitle').textContent =
+      thick > 0 && mat !== 'none'
+        ? `Dose Rate vs Distance (${matLabel(mat)}, ${thick} cm${ap ? ' — Archer' : ' — narrow beam'})`
+        : 'Dose Rate vs Distance (unshielded)';
+    const distances = [];
+    for (let d = 0.10; d <= 5.0; d += 0.05) distances.push(+d.toFixed(2));
+
+    const doseWB  = distances.map(d => CALC.doseRate(gammaWB,  A0_GBq, d, thick, E_MeV, mat, ap));
+    const doseExt = distances.map(d => CALC.doseRate(gammaExt, A0_GBq, d, thick, E_MeV, mat, ap));
+
+    if (distChart) distChart.destroy();
+    const ctx = document.getElementById('distChart').getContext('2d');
+    distChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: distances.map(d => d.toFixed(2)),
+        datasets: [
+          {
+            label: 'H*(10) whole body',
+            data: doseWB,
+            borderColor: '#2d6a4f',
+            backgroundColor: 'rgba(45,106,79,.06)',
+            borderWidth: 2, pointRadius: 0, fill: true, tension: 0.1,
+          },
+          {
+            label: "H'(0.07) extremities",
+            data: doseExt,
+            borderColor: '#e76f00',
+            backgroundColor: 'rgba(231,111,0,.04)',
+            borderWidth: 2, pointRadius: 0, fill: false, tension: 0.1, borderDash: [5,3],
+          },
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top' },
+          tooltip: { callbacks: {
+            label: ctx => `${ctx.dataset.label}: ${CALC.formatDoseRate(ctx.raw).display}`
+          }}
+        },
+        scales: {
+          x: { title: { display: true, text: 'Distance (m)' }, ticks: { maxTicksLimit: 12 } },
+          y: {
+            title: { display: true, text: 'Dose rate (μSv/h)' },
+            type: 'logarithmic',
+            ticks: { callback: v => CALC.formatDoseRate(v).display }
+          }
+        }
+      }
+    });
+
+    // ---- Limit comparison ----
+    const hoursPerYear = 2000; // occupational working hours
+    const annualDoseWB  = H_WB_cum  * (hoursPerYear / t_h);
+    const annualDoseExt = H_Ext_cum * (hoursPerYear / t_h);
+
+    function pct(val, limit_mSv) {
+      const pctVal = (val / 1000 / limit_mSv * 100);
+      const cls = pctVal > 100 ? 'danger' : pctVal > 50 ? 'warning' : 'success';
+      return `<span style="color:var(--${cls === 'success' ? 'green-700' : cls === 'warning' ? 'warning' : 'danger'});font-weight:700;">${pctVal.toFixed(1)}%</span>`;
+    }
+
+    document.getElementById('limitComparison').innerHTML = `
+      <div class="alert alert-info text-sm">
+        Extrapolated from ${t_h.toFixed(1)} h exposure to 2000 h/y (occupational estimate):
+        <br><br>
+        <strong>Whole body H*(10):</strong> ${CALC.formatDose(annualDoseWB).display}/y
+        &nbsp;— ${pct(annualDoseWB, 20)} of 20 mSv/y worker limit
+        &nbsp;|&nbsp; ${pct(annualDoseWB, 1)} of 1 mSv/y public limit
+        <br>
+        <strong>Extremities H'(0.07):</strong> ${CALC.formatDose(annualDoseExt).display}/y
+        &nbsp;— ${pct(annualDoseExt, 500)} of 500 mSv/y extremity limit
+      </div>
+    `;
+
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    updateHvlInfo();
+  });
+
+  if (urlId) setTimeout(() => document.getElementById('btnCalc').click(), 150);
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NM Radionuclide Planner — Decay Calculator</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="inner">
+    <div class="site-logo">&#9762; <span>NM</span> Radionuclide Planner</div>
+    <nav class="site-nav">
+      <a href="index.html">Properties</a>
+      <a href="decay.html" class="active">Decay</a>
+      <a href="dose.html">Dose</a>
+      <a href="custom.html">Custom</a>
+    </nav>
+  </div>
+</header>
+
+<main class="page-body">
+  <div class="page-title">Decay Calculator</div>
+  <div class="page-subtitle">A(t) = A&#8320; &middot; e<sup>&minus;&lambda;t</sup> &nbsp;|&nbsp; &lambda; = ln(2) / T&#189;</div>
+
+  <!-- Inputs -->
+  <div class="card">
+    <div class="card-title">&#9881; Parameters</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Radionuclide</label>
+        <select class="form-select" id="nuclideSelect">
+          <option value="">Loading…</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Initial Activity A&#8320;</label>
+        <div class="d-flex gap-1">
+          <input type="number" class="form-input" id="A0" value="1000" min="0" step="any">
+          <select class="form-select" id="A0unit" style="width:90px;">
+            <option value="MBq" selected>MBq</option>
+            <option value="GBq">GBq</option>
+            <option value="mCi">mCi</option>
+            <option value="Ci">Ci</option>
+            <option value="kBq">kBq</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Reference date &amp; time</label>
+        <input type="datetime-local" class="form-input" id="refDateTime">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Target date &amp; time <span class="text-muted">(optional)</span></label>
+        <input type="datetime-local" class="form-input" id="targetDateTime">
+      </div>
+    </div>
+
+    <!-- Manual elapsed time override -->
+    <div class="form-grid mt-2">
+      <div class="form-group">
+        <label class="form-label">— or — Elapsed time</label>
+        <div class="d-flex gap-1">
+          <input type="number" class="form-input" id="elapsed" min="0" step="any" placeholder="e.g. 24">
+          <select class="form-select" id="elapsedUnit" style="width:90px;">
+            <option value="h" selected>h</option>
+            <option value="min">min</option>
+            <option value="d">d</option>
+            <option value="s">s</option>
+          </select>
+        </div>
+        <div class="form-hint">Overrides date/time fields when filled</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Target Activity A<sub>target</sub> <span class="text-muted">(optional)</span></label>
+        <div class="d-flex gap-1">
+          <input type="number" class="form-input" id="Atarget" min="0" step="any" placeholder="e.g. 100">
+          <select class="form-select" id="AtargetUnit" style="width:90px;">
+            <option value="MBq" selected>MBq</option>
+            <option value="GBq">GBq</option>
+            <option value="mCi">mCi</option>
+            <option value="kBq">kBq</option>
+          </select>
+        </div>
+        <div class="form-hint">Calculates time to reach this activity</div>
+      </div>
+    </div>
+
+    <div class="mt-2">
+      <button class="btn btn-primary" id="btnCalc">Calculate</button>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="card mt-2" id="resultsCard" style="display:none;">
+    <div class="card-title">&#128202; Results</div>
+    <div id="nuclideInfo" class="alert alert-info mb-1"></div>
+    <div class="result-grid" id="resultGrid"></div>
+
+    <hr class="divider">
+
+    <!-- Inverse: time to target -->
+    <div id="inverseResult" class="hidden"></div>
+
+    <!-- Decay curve chart -->
+    <div class="card-title mt-2">Decay Curve</div>
+    <div class="chart-wrap">
+      <canvas id="decayChart"></canvas>
+    </div>
+
+    <!-- Table of values -->
+    <div class="mt-2">
+      <div class="d-flex align-center gap-2 mb-1" style="justify-content:space-between;">
+        <span class="text-sm text-muted">Activity at selected time points</span>
+        <button class="btn btn-secondary btn-sm" id="btnExportCsv">&#11123; Export CSV</button>
+      </div>
+      <div style="overflow-x:auto; max-height:260px; overflow-y:auto;">
+        <table class="data-table" id="decayTable">
+          <thead><tr>
+            <th>Time</th><th>Elapsed (h)</th>
+            <th>Activity (MBq)</th><th>Activity (mCi)</th><th>Fraction remaining</th>
+          </tr></thead>
+          <tbody id="decayTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dose limit reference -->
+  <div class="card mt-2">
+    <div class="card-title">&#128218; Dose Limit Reference (RD 783/2001 / EURATOM)</div>
+    <div class="d-flex flex-wrap gap-2 text-sm" style="line-height:1.8;">
+      <span class="limit-badge limit-worker">Workers: 20 mSv/y effective</span>
+      <span class="limit-badge limit-extremity">Extremities: 500 mSv/y</span>
+      <span class="limit-badge limit-public">Public: 1 mSv/y effective</span>
+    </div>
+    <div class="text-sm text-muted mt-1">Use the Dose Estimator to calculate doses from activity values.</div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  NM Radionuclide Planner &mdash; Dose rate constants: Cornejo et al. (2006) &mdash;
+  <a href="https://github.com/eucariota-git/radionuclides" target="_blank">GitHub</a>
+</footer>
+
+<script src="data/nuclides-data.js"></script>
+<script src="js/data.js"></script>
+<script src="js/physics.js"></script>
+<script src="js/db.js"></script>
+<script>
+(async () => {
+  await DB.load();
+  const nuclides = DB.getAll();
+
+  // ---- Populate select ----
+  const sel = document.getElementById('nuclideSelect');
+  sel.innerHTML = nuclides.map(n =>
+    `<option value="${n.id}">${n.symbol} — ${n.name} (T½: ${n.half_life_display})</option>`
+  ).join('');
+
+  // Pre-select from URL
+  const urlId = new URLSearchParams(location.search).get('id');
+  if (urlId) sel.value = urlId;
+
+  // Set default datetime to now
+  const now = new Date();
+  const toLocal = d => new Date(d - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+  document.getElementById('refDateTime').value = toLocal(now);
+
+  let chart = null;
+
+  // ---- Calculate ----
+  document.getElementById('btnCalc').addEventListener('click', calculate);
+
+  function calculate() {
+    const n = DB.getById(sel.value);
+    if (!n) return;
+
+    const A0raw    = parseFloat(document.getElementById('A0').value);
+    const A0unit   = document.getElementById('A0unit').value;
+    const A0_MBq   = CALC.convertActivity(A0raw, A0unit, 'MBq');
+    const T_half_h = DB.halfLifeHours(n);
+
+    // Determine elapsed time
+    let t_h;
+    const elapsedVal  = document.getElementById('elapsed').value.trim();
+    const elapsedUnit = document.getElementById('elapsedUnit').value;
+    if (elapsedVal !== '') {
+      const mul = { h: 1, min: 1 / 60, d: 24, s: 1 / 3600 };
+      t_h = parseFloat(elapsedVal) * (mul[elapsedUnit] || 1);
+    } else {
+      const ref    = document.getElementById('refDateTime').value;
+      const target = document.getElementById('targetDateTime').value;
+      if (ref && target) {
+        t_h = (new Date(target) - new Date(ref)) / 3.6e6;
+      } else {
+        t_h = 0;
+      }
+    }
+    if (isNaN(t_h) || t_h < 0) t_h = 0;
+
+    const At_MBq = CALC.activityAtTime(A0_MBq, T_half_h, t_h);
+    const fraction = At_MBq / A0_MBq;
+
+    // Show results card
+    const card = document.getElementById('resultsCard');
+    card.style.display = 'block';
+
+    document.getElementById('nuclideInfo').innerHTML =
+      `<strong>${n.symbol} — ${n.name}</strong> &nbsp;|&nbsp; T&#189; = ${n.half_life_display} &nbsp;|&nbsp;
+       &lambda; = ${CALC.lambda(T_half_h).toExponential(3)} h&#8315;&#185;`;
+
+    document.getElementById('resultGrid').innerHTML = `
+      <div class="result-box">
+        <div class="result-label">A(t)</div>
+        <div class="result-value">${At_MBq.toPrecision(5)}</div>
+        <div class="result-unit">MBq = ${CALC.convertActivity(At_MBq,'MBq','GBq').toPrecision(4)} GBq
+          = ${CALC.convertActivity(At_MBq,'MBq','mCi').toPrecision(4)} mCi</div>
+      </div>
+      <div class="result-box">
+        <div class="result-label">Fraction remaining</div>
+        <div class="result-value">${(fraction * 100).toPrecision(4)}%</div>
+        <div class="result-unit">at t = ${t_h.toFixed(3)} h</div>
+      </div>
+      <div class="result-box">
+        <div class="result-label">Elapsed</div>
+        <div class="result-value">${t_h.toFixed(3)} h</div>
+        <div class="result-unit">${(t_h / 24).toFixed(3)} d &nbsp;|&nbsp; ${(t_h / T_half_h).toFixed(2)} T&#189;</div>
+      </div>
+      <div class="result-box">
+        <div class="result-label">Activity lost</div>
+        <div class="result-value">${(A0_MBq - At_MBq).toPrecision(5)}</div>
+        <div class="result-unit">MBq (${((1 - fraction) * 100).toPrecision(4)}%)</div>
+      </div>
+    `;
+
+    // Inverse: time to target
+    const AtgtRaw  = parseFloat(document.getElementById('Atarget').value);
+    const AtgtUnit = document.getElementById('AtargetUnit').value;
+    const inv = document.getElementById('inverseResult');
+    if (!isNaN(AtgtRaw) && AtgtRaw > 0) {
+      const Atgt_MBq = CALC.convertActivity(AtgtRaw, AtgtUnit, 'MBq');
+      const tTarget_h = CALC.timeToActivity(A0_MBq, Atgt_MBq, T_half_h);
+      if (isFinite(tTarget_h)) {
+        const refDt = document.getElementById('refDateTime').value;
+        let dateStr = '';
+        if (refDt) {
+          const d = new Date(new Date(refDt).getTime() + tTarget_h * 3.6e6);
+          dateStr = ` &rarr; ${d.toLocaleString()}`;
+        }
+        inv.classList.remove('hidden');
+        inv.innerHTML = `
+          <div class="alert alert-success">
+            <strong>Time to reach ${AtgtRaw} ${AtgtUnit}:</strong>
+            ${tTarget_h.toFixed(3)} h = ${(tTarget_h / 24).toFixed(3)} d
+            = ${(tTarget_h / T_half_h).toFixed(2)} T&#189;${dateStr}
+          </div>`;
+      } else {
+        inv.innerHTML = `<div class="alert alert-warning">Target activity &ge; initial activity — no decay needed.</div>`;
+        inv.classList.remove('hidden');
+      }
+    } else {
+      inv.classList.add('hidden');
+    }
+
+    // ---- Chart ----
+    const tMax_h = Math.max(t_h * 1.2, T_half_h * 5);
+    const pts    = CALC.decayCurve(A0_MBq, T_half_h, 120);
+    const labels = pts.map(p => p.t_h.toFixed(2));
+    const vals   = pts.map(p => p.A);
+
+    if (chart) chart.destroy();
+    const ctx = document.getElementById('decayChart').getContext('2d');
+    chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: `${n.symbol} activity (MBq)`,
+          data: vals,
+          borderColor: '#2d6a4f',
+          backgroundColor: 'rgba(45,106,79,.08)',
+          borderWidth: 2,
+          pointRadius: 0,
+          fill: true,
+          tension: 0.3,
+        }, {
+          // Vertical line at elapsed time
+          label: `t = ${t_h.toFixed(2)} h`,
+          data: pts.map(p => Math.abs(p.t_h - t_h) < (tMax_h / 240) ? At_MBq : null),
+          borderColor: '#e76f00',
+          borderWidth: 2,
+          pointRadius: 5,
+          pointStyle: 'circle',
+          showLine: false,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top', labels: { font: { size: 11 } } },
+          tooltip: { callbacks: {
+            label: ctx => `${ctx.dataset.label}: ${parseFloat(ctx.raw).toExponential(4)} MBq`
+          }}
+        },
+        scales: {
+          x: { title: { display: true, text: 'Time (h)' }, ticks: { maxTicksLimit: 10 } },
+          y: { title: { display: true, text: 'Activity (MBq)' }, ticks: { callback: v => v.toExponential(2) } }
+        }
+      }
+    });
+
+    // ---- Decay table ----
+    const steps = [0, 0.5, 1, 2, 4, 6, 12, 24, 48, 72, 120, 168, 240, 336, 504, 720].filter(s => s <= T_half_h * 10);
+    if (!steps.includes(t_h)) steps.push(t_h);
+    steps.sort((a, b) => a - b);
+
+    const refDt2 = document.getElementById('refDateTime').value;
+    const tbody = steps.map(s => {
+      const A = CALC.activityAtTime(A0_MBq, T_half_h, s);
+      const highlight = Math.abs(s - t_h) < 0.001 ? 'style="font-weight:700;background:var(--green-100)"' : '';
+      let timeLabel = `${s.toFixed(2)} h`;
+      if (refDt2) {
+        const d = new Date(new Date(refDt2).getTime() + s * 3.6e6);
+        timeLabel = d.toLocaleString();
+      }
+      return `<tr ${highlight}>
+        <td>${timeLabel}</td>
+        <td class="num">${s.toFixed(2)}</td>
+        <td class="num">${A.toPrecision(5)}</td>
+        <td class="num">${CALC.convertActivity(A,'MBq','mCi').toPrecision(4)}</td>
+        <td class="num">${(A / A0_MBq * 100).toFixed(3)}%</td>
+      </tr>`;
+    }).join('');
+    document.getElementById('decayTableBody').innerHTML = tbody;
+
+    // ---- Export CSV ----
+    document.getElementById('btnExportCsv').onclick = () => {
+      const header = 'Time_h,Activity_MBq,Activity_mCi,Activity_GBq,Fraction\n';
+      const rows = steps.map(s => {
+        const A = CALC.activityAtTime(A0_MBq, T_half_h, s);
+        return `${s.toFixed(4)},${A.toPrecision(6)},${CALC.convertActivity(A,'MBq','mCi').toPrecision(5)},${CALC.convertActivity(A,'MBq','GBq').toPrecision(5)},${(A/A0_MBq).toPrecision(5)}`;
+      }).join('\n');
+      const blob = new Blob([header + rows], { type: 'text/csv' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `decay_${n.id}_${A0raw}${A0unit}.csv`;
+      a.click();
+    };
+
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  // Auto-calculate if nuclide pre-selected
+  if (urlId) setTimeout(calculate, 100);
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NM Radionuclide Planner — Properties</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="inner">
+    <div class="site-logo">&#9762; <span>NM</span> Radionuclide Planner</div>
+    <nav class="site-nav">
+      <a href="index.html" class="active">Properties</a>
+      <a href="decay.html">Decay</a>
+      <a href="dose.html">Dose</a>
+      <a href="custom.html">Custom</a>
+    </nav>
+  </div>
+</header>
+
+<main class="page-body">
+  <div class="page-title">Radionuclide Properties</div>
+  <div class="page-subtitle">
+    Dose rate constants from Cornejo et al. (2006). &#948; = 20 keV.
+    Units: &#181;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;.
+  </div>
+
+  <!-- Search & Filters -->
+  <div class="card">
+    <div class="search-bar">
+      <input type="search" id="searchInput" class="search-input"
+             placeholder="Search by name, symbol or clinical use…" autocomplete="off">
+      <button class="btn btn-secondary btn-sm" id="clearSearch">Clear</button>
+    </div>
+    <div class="filter-bar" id="filterBar">
+      <button class="filter-btn active" data-modality="all">All</button>
+      <button class="filter-btn" data-modality="PET">PET</button>
+      <button class="filter-btn" data-modality="SPECT">SPECT</button>
+      <button class="filter-btn" data-modality="therapy">Therapy</button>
+      <button class="filter-btn" data-modality="brachytherapy">Brachytherapy</button>
+      <button class="filter-btn" data-modality="other">Other</button>
+    </div>
+    <div id="rowCount" class="text-sm text-muted mb-1"></div>
+
+    <div style="overflow-x:auto;">
+      <table class="data-table" id="nuclideTable">
+        <thead>
+          <tr>
+            <th>Nuclide</th>
+            <th>T&#189;</th>
+            <th>Decay</th>
+            <th>Modality</th>
+            <th title="Air kerma rate constant [μGy·h⁻¹·GBq⁻¹·m²]">&#915;<sup>K-air</sup></th>
+            <th title="Ambient dose equivalent rate constant [μSv·h⁻¹·GBq⁻¹·m²]">&#915;<sup>H*(10)</sup></th>
+            <th title="Directional dose equivalent rate constant at 0.07 mm [μSv·h⁻¹·GBq⁻¹·m²]">&#915;<sup>H'(0.07)</sup></th>
+            <th>Rep. energy</th>
+            <th>Source</th>
+          </tr>
+        </thead>
+        <tbody id="nuclideBody">
+          <tr><td colspan="9" class="text-muted text-sm" style="padding:1rem;">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Detail panel -->
+  <div class="card nuclide-detail" id="detailPanel">
+    <div class="card-title" id="detailTitle">—</div>
+    <div class="nuclide-header">
+      <div class="nuclide-symbol-large" id="detailSymbol"></div>
+      <div class="nuclide-meta">
+        <div class="nuclide-name" id="detailName"></div>
+        <div class="nuclide-use"  id="detailUse"></div>
+      </div>
+    </div>
+
+    <div class="prop-grid" id="detailProps"></div>
+
+    <div class="mt-2 d-flex gap-2 flex-wrap">
+      <a id="btnDecay" class="btn btn-primary btn-sm" href="#">&#8635; Open in Decay Calculator</a>
+      <a id="btnDose"  class="btn btn-primary btn-sm" href="#">&#128262; Open in Dose Estimator</a>
+    </div>
+
+    <div id="detailNotes" class="alert alert-info mt-2 hidden"></div>
+  </div>
+
+  <!-- Reference -->
+  <div class="card mt-2">
+    <div class="card-title">Reference & Data Notes</div>
+    <ul class="text-sm" style="line-height:1.7;padding-left:1.2rem;" id="refList">
+      <li><strong>Cornejo et al.</strong> — primary source for &#915;<sup>H*(10)</sup> values for 32 nuclides.</li>
+      <li>&#915;<sup>H'(0.07)</sup> values in parentheses from Cornejo et al. apply when all photon energies &lt; 300 keV and H'(0.07) > H*(10). Used for extremity dose estimation.</li>
+      <li><strong>Ga-68</strong> and <strong>Y-90</strong> constants calculated using ICRU 57 / ICRP 74 methodology (same as Cornejo et al.).</li>
+      <li>The JSON database (<code>data/nuclides.json</code>) can be edited directly to update or add values.</li>
+    </ul>
+  </div>
+</main>
+
+<footer class="site-footer">
+  NM Radionuclide Planner &mdash; For radiation protection estimation purposes.
+  Verify against primary sources for regulatory submissions. &mdash;
+  <a href="https://github.com/eucariota-git/radionuclides" target="_blank">GitHub</a>
+</footer>
+
+<script src="data/nuclides-data.js"></script>
+<script src="js/data.js"></script>
+<script src="js/physics.js"></script>
+<script src="js/db.js"></script>
+<script>
+(async () => {
+  // ---- Load data ----
+  let nuclides = [];
+  try {
+    nuclides = await DB.load();
+  } catch (e) {
+    document.getElementById('nuclideBody').innerHTML =
+      `<tr><td colspan="9" style="color:var(--danger);padding:1rem;">Error loading database: ${e.message}</td></tr>`;
+    return;
+  }
+
+  let activeModality = 'all';
+  let activeSearch   = '';
+  let selectedId     = null;
+
+  // ---- Render table ----
+  function modalityTag(n) {
+    const map = { PET:'pet', SPECT:'spect', therapy:'therapy', brachytherapy:'brachy', other:'other' };
+    const cls = map[n.modality] || 'other';
+    return `<span class="tag tag-${cls}">${n.modality || '—'}</span>
+            ${n._custom ? '<span class="tag tag-custom">custom</span>' : ''}`;
+  }
+
+  function fmtGamma(val) {
+    if (val === null || val === undefined) return '<span class="text-muted">—</span>';
+    return `<span class="mono">${val}</span>`;
+  }
+
+  function renderTable() {
+    let data = DB.getAll();
+    if (activeModality !== 'all') data = data.filter(n => n.modality === activeModality);
+    if (activeSearch) {
+      const q = activeSearch.toLowerCase();
+      data = data.filter(n =>
+        n.id.toLowerCase().includes(q) ||
+        n.name.toLowerCase().includes(q) ||
+        n.symbol.toLowerCase().includes(q) ||
+        (n.clinical_use || '').toLowerCase().includes(q)
+      );
+    }
+
+    document.getElementById('rowCount').textContent = `${data.length} nuclide${data.length !== 1 ? 's' : ''}`;
+
+    const rows = data.map(n => {
+      const sel = n.id === selectedId ? 'selected' : '';
+      const decayStr = (n.decay_modes || []).map(d => d.mode).join(', ');
+      const h007note = n.H007_from_cornejo
+        ? ` <span title="H'(0.07) from Cornejo et al. — applies for extremity dose" style="cursor:help;color:var(--warning)">&#9888;</span>`
+        : '';
+      return `<tr class="${sel}" data-id="${n.id}">
+        <td class="sym">${n.symbol}</td>
+        <td>${n.half_life_display}</td>
+        <td class="text-sm">${decayStr}</td>
+        <td>${modalityTag(n)}</td>
+        <td class="num">${fmtGamma(n.gamma_Kair)}</td>
+        <td class="num">${fmtGamma(n.gamma_H10)}</td>
+        <td class="num">${fmtGamma(n.gamma_H007)}${h007note}</td>
+        <td class="num">${n.representative_energy_keV} keV</td>
+        <td class="text-sm">${n._custom ? '<em>custom</em>' : 'Cornejo'}</td>
+      </tr>`;
+    }).join('');
+
+    document.getElementById('nuclideBody').innerHTML = rows ||
+      '<tr><td colspan="9" class="text-muted text-sm" style="padding:1rem;">No results.</td></tr>';
+
+    // Re-bind click handlers
+    document.querySelectorAll('#nuclideBody tr[data-id]').forEach(tr => {
+      tr.addEventListener('click', () => selectNuclide(tr.dataset.id));
+    });
+  }
+
+  // ---- Detail panel ----
+  function selectNuclide(id) {
+    selectedId = id;
+    renderTable();
+
+    const n = DB.getById(id);
+    if (!n) return;
+
+    const panel = document.getElementById('detailPanel');
+    panel.classList.add('visible');
+
+    document.getElementById('detailTitle').textContent = n.name;
+    document.getElementById('detailSymbol').textContent = n.symbol;
+    document.getElementById('detailName').textContent   = n.name;
+    document.getElementById('detailUse').textContent    = n.clinical_use || '—';
+
+    const decayStr = (n.decay_modes || []).map(d =>
+      `${d.mode}${d.fraction < 1 ? ' (' + (d.fraction * 100).toFixed(1) + '%)' : ''}`
+    ).join(', ');
+
+    document.getElementById('detailProps').innerHTML = `
+      <div class="prop-item">
+        <div class="prop-key">Half-life</div>
+        <div class="prop-val">${n.half_life_display}</div>
+        <div class="prop-note">${CALC.formatHalfLife(n.half_life_s)}</div>
+      </div>
+      <div class="prop-item">
+        <div class="prop-key">Decay mode</div>
+        <div class="prop-val">${decayStr || '—'}</div>
+      </div>
+      <div class="prop-item">
+        <div class="prop-key">Representative &#947; energy</div>
+        <div class="prop-val">${n.representative_energy_keV} keV</div>
+      </div>
+      <div class="prop-item">
+        <div class="prop-key">&#915;<sup>K-air</sup></div>
+        <div class="prop-val">${n.gamma_Kair !== null ? n.gamma_Kair : '—'}</div>
+        <div class="prop-note">&#956;Gy&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;</div>
+      </div>
+      <div class="prop-item">
+        <div class="prop-key">&#915;<sup>H*(10)</sup></div>
+        <div class="prop-val">${n.gamma_H10 !== null ? n.gamma_H10 : '—'}</div>
+        <div class="prop-note">&#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;</div>
+      </div>
+      <div class="prop-item">
+        <div class="prop-key">&#915;<sup>H'(0.07)</sup></div>
+        <div class="prop-val">${n.gamma_H007 !== null ? n.gamma_H007 : '—'}</div>
+        <div class="prop-note">&#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;${n.H007_from_cornejo ? ' &#9888;' : ''}</div>
+      </div>
+    `;
+
+    // Links to other calculators
+    document.getElementById('btnDecay').href = `decay.html?id=${encodeURIComponent(id)}`;
+    document.getElementById('btnDose').href  = `dose.html?id=${encodeURIComponent(id)}`;
+
+    // Notes
+    const noteEl = document.getElementById('detailNotes');
+    if (n.source && !n.source.startsWith('Cornejo')) {
+      noteEl.textContent = 'Source: ' + n.source;
+      noteEl.classList.remove('hidden');
+    } else if (n.H007_from_cornejo) {
+      noteEl.textContent = 'H\'(0.07) value from Cornejo et al.: applies when all photon energies < 300 keV and H\'(0.07) > H*(10). Used instead of H*(10) for extremity dose estimation.';
+      noteEl.classList.remove('hidden');
+    } else {
+      noteEl.classList.add('hidden');
+    }
+
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  // ---- Event listeners ----
+  document.getElementById('searchInput').addEventListener('input', e => {
+    activeSearch = e.target.value;
+    renderTable();
+  });
+
+  document.getElementById('clearSearch').addEventListener('click', () => {
+    document.getElementById('searchInput').value = '';
+    activeSearch = '';
+    renderTable();
+  });
+
+  document.getElementById('filterBar').addEventListener('click', e => {
+    const btn = e.target.closest('.filter-btn');
+    if (!btn) return;
+    activeModality = btn.dataset.modality;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderTable();
+  });
+
+  // Auto-select from URL param
+  const urlId = new URLSearchParams(location.search).get('id');
+  if (urlId) selectNuclide(urlId);
+
+  renderTable();
+
+})();
+</script>
+</body>
+</html>
