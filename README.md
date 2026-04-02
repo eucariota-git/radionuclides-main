@@ -27,7 +27,7 @@ Target users: medical physicists and radiation protection specialists.
 - **Archer broad-beam method** (Monte Carlo, Oumano et al. 2025) for Tc-99m, F-18, I-131, Lu-177
 - Narrow-beam fallback (NIST XCOM) for all other nuclides
 - Cumulative dose with radioactive decay integration
-- Annual dose limit comparison (RD 783/2001 / EURATOM 2013/59)
+- Annual dose limit comparison (RD 1029/2022 / EURATOM 2013/59)
 
 ### Custom nuclide (`custom.html`)
 - Upload CSV in IAEA LiveChart format
