@@ -22,10 +22,6 @@
 
 <main class="page-body">
   <div class="page-title">Radionuclide Properties</div>
-  <div class="page-subtitle">
-    Dose rate constants from Cornejo et al. (2006). &#948; = 20 keV.
-    Units: &#181;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;.
-  </div>
 
   <!-- Search & Filters -->
   <div class="card">
@@ -45,7 +41,7 @@
     <div id="rowCount" class="text-sm text-muted mb-1"></div>
 
     <div style="overflow-x:auto;">
-      <table class="data-table" id="nuclideTable">
+      <table class="data-table" id="nuclideTable" aria-label="Radionuclide properties">
         <thead>
           <tr>
             <th>Nuclide</th>
@@ -64,6 +60,11 @@
         </tbody>
       </table>
     </div>
+    <p class="text-sm text-muted mt-1">
+      Dose rate constants from Cornejo et al. (2006). Energy threshold &#948; = 20 keV, yield &ge; 0.01%.
+      Units: &#915;<sup>K-air</sup> in &#181;Gy&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;;
+      &#915;<sup>H*(10)</sup> and &#915;<sup>H'(0.07)</sup> in &#181;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;.
+    </p>
   </div>
 
   <!-- Detail panel -->
@@ -121,6 +122,44 @@
     return;
   }
 
+  // Spanish names for search (items not already matched by English name/clinical_use)
+  const ES_NAMES = {
+    'C-11':          'carbono',
+    'N-13':          'nitrógeno nitrogeno',
+    'O-15':          'oxígeno oxigeno',
+    'F-18':          'flúor fluor',
+    'Na-24':         'sodio',
+    'K-42':          'potasio',
+    'Cr-51':         'cromo',
+    'Co-57':         'cobalto',
+    'Co-58':         'cobalto',
+    'Fe-59':         'hierro',
+    'Co-60':         'cobalto',
+    'Cu-64':         'cobre',
+    'Ga-67':         'galio',
+    'Ga-68':         'galio',
+    'Se-75':         'selenio',
+    'Tc-99m':        'tecnecio',
+    'Mo-99+Tc-99m':  'molibdeno tecnecio',
+    'Pd-103':        'paladio',
+    'In-111':        'indio',
+    'I-123':         'yodo',
+    'I-125':         'yodo',
+    'I-131':         'yodo',
+    'Xe-133':        'xenón xenon',
+    'Cs-137':        'cesio',
+    'Sm-153':        'samario',
+    'Yb-169':        'iterbio',
+    'Tm-170':        'tulio',
+    'Lu-177':        'lutecio',
+    'Re-186':        'renio',
+    'Re-188':        'renio',
+    'Ir-192':        'iridio',
+    'Au-198':        'oro',
+    'Tl-201':        'talio',
+    'Y-90':          'itrio',
+  };
+
   let activeModality = 'all';
   let activeSearch   = '';
   let selectedId     = null;
@@ -143,12 +182,16 @@
     if (activeModality !== 'all') data = data.filter(n => n.modality === activeModality);
     if (activeSearch) {
       const q = activeSearch.toLowerCase();
-      data = data.filter(n =>
-        n.id.toLowerCase().includes(q) ||
-        n.name.toLowerCase().includes(q) ||
-        n.symbol.toLowerCase().includes(q) ||
-        (n.clinical_use || '').toLowerCase().includes(q)
-      );
+      data = data.filter(n => {
+        const idWithSpace = n.id.toLowerCase().replace('-', ' '); // "F-18" → "f 18"
+        const nameEs = (ES_NAMES[n.id] || '').toLowerCase();
+        return n.id.toLowerCase().includes(q) ||
+               idWithSpace.includes(q) ||
+               n.name.toLowerCase().includes(q) ||
+               n.symbol.toLowerCase().includes(q) ||
+               nameEs.includes(q) ||
+               (n.clinical_use || '').toLowerCase().includes(q);
+      });
     }
 
     document.getElementById('rowCount').textContent = `${data.length} nuclide${data.length !== 1 ? 's' : ''}`;
@@ -204,8 +247,8 @@
     document.getElementById('detailProps').innerHTML = `
       <div class="prop-item">
         <div class="prop-key">Half-life</div>
-        <div class="prop-val">${n.half_life_display}</div>
-        <div class="prop-note">${CALC.formatHalfLife(n.half_life_s)}</div>
+        <div class="prop-val">${n.half_life_display.split(' ').slice(0, -1).join(' ')}</div>
+        <div class="prop-note">${n.half_life_display.split(' ').slice(-1)[0]}</div>
       </div>
       <div class="prop-item">
         <div class="prop-key">Decay mode</div>
@@ -213,7 +256,8 @@
       </div>
       <div class="prop-item">
         <div class="prop-key">Representative &#947; energy</div>
-        <div class="prop-val">${n.representative_energy_keV} keV</div>
+        <div class="prop-val">${n.representative_energy_keV}</div>
+        <div class="prop-note">keV</div>
       </div>
       <div class="prop-item">
         <div class="prop-key">&#915;<sup>K-air</sup></div>

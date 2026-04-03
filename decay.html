@@ -128,17 +128,6 @@
     </div>
   </div>
 
-  <!-- Dose limit reference -->
-  <div class="card mt-2">
-    <div class="card-title">&#128218; Dose Limit Reference (RD 1029/2022 / EURATOM 2013/59)</div>
-    <div class="d-flex flex-wrap gap-2 text-sm" style="line-height:1.8;">
-      <span class="limit-badge limit-worker">Workers: 20 mSv/y effective</span>
-      <span class="limit-badge limit-extremity">Extremities: 500 mSv/y</span>
-      <span class="limit-badge limit-extremity">Lens of eye: 20 mSv/y</span>
-      <span class="limit-badge limit-public">Public: 1 mSv/y effective</span>
-    </div>
-    <div class="text-sm text-muted mt-1">Use the Dose Estimator to calculate doses from activity values.</div>
-  </div>
 </main>
 
 <footer class="site-footer">
@@ -174,6 +163,15 @@
 
   // ---- Calculate ----
   document.getElementById('btnCalc').addEventListener('click', calculate);
+
+  // Format a numeric value to 1 decimal for large numbers, more for small
+  function fmtVal(v) {
+    if (!isFinite(v)) return '—';
+    if (v === 0) return '0.0';
+    const a = Math.abs(v);
+    if (a >= 1) return v.toFixed(1);
+    return v.toPrecision(2);
+  }
 
   function calculate() {
     const n = DB.getById(sel.value);
@@ -216,24 +214,24 @@
     document.getElementById('resultGrid').innerHTML = `
       <div class="result-box">
         <div class="result-label">A(t)</div>
-        <div class="result-value">${At_MBq.toPrecision(5)}</div>
-        <div class="result-unit">MBq = ${CALC.convertActivity(At_MBq,'MBq','GBq').toPrecision(4)} GBq
-          = ${CALC.convertActivity(At_MBq,'MBq','mCi').toPrecision(4)} mCi</div>
+        <div class="result-value">${fmtVal(At_MBq)}</div>
+        <div class="result-unit">MBq = ${fmtVal(CALC.convertActivity(At_MBq,'MBq','GBq'))} GBq
+          = ${fmtVal(CALC.convertActivity(At_MBq,'MBq','mCi'))} mCi</div>
       </div>
       <div class="result-box">
         <div class="result-label">Fraction remaining</div>
-        <div class="result-value">${(fraction * 100).toPrecision(4)}%</div>
-        <div class="result-unit">at t = ${t_h.toFixed(3)} h</div>
+        <div class="result-value">${(fraction * 100).toFixed(1)}%</div>
+        <div class="result-unit">at t = ${t_h.toFixed(1)} h</div>
       </div>
       <div class="result-box">
         <div class="result-label">Elapsed</div>
-        <div class="result-value">${t_h.toFixed(3)} h</div>
-        <div class="result-unit">${(t_h / 24).toFixed(3)} d &nbsp;|&nbsp; ${(t_h / T_half_h).toFixed(2)} T&#189;</div>
+        <div class="result-value">${t_h.toFixed(1)} h</div>
+        <div class="result-unit">${(t_h / 24).toFixed(2)} d &nbsp;|&nbsp; ${(t_h / T_half_h).toFixed(1)} T&#189;</div>
       </div>
       <div class="result-box">
         <div class="result-label">Activity lost</div>
-        <div class="result-value">${(A0_MBq - At_MBq).toPrecision(5)}</div>
-        <div class="result-unit">MBq (${((1 - fraction) * 100).toPrecision(4)}%)</div>
+        <div class="result-value">${fmtVal(A0_MBq - At_MBq)}</div>
+        <div class="result-unit">MBq (${((1 - fraction) * 100).toFixed(1)}%)</div>
       </div>
     `;
 
@@ -255,8 +253,8 @@
         inv.innerHTML = `
           <div class="alert alert-success">
             <strong>Time to reach ${AtgtRaw} ${AtgtUnit}:</strong>
-            ${tTarget_h.toFixed(3)} h = ${(tTarget_h / 24).toFixed(3)} d
-            = ${(tTarget_h / T_half_h).toFixed(2)} T&#189;${dateStr}
+            ${tTarget_h.toFixed(1)} h = ${(tTarget_h / 24).toFixed(2)} d
+            = ${(tTarget_h / T_half_h).toFixed(1)} T&#189;${dateStr}
           </div>`;
       } else {
         inv.innerHTML = `<div class="alert alert-warning">Target activity &ge; initial activity — no decay needed.</div>`;
@@ -330,10 +328,10 @@
       }
       return `<tr ${highlight}>
         <td>${timeLabel}</td>
-        <td class="num">${s.toFixed(2)}</td>
-        <td class="num">${A.toPrecision(5)}</td>
-        <td class="num">${CALC.convertActivity(A,'MBq','mCi').toPrecision(4)}</td>
-        <td class="num">${(A / A0_MBq * 100).toFixed(3)}%</td>
+        <td class="num">${s.toFixed(1)}</td>
+        <td class="num">${fmtVal(A)}</td>
+        <td class="num">${fmtVal(CALC.convertActivity(A,'MBq','mCi'))}</td>
+        <td class="num">${(A / A0_MBq * 100).toFixed(1)}%</td>
       </tr>`;
     }).join('');
     document.getElementById('decayTableBody').innerHTML = tbody;

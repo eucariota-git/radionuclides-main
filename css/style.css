@@ -274,8 +274,6 @@ a:hover { text-decoration: underline; }
   font-size: .75rem;
   font-weight: 600;
   color: var(--gray-700);
-  text-transform: uppercase;
-  letter-spacing: .05em;
   margin-bottom: .2rem;
 }
 
@@ -411,9 +409,9 @@ a:hover { text-decoration: underline; }
   padding: .65rem 1rem;
   border-radius: var(--radius);
   font-size: .85rem;
-  display: flex;
-  align-items: flex-start;
-  gap: .6rem;
+  line-height: 1.5;
+  overflow-wrap: break-word;
+  word-break: break-word;
   margin-bottom: .75rem;
 }
 

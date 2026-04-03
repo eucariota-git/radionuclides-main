@@ -29,13 +29,6 @@
     <strong>H'(0.07)</strong> for extremities (d &lt; 25 cm).
   </div>
 
-  <div class="alert alert-warning">
-    <strong>Note:</strong> These calculations are estimates for radiation protection purposes using point-source geometry.
-    Shielding uses the <strong>Archer broad-beam method</strong> (Monte Carlo, Oumano et al. 2025) for Tc-99m, F-18, I-131 and Lu-177 —
-    all other nuclides fall back to narrow-beam attenuation.
-    Geometry, scatter, and source distribution effects are not modelled. Not suitable for dosimetric treatment planning.
-  </div>
-
   <!-- Parameters -->
   <div class="card">
     <div class="card-title">&#9881; Source Parameters</div>
@@ -57,8 +50,14 @@
         </div>
       </div>
       <div class="form-group">
-        <label class="form-label">Distance d [m]</label>
-        <input type="number" class="form-input" id="distance" value="0.30" min="0.01" step="0.01">
+        <label class="form-label">Distance d</label>
+        <div class="d-flex gap-1">
+          <input type="number" class="form-input" id="distance" value="0.30" min="0.01" step="0.01">
+          <select class="form-select" id="distUnit" style="width:80px;">
+            <option value="m" selected>m</option>
+            <option value="cm">cm</option>
+          </select>
+        </div>
         <div class="form-hint" id="distHint">d &ge; 0.25 m &rarr; whole body H*(10)</div>
       </div>
     </div>
@@ -78,8 +77,14 @@
         </select>
       </div>
       <div class="form-group">
-        <label class="form-label">Thickness [cm]</label>
-        <input type="number" class="form-input" id="shieldThickness" value="0" min="0" step="0.1">
+        <label class="form-label">Thickness</label>
+        <div class="d-flex gap-1">
+          <input type="number" class="form-input" id="shieldThickness" value="0" min="0" step="0.1">
+          <select class="form-select" id="shieldUnit" style="width:80px;">
+            <option value="cm" selected>cm</option>
+            <option value="mm">mm</option>
+          </select>
+        </div>
       </div>
     </div>
     <div id="hvlInfo" class="alert alert-info mt-2 hidden"></div>
@@ -117,6 +122,12 @@
   <!-- Results -->
   <div class="card mt-2" id="resultsCard" style="display:none;">
     <div class="card-title">&#128202; Results</div>
+    <div class="alert alert-warning mb-1">
+      <strong>Note:</strong> Estimates for radiation protection using point-source geometry.
+      Shielding uses the <strong>Archer broad-beam method</strong> (Monte Carlo, Oumano et al. 2025) for Tc-99m, F-18, I-131 and Lu-177 —
+      all other nuclides fall back to narrow-beam attenuation.
+      Geometry, scatter, and source distribution effects are not modelled. Not suitable for dosimetric treatment planning.
+    </div>
     <div id="nuclideInfo" class="alert alert-info mb-1"></div>
 
     <div style="overflow-x:auto;">
@@ -155,7 +166,8 @@
     <div class="card-title">Annual dose limit comparison</div>
     <div id="limitComparison"></div>
     <div class="alert alert-warning mt-1">
-      Annual limits: workers 20 mSv/y effective, 500 mSv/y extremities, 20 mSv/y lens of eye; public 1 mSv/y (RD 1029/2022 / EURATOM 2013/59).
+      Annual limits: workers 20 mSv/y effective, 500 mSv/y extremities, 20 mSv/y lens of eye; public 1 mSv/y
+      (Royal Decree 1029/2022 / EURATOM Directive 2013/59).
       These are regulatory limits, not design targets.
     </div>
   </div>
@@ -185,17 +197,21 @@
   if (urlId) sel.value = urlId;
 
   // Distance hint
-  document.getElementById('distance').addEventListener('input', () => {
-    const d = parseFloat(document.getElementById('distance').value);
+  function updateDistHint() {
+    const distRaw  = parseFloat(document.getElementById('distance').value) || 0;
+    const distUnit = document.getElementById('distUnit').value;
+    const d_m = distUnit === 'cm' ? distRaw / 100 : distRaw;
     const hint = document.getElementById('distHint');
-    if (d < 0.25) {
+    if (d_m < 0.25) {
       hint.textContent = 'd < 0.25 m → extremities scenario: H\'(0.07) used';
       hint.style.color = 'var(--warning)';
     } else {
       hint.textContent = 'd ≥ 0.25 m → whole body scenario: H*(10) used';
       hint.style.color = '';
     }
-  });
+  }
+  document.getElementById('distance').addEventListener('input', updateDistHint);
+  document.getElementById('distUnit').addEventListener('change', updateDistHint);
 
   // Helper: get Archer params for current nuclide + material (or null)
   function getArcherParams(n, mat) {
@@ -219,7 +235,9 @@
     const E           = n.representative_energy_keV / 1000;
     const ap          = getArcherParams(n, mat);
     const { hvl_cm, tvl_cm, mu_cm, method } = CALC.hvlTvl(E, mat, ap);
-    const thickness   = parseFloat(document.getElementById('shieldThickness').value) || 0;
+    const thickRaw    = parseFloat(document.getElementById('shieldThickness').value) || 0;
+    const thickUnit   = document.getElementById('shieldUnit').value;
+    const thickness   = thickUnit === 'mm' ? thickRaw / 10 : thickRaw;
     const T           = CALC.getTransmission(thickness, E, mat, ap);
     const methodBadge = method === 'archer'
       ? '<span class="tag tag-pet" style="font-size:.72rem;vertical-align:middle;">Archer</span>'
@@ -232,12 +250,13 @@
       HVL = <strong>${hvl_cm.toFixed(3)} cm</strong> &nbsp;|&nbsp;
       TVL = <strong>${tvl_cm.toFixed(3)} cm</strong>
       ${mu_cm !== null ? `&nbsp;|&nbsp; &mu; = ${mu_cm.toFixed(3)} cm&#8315;&#185;` : ''}
-      ${thickness > 0 ? `&nbsp;|&nbsp; Transmission = <strong>${(T * 100).toFixed(3)}%</strong> (${thickness} cm)` : ''}
+      ${thickRaw > 0 ? `&nbsp;|&nbsp; Transmission = <strong>${(T * 100).toFixed(3)}%</strong> (${thickRaw} ${thickUnit})` : ''}
     `;
   }
 
   document.getElementById('shieldMaterial').addEventListener('change', updateHvlInfo);
   document.getElementById('shieldThickness').addEventListener('input', updateHvlInfo);
+  document.getElementById('shieldUnit').addEventListener('change', updateHvlInfo);
   sel.addEventListener('change', updateHvlInfo);
   updateHvlInfo();
 
@@ -252,9 +271,14 @@
     const A0unit  = document.getElementById('A0unit').value;
     const A0_GBq  = CALC.convertActivity(A0raw, A0unit, 'GBq');
 
-    const d_m     = parseFloat(document.getElementById('distance').value);
-    const mat     = document.getElementById('shieldMaterial').value;
-    const thick   = parseFloat(document.getElementById('shieldThickness').value) || 0;
+    const distRaw  = parseFloat(document.getElementById('distance').value);
+    const distUnit = document.getElementById('distUnit').value;
+    const d_m      = distUnit === 'cm' ? distRaw / 100 : distRaw;
+
+    const mat       = document.getElementById('shieldMaterial').value;
+    const thickRaw  = parseFloat(document.getElementById('shieldThickness').value) || 0;
+    const thickUnit = document.getElementById('shieldUnit').value;
+    const thick     = thickUnit === 'mm' ? thickRaw / 10 : thickRaw;
     const E_MeV   = n.representative_energy_keV / 1000;
     const ap      = getArcherParams(n, mat);  // Archer params or null
 
@@ -407,7 +431,14 @@
           y: {
             title: { display: true, text: 'Dose rate (μSv/h)' },
             type: 'logarithmic',
-            ticks: { callback: v => CALC.formatDoseRate(v).display }
+            ticks: { callback: v => CALC.formatDoseRate(v).display },
+            afterBuildTicks: (axis) => {
+              // Keep only decade ticks (powers of 10) for equal visual spacing
+              axis.ticks = axis.ticks.filter(t => {
+                const log = Math.log10(t.value);
+                return Math.abs(log - Math.round(log)) < 1e-9;
+              });
+            }
           }
         }
       }
