@@ -53,7 +53,7 @@ const CALC = (() => {
    * @param {number} A0      - initial activity
    * @param {number} Atarget - target activity (< A0)
    * @param {number} T_half  - half-life (any time unit)
-   * @returns {number} time in same unit as T_half; Infinity if Atarget >= A0
+   * @returns {number} time in same unit as T_half; 0 if Atarget >= A0 (already met); Infinity if Atarget <= 0
    */
   function timeToActivity(A0, Atarget, T_half) {
     if (Atarget >= A0) return 0;

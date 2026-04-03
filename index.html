@@ -168,7 +168,7 @@
         <td class="num">${fmtGamma(n.gamma_H10)}</td>
         <td class="num">${fmtGamma(n.gamma_H007)}${h007note}</td>
         <td class="num">${n.representative_energy_keV} keV</td>
-        <td class="text-sm">${n._custom ? '<em>custom</em>' : 'Cornejo'}</td>
+        <td class="text-sm">${n._custom ? '<em>custom</em>' : n.source && !n.source.startsWith('Cornejo') ? 'Calc.' : 'Cornejo'}</td>
       </tr>`;
     }).join('');
 

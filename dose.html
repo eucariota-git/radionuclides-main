@@ -415,6 +415,13 @@
 
     // ---- Limit comparison ----
     const hoursPerYear = 2000; // occupational working hours
+    if (t_h <= 0) {
+      document.getElementById('limitComparison').innerHTML =
+        '<div class="alert alert-info text-sm">Enter an exposure time &gt; 0 to see the annual limit comparison.</div>';
+      card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      updateHvlInfo();
+      return;
+    }
     const annualDoseWB  = H_WB_cum  * (hoursPerYear / t_h);
     const annualDoseExt = H_Ext_cum * (hoursPerYear / t_h);
 
