@@ -91,10 +91,10 @@
         <div class="text-sm text-warning hidden" id="symbolWarning">CSV did not include a nuclide symbol. Please enter it manually.</div>
       </div>
       <div class="form-group">
-        <label class="form-label">Half-life (from CSV)</label>
-        <input type="text" class="form-input" id="customHalfLifeDisplay" readonly title="Half-life display">
+        <label class="form-label">Half-life</label>
+        <input type="text" class="form-input" id="customHalfLifeDisplay" title="Half-life display">
       </div>
-      <div class="form-group">
+      <div class="form-group hidden" id="halfLifeSGroup">
         <label class="form-label">Half-life [s]</label>
         <input type="number" class="form-input" id="customHalfLifeS" step="any" title="Half-life in seconds">
       </div>
@@ -245,15 +245,33 @@
   }
 
   // ---- Populate parse card ----
+  function toSuperscript(n) {
+    const sup = {'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};
+    return String(n).split('').map(c => sup[c] || c).join('');
+  }
+
   function populateParseCard(filename) {
-    // Suggest ID from filename (e.g. "177lu_gammas.csv" → "Lu-177")
-    const match = filename.match(/(\d+)([a-z]+)/i);
-    const suggestedId = match ? `${match[2].charAt(0).toUpperCase() + match[2].slice(1)}-${match[1]}` : (parsedNuclide.symbol || '');
+    const A   = parsedNuclide.A;
+    const sym = parsedNuclide.symbol || '';  // e.g. "Lu"
+
+    // Build suggested ID — prefer Z+N derived mass number, fallback to filename
+    let suggestedId = '';
+    if (sym && A !== null) {
+      suggestedId = `${sym}-${A}`;           // e.g. "Lu-177"
+    } else {
+      const match = filename.match(/(\d+)([a-z]+)/i);
+      suggestedId = match
+        ? `${match[2].charAt(0).toUpperCase() + match[2].slice(1)}-${match[1]}`
+        : sym;
+    }
+
+    // Build HTML symbol with Unicode superscript mass number
+    const suggestedSymbol = (sym && A !== null) ? `${toSuperscript(A)}${sym}` : sym;
 
     document.getElementById('customId').value            = suggestedId;
     document.getElementById('customName').value          = suggestedId;
     const symbolField = document.getElementById('customSymbol');
-    symbolField.value        = parsedNuclide.symbol || '';
+    symbolField.value        = suggestedSymbol;
     document.getElementById('customHalfLifeDisplay').value = parsedNuclide.half_life_display || '';
     document.getElementById('customHalfLifeS').value     = parsedNuclide.half_life_s || '';
 
