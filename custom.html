@@ -28,14 +28,34 @@
   </div>
 
   <div class="alert alert-info">
-    <strong>Methodology:</strong>
-    <div style="margin:.5rem 0; line-height:1.5;">
-      &#915; = (1 / 4&#960;) × &#931;<sub>i</sub>[n<sub>i</sub> · h(E<sub>i</sub>)] · K
+    <strong>Methodology — Cornejo et al. (2006)</strong>
+    <div style="margin:.75rem 0 .5rem; font-size:1.08em; letter-spacing:.01em; font-family:Georgia,serif; line-height:2;">
+      &#915; = K &thinsp;&times;&thinsp; &sum;<sub><i>i</i></sub> ( <i>n</i><sub><i>i</i></sub> &thinsp;&middot;&thinsp; <i>h</i>(<i>E</i><sub><i>i</i></sub>) )
     </div>
-    <div class="text-sm">
-      Filter: photons (G, X) with E ≥ 20 keV and yield ≥ 0.01%/decay. h(E) from ICRU 57 / ICRP 74.
-      K = 28.648 μSv·h⁻¹·GBq⁻¹·m² / (pSv·cm²).
-    </div>
+    <table class="text-sm" style="border-collapse:collapse; margin-top:.25rem; line-height:1.8;">
+      <tbody>
+        <tr>
+          <td style="padding-right:1rem; white-space:nowrap; font-family:Georgia,serif;"><i>&Gamma;</i></td>
+          <td>Dose rate constant [&mu;Sv&thinsp;&middot;&thinsp;h<sup>&minus;1</sup>&thinsp;&middot;&thinsp;GBq<sup>&minus;1</sup>&thinsp;&middot;&thinsp;m<sup>2</sup>] — relates dose rate to activity at 1 m</td>
+        </tr>
+        <tr>
+          <td style="padding-right:1rem; white-space:nowrap; font-family:Georgia,serif;"><i>n</i><sub><i>i</i></sub></td>
+          <td>Photon yield per nuclear decay for emission <i>i</i> [dimensionless; intensity&nbsp;%&nbsp;&divide;&nbsp;100]</td>
+        </tr>
+        <tr>
+          <td style="padding-right:1rem; white-space:nowrap; font-family:Georgia,serif;"><i>h</i>(<i>E</i><sub><i>i</i></sub>)</td>
+          <td>Fluence-to-ambient-dose-equivalent conversion coefficient at energy <i>E<sub>i</sub></i> [pSv&thinsp;&middot;&thinsp;cm<sup>2</sup>], tabulated in ICRU&nbsp;57 / ICRP&nbsp;74 for H*(10) and H&prime;(0.07)</td>
+        </tr>
+        <tr>
+          <td style="padding-right:1rem; white-space:nowrap; font-family:Georgia,serif;"><i>E</i><sub><i>i</i></sub></td>
+          <td>Photon energy of emission <i>i</i> [MeV] — only emissions with <i>E</i><sub><i>i</i></sub> &ge; 20&thinsp;keV and <i>n</i><sub><i>i</i></sub> &ge; 0.01&thinsp;%/decay are included (photon types G and X only)</td>
+        </tr>
+        <tr>
+          <td style="padding-right:1rem; white-space:nowrap; font-family:Georgia,serif;"><i>K</i></td>
+          <td>Unit-conversion and geometry factor = <strong>28.648</strong> &mu;Sv&thinsp;&middot;&thinsp;h<sup>&minus;1</sup>&thinsp;&middot;&thinsp;GBq<sup>&minus;1</sup>&thinsp;&middot;&thinsp;m<sup>2</sup>&thinsp;/&thinsp;(pSv&thinsp;&middot;&thinsp;cm<sup>2</sup>) — encodes 1/(4&pi;), GBq&rarr;s<sup>&minus;1</sup>, pSv&rarr;&mu;Sv, cm<sup>&minus;2</sup>&rarr;m<sup>&minus;2</sup>, and s&rarr;h</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
   <!-- Step 1: Upload -->
@@ -103,6 +123,7 @@
             <th>Energy (keV)</th>
             <th>Yield (%)</th>
             <th>Type</th>
+            <th>Half-life</th>
             <th>Meets criteria?</th>
             <th>h*(10) [pSv&#183;cm&#178;]</th>
             <th>h'(0.07) [pSv&#183;cm&#178;]</th>
@@ -272,6 +293,7 @@
         <td class="num">${em.energy_keV.toFixed(4)}</td>
         <td class="num">${em.yield_percent.toFixed(4)}</td>
         <td>${em.type}</td>
+        <td class="num">${em.half_life_display || '—'}</td>
         <td>${meetsLabel}</td>
         <td class="num">${meets ? h10 : '—'}</td>
         <td class="num">${meets ? h007 : '—'}</td>

@@ -103,7 +103,29 @@ const CSV_PARSER = (() => {
         }
       }
 
-      emissions.push({ energy_keV, yield_percent: intensity, type });
+      // Extract per-row half-life (cols 21 = value, 24 = unit, 25 = half_life_s)
+      let em_hl_s = null;
+      let em_hl_display = '';
+      if (cols.length > 25) {
+        const hlRaw = (cols[25] || '').trim();
+        if (hlRaw && !isNaN(parseFloat(hlRaw))) {
+          em_hl_s = parseFloat(hlRaw);
+        } else {
+          const hlVal  = parseFloat(cols[21]);
+          const hlUnit = (cols[24] || '').trim().toLowerCase();
+          if (!isNaN(hlVal) && UNIT_TO_S[hlUnit]) {
+            em_hl_s = hlVal * UNIT_TO_S[hlUnit];
+          }
+        }
+        if (em_hl_s !== null) {
+          const hlVal  = parseFloat(cols[21]);
+          const hlUnit = (cols[24] || '').trim();
+          em_hl_display = (!isNaN(hlVal) && hlUnit) ? `${hlVal} ${hlUnit}` : `${em_hl_s} s`;
+        }
+      }
+
+      emissions.push({ energy_keV, yield_percent: intensity, type,
+        half_life_s: em_hl_s, half_life_display: em_hl_display });
     }
 
     // Accept missing parsed symbol so the user can enter it manually if needed.
