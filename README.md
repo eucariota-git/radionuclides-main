@@ -2,7 +2,7 @@
 
 Web application for nuclear medicine radionuclide properties, decay calculations, and external dose estimation for radiation workers.
 
-**Live app:** https://eucariota-git.github.io/Radionuclides-main/
+**Live app:** https://eucariota-git.github.io/radionuclides-main/
 
 Target users: medical physicists and radiation protection specialists.
 
