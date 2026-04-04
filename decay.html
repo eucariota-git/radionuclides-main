@@ -31,15 +31,15 @@
     <div class="form-grid">
       <div class="form-group">
         <label class="form-label">Radionuclide</label>
-        <select class="form-select" id="nuclideSelect">
+        <select class="form-select" id="nuclideSelect" title="Radionuclide">
           <option value="">Loading…</option>
         </select>
       </div>
       <div class="form-group">
         <label class="form-label">Initial Activity A&#8320;</label>
         <div class="d-flex gap-1">
-          <input type="number" class="form-input" id="A0" value="1000" min="0" step="any">
-          <select class="form-select" id="A0unit" style="width:90px;">
+          <input type="number" class="form-input" id="A0" value="1000" min="0" step="any" title="Initial Activity">
+          <select class="form-select form-select-narrow" id="A0unit" title="Unit">
             <option value="MBq" selected>MBq</option>
             <option value="GBq">GBq</option>
             <option value="mCi">mCi</option>
@@ -50,11 +50,11 @@
       </div>
       <div class="form-group">
         <label class="form-label">Reference date &amp; time</label>
-        <input type="datetime-local" class="form-input" id="refDateTime">
+        <input type="datetime-local" class="form-input" id="refDateTime" title="Reference date and time">
       </div>
       <div class="form-group">
         <label class="form-label">Target date &amp; time <span class="text-muted">(optional)</span></label>
-        <input type="datetime-local" class="form-input" id="targetDateTime">
+        <input type="datetime-local" class="form-input" id="targetDateTime" title="Target date and time">
       </div>
     </div>
 
@@ -63,8 +63,8 @@
       <div class="form-group">
         <label class="form-label">— or — Elapsed time</label>
         <div class="d-flex gap-1">
-          <input type="number" class="form-input" id="elapsed" min="0" step="any" placeholder="e.g. 24">
-          <select class="form-select" id="elapsedUnit" style="width:90px;">
+          <input type="number" class="form-input" id="elapsed" min="0" step="any" placeholder="e.g. 24" title="Elapsed time">
+          <select class="form-select form-select-narrow" id="elapsedUnit" title="Unit">
             <option value="h" selected>h</option>
             <option value="min">min</option>
             <option value="d">d</option>
@@ -76,8 +76,8 @@
       <div class="form-group">
         <label class="form-label">Target Activity A<sub>target</sub> <span class="text-muted">(optional)</span></label>
         <div class="d-flex gap-1">
-          <input type="number" class="form-input" id="Atarget" min="0" step="any" placeholder="e.g. 100">
-          <select class="form-select" id="AtargetUnit" style="width:90px;">
+          <input type="number" class="form-input" id="Atarget" min="0" step="any" placeholder="e.g. 100" title="Target Activity">
+          <select class="form-select form-select-narrow" id="AtargetUnit" title="Unit">
             <option value="MBq" selected>MBq</option>
             <option value="GBq">GBq</option>
             <option value="mCi">mCi</option>
@@ -94,7 +94,7 @@
   </div>
 
   <!-- Results -->
-  <div class="card mt-2" id="resultsCard" style="display:none;">
+  <div class="card mt-2 hidden" id="resultsCard">
     <div class="card-title">&#128202; Results</div>
     <div id="nuclideInfo" class="alert alert-info mb-1"></div>
     <div class="result-grid" id="resultGrid"></div>
@@ -112,11 +112,11 @@
 
     <!-- Table of values -->
     <div class="mt-2">
-      <div class="d-flex align-center gap-2 mb-1" style="justify-content:space-between;">
+      <div class="d-flex align-center gap-2 mb-1 justify-between">
         <span class="text-sm text-muted">Activity at selected time points</span>
         <button class="btn btn-secondary btn-sm" id="btnExportCsv">&#11123; Export CSV</button>
       </div>
-      <div style="overflow-x:auto; max-height:260px; overflow-y:auto;">
+      <div class="overflow-x-auto max-height-260">
         <table class="data-table" id="decayTable">
           <thead><tr>
             <th>Time</th><th>Elapsed (h)</th>
@@ -132,7 +132,7 @@
 
 <footer class="site-footer">
   NM Radionuclide Planner &mdash; Dose rate constants: Cornejo et al. (2006) &mdash;
-  <a href="https://github.com/eucariota-git/radionuclides" target="_blank">GitHub</a>
+<a href="https://github.com/eucariota-git/radionuclides-main" target="_blank" rel="noopener">GitHub</a>
 </footer>
 
 <script src="data/nuclides-data.js"></script>
@@ -205,7 +205,7 @@
 
     // Show results card
     const card = document.getElementById('resultsCard');
-    card.style.display = 'block';
+    card.classList.remove('hidden');
 
     document.getElementById('nuclideInfo').innerHTML =
       `<strong>${n.symbol} — ${n.name}</strong> &nbsp;|&nbsp; T&#189; = ${n.half_life_display} &nbsp;|&nbsp;

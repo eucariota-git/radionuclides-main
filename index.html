@@ -40,7 +40,7 @@
     </div>
     <div id="rowCount" class="text-sm text-muted mb-1"></div>
 
-    <div style="overflow-x:auto;">
+    <div class="overflow-x-auto">
       <table class="data-table" id="nuclideTable" aria-label="Radionuclide properties">
         <thead>
           <tr>
@@ -56,7 +56,7 @@
           </tr>
         </thead>
         <tbody id="nuclideBody">
-          <tr><td colspan="9" class="text-muted text-sm" style="padding:1rem;">Loading…</td></tr>
+          <tr><td colspan="9" class="text-muted text-sm loading-cell">Loading…</td></tr>
         </tbody>
       </table>
     </div>
@@ -91,7 +91,7 @@
   <!-- Reference -->
   <div class="card mt-2">
     <div class="card-title">Reference & Data Notes</div>
-    <ul class="text-sm" style="line-height:1.7;padding-left:1.2rem;" id="refList">
+    <ul class="text-sm ref-list" id="refList">
       <li><strong>Cornejo et al.</strong> — primary source for &#915;<sup>H*(10)</sup> values for 32 nuclides.</li>
       <li>&#915;<sup>H'(0.07)</sup> values in parentheses from Cornejo et al. apply when all photon energies &lt; 300 keV and H'(0.07) > H*(10). Used for extremity dose estimation.</li>
       <li><strong>Ga-68</strong> and <strong>Y-90</strong> constants calculated using ICRU 57 / ICRP 74 methodology (same as Cornejo et al.).</li>
@@ -103,7 +103,7 @@
 <footer class="site-footer">
   NM Radionuclide Planner &mdash; For radiation protection estimation purposes.
   Verify against primary sources for regulatory submissions. &mdash;
-  <a href="https://github.com/eucariota-git/radionuclides" target="_blank">GitHub</a>
+<a href="https://github.com/eucariota-git/radionuclides-main" target="_blank" rel="noopener">GitHub</a>
 </footer>
 
 <script src="data/nuclides-data.js"></script>

@@ -29,29 +29,29 @@
 
   <div class="alert alert-info">
     <strong>Methodology — Cornejo et al. (2006)</strong>
-    <div style="margin:.75rem 0 .5rem; font-size:1.08em; letter-spacing:.01em; font-family:Georgia,serif; line-height:2;">
+    <div class="methodology-text">
       &#915; = K &thinsp;&times;&thinsp; &sum;<sub><i>i</i></sub> ( <i>n</i><sub><i>i</i></sub> &thinsp;&middot;&thinsp; <i>h</i>(<i>E</i><sub><i>i</i></sub>) )
     </div>
-    <table class="text-sm" style="border-collapse:collapse; margin-top:.25rem; line-height:1.8;">
+    <table class="text-sm methodology-table">
       <tbody>
         <tr>
-          <td style="padding-right:1rem; white-space:nowrap; font-family:Georgia,serif;"><i>&Gamma;</i></td>
+          <td class="methodology-td"><i>&Gamma;</i></td>
           <td>Dose rate constant [&mu;Sv&thinsp;&middot;&thinsp;h<sup>&minus;1</sup>&thinsp;&middot;&thinsp;GBq<sup>&minus;1</sup>&thinsp;&middot;&thinsp;m<sup>2</sup>] — relates dose rate to activity at 1 m</td>
         </tr>
         <tr>
-          <td style="padding-right:1rem; white-space:nowrap; font-family:Georgia,serif;"><i>n</i><sub><i>i</i></sub></td>
+          <td class="methodology-td"><i>n</i><sub><i>i</i></sub></td>
           <td>Photon yield per nuclear decay for emission <i>i</i> [dimensionless; intensity&nbsp;%&nbsp;&divide;&nbsp;100]</td>
         </tr>
         <tr>
-          <td style="padding-right:1rem; white-space:nowrap; font-family:Georgia,serif;"><i>h</i>(<i>E</i><sub><i>i</i></sub>)</td>
+          <td class="methodology-td"><i>h</i>(<i>E</i><sub><i>i</i></sub>)</td>
           <td>Fluence-to-ambient-dose-equivalent conversion coefficient at energy <i>E<sub>i</sub></i> [pSv&thinsp;&middot;&thinsp;cm<sup>2</sup>], tabulated in ICRU&nbsp;57 / ICRP&nbsp;74 for H*(10) and H&prime;(0.07)</td>
         </tr>
         <tr>
-          <td style="padding-right:1rem; white-space:nowrap; font-family:Georgia,serif;"><i>E</i><sub><i>i</i></sub></td>
+          <td class="methodology-td"><i>E</i><sub><i>i</i></sub></td>
           <td>Photon energy of emission <i>i</i> [MeV] — only emissions with <i>E</i><sub><i>i</i></sub> &ge; 20&thinsp;keV and <i>n</i><sub><i>i</i></sub> &ge; 0.01&thinsp;%/decay are included (photon types G and X only)</td>
         </tr>
         <tr>
-          <td style="padding-right:1rem; white-space:nowrap; font-family:Georgia,serif;"><i>K</i></td>
+          <td class="methodology-td"><i>K</i></td>
           <td>Unit-conversion and geometry factor = <strong>28.648</strong> &mu;Sv&thinsp;&middot;&thinsp;h<sup>&minus;1</sup>&thinsp;&middot;&thinsp;GBq<sup>&minus;1</sup>&thinsp;&middot;&thinsp;m<sup>2</sup>&thinsp;/&thinsp;(pSv&thinsp;&middot;&thinsp;cm<sup>2</sup>) — encodes 1/(4&pi;), GBq&rarr;s<sup>&minus;1</sup>, pSv&rarr;&mu;Sv, cm<sup>&minus;2</sup>&rarr;m<sup>&minus;2</sup>, and s&rarr;h</td>
         </tr>
       </tbody>
@@ -67,7 +67,7 @@
       <div class="drop-zone-hint">
         LiveChart format: energy, intensity_%, type, …, symbol, half_life [s], decay, …
       </div>
-      <input type="file" id="csvInput" accept=".csv,.txt" style="display:none;">
+      <input type="file" id="csvInput" accept=".csv,.txt" class="file-input-hidden" title="CSV file">
     </div>
     <div class="mt-1 text-sm text-muted" id="fileStatus"></div>
   </div>
@@ -78,33 +78,33 @@
     <div class="form-grid">
       <div class="form-group">
         <label class="form-label">Nuclide ID (e.g. Ra-223)</label>
-        <input type="text" class="form-input" id="customId" placeholder="e.g. Ra-223">
+        <input type="text" class="form-input" id="customId" placeholder="e.g. Ra-223" title="Nuclide ID">
       </div>
       <div class="form-group">
         <label class="form-label">Full name</label>
-        <input type="text" class="form-input" id="customName" placeholder="e.g. Radium-223">
+        <input type="text" class="form-input" id="customName" placeholder="e.g. Radium-223" title="Full name">
       </div>
       <div class="form-group">
         <label class="form-label">Symbol (HTML, e.g. ²²³Ra)</label>
-        <input type="text" class="form-input" id="customSymbol" placeholder="²²³Ra">
+        <input type="text" class="form-input" id="customSymbol" placeholder="²²³Ra" title="Symbol">
         <div class="text-sm text-muted">If the CSV does not include a symbol, enter it manually here.</div>
         <div class="text-sm text-warning hidden" id="symbolWarning">CSV did not include a nuclide symbol. Please enter it manually.</div>
       </div>
       <div class="form-group">
         <label class="form-label">Half-life (from CSV)</label>
-        <input type="text" class="form-input" id="customHalfLifeDisplay" readonly>
+        <input type="text" class="form-input" id="customHalfLifeDisplay" readonly title="Half-life display">
       </div>
       <div class="form-group">
         <label class="form-label">Half-life [s]</label>
-        <input type="number" class="form-input" id="customHalfLifeS" step="any">
+        <input type="number" class="form-input" id="customHalfLifeS" step="any" title="Half-life in seconds">
       </div>
       <div class="form-group">
         <label class="form-label">Clinical use (optional)</label>
-        <input type="text" class="form-input" id="customClinicalUse" placeholder="Therapy / diagnostic / …">
+        <input type="text" class="form-input" id="customClinicalUse" placeholder="Therapy / diagnostic / …" title="Clinical use">
       </div>
       <div class="form-group">
         <label class="form-label">Modality</label>
-        <select class="form-select" id="customModality">
+        <select class="form-select" id="customModality" title="Modality">
           <option value="other">Other</option>
           <option value="PET">PET</option>
           <option value="SPECT">SPECT</option>
@@ -115,7 +115,7 @@
     </div>
 
     <div class="card-title mt-2">Emissions parsed (all photons)</div>
-    <div style="overflow-x:auto; max-height:300px; overflow-y:auto;">
+    <div class="emissions-table-wrap">
       <table class="data-table" id="emissionsTable">
         <thead>
           <tr>
@@ -146,7 +146,7 @@
 
     <div class="mt-2">
       <div class="card-title">Emission contributions</div>
-      <div style="overflow-x:auto;">
+      <div class="contrib-table-wrap">
         <table class="data-table" id="contribTable">
           <thead>
             <tr>
@@ -184,7 +184,7 @@
 
 <footer class="site-footer">
   NM Radionuclide Planner &mdash; &#915; calculation: ICRU 57 / ICRP 74 methodology &mdash;
-  <a href="https://github.com/eucariota-git/radionuclides" target="_blank">GitHub</a>
+<a href="https://github.com/eucariota-git/radionuclides-main" target="_blank" rel="noopener">GitHub</a>
 </footer>
 
 <script src="data/nuclides-data.js"></script>
@@ -281,12 +281,12 @@
       const key = `${em.energy_keV}|${em.yield_percent}|${em.type}`;
       const meets = filteredSet.has(key);
       const checked = meets ? 'checked' : '';
-      const rowCls = meets ? '' : 'style="opacity:.55;"';
+      const rowCls = meets ? '' : 'class="emission-row-dim"';
       const h10  = PHYSICS.getH10(em.energy_keV / 1000).toFixed(3);
       const h007 = PHYSICS.getH007(em.energy_keV / 1000).toFixed(3);
       const meetsLabel = meets
-        ? '<span style="color:var(--green-700);font-weight:700;">&#10003; Yes</span>'
-        : `<span style="color:var(--gray-500);">&#10007; ${em.energy_keV < 20 ? 'E<20keV' : em.yield_percent < 0.01 ? 'yield<0.01%' : 'not G/X'}</span>`;
+        ? '<span class="meets-yes">&#10003; Yes</span>'
+        : `<span class="meets-no">&#10007; ${em.energy_keV < 20 ? 'E<20keV' : em.yield_percent < 0.01 ? 'yield<0.01%' : 'not G/X'}</span>`;
       if (meets) included++;
       rows += `<tr ${rowCls}>
         <td><input type="checkbox" class="em-check" data-idx="${unique.indexOf(em)}" ${checked}></td>
@@ -364,8 +364,8 @@
     const T = PHYSICS;
 
     // Dominant energy (highest H10 contribution)
-    let domE = emissions.length > 0
-      ? emissions.reduce((a, b) => a.yield_percent > b.yield_percent ? a : b).energy_keV
+    let domE = contributions.length > 0
+      ? contributions.sort((a, b) => b.contrib_H10 - a.contrib_H10)[0].energy_keV
       : 140;
 
     document.getElementById('gammaResults').innerHTML = `

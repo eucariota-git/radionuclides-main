@@ -484,6 +484,89 @@ a:hover { text-decoration: underline; }
 .hidden { display: none !important; }
 .divider { border: none; border-top: 1px solid var(--gray-200); margin: 1rem 0; }
 
+/* ---- Custom page styles ---- */
+.methodology-text {
+  margin: .75rem 0 .5rem;
+  font-size: 1.08em;
+  letter-spacing: .01em;
+  font-family: Georgia, serif;
+  line-height: 2;
+}
+
+.methodology-table {
+  border-collapse: collapse;
+  margin-top: .25rem;
+  line-height: 1.8;
+}
+
+.methodology-td {
+  padding-right: 1rem;
+  white-space: nowrap;
+  font-family: Georgia, serif;
+}
+
+.emissions-table-wrap {
+  overflow-x: auto;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.contrib-table-wrap {
+  overflow-x: auto;
+}
+
+.file-input-hidden {
+  display: none;
+}
+
+.form-select-narrow {
+  width: 90px;
+}
+
+.form-select-medium {
+  width: 80px;
+}
+
+.overflow-x-auto {
+  overflow-x: auto;
+}
+
+.max-height-260 {
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.percent-symbol {
+  line-height: 2.2rem;
+  padding: 0 0.4rem;
+}
+
+.ref-list {
+  line-height: 1.7;
+  padding-left: 1.2rem;
+}
+
+.loading-cell {
+  padding: 1rem;
+}
+
+.emission-row-dim {
+  opacity: 0.55;
+}
+
+.meets-yes {
+  color: var(--green-700);
+  font-weight: 700;
+}
+
+.meets-no {
+  color: var(--gray-500);
+}
+
 /* ---- Responsive ---- */
 @media (max-width: 700px) {
   .site-header .inner { height: auto; padding: .6rem 0; flex-wrap: wrap; }
