@@ -124,8 +124,14 @@ const CSV_PARSER = (() => {
         }
       }
 
+      // Extract per-row decay mode and branch % (cols 27 and 28)
+      const em_decay_mode    = cols.length > 27 ? (cols[27] || '').trim() : '';
+      const em_decay_percent = cols.length > 28 ? parseFloat(cols[28]) : NaN;
+
       emissions.push({ energy_keV, yield_percent: intensity, type,
-        half_life_s: em_hl_s, half_life_display: em_hl_display });
+        half_life_s: em_hl_s, half_life_display: em_hl_display,
+        decay_mode: em_decay_mode,
+        decay_percent: isNaN(em_decay_percent) ? null : em_decay_percent });
     }
 
     // Accept missing parsed symbol so the user can enter it manually if needed.

@@ -227,6 +227,8 @@ const PHYSICS = (() => {
         energy_keV: em.energy_keV,
         yield_percent: em.yield_percent,
         type: em.type,
+        decay_mode: em.decay_mode || null,
+        decay_percent: em.decay_percent ?? null,
         h10_pSvcm2: h10,
         h007_pSvcm2: h007,
         contrib_H10:  contrib10  * GAMMA_FACTOR,

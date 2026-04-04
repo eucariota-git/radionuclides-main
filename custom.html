@@ -121,8 +121,10 @@
           <tr>
             <th>Include?</th>
             <th>Energy (keV)</th>
-            <th>Yield (%)</th>
+            <th>Yield (%/decay)</th>
             <th>Type</th>
+            <th>Decay mode</th>
+            <th>Decay branch (%)</th>
             <th>Half-life</th>
             <th>Meets criteria?</th>
             <th>h*(10) [pSv&#183;cm&#178;]</th>
@@ -151,8 +153,10 @@
           <thead>
             <tr>
               <th>Energy (keV)</th>
-              <th>Yield (%)</th>
+              <th>Yield (%/decay)</th>
               <th>Type</th>
+              <th>Decay mode</th>
+              <th>Decay branch (%)</th>
               <th>h*(10)</th>
               <th>h'(0.07)</th>
               <th>&#916;&#915;<sup>H*(10)</sup></th>
@@ -293,6 +297,8 @@
         <td class="num">${em.energy_keV.toFixed(4)}</td>
         <td class="num">${em.yield_percent.toFixed(4)}</td>
         <td>${em.type}</td>
+        <td>${em.decay_mode || '—'}</td>
+        <td class="num">${em.decay_percent !== null && em.decay_percent !== undefined ? em.decay_percent.toFixed(2) : '—'}</td>
         <td class="num">${em.half_life_display || '—'}</td>
         <td>${meetsLabel}</td>
         <td class="num">${meets ? h10 : '—'}</td>
@@ -353,7 +359,8 @@
       sumH10  += c10;
       sumH007 += c007;
       contributions.push({ energy_keV: em.energy_keV, yield_percent: em.yield_percent,
-        type: em.type, h10_pSvcm2: h10, h007_pSvcm2: h007,
+        type: em.type, decay_mode: em.decay_mode || null, decay_percent: em.decay_percent ?? null,
+        h10_pSvcm2: h10, h007_pSvcm2: h007,
         contrib_H10: c10 * K, contrib_H007: c007 * K });
     }
     return { gammaH10: sumH10 * K, gammaH007: sumH007 * K, contributions };
@@ -398,6 +405,8 @@
         <td class="num">${c.energy_keV.toFixed(3)}</td>
         <td class="num">${c.yield_percent.toFixed(4)}</td>
         <td>${c.type}</td>
+        <td>${c.decay_mode || '—'}</td>
+        <td class="num">${c.decay_percent !== null && c.decay_percent !== undefined ? c.decay_percent.toFixed(2) : '—'}</td>
         <td class="num">${c.h10_pSvcm2.toFixed(4)}</td>
         <td class="num">${c.h007_pSvcm2.toFixed(4)}</td>
         <td class="num">${c.contrib_H10.toFixed(4)}</td>
@@ -524,7 +533,8 @@
       sumH10  += c10;
       sumH007 += c007;
       contributions.push({ energy_keV: em.energy_keV, yield_percent: em.yield_percent,
-        type: em.type, h10_pSvcm2: h10, h007_pSvcm2: h007,
+        type: em.type, decay_mode: em.decay_mode || null, decay_percent: em.decay_percent ?? null,
+        h10_pSvcm2: h10, h007_pSvcm2: h007,
         contrib_H10: c10 * K, contrib_H007: c007 * K });
     }
     return { gammaH10: sumH10 * K, gammaH007: sumH007 * K, contributions };
