@@ -58,6 +58,7 @@ const CSV_PARSER = (() => {
     let halfLifeDisplay = '';
     let decayMode    = '';
     let parentZ      = null;
+    let parentN      = null;
 
     for (let i = dataStart; i < lines.length; i++) {
       const cols = splitCSVLine(lines[i]);
@@ -76,6 +77,7 @@ const CSV_PARSER = (() => {
           parentSymbol = (cols[34] || '').trim();
         }
         parentZ      = parseInt(cols[14], 10) || null;
+        parentN      = parseInt(cols[15], 10) || null;
         decayMode    = (cols[27] || '').trim();
 
         // Half-life: prefer the pre-converted half_life [s] column (col 25)
@@ -144,6 +146,8 @@ const CSV_PARSER = (() => {
     const nuclideInfo = {
       symbol:           parentSymbol,
       Z:                parentZ,
+      N:                parentN,
+      A:                (parentZ !== null && parentN !== null) ? parentZ + parentN : null,
       half_life_s:      halfLife_s,
       half_life_display: halfLifeDisplay,
       decay_mode:       decayMode,
