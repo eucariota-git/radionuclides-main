@@ -159,9 +159,9 @@
         <thead>
           <tr>
             <th class="has-tooltip" data-tooltip="Ambient dose equivalent (whole-body H*(10)) or directional dose equivalent (extremity H'(0.07)) depending on distance from source.">Quantity</th>
-            <th>Dose rate at t=0</th>
-            <th id="doseRateAtTimeHeader">Dose rate at t=time</th>
-            <th>Cumulative dose (annual)</th>
+            <th>D'(0) at 1 m</th>
+            <th id="doseRateAtTimeHeader">D'(t) at 1 m</th>
+            <th>D(annual)</th>
             <th>Notes</th>
           </tr>
         </thead>
@@ -358,14 +358,14 @@
        d = ${d_m} m &nbsp;|&nbsp; t = ${t_h.toFixed(2)} h/admin &nbsp;|&nbsp; n = ${nAdmin} admin/y &nbsp;|&nbsp; patient Tx = ${(patientTx*100).toFixed(1)}% &nbsp;|&nbsp;
        &#915;<sup>H*(10)</sup> = ${gammaWB} &nbsp;|&nbsp; &#915;<sup>H'(0.07)</sup> = ${gammaExt} &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;`;
 
-    // Dose rate at t=0
-    const Hdot_WB  = CALC.doseRate(gammaWB,  A0_GBq, d_m, thick, E_MeV, mat, ap) * patientTx;
-    const Hdot_Ext = CALC.doseRate(gammaExt, A0_GBq, d_m, thick, E_MeV, mat, ap) * patientTx;
+    // Dose rate at t=0 (at 1 m)
+    const Hdot_WB  = CALC.doseRate(gammaWB,  A0_GBq, 1, thick, E_MeV, mat, ap) * patientTx;
+    const Hdot_Ext = CALC.doseRate(gammaExt, A0_GBq, 1, thick, E_MeV, mat, ap) * patientTx;
 
-    // Dose rate at t=time (after decay)
+    // Dose rate at t=time (after decay, at 1 m)
     const At_GBq   = CALC.activityAtTime(A0_GBq, T_half_h, t_h);
-    const Hdot_WB_t  = CALC.doseRate(gammaWB,  At_GBq, d_m, thick, E_MeV, mat, ap) * patientTx;
-    const Hdot_Ext_t = CALC.doseRate(gammaExt, At_GBq, d_m, thick, E_MeV, mat, ap) * patientTx;
+    const Hdot_WB_t  = CALC.doseRate(gammaWB,  At_GBq, 1, thick, E_MeV, mat, ap) * patientTx;
+    const Hdot_Ext_t = CALC.doseRate(gammaExt, At_GBq, 1, thick, E_MeV, mat, ap) * patientTx;
 
     // Cumulative dose
     let H_WB_cum, H_Ext_cum;
