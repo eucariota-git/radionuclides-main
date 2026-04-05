@@ -33,6 +33,41 @@
   --font-sans: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
 }
 
+/* ---- Dark mode variant ---- */
+[data-theme="dark"] {
+  --green-900: #74c69d;
+  --green-800: #95d5b2;
+  --green-700: #52b788;
+  --green-600: #74c69d;
+  --green-400: #40916c;
+  --green-100: #1a3a2a;
+  --green-50:  #112318;
+
+  --gray-900: #f0f0f0;
+  --gray-800: #d0d0d0;
+  --gray-700: #a0a0a0;
+  --gray-500: #6c757d;
+  --gray-200: #2c2f33;
+  --gray-100: #1a1d21;
+  --white:    #23272b;
+
+  --accent:  #48cae4;
+  --warning: #f4a261;
+  --danger:  #e63946;
+  --info:    #48cae4;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.4);
+  --shadow:    0 2px 8px rgba(0,0,0,.5);
+}
+
+[data-theme="dark"] .site-header,
+[data-theme="dark"] .site-footer,
+[data-theme="dark"] .data-table th {
+  background: #1a2e25;
+}
+
+[data-theme="dark"] body { background: #0f1517; }
+
 /* ---- Reset & Base ---- */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -162,6 +197,9 @@ a:hover { text-decoration: underline; }
   font-size: .82rem;
   letter-spacing: .02em;
   white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
 
 .data-table th:first-child { border-radius: var(--radius) 0 0 0; }
@@ -567,10 +605,347 @@ a:hover { text-decoration: underline; }
   color: var(--gray-500);
 }
 
+/* ---- Sticky table wrapper ---- */
+.table-scroll-wrap {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 420px;
+}
+
+/* ---- Custom tooltips ---- */
+.has-tooltip {
+  position: relative;
+  cursor: help;
+  border-bottom: 1px dotted var(--gray-500);
+}
+
+.has-tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--gray-800);
+  color: #fff;
+  font-size: .72rem;
+  font-family: var(--font-sans);
+  font-weight: 400;
+  padding: .35rem .6rem;
+  border-radius: 4px;
+  white-space: normal;
+  max-width: 240px;
+  min-width: 140px;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .15s, visibility .15s;
+  z-index: 200;
+  line-height: 1.4;
+}
+
+.has-tooltip::before {
+  content: '';
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-bottom-color: var(--gray-800);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .15s, visibility .15s;
+  z-index: 200;
+}
+
+.has-tooltip:hover::after,
+.has-tooltip:focus::after,
+.has-tooltip:hover::before,
+.has-tooltip:focus::before {
+  opacity: 1;
+  visibility: visible;
+}
+
+[data-theme="dark"] .has-tooltip::after {
+  background: var(--gray-700);
+}
+
+[data-theme="dark"] .has-tooltip::before {
+  border-top-color: var(--gray-700);
+}
+
+/* ---- Dark mode toggle button ---- */
+.btn-icon {
+  background: none;
+  border: 1px solid rgba(255,255,255,.3);
+  color: rgba(255,255,255,.85);
+  border-radius: var(--radius);
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-left: auto;
+  flex-shrink: 0;
+  transition: background .15s, border-color .15s;
+}
+
+.btn-icon:hover {
+  background: rgba(255,255,255,.1);
+  border-color: rgba(255,255,255,.6);
+}
+
+/* ---- Keyboard shortcuts ---- */
+kbd {
+  background: var(--gray-200);
+  color: var(--gray-800);
+  border: 1px solid var(--gray-500);
+  border-radius: 3px;
+  padding: .1rem .35rem;
+  font-family: var(--font-mono);
+  font-size: .75rem;
+}
+
+.keyboard-hint {
+  text-align: right;
+  margin-top: 1.5rem;
+  opacity: .6;
+  font-size: .82rem;
+}
+
+/* ---- Calculation history ---- */
+.history-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .45rem .75rem;
+  border-bottom: 1px solid var(--gray-200);
+  font-size: .82rem;
+  cursor: pointer;
+  transition: background .1s;
+}
+
+.history-item:hover {
+  background: var(--green-50);
+}
+
+.history-ts {
+  color: var(--gray-700);
+  font-size: .72rem;
+  white-space: nowrap;
+}
+
+.history-summary {
+  flex: 1;
+}
+
+.history-restore {
+  color: var(--accent);
+  font-size: .75rem;
+  white-space: nowrap;
+}
+
+/* ---- Accessibility: Skip link ---- */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  background: var(--green-900);
+  color: white;
+  padding: .5rem 1rem;
+  border-radius: 0 0 var(--radius) var(--radius);
+  z-index: 999;
+  transition: top .1s;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* ---- Print styles ---- */
+@media print {
+  /* Hide interactive chrome */
+  .site-header, .site-footer,
+  .btn, .filter-bar, .search-bar,
+  .drop-zone, #clearSearch,
+  [data-no-print] {
+    display: none !important;
+  }
+
+  /* Reset layout for print */
+  body {
+    background: white;
+    color: black;
+    font-size: 10pt;
+  }
+
+  .page-body {
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* Cards become plain sections */
+  .card {
+    border: 1px solid #ccc;
+    box-shadow: none;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    margin-bottom: 1rem;
+    padding: 1rem;
+  }
+
+  /* Table: full width, no hover effects, visible borders */
+  .data-table {
+    font-size: 8pt;
+  }
+
+  .data-table th {
+    background: #2d6a4f;
+    color: white;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .data-table tbody tr:nth-child(even) td {
+    background: #f0faf2;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .data-table tbody tr:hover td {
+    background: inherit;
+  }
+
+  /* Charts: preserve on print */
+  .chart-wrap {
+    height: 220pt;
+  }
+
+  /* Result boxes: flow as 2-column grid */
+  .result-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Page header stamp */
+  .page-body::before {
+    content: "NM Radionuclide Planner — " attr(data-print-title) " — Generated " attr(data-print-date);
+    display: block;
+    font-size: 8pt;
+    color: #555;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 4pt;
+  }
+
+  /* Force page breaks between major sections */
+  .card + .card {
+    page-break-before: auto;
+  }
+
+  #detailPanel {
+    page-break-before: always;
+  }
+
+  /* Nuclide detail: visible always when printing */
+  .nuclide-detail {
+    display: block !important;
+  }
+
+  /* Suppress URL printing */
+  a[href]::after {
+    content: none;
+  }
+
+  /* Sticky headers don't need to be sticky in print */
+  .data-table th {
+    position: static;
+  }
+}
+
 /* ---- Responsive ---- */
+@media (max-width: 900px) {
+  .page-body {
+    padding: 1.25rem 1.25rem 2rem;
+  }
+
+  .form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .prop-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .result-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 700px) {
-  .site-header .inner { height: auto; padding: .6rem 0; flex-wrap: wrap; }
-  .page-body { padding: 1rem; }
-  .result-value { font-size: 1.1rem; }
-  .form-grid { grid-template-columns: 1fr; }
+  .site-header .inner {
+    height: auto;
+    padding: .6rem 0;
+    flex-wrap: wrap;
+  }
+
+  .site-nav {
+    gap: .15rem;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .site-nav a {
+    white-space: nowrap;
+    font-size: .8rem;
+    padding: .3rem .6rem;
+  }
+
+  .page-body {
+    padding: 1rem;
+  }
+
+  .result-value {
+    font-size: 1.1rem;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .data-table {
+    font-size: .78rem;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: .4rem .5rem;
+  }
+
+  .nuclide-symbol-large {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .page-body {
+    padding: .75rem .75rem 2rem;
+  }
+
+  .result-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .prop-grid {
+    grid-template-columns: 1fr;
+  }
 }
