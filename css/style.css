@@ -64,6 +64,7 @@
 [data-theme="dark"] .site-footer,
 [data-theme="dark"] .data-table th {
   background: #1a2e25;
+  color: #ffffff;
 }
 
 [data-theme="dark"] body { background: #0f1517; }
@@ -826,6 +827,19 @@ a:hover { text-decoration: underline; }
 
 [data-theme="dark"] .has-tooltip::before {
   border-top-color: var(--gray-700);
+}
+
+/* ---- Dark mode: methodology box styling ---- */
+[data-theme="dark"] .methodology-text {
+  color: var(--gray-100);
+}
+
+[data-theme="dark"] .methodology-table {
+  color: var(--gray-100);
+}
+
+[data-theme="dark"] .methodology-td {
+  color: var(--gray-100);
 }
 
 /* ---- Dark mode toggle button ---- */

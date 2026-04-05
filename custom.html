@@ -130,6 +130,7 @@
             <th>Type</th>
             <th>Decay mode</th>
             <th>Decay branch (%)</th>
+            <th>Parent E [keV]</th>
             <th>Half-life</th>
             <th>Meets criteria?</th>
             <th>h*(10) [pSv&#183;cm&#178;]</th>
@@ -327,6 +328,7 @@
         <td>${em.type}</td>
         <td>${em.decay_mode || '—'}</td>
         <td class="num">${em.decay_percent !== null && em.decay_percent !== undefined ? em.decay_percent.toFixed(2) : '—'}</td>
+        <td class="num">${em.parent_energy_keV !== null ? em.parent_energy_keV.toFixed(3) : '—'}</td>
         <td class="num">${em.half_life_display || '—'}</td>
         <td>${meetsLabel}</td>
         <td class="num">${meets ? h10 : '—'}</td>

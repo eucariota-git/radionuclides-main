@@ -130,10 +130,14 @@ const CSV_PARSER = (() => {
       const em_decay_mode    = cols.length > 27 ? (cols[27] || '').trim() : '';
       const em_decay_percent = cols.length > 28 ? parseFloat(cols[28]) : NaN;
 
+      // Extract parent energy [keV] (col 18)
+      const parent_energy_keV = cols.length > 18 ? parseFloat(cols[18]) : NaN;
+
       emissions.push({ energy_keV, yield_percent: intensity, type,
         half_life_s: em_hl_s, half_life_display: em_hl_display,
         decay_mode: em_decay_mode,
-        decay_percent: isNaN(em_decay_percent) ? null : em_decay_percent });
+        decay_percent: isNaN(em_decay_percent) ? null : em_decay_percent,
+        parent_energy_keV: isNaN(parent_energy_keV) ? null : parent_energy_keV });
     }
 
     // Accept missing parsed symbol so the user can enter it manually if needed.
