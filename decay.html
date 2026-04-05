@@ -9,19 +9,24 @@
 </head>
 <body>
 
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
 <header class="site-header">
   <div class="inner">
     <div class="site-logo">&#9762; <span>NM</span> Radionuclide Planner</div>
-    <nav class="site-nav">
+    <nav class="site-nav" aria-label="Main navigation">
       <a href="index.html">Properties</a>
       <a href="decay.html" class="active">Decay</a>
       <a href="dose.html">Dose</a>
       <a href="custom.html">Custom</a>
     </nav>
+    <button id="darkToggle" type="button" class="btn-icon" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
+      <span id="darkIcon">🌙</span>
+    </button>
   </div>
 </header>
 
-<main class="page-body">
+<main class="page-body" id="main-content">
   <div class="page-title">Decay Calculator</div>
   <div class="page-subtitle">A(t) = A&#8320; &middot; e<sup>&minus;&lambda;t</sup> &nbsp;|&nbsp; &lambda; = ln(2) / T&#189;</div>
 
@@ -157,8 +162,13 @@
 <script src="js/data.js"></script>
 <script src="js/physics.js"></script>
 <script src="js/db.js"></script>
+<script src="js/ui.js"></script>
 <script>
 (async () => {
+  // ---- UI initialization ----
+  UI.initDarkMode();
+  UI.initPrint();
+  UI.initKeyboard();
   await DB.load();
   const nuclides = DB.getAll();
 

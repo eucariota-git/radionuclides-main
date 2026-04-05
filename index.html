@@ -8,19 +8,24 @@
 </head>
 <body>
 
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
 <header class="site-header">
   <div class="inner">
     <div class="site-logo">&#9762; <span>NM</span> Radionuclide Planner</div>
-    <nav class="site-nav">
+    <nav class="site-nav" aria-label="Main navigation">
       <a href="index.html" class="active">Properties</a>
       <a href="decay.html">Decay</a>
       <a href="dose.html">Dose</a>
       <a href="custom.html">Custom</a>
     </nav>
+    <button id="darkToggle" type="button" class="btn-icon" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
+      <span id="darkIcon">🌙</span>
+    </button>
   </div>
 </header>
 
-<main class="page-body">
+<main class="page-body" id="main-content">
   <div class="page-title">Radionuclide Properties</div>
 
   <!-- Search & Filters -->
@@ -29,6 +34,7 @@
       <input type="search" id="searchInput" class="search-input"
              placeholder="Search by name, symbol or clinical use…" autocomplete="off">
       <button class="btn btn-secondary btn-sm" id="clearSearch">Clear</button>
+      <button class="btn btn-secondary btn-sm" id="btnExportCsv" title="Export table as CSV">⬇ Export CSV</button>
     </div>
     <div class="filter-bar" id="filterBar">
       <button class="filter-btn active" data-modality="all">All</button>
@@ -40,7 +46,7 @@
     </div>
     <div id="rowCount" class="text-sm text-muted mb-1"></div>
 
-    <div class="overflow-x-auto">
+    <div class="overflow-x-auto table-scroll-wrap">
       <table class="data-table" id="nuclideTable" aria-label="Radionuclide properties">
         <thead>
           <tr>
@@ -48,9 +54,9 @@
             <th>T&#189;</th>
             <th>Decay</th>
             <th>Modality</th>
-            <th title="Air kerma rate constant [μGy·h⁻¹·GBq⁻¹·m²]">&#915;<sup>K-air</sup></th>
-            <th title="Ambient dose equivalent rate constant [μSv·h⁻¹·GBq⁻¹·m²]">&#915;<sup>H*(10)</sup></th>
-            <th title="Directional dose equivalent rate constant at 0.07 mm [μSv·h⁻¹·GBq⁻¹·m²]">&#915;<sup>H'(0.07)</sup></th>
+            <th class="has-tooltip" data-tooltip="Air kerma rate constant. Photon field intensity at 1 m from 1 GBq. Units: μGy·h⁻¹·GBq⁻¹·m². Source: Cornejo (2006).">&#915;<sup>K-air</sup></th>
+            <th class="has-tooltip" data-tooltip="Ambient dose equivalent rate constant. Whole-body dose at d ≥ 25 cm. Derived from ICRU 57 / ICRP 74. Units: μSv·h⁻¹·GBq⁻¹·m².">&#915;<sup>H*(10)</sup></th>
+            <th class="has-tooltip" data-tooltip="Directional dose equivalent (0.07 mm depth). Extremity dose at d < 25 cm. Units: μSv·h⁻¹·GBq⁻¹·m².">&#915;<sup>H'(0.07)</sup></th>
             <th>Rep. energy</th>
             <th>Source</th>
           </tr>
@@ -110,8 +116,14 @@
 <script src="js/data.js"></script>
 <script src="js/physics.js"></script>
 <script src="js/db.js"></script>
+<script src="js/ui.js"></script>
 <script>
 (async () => {
+  // ---- UI initialization ----
+  UI.initDarkMode();
+  UI.initPrint();
+  UI.initKeyboard();
+
   // ---- Load data ----
   let nuclides = [];
   try {
@@ -163,6 +175,7 @@
   let activeModality = 'all';
   let activeSearch   = '';
   let selectedId     = null;
+  let currentData    = [];
 
   // ---- Render table ----
   function modalityTag(n) {
@@ -194,6 +207,7 @@
       });
     }
 
+    currentData = data;
     document.getElementById('rowCount').textContent = `${data.length} nuclide${data.length !== 1 ? 's' : ''}`;
 
     const rows = data.map(n => {
@@ -314,6 +328,31 @@
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     renderTable();
+  });
+
+  // CSV export
+  document.getElementById('btnExportCsv').addEventListener('click', () => {
+    const headers = ['id', 'symbol', 'name', 'half_life_display', 'decay_modes', 'modality',
+                     'gamma_Kair', 'gamma_H10', 'gamma_H007', 'representative_energy_keV', 'source'];
+    const rows = currentData.map(n => [
+      n.id,
+      n.symbol,
+      n.name,
+      n.half_life_display,
+      (n.decay_modes || []).map(d => d.mode).join('; '),
+      n.modality,
+      n.gamma_Kair ?? '',
+      n.gamma_H10 ?? '',
+      n.gamma_H007 ?? '',
+      n.representative_energy_keV,
+      n._custom ? 'custom' : (n.source || 'Cornejo')
+    ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
+    const csv = [headers.join(','), ...rows].join('\r\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `radionuclide_properties_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
   });
 
   // Auto-select from URL param

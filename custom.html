@@ -8,19 +8,24 @@
 </head>
 <body>
 
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
 <header class="site-header">
   <div class="inner">
     <div class="site-logo">&#9762; <span>NM</span> Radionuclide Planner</div>
-    <nav class="site-nav">
+    <nav class="site-nav" aria-label="Main navigation">
       <a href="index.html">Properties</a>
       <a href="decay.html">Decay</a>
       <a href="dose.html">Dose</a>
       <a href="custom.html" class="active">Custom</a>
     </nav>
+    <button id="darkToggle" type="button" class="btn-icon" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
+      <span id="darkIcon">🌙</span>
+    </button>
   </div>
 </header>
 
-<main class="page-body">
+<main class="page-body" id="main-content">
   <div class="page-title">Custom Nuclide — &#915; Calculator</div>
   <div class="page-subtitle">
     Upload an IAEA LiveChart CSV to calculate &#915;<sup>H*(10)</sup> and &#915;<sup>H'(0.07)</sup>
@@ -196,8 +201,13 @@
 <script src="js/physics.js"></script>
 <script src="js/db.js"></script>
 <script src="js/csv-parser.js"></script>
+<script src="js/ui.js"></script>
 <script>
 (async () => {
+  // ---- UI initialization ----
+  UI.initDarkMode();
+  UI.initPrint();
+  UI.initKeyboard();
   await DB.load();
   refreshCustomList();
 
