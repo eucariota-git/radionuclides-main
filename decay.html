@@ -86,6 +86,17 @@
         </div>
         <div class="form-hint">Calculates time to reach this activity</div>
       </div>
+      <div class="form-group">
+        <label class="form-label">Vial / container weight <span class="text-muted">(optional)</span></label>
+        <div class="d-flex gap-1">
+          <input type="number" class="form-input" id="vialWeight" min="0" step="any" placeholder="e.g. 10" title="Vial/container weight">
+          <select class="form-select form-select-medium" id="vialWeightUnit" title="Unit">
+            <option value="g" selected>g</option>
+            <option value="kg">kg</option>
+          </select>
+        </div>
+        <div class="form-hint">For clearance check (RD&nbsp;1217/2024 Annex IV Table A.1)</div>
+      </div>
     </div>
 
     <div class="mt-2">
@@ -103,6 +114,13 @@
 
     <!-- Inverse: time to target -->
     <div id="inverseResult" class="hidden"></div>
+
+    <!-- Clearance assessment -->
+    <div id="clearanceSection" class="hidden">
+      <hr class="divider">
+      <div class="card-title">&#9855; Clearance assessment &mdash; RD 1217/2024, Annex IV Table A.1</div>
+      <div id="clearanceContent"></div>
+    </div>
 
     <!-- Decay curve chart -->
     <div class="card-title mt-2">Decay Curve</div>
@@ -349,6 +367,113 @@
       a.download = `decay_${n.id}_${A0raw}${A0unit}.csv`;
       a.click();
     };
+
+    // ---- Clearance assessment (RD 1217/2024 Annex IV Table A.1) ----
+    const CLEARANCE_A1 = { // kBq/kg
+      'F-18': 10, 'Na-24': 1, 'K-42': 100, 'Cr-51': 100,
+      'Co-57': 1, 'Co-58': 1, 'Fe-59': 1, 'Co-60': 0.1,
+      'Cu-64': 100, 'Se-75': 1, 'Tc-99m': 100, 'Mo-99+Tc-99m': 10,
+      'Pd-103': 1000, 'In-111': 10, 'I-123': 100, 'I-125': 100,
+      'I-131': 10, 'Cs-137': 0.1, 'Sm-153': 100, 'Tm-170': 100,
+      'Lu-177': 100, 'Re-186': 1000, 'Re-188': 100, 'Ir-192': 1,
+      'Au-198': 10, 'Tl-201': 100, 'Y-90': 1000,
+    };
+
+    const vialWeightRaw  = parseFloat(document.getElementById('vialWeight').value);
+    const vialWeightUnit = document.getElementById('vialWeightUnit').value;
+    const clearSec       = document.getElementById('clearanceSection');
+    const clearContent   = document.getElementById('clearanceContent');
+
+    if (isNaN(vialWeightRaw) || vialWeightRaw <= 0) {
+      clearSec.classList.add('hidden');
+    } else {
+      const weight_kg  = vialWeightUnit === 'g' ? vialWeightRaw / 1000 : vialWeightRaw;
+      const A0_kBq     = CALC.convertActivity(A0_MBq, 'MBq', 'kBq');
+      const At_kBq     = CALC.convertActivity(At_MBq, 'MBq', 'kBq');
+      const clearLevel = CLEARANCE_A1[n.id] ?? null;
+      const specA0     = A0_kBq / weight_kg;  // kBq/kg at t=0
+      const specAt     = At_kBq / weight_kg;  // kBq/kg at t=t_h
+
+      function fmtSpec(v) {
+        if (v >= 1e6) return `${(v/1e6).toPrecision(3)} GBq/kg`;
+        if (v >= 1e3) return `${(v/1e3).toPrecision(3)} MBq/kg`;
+        if (v >= 1)   return `${v.toPrecision(3)} kBq/kg`;
+        return `${(v*1000).toPrecision(3)} Bq/kg`;
+      }
+
+      let clearHtml = `
+        <div class="prop-grid">
+          <div class="prop-item">
+            <div class="prop-key">Weight</div>
+            <div class="prop-val">${vialWeightRaw} ${vialWeightUnit}</div>
+            <div class="prop-note">${weight_kg.toPrecision(3)} kg</div>
+          </div>
+          <div class="prop-item">
+            <div class="prop-key">A&#8320; / weight (t = 0)</div>
+            <div class="prop-val">${fmtSpec(specA0)}</div>
+          </div>
+          <div class="prop-item">
+            <div class="prop-key">A(t) / weight (t = ${t_h.toFixed(2)} h)</div>
+            <div class="prop-val">${fmtSpec(specAt)}</div>
+          </div>`;
+
+      if (clearLevel === null) {
+        clearHtml += `
+          <div class="prop-item">
+            <div class="prop-key">Table A.1 clearance level</div>
+            <div class="prop-val" style="color:var(--warning);">Not listed</div>
+            <div class="prop-note">${n.symbol} not in RD 1217/2024 Table A.1</div>
+          </div>`;
+      } else {
+        const ratio0 = specA0 / clearLevel;
+        const ratioT = specAt / clearLevel;
+        const below0 = ratio0 <= 1;
+        const belowT = ratioT <= 1;
+
+        let tClearHtml = '';
+        if (!below0 && T_half_h > 0 && isFinite(T_half_h)) {
+          const t_clear_h = (T_half_h / Math.LN2) * Math.log(specA0 / clearLevel);
+          if (t_clear_h > 0) {
+            let tDisp;
+            if (t_clear_h >= 8760) tDisp = `${(t_clear_h/8760).toFixed(2)} y`;
+            else if (t_clear_h >= 24) tDisp = `${(t_clear_h/24).toFixed(1)} d`;
+            else if (t_clear_h >= 1) tDisp = `${t_clear_h.toFixed(1)} h`;
+            else tDisp = `${(t_clear_h*60).toFixed(0)} min`;
+            tClearHtml = `<br><span class="text-muted">Clearance reached after &#126;${tDisp}</span>`;
+          }
+        }
+
+        const cls0 = below0 ? 'var(--green-700)' : 'var(--danger)';
+        const clsT = belowT ? 'var(--green-700)' : 'var(--danger)';
+
+        clearHtml += `
+          <div class="prop-item">
+            <div class="prop-key">Table A.1 clearance level</div>
+            <div class="prop-val">${clearLevel} kBq/kg</div>
+            <div class="prop-note">${n.symbol}, RD 1217/2024 Annex IV Table A.1</div>
+          </div>
+          <div class="prop-item">
+            <div class="prop-key">Status at t = 0</div>
+            <div class="prop-val" style="color:${cls0};">${below0 ? '&#10003; Below clearance' : '&#9888; Above clearance'}</div>
+            <div class="prop-note">${ratio0.toExponential(2)} &times; clearance level</div>
+          </div>
+          <div class="prop-item">
+            <div class="prop-key">Status at t = ${t_h.toFixed(2)} h</div>
+            <div class="prop-val" style="color:${clsT};">${belowT ? '&#10003; Below clearance' : '&#9888; Above clearance'}</div>
+            <div class="prop-note">${ratioT.toExponential(2)} &times; clearance level${tClearHtml}</div>
+          </div>`;
+      }
+
+      clearHtml += `</div>
+        <div class="alert alert-warning mt-1" style="font-size:.82rem;">
+          Table A.1 (RD 1217/2024 Annex IV): activity concentration thresholds for clearance from regulatory control of solid materials
+          (any quantity, any solid material type). Values in kBq/kg. Compliance requires both this criterion and any applicable
+          absolute activity limits. Consult the CSN before disposal.
+        </div>`;
+
+      clearContent.innerHTML = clearHtml;
+      clearSec.classList.remove('hidden');
+    }
 
     card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
