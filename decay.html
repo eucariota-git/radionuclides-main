@@ -136,12 +136,12 @@
     <!-- Table of values -->
     <div class="mt-2">
       <div class="d-flex align-center gap-2 mb-1 justify-between">
-        <span class="text-sm text-muted">Activity at selected time points</span>
+        <span class="text-sm text-muted" id="tableCaption">Activity at selected time points</span>
         <button class="btn btn-secondary btn-sm" id="btnExportCsv">&#11123; Export CSV</button>
       </div>
       <div class="overflow-x-auto max-height-260">
         <table class="data-table" id="decayTable">
-          <thead><tr>
+          <thead><tr id="tableHeaderRow">
             <th>Time</th><th>Elapsed (h)</th>
             <th>Activity (MBq)</th><th>Activity (mCi)</th><th>Fraction remaining</th>
           </tr></thead>
@@ -188,6 +188,17 @@
   document.getElementById('refDateTime').value = toLocal(now);
 
   let chart = null;
+
+  // ---- Clearance levels (RD 1217/2024 Annex IV Table A.1) ----
+  const CLEARANCE_A1 = { // kBq/kg
+    'F-18': 10, 'Na-24': 1, 'K-42': 100, 'Cr-51': 100,
+    'Co-57': 1, 'Co-58': 1, 'Fe-59': 1, 'Co-60': 0.1,
+    'Cu-64': 100, 'Se-75': 1, 'Tc-99m': 100, 'Mo-99+Tc-99m': 10,
+    'Pd-103': 1000, 'In-111': 10, 'I-123': 100, 'I-125': 100,
+    'I-131': 10, 'Cs-137': 0.1, 'Sm-153': 100, 'Tm-170': 100,
+    'Lu-177': 100, 'Re-186': 1000, 'Re-188': 100, 'Ir-192': 1,
+    'Au-198': 10, 'Tl-201': 100, 'Y-90': 1000,
+  };
 
   // ---- Calculate ----
   document.getElementById('btnCalc').addEventListener('click', calculate);
@@ -293,10 +304,37 @@
     }
 
     // ---- Chart ----
-    const tMax_h = Math.max(t_h * 1.2, T_half_h * 5);
-    const pts    = CALC.decayCurve(A0_MBq, T_half_h, 120);
+    const vialWeightRaw   = parseFloat(document.getElementById('vialWeight').value);
+    const vialWeightUnit  = document.getElementById('vialWeightUnit').value;
+    const weight_kg       = isNaN(vialWeightRaw) ? null : (vialWeightUnit === 'g' ? vialWeightRaw / 1000 : vialWeightRaw);
+
+    const showConcentration = !isNaN(vialWeightRaw) && vialWeightRaw > 0 && weight_kg !== null;
+    const tMax_h = Math.max(t_h * 2, T_half_h * 5);
+    // Generate decay curve points that extend to tMax_h
+    const pts = [];
+    const nPoints = 150;
+    for (let i = 0; i < nPoints; i++) {
+      const t_h_point = (i / (nPoints - 1)) * tMax_h;
+      const A = CALC.activityAtTime(A0_MBq, T_half_h, t_h_point);
+      pts.push({ t_h: t_h_point, A: A });
+    }
     const labels = pts.map(p => p.t_h.toFixed(2));
-    const vals   = pts.map(p => p.A);
+
+    // Prepare data: activity or concentration
+    let vals, yAxisLabel, yAxisUnit, tooltipFormat;
+    if (showConcentration) {
+      // Convert to kBq/kg for display
+      vals = pts.map(p => {
+        const A_kBq = CALC.convertActivity(p.A, 'MBq', 'kBq');
+        return A_kBq / weight_kg;
+      });
+      yAxisLabel = 'Activity concentration (kBq/kg)';
+      tooltipFormat = (val) => `${val.toExponential(4)} kBq/kg`;
+    } else {
+      vals = pts.map(p => p.A);
+      yAxisLabel = 'Activity (MBq)';
+      tooltipFormat = (val) => `${val.toExponential(4)} MBq`;
+    }
 
     // Find closest point to t_h for the orange mark
     let closestIdx = -1;
@@ -310,7 +348,47 @@
     });
 
     // Create data for vertical line (orange mark)
-    const orangeLineData = pts.map((p, i) => i === closestIdx ? At_MBq : null);
+    const orangeLineData = pts.map((p, i) => i === closestIdx ? vals[i] : null);
+
+    // Prepare datasets
+    const datasets = [{
+      label: showConcentration ? `${n.symbol} decay curve (kBq/kg)` : `${n.symbol} decay curve (MBq)`,
+      data: vals,
+      borderColor: '#2d6a4f',
+      backgroundColor: 'rgba(45,106,79,.08)',
+      borderWidth: 2,
+      pointRadius: 0,
+      fill: true,
+      tension: 0.3,
+    }, {
+      // Vertical line at elapsed time
+      label: `Elapsed time: ${t_h.toFixed(2)} h`,
+      data: orangeLineData,
+      borderColor: '#e76f00',
+      backgroundColor: '#e76f00',
+      borderWidth: 2,
+      pointRadius: 6,
+      pointStyle: 'circle',
+      showLine: false,
+    }];
+
+    // Add clearance level line if showing concentration and clearance level is available
+    if (showConcentration) {
+      const clearLevel = CLEARANCE_A1[n.id] ?? null;
+      if (clearLevel !== null) {
+        datasets.push({
+          label: `RD 1217/2024 clearance level: ${clearLevel} kBq/kg`,
+          data: pts.map(() => clearLevel),
+          borderColor: '#b00020',
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          borderDash: [5, 5],
+          pointRadius: 0,
+          fill: false,
+          tension: 0.3,
+        });
+      }
+    }
 
     if (chart) chart.destroy();
     const ctx = document.getElementById('decayChart').getContext('2d');
@@ -318,26 +396,7 @@
       type: 'line',
       data: {
         labels,
-        datasets: [{
-          label: `${n.symbol} activity (MBq)`,
-          data: vals,
-          borderColor: '#2d6a4f',
-          backgroundColor: 'rgba(45,106,79,.08)',
-          borderWidth: 2,
-          pointRadius: 0,
-          fill: true,
-          tension: 0.3,
-        }, {
-          // Vertical line at elapsed time
-          label: `t = ${t_h.toFixed(2)} h`,
-          data: orangeLineData,
-          borderColor: '#e76f00',
-          backgroundColor: '#e76f00',
-          borderWidth: 2,
-          pointRadius: 6,
-          pointStyle: 'circle',
-          showLine: false,
-        }]
+        datasets: datasets
       },
       options: {
         responsive: true,
@@ -345,12 +404,19 @@
         plugins: {
           legend: { position: 'top', labels: { font: { size: 11 } } },
           tooltip: { callbacks: {
-            label: ctx => `${ctx.dataset.label}: ${parseFloat(ctx.raw).toExponential(4)} MBq`
+            label: ctx => `${ctx.dataset.label}: ${tooltipFormat(parseFloat(ctx.raw))}`
           }}
         },
         scales: {
-          x: { title: { display: true, text: 'Time (h)' }, ticks: { maxTicksLimit: 10 } },
-          y: { title: { display: true, text: 'Activity (MBq)' }, ticks: { callback: v => v.toExponential(2) } }
+          x: {
+            title: { display: true, text: 'Time (h)' },
+            ticks: { maxTicksLimit: 10 },
+            max: tMax_h
+          },
+          y: {
+            title: { display: true, text: yAxisLabel },
+            ticks: { callback: v => showConcentration ? v.toFixed(2) : v.toExponential(2) }
+          }
         }
       }
     });
@@ -359,6 +425,17 @@
     const steps = [0, 0.5, 1, 2, 4, 6, 12, 24, 48, 72, 120, 168, 240, 336, 504, 720].filter(s => s <= T_half_h * 10);
     if (!steps.includes(t_h)) steps.push(t_h);
     steps.sort((a, b) => a - b);
+
+    // Update table caption and headers based on display mode
+    const tableCaption = document.getElementById('tableCaption');
+    const tableHeaderRow = document.getElementById('tableHeaderRow');
+    if (showConcentration) {
+      tableCaption.textContent = 'Activity concentration at selected time points';
+      tableHeaderRow.innerHTML = '<th>Time</th><th>Elapsed (h)</th><th>Concentration (kBq/kg)</th><th>Fraction remaining</th>';
+    } else {
+      tableCaption.textContent = 'Activity at selected time points';
+      tableHeaderRow.innerHTML = '<th>Time</th><th>Elapsed (h)</th><th>Activity (MBq)</th><th>Activity (mCi)</th><th>Fraction remaining</th>';
+    }
 
     const refDt2 = document.getElementById('refDateTime').value;
     const tbody = steps.map(s => {
@@ -369,23 +446,45 @@
         const d = new Date(new Date(refDt2).getTime() + s * 3.6e6);
         timeLabel = d.toLocaleString();
       }
-      return `<tr ${highlight}>
-        <td>${timeLabel}</td>
-        <td class="num">${s.toFixed(1)}</td>
-        <td class="num">${fmtVal(A)}</td>
-        <td class="num">${fmtVal(CALC.convertActivity(A,'MBq','mCi'))}</td>
-        <td class="num">${(A / A0_MBq * 100).toFixed(1)}%</td>
-      </tr>`;
+      if (showConcentration) {
+        const A_kBq = CALC.convertActivity(A, 'MBq', 'kBq');
+        const conc = A_kBq / weight_kg;
+        return `<tr ${highlight}>
+          <td>${timeLabel}</td>
+          <td class="num">${s.toFixed(1)}</td>
+          <td class="num">${fmtVal(conc)}</td>
+          <td class="num">${(A / A0_MBq * 100).toFixed(1)}%</td>
+        </tr>`;
+      } else {
+        return `<tr ${highlight}>
+          <td>${timeLabel}</td>
+          <td class="num">${s.toFixed(1)}</td>
+          <td class="num">${fmtVal(A)}</td>
+          <td class="num">${fmtVal(CALC.convertActivity(A,'MBq','mCi'))}</td>
+          <td class="num">${(A / A0_MBq * 100).toFixed(1)}%</td>
+        </tr>`;
+      }
     }).join('');
     document.getElementById('decayTableBody').innerHTML = tbody;
 
     // ---- Export CSV ----
     document.getElementById('btnExportCsv').onclick = () => {
-      const header = 'Time_h,Activity_MBq,Activity_mCi,Activity_GBq,Fraction\n';
-      const rows = steps.map(s => {
-        const A = CALC.activityAtTime(A0_MBq, T_half_h, s);
-        return `${s.toFixed(4)},${A.toPrecision(6)},${CALC.convertActivity(A,'MBq','mCi').toPrecision(5)},${CALC.convertActivity(A,'MBq','GBq').toPrecision(5)},${(A/A0_MBq).toPrecision(5)}`;
-      }).join('\n');
+      let header, rows;
+      if (showConcentration) {
+        header = 'Time_h,Concentration_kBqPerKg,Fraction\n';
+        rows = steps.map(s => {
+          const A = CALC.activityAtTime(A0_MBq, T_half_h, s);
+          const A_kBq = CALC.convertActivity(A, 'MBq', 'kBq');
+          const conc = A_kBq / weight_kg;
+          return `${s.toFixed(4)},${conc.toPrecision(6)},${(A/A0_MBq).toPrecision(5)}`;
+        }).join('\n');
+      } else {
+        header = 'Time_h,Activity_MBq,Activity_mCi,Activity_GBq,Fraction\n';
+        rows = steps.map(s => {
+          const A = CALC.activityAtTime(A0_MBq, T_half_h, s);
+          return `${s.toFixed(4)},${A.toPrecision(6)},${CALC.convertActivity(A,'MBq','mCi').toPrecision(5)},${CALC.convertActivity(A,'MBq','GBq').toPrecision(5)},${(A/A0_MBq).toPrecision(5)}`;
+        }).join('\n');
+      }
       const blob = new Blob([header + rows], { type: 'text/csv' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
@@ -394,25 +493,12 @@
     };
 
     // ---- Clearance assessment (RD 1217/2024 Annex IV Table A.1) ----
-    const CLEARANCE_A1 = { // kBq/kg
-      'F-18': 10, 'Na-24': 1, 'K-42': 100, 'Cr-51': 100,
-      'Co-57': 1, 'Co-58': 1, 'Fe-59': 1, 'Co-60': 0.1,
-      'Cu-64': 100, 'Se-75': 1, 'Tc-99m': 100, 'Mo-99+Tc-99m': 10,
-      'Pd-103': 1000, 'In-111': 10, 'I-123': 100, 'I-125': 100,
-      'I-131': 10, 'Cs-137': 0.1, 'Sm-153': 100, 'Tm-170': 100,
-      'Lu-177': 100, 'Re-186': 1000, 'Re-188': 100, 'Ir-192': 1,
-      'Au-198': 10, 'Tl-201': 100, 'Y-90': 1000,
-    };
-
-    const vialWeightRaw  = parseFloat(document.getElementById('vialWeight').value);
-    const vialWeightUnit = document.getElementById('vialWeightUnit').value;
     const clearSec       = document.getElementById('clearanceSection');
     const clearContent   = document.getElementById('clearanceContent');
 
-    if (isNaN(vialWeightRaw) || vialWeightRaw <= 0) {
+    if (!showConcentration) {
       clearSec.classList.add('hidden');
     } else {
-      const weight_kg  = vialWeightUnit === 'g' ? vialWeightRaw / 1000 : vialWeightRaw;
       const A0_kBq     = CALC.convertActivity(A0_MBq, 'MBq', 'kBq');
       const At_kBq     = CALC.convertActivity(At_MBq, 'MBq', 'kBq');
       const clearLevel = CLEARANCE_A1[n.id] ?? null;
