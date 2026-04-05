@@ -901,7 +901,6 @@ kbd {
     gap: .15rem;
     overflow-x: auto;
     flex-wrap: nowrap;
-    -webkit-overflow-scrolling: touch;
   }
 
   .site-nav a {
