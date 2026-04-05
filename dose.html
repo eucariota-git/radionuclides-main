@@ -160,6 +160,7 @@
           <tr>
             <th class="has-tooltip" data-tooltip="Ambient dose equivalent (whole-body H*(10)) or directional dose equivalent (extremity H'(0.07)) depending on distance from source.">Quantity</th>
             <th>Dose rate at t=0</th>
+            <th id="doseRateAtTimeHeader">Dose rate at t=time</th>
             <th>Cumulative dose (annual)</th>
             <th>Notes</th>
           </tr>
@@ -361,6 +362,11 @@
     const Hdot_WB  = CALC.doseRate(gammaWB,  A0_GBq, d_m, thick, E_MeV, mat, ap) * patientTx;
     const Hdot_Ext = CALC.doseRate(gammaExt, A0_GBq, d_m, thick, E_MeV, mat, ap) * patientTx;
 
+    // Dose rate at t=time (after decay)
+    const At_GBq   = CALC.activityAtTime(A0_GBq, T_half_h, t_h);
+    const Hdot_WB_t  = CALC.doseRate(gammaWB,  At_GBq, d_m, thick, E_MeV, mat, ap) * patientTx;
+    const Hdot_Ext_t = CALC.doseRate(gammaExt, At_GBq, d_m, thick, E_MeV, mat, ap) * patientTx;
+
     // Cumulative dose
     let H_WB_cum, H_Ext_cum;
     if (withDecay) {
@@ -390,6 +396,7 @@
           <div class="text-sm text-muted">d &ge; 0.25 m</div>
         </td>
         <td class="num">${fmtR(Hdot_WB)}</td>
+        <td class="num">${fmtR(Hdot_WB_t)}</td>
         <td class="num">${fmt(H_WB_cum * nAdmin)}</td>
         <td class="text-sm text-muted">&#915;<sup>H*(10)</sup> = ${gammaWB} &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;</td>
       </tr>
@@ -400,6 +407,7 @@
           <div class="text-sm text-muted">d &lt; 0.25 m | hands</div>
         </td>
         <td class="num">${fmtR(Hdot_Ext)}</td>
+        <td class="num">${fmtR(Hdot_Ext_t)}</td>
         <td class="num">${fmt(H_Ext_cum * nAdmin)}</td>
         <td class="text-sm text-muted">
           &#915;<sup>H'(0.07)</sup> = ${gammaExt} &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;
@@ -445,6 +453,21 @@
     const doseWB  = distances.map(d => CALC.doseRate(gammaWB,  A0_GBq, d, thick, E_MeV, mat, ap) * patientTx);
     const doseExt = distances.map(d => CALC.doseRate(gammaExt, A0_GBq, d, thick, E_MeV, mat, ap) * patientTx);
 
+    // Find closest distance index for orange mark
+    let closestDistIdx = -1;
+    let minDistDiff = Infinity;
+    distances.forEach((dist, i) => {
+      const diff = Math.abs(dist - d_m);
+      if (diff < minDistDiff) {
+        minDistDiff = diff;
+        closestDistIdx = i;
+      }
+    });
+
+    // Create data for orange mark at current distance
+    const orangeMarkWB = distances.map((dist, i) => i === closestDistIdx ? doseWB[i] : null);
+    const orangeMarkExt = distances.map((dist, i) => i === closestDistIdx ? doseExt[i] : null);
+
     if (distChart) distChart.destroy();
     const ctx = document.getElementById('distChart').getContext('2d');
     distChart = new Chart(ctx, {
@@ -465,6 +488,16 @@
             borderColor: '#e76f00',
             backgroundColor: 'rgba(231,111,0,.04)',
             borderWidth: 2, pointRadius: 0, fill: false, tension: 0.1, borderDash: [5,3],
+          },
+          {
+            label: `d = ${d_m.toFixed(2)} m`,
+            data: isExtremity ? orangeMarkExt : orangeMarkWB,
+            borderColor: '#e76f00',
+            backgroundColor: '#e76f00',
+            borderWidth: 2,
+            pointRadius: 6,
+            pointStyle: 'circle',
+            showLine: false,
           },
         ]
       },
@@ -531,10 +564,10 @@
     document.getElementById('btnExportDoseCsv').onclick = () => {
       const date = new Date().toISOString().slice(0, 10);
       const rows = [
-        ['Quantity', 'Dose_rate_μSv_h', 'Annual_dose_μSv', 'Notes'],
-        ['H*(10) whole body', Hdot_WB.toPrecision(5), (H_WB_cum * nAdmin).toPrecision(5),
+        ['Quantity', 'Dose_rate_at_t0_μSv_h', 'Dose_rate_at_time_μSv_h', 'Annual_dose_μSv', 'Notes'],
+        ['H*(10) whole body', Hdot_WB.toPrecision(5), Hdot_WB_t.toPrecision(5), (H_WB_cum * nAdmin).toPrecision(5),
          `γ=${gammaWB} μSv·h⁻¹·GBq⁻¹·m²`],
-        ["H'(0.07) extremities", Hdot_Ext.toPrecision(5), (H_Ext_cum * nAdmin).toPrecision(5),
+        ["H'(0.07) extremities", Hdot_Ext.toPrecision(5), Hdot_Ext_t.toPrecision(5), (H_Ext_cum * nAdmin).toPrecision(5),
          `γ=${gammaExt} μSv·h⁻¹·GBq⁻¹·m²`],
       ];
       const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\r\n');

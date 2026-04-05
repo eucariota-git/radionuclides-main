@@ -298,6 +298,20 @@
     const labels = pts.map(p => p.t_h.toFixed(2));
     const vals   = pts.map(p => p.A);
 
+    // Find closest point to t_h for the orange mark
+    let closestIdx = -1;
+    let minDiff = Infinity;
+    pts.forEach((p, i) => {
+      const diff = Math.abs(p.t_h - t_h);
+      if (diff < minDiff) {
+        minDiff = diff;
+        closestIdx = i;
+      }
+    });
+
+    // Create data for vertical line (orange mark)
+    const orangeLineData = pts.map((p, i) => i === closestIdx ? At_MBq : null);
+
     if (chart) chart.destroy();
     const ctx = document.getElementById('decayChart').getContext('2d');
     chart = new Chart(ctx, {
@@ -316,10 +330,11 @@
         }, {
           // Vertical line at elapsed time
           label: `t = ${t_h.toFixed(2)} h`,
-          data: pts.map(p => Math.abs(p.t_h - t_h) < (tMax_h / 240) ? At_MBq : null),
+          data: orangeLineData,
           borderColor: '#e76f00',
+          backgroundColor: '#e76f00',
           borderWidth: 2,
-          pointRadius: 5,
+          pointRadius: 6,
           pointStyle: 'circle',
           showLine: false,
         }]
