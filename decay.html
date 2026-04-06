@@ -210,11 +210,11 @@
     const A0_MBq   = CALC.convertActivity(A0raw, A0unit, 'MBq');
     const T_half_h = DB.halfLifeHours(n);
 
-    // Derive time unit from half_life_display
+    // Derive time unit from half_life_display (may be auto-scaled after tMax_h is known)
     const hlParts = n.half_life_display.split(' ');
-    const timeUnit = hlParts[hlParts.length - 1]; // 'min' | 'h' | 'd' | 'y'
+    let timeUnit = hlParts[hlParts.length - 1]; // 'min' | 'h' | 'd' | 'y'
     const hToUnit = { min: 60, h: 1, d: 1/24, y: 1/8760 };
-    const unitFactor = hToUnit[timeUnit] ?? 1; // multiply hours by this to get display unit
+    let unitFactor = hToUnit[timeUnit] ?? 1; // multiply hours by this to get display unit
 
     // Determine elapsed time
     let t_h;
@@ -317,6 +317,15 @@
         }
       }
     }
+    // Auto-scale time unit upward if tMax would produce values ≥ 1000
+    { const _unitOrder = ['min', 'h', 'd', 'y'];
+      while (tMax_h * unitFactor >= 1000) {
+        const next = _unitOrder.indexOf(timeUnit) + 1;
+        if (next >= _unitOrder.length) break;
+        timeUnit = _unitOrder[next];
+        unitFactor = hToUnit[timeUnit];
+      }
+    }
     // Generate decay curve points that extend to tMax_h
     const pts = [];
     const nPoints = 150;
@@ -379,7 +388,7 @@
       showLine: false,
     }];
 
-    // Add clearance level line if showing concentration and clearance level is available
+    // Add clearance level line + intersection marker if showing concentration
     if (showConcentration) {
       const clearLevel = n.clearance_a1_kBq_per_kg ?? null;
       if (clearLevel !== null) {
@@ -394,6 +403,28 @@
           fill: false,
           tension: 0.3,
         });
+        // Green circle at the decay curve / clearance line intersection
+        const specA0_kBq = CALC.convertActivity(A0_MBq, 'MBq', 'kBq') / weight_kg;
+        if (specA0_kBq > clearLevel) {
+          const t_cross_h = (T_half_h / Math.LN2) * Math.log(specA0_kBq / clearLevel);
+          if (isFinite(t_cross_h) && t_cross_h > 0 && t_cross_h <= tMax_h) {
+            let crossIdx = 0, crossMinDiff = Infinity;
+            pts.forEach((p, i) => {
+              const diff = Math.abs(p.t_h - t_cross_h);
+              if (diff < crossMinDiff) { crossMinDiff = diff; crossIdx = i; }
+            });
+            datasets.push({
+              label: `Clearance reached: ${(t_cross_h * unitFactor).toFixed(2)} ${timeUnit}`,
+              data: pts.map((_, i) => i === crossIdx ? clearLevel : null),
+              borderColor: '#1a7a3c',
+              backgroundColor: '#1a7a3c',
+              borderWidth: 2,
+              pointRadius: 7,
+              pointStyle: 'circle',
+              showLine: false,
+            });
+          }
+        }
       }
     }
 
