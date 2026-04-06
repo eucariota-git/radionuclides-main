@@ -210,6 +210,12 @@
     const A0_MBq   = CALC.convertActivity(A0raw, A0unit, 'MBq');
     const T_half_h = DB.halfLifeHours(n);
 
+    // Derive time unit from half_life_display
+    const hlParts = n.half_life_display.split(' ');
+    const timeUnit = hlParts[hlParts.length - 1]; // 'min' | 'h' | 'd' | 'y'
+    const hToUnit = { min: 60, h: 1, d: 1/24, y: 1/8760 };
+    const unitFactor = hToUnit[timeUnit] ?? 1; // multiply hours by this to get display unit
+
     // Determine elapsed time
     let t_h;
     const elapsedVal  = document.getElementById('elapsed').value.trim();
@@ -298,7 +304,19 @@
     const weight_kg       = isNaN(vialWeightRaw) ? null : (vialWeightUnit === 'g' ? vialWeightRaw / 1000 : vialWeightRaw);
 
     const showConcentration = !isNaN(vialWeightRaw) && vialWeightRaw > 0 && weight_kg !== null;
-    const tMax_h = Math.max(t_h * 2, T_half_h * 5);
+    let tMax_h = Math.max(t_h * 2, T_half_h * 5);
+    if (showConcentration) {
+      const clearLevel = n.clearance_a1_kBq_per_kg ?? null;
+      if (clearLevel !== null) {
+        const specA0_kBq = CALC.convertActivity(A0_MBq, 'MBq', 'kBq') / weight_kg;
+        if (specA0_kBq > clearLevel) {
+          const t_clear_h = (T_half_h / Math.LN2) * Math.log(specA0_kBq / clearLevel);
+          if (isFinite(t_clear_h) && t_clear_h > 0) {
+            tMax_h = Math.max(tMax_h, t_clear_h * 1.15); // extend 15% past intersection
+          }
+        }
+      }
+    }
     // Generate decay curve points that extend to tMax_h
     const pts = [];
     const nPoints = 150;
@@ -307,7 +325,7 @@
       const A = CALC.activityAtTime(A0_MBq, T_half_h, t_h_point);
       pts.push({ t_h: t_h_point, A: A });
     }
-    const labels = pts.map(p => p.t_h.toFixed(2));
+    const labels = pts.map(p => (p.t_h * unitFactor).toFixed(timeUnit === 'y' ? 3 : 2));
 
     // Prepare data: activity or concentration
     let vals, yAxisLabel, yAxisUnit, tooltipFormat;
@@ -351,7 +369,7 @@
       tension: 0.3,
     }, {
       // Vertical line at elapsed time
-      label: `Elapsed time: ${t_h.toFixed(2)} h`,
+      label: `Elapsed time: ${(t_h * unitFactor).toFixed(2)} ${timeUnit}`,
       data: orangeLineData,
       borderColor: '#e76f00',
       backgroundColor: '#e76f00',
@@ -398,9 +416,9 @@
         },
         scales: {
           x: {
-            title: { display: true, text: 'Time (h)' },
+            title: { display: true, text: `Time (${timeUnit})` },
             ticks: { maxTicksLimit: 10 },
-            max: tMax_h
+            max: tMax_h * unitFactor
           },
           y: {
             title: { display: true, text: yAxisLabel },
