@@ -189,17 +189,6 @@
 
   let chart = null;
 
-  // ---- Clearance levels (RD 1217/2024 Annex IV Table A.1) ----
-  const CLEARANCE_A1 = { // kBq/kg
-    'F-18': 10, 'Na-24': 1, 'K-42': 100, 'Cr-51': 100,
-    'Co-57': 1, 'Co-58': 1, 'Fe-59': 1, 'Co-60': 0.1,
-    'Cu-64': 100, 'Se-75': 1, 'Tc-99m': 100, 'Mo-99+Tc-99m': 10,
-    'Pd-103': 1000, 'In-111': 10, 'I-123': 100, 'I-125': 100,
-    'I-131': 10, 'Cs-137': 0.1, 'Sm-153': 100, 'Tm-170': 100,
-    'Lu-177': 100, 'Re-186': 1000, 'Re-188': 100, 'Ir-192': 1,
-    'Au-198': 10, 'Tl-201': 100, 'Y-90': 1000,
-  };
-
   // ---- Calculate ----
   document.getElementById('btnCalc').addEventListener('click', calculate);
 
@@ -374,7 +363,7 @@
 
     // Add clearance level line if showing concentration and clearance level is available
     if (showConcentration) {
-      const clearLevel = CLEARANCE_A1[n.id] ?? null;
+      const clearLevel = n.clearance_a1_kBq_per_kg ?? null;
       if (clearLevel !== null) {
         datasets.push({
           label: `RD 1217/2024 clearance level: ${clearLevel} kBq/kg`,
@@ -501,7 +490,7 @@
     } else {
       const A0_kBq     = CALC.convertActivity(A0_MBq, 'MBq', 'kBq');
       const At_kBq     = CALC.convertActivity(At_MBq, 'MBq', 'kBq');
-      const clearLevel = CLEARANCE_A1[n.id] ?? null;
+      const clearLevel = n.clearance_a1_kBq_per_kg ?? null;
       const specA0     = A0_kBq / weight_kg;  // kBq/kg at t=0
       const specAt     = At_kBq / weight_kg;  // kBq/kg at t=t_h
 
