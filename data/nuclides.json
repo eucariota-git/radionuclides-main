@@ -24,7 +24,8 @@
       "gamma_Kair": 139, "gamma_H10": 171, "gamma_H007": 171,
       "H007_from_cornejo": false,
       "representative_energy_keV": 511,
-      "source": "Cornejo et al."
+      "source": "Cornejo et al.",
+      "clearance_a1_kBq_per_kg": null
     },
     {
       "id": "N-13",
@@ -39,7 +40,8 @@
       "gamma_Kair": 140, "gamma_H10": 171, "gamma_H007": 171,
       "H007_from_cornejo": false,
       "representative_energy_keV": 511,
-      "source": "Cornejo et al."
+      "source": "Cornejo et al.",
+      "clearance_a1_kBq_per_kg": null
     },
     {
       "id": "O-15",
@@ -54,7 +56,8 @@
       "gamma_Kair": 140, "gamma_H10": 171, "gamma_H007": 171,
       "H007_from_cornejo": false,
       "representative_energy_keV": 511,
-      "source": "Cornejo et al."
+      "source": "Cornejo et al.",
+      "clearance_a1_kBq_per_kg": null
     },
     {
       "id": "F-18",
@@ -74,7 +77,8 @@
         "Pb":          {"alpha": 0.166,    "beta": -0.02184,  "gamma": 0.2436},
         "concrete_NW": {"alpha": 0.01558,  "beta": -0.008775, "gamma": 0.8600},
         "concrete_LW": {"alpha": 0.01126,  "beta": -0.006463, "gamma": 0.7475}
-      }
+      },
+      "clearance_a1_kBq_per_kg": 10
     },
     {
       "id": "Na-24",
@@ -89,7 +93,8 @@
       "gamma_Kair": 435, "gamma_H10": 496, "gamma_H007": 496,
       "H007_from_cornejo": false,
       "representative_energy_keV": 1369,
-      "source": "Cornejo et al."
+      "source": "Cornejo et al.",
+      "clearance_a1_kBq_per_kg": 1
     },
     {
       "id": "K-42",
@@ -104,7 +109,8 @@
       "gamma_Kair": 32.4, "gamma_H10": 37.2, "gamma_H007": 37.2,
       "H007_from_cornejo": false,
       "representative_energy_keV": 1525,
-      "source": "Cornejo et al."
+      "source": "Cornejo et al.",
+      "clearance_a1_kBq_per_kg": 100
     },
     {
       "id": "Cr-51",
@@ -119,7 +125,8 @@
       "gamma_Kair": 4.19, "gamma_H10": 5.44, "gamma_H007": 5.44,
       "H007_from_cornejo": false,
       "representative_energy_keV": 320,
-      "source": "Cornejo et al."
+      "source": "Cornejo et al.",
+      "clearance_a1_kBq_per_kg": 100
     },
     {
       "id": "Co-57",
@@ -134,7 +141,8 @@
       "gamma_Kair": 13.2, "gamma_H10": 20.7, "gamma_H007": 20.7,
       "H007_from_cornejo": false,
       "representative_energy_keV": 122,
-      "source": "Cornejo et al."
+      "source": "Cornejo et al.",
+      "clearance_a1_kBq_per_kg": 1
     },
     {
       "id": "Co-58",
@@ -149,7 +157,8 @@
       "gamma_Kair": 130, "gamma_H10": 155, "gamma_H007": 155,
       "H007_from_cornejo": false,
       "representative_energy_keV": 811,
-      "source": "Cornejo et al."
+      "source": "Cornejo et al.",
+      "clearance_a1_kBq_per_kg": 1
     },
     {
       "id": "Fe-59",
@@ -164,7 +173,8 @@
       "gamma_Kair": 148, "gamma_H10": 171, "gamma_H007": 171,
       "H007_from_cornejo": false,
       "representative_energy_keV": 1099,
-      "source": "Cornejo et al."
+      "source": "Cornejo et al.",
+      "clearance_a1_kBq_per_kg": 1
     },
     {
       "id": "Co-60",
@@ -179,7 +189,8 @@
       "gamma_Kair": 307, "gamma_H10": 355, "gamma_H007": 355,
       "H007_from_cornejo": false,
       "representative_energy_keV": 1250,
-      "source": "Cornejo et al."
+      "source": "Cornejo et al.",
+      "clearance_a1_kBq_per_kg": 0.1
     },
     {
       "id": "Cu-64",
@@ -194,7 +205,8 @@
       "gamma_Kair": 25.3, "gamma_H10": 31.0, "gamma_H007": 31.0,
       "H007_from_cornejo": false,
       "representative_energy_keV": 511,
-      "source": "Cornejo et al."
+      "source": "Cornejo et al.",
+      "clearance_a1_kBq_per_kg": 100
     },
     {
       "id": "Ga-67",
@@ -209,7 +221,8 @@
       "gamma_Kair": 21.0, "gamma_H10": 29.0, "gamma_H007": 29.0,
       "H007_from_cornejo": false,
       "representative_energy_keV": 93,
-      "source": "Cornejo et al."
+      "source": "Cornejo et al.",
+      "clearance_a1_kBq_per_kg": null
     },
     {
       "id": "Ga-68",
@@ -224,7 +237,8 @@
       "gamma_Kair": null, "gamma_H10": 157, "gamma_H007": 157,
       "H007_from_cornejo": false,
       "representative_energy_keV": 511,
-      "source": "Calculated (ICRU 57 methodology): 511 keV (yield 1.778) + 1077 keV (yield 0.032)"
+      "source": "Calculated (ICRU 57 methodology): 511 keV (yield 1.778) + 1077 keV (yield 0.032)",
+      "clearance_a1_kBq_per_kg": null
     },
     {
       "id": "Se-75",
@@ -239,7 +253,8 @@
       "gamma_Kair": 51.0, "gamma_H10": 69.3, "gamma_H007": 69.3,
       "H007_from_cornejo": false,
       "representative_energy_keV": 265,
-      "source": "Cornejo et al."
+      "source": "Cornejo et al.",
+      "clearance_a1_kBq_per_kg": 1
     },
     {
       "id": "Tc-99m",
@@ -259,7 +274,8 @@
         "Pb":          {"alpha": 2.558,   "beta":  1.010,   "gamma": 4.344},
         "concrete_NW": {"alpha": 0.03102, "beta": -0.01729, "gamma": 0.3622},
         "concrete_LW": {"alpha": 0.02047, "beta": -0.01122, "gamma": 0.4389}
-      }
+      },
+      "clearance_a1_kBq_per_kg": 100
     },
     {
       "id": "Mo-99+Tc-99m",
@@ -274,7 +290,8 @@
       "gamma_Kair": 33.9, "gamma_H10": 45.0, "gamma_H007": 45.0,
       "H007_from_cornejo": false,
       "representative_energy_keV": 141,
-      "source": "Cornejo et al."
+      "source": "Cornejo et al.",
+      "clearance_a1_kBq_per_kg": 10
     },
     {
       "id": "Pd-103",
@@ -289,7 +306,8 @@
       "gamma_Kair": 35.9, "gamma_H10": 23.1, "gamma_H007": 38.0,
       "H007_from_cornejo": true,
       "representative_energy_keV": 40,
-      "source": "Cornejo et al. — H'(0.07)=38.0 used for extremities (all emissions < 300 keV, H'(0.07) > H*(10))"
+      "source": "Cornejo et al. — H'(0.07)=38.0 used for extremities (all emissions < 300 keV, H'(0.07) > H*(10))",
+      "clearance_a1_kBq_per_kg": 1000
     },
     {
       "id": "In-111",
@@ -304,7 +322,8 @@
       "gamma_Kair": 76.7, "gamma_H10": 89.9, "gamma_H007": 96.1,
       "H007_from_cornejo": true,
       "representative_energy_keV": 171,
-      "source": "Cornejo et al. — H'(0.07)=96.1 used for extremities (all emissions < 300 keV, H'(0.07) > H*(10))"
+      "source": "Cornejo et al. — H'(0.07)=96.1 used for extremities (all emissions < 300 keV, H'(0.07) > H*(10))",
+      "clearance_a1_kBq_per_kg": 10
     },
     {
       "id": "I-123",
@@ -319,7 +338,8 @@
       "gamma_Kair": 38.5, "gamma_H10": 46.4, "gamma_H007": 46.4,
       "H007_from_cornejo": false,
       "representative_energy_keV": 159,
-      "source": "Cornejo et al."
+      "source": "Cornejo et al.",
+      "clearance_a1_kBq_per_kg": 100
     },
     {
       "id": "I-125",
@@ -334,7 +354,8 @@
       "gamma_Kair": 34.5, "gamma_H10": 35.3, "gamma_H007": 40.9,
       "H007_from_cornejo": true,
       "representative_energy_keV": 28,
-      "source": "Cornejo et al. — H'(0.07)=40.9 used for extremities (all emissions < 300 keV, H'(0.07) > H*(10))"
+      "source": "Cornejo et al. — H'(0.07)=40.9 used for extremities (all emissions < 300 keV, H'(0.07) > H*(10))",
+      "clearance_a1_kBq_per_kg": 100
     },
     {
       "id": "I-131",
@@ -354,7 +375,8 @@
         "Pb":          {"alpha": 0.1082,  "beta":  0.2072,  "gamma": 0.5385},
         "concrete_NW": {"alpha": 0.02062, "beta": -0.01220, "gamma": 0.4179},
         "concrete_LW": {"alpha": 0.01363, "beta": -0.007896,"gamma": 0.4847}
-      }
+      },
+      "clearance_a1_kBq_per_kg": 10
     },
     {
       "id": "Xe-133",
@@ -369,7 +391,8 @@
       "gamma_Kair": 12.5, "gamma_H10": 16.3, "gamma_H007": 16.8,
       "H007_from_cornejo": true,
       "representative_energy_keV": 81,
-      "source": "Cornejo et al. — H'(0.07)=16.8 used for extremities (all emissions < 300 keV, H'(0.07) > H*(10))"
+      "source": "Cornejo et al. — H'(0.07)=16.8 used for extremities (all emissions < 300 keV, H'(0.07) > H*(10))",
+      "clearance_a1_kBq_per_kg": null
     },
     {
       "id": "Cs-137",
@@ -384,7 +407,8 @@
       "gamma_Kair": 77.5, "gamma_H10": 93.1, "gamma_H007": 93.1,
       "H007_from_cornejo": false,
       "representative_energy_keV": 662,
-      "source": "Cornejo et al. — Values include ¹³⁷ᵐBa 661.7 keV gamma in secular equilibrium"
+      "source": "Cornejo et al. — Values include ¹³⁷ᵐBa 661.7 keV gamma in secular equilibrium",
+      "clearance_a1_kBq_per_kg": 0.1
     },
     {
       "id": "Sm-153",
@@ -399,7 +423,8 @@
       "gamma_Kair": 10.6, "gamma_H10": 16.7, "gamma_H007": 16.7,
       "H007_from_cornejo": false,
       "representative_energy_keV": 103,
-      "source": "Cornejo et al."
+      "source": "Cornejo et al.",
+      "clearance_a1_kBq_per_kg": 100
     },
     {
       "id": "Yb-169",
@@ -414,7 +439,8 @@
       "gamma_Kair": 43.0, "gamma_H10": 66.8, "gamma_H007": 66.8,
       "H007_from_cornejo": false,
       "representative_energy_keV": 177,
-      "source": "Cornejo et al."
+      "source": "Cornejo et al.",
+      "clearance_a1_kBq_per_kg": null
     },
     {
       "id": "Tm-170",
@@ -429,7 +455,8 @@
       "gamma_Kair": 0.563, "gamma_H10": 0.957, "gamma_H007": 0.957,
       "H007_from_cornejo": false,
       "representative_energy_keV": 84,
-      "source": "Cornejo et al."
+      "source": "Cornejo et al.",
+      "clearance_a1_kBq_per_kg": 100
     },
     {
       "id": "Lu-177",
@@ -449,7 +476,8 @@
         "Pb":          {"alpha": 0.3855,  "beta":  1.071,   "gamma": 0.2822},
         "concrete_NW": {"alpha": 0.02477, "beta": -0.01173, "gamma": 0.4404},
         "concrete_LW": {"alpha": 0.01615, "beta": -0.007056,"gamma": 0.5194}
-      }
+      },
+      "clearance_a1_kBq_per_kg": 100
     },
     {
       "id": "Re-186",
@@ -464,7 +492,8 @@
       "gamma_Kair": 2.42, "gamma_H10": 3.86, "gamma_H007": 3.86,
       "H007_from_cornejo": false,
       "representative_energy_keV": 137,
-      "source": "Cornejo et al."
+      "source": "Cornejo et al.",
+      "clearance_a1_kBq_per_kg": 1000
     },
     {
       "id": "Re-188",
@@ -479,7 +508,8 @@
       "gamma_Kair": 7.08, "gamma_H10": 9.44, "gamma_H007": 9.44,
       "H007_from_cornejo": false,
       "representative_energy_keV": 155,
-      "source": "Cornejo et al."
+      "source": "Cornejo et al.",
+      "clearance_a1_kBq_per_kg": 100
     },
     {
       "id": "Ir-192",
@@ -494,7 +524,8 @@
       "gamma_Kair": 109, "gamma_H10": 139, "gamma_H007": 139,
       "H007_from_cornejo": false,
       "representative_energy_keV": 370,
-      "source": "Cornejo et al. — Multi-energy emitter; representative energy is approximate"
+      "source": "Cornejo et al. — Multi-energy emitter; representative energy is approximate",
+      "clearance_a1_kBq_per_kg": 1
     },
     {
       "id": "Au-198",
@@ -509,7 +540,8 @@
       "gamma_Kair": 54.6, "gamma_H10": 68.6, "gamma_H007": 68.6,
       "H007_from_cornejo": false,
       "representative_energy_keV": 412,
-      "source": "Cornejo et al."
+      "source": "Cornejo et al.",
+      "clearance_a1_kBq_per_kg": 10
     },
     {
       "id": "Tl-201",
@@ -524,7 +556,8 @@
       "gamma_Kair": 10.4, "gamma_H10": 17.4, "gamma_H007": 17.4,
       "H007_from_cornejo": false,
       "representative_energy_keV": 71,
-      "source": "Cornejo et al."
+      "source": "Cornejo et al.",
+      "clearance_a1_kBq_per_kg": 100
     },
     {
       "id": "Y-90",
@@ -539,7 +572,8 @@
       "gamma_Kair": null, "gamma_H10": 0.003, "gamma_H007": 0.003,
       "H007_from_cornejo": false,
       "representative_energy_keV": 1761,
-      "source": "Calculated — Pure beta emitter (99.98% β⁻). Negligible gamma (1760.6 keV, yield 0.00115%). Bremsstrahlung not included."
+      "source": "Calculated — Pure beta emitter (99.98% β⁻). Negligible gamma (1760.6 keV, yield 0.00115%). Bremsstrahlung not included.",
+      "clearance_a1_kBq_per_kg": 1000
     }
   ]
 }
