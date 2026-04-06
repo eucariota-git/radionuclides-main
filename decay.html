@@ -579,7 +579,7 @@
         const below0 = ratio0 <= 1;
         const belowT = ratioT <= 1;
 
-        let tClearHtml = '';
+        let tClearItemHtml = '';
         if (!below0 && T_half_h > 0 && isFinite(T_half_h)) {
           const t_clear_h = (T_half_h / Math.LN2) * Math.log(specA0 / clearLevel);
           if (t_clear_h > 0) {
@@ -588,7 +588,18 @@
             else if (t_clear_h >= 24) tDisp = `${(t_clear_h/24).toFixed(1)} d`;
             else if (t_clear_h >= 1) tDisp = `${t_clear_h.toFixed(1)} h`;
             else tDisp = `${(t_clear_h*60).toFixed(0)} min`;
-            tClearHtml = `<br><span class="text-muted">Clearance reached after &#126;${tDisp}</span>`;
+            const refDtClear = document.getElementById('refDateTime').value;
+            let dateNote = '';
+            if (refDtClear) {
+              const d = new Date(new Date(refDtClear).getTime() + t_clear_h * 3.6e6);
+              dateNote = `<div class="prop-note">${d.toLocaleString()}</div>`;
+            }
+            tClearItemHtml = `
+          <div class="prop-item">
+            <div class="prop-key">Clearance reached after</div>
+            <div class="prop-val" style="color:var(--green-700);">&#126; ${tDisp}</div>
+            ${dateNote}
+          </div>`;
           }
         }
 
@@ -609,8 +620,9 @@
           <div class="prop-item">
             <div class="prop-key">Status at t = ${t_h.toFixed(2)} h</div>
             <div class="prop-val" style="color:${clsT};">${belowT ? '&#10003; Below clearance' : '&#9888; Above clearance'}</div>
-            <div class="prop-note">${ratioT.toExponential(2)} &times; clearance level${tClearHtml}</div>
-          </div>`;
+            <div class="prop-note">${ratioT.toExponential(2)} &times; clearance level</div>
+          </div>
+          ${tClearItemHtml}`;
       }
 
       clearHtml += `</div>
