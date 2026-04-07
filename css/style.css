@@ -826,8 +826,31 @@ a:hover { text-decoration: underline; }
 }
 
 [data-theme="dark"] .has-tooltip::before {
-  border-top-color: var(--gray-700);
+  border-bottom-color: var(--gray-700);
 }
+
+/* Tooltip variant that opens upward (for overflow containers) */
+.has-tooltip.tooltip-up::after {
+  top: auto;
+  bottom: calc(100% + 8px);
+}
+
+.has-tooltip.tooltip-up::before {
+  top: auto;
+  bottom: calc(100% + 2px);
+  border-bottom-color: transparent;
+  border-top-color: var(--gray-800);
+}
+
+/* ---- Dark mode: tag badges ---- */
+[data-theme="dark"] .tag-pet     { background: #1a3a4a; color: #48cae4; }
+[data-theme="dark"] .tag-spect   { background: #3a3a1a; color: #f4a261; }
+[data-theme="dark"] .tag-therapy { background: #3a1a1a; color: #e76f8f; }
+[data-theme="dark"] .tag-brachy  { background: #3a1a3a; color: #d6a7f0; }
+[data-theme="dark"] .tag-custom  { background: #3a3a2a; color: #ffd700; }
+
+/* ---- Dark mode: selected table row ---- */
+[data-theme="dark"] .data-table tbody tr.selected td { background: var(--green-100); }
 
 /* ---- Dark mode: methodology box styling ---- */
 [data-theme="dark"] .methodology-text {
