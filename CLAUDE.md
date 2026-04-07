@@ -1,5 +1,9 @@
 # CLAUDE.md — NM Radionuclide Planner
 
+## Project Overview
+
+This project is a nuclear medicine radionuclide reference web app with calculators (decay, dose rate, clearance). The stack is plain HTML/CSS/JavaScript with no build tools. Key files: decay.html, dose.html, and associated JS/CSS files.
+
 ## What This Project Is
 
 A static web application for medical physicists and radiation protection specialists. It provides radionuclide properties, decay calculations, external dose estimation, and regulatory compliance checks (EU RD 1029/2022 / EURATOM 2013/59).
@@ -45,6 +49,7 @@ Or open directly via `file://` — the app handles both protocols.
 - **Physics is pure**: `js/physics.js` contains only calculations, no DOM manipulation
 - **Dual data loading**: tries `fetch()` for JSON first, falls back to embedded `NUCLIDE_DATA` (in `nuclides-data.js`) for offline support
 - **sessionStorage** for custom nuclides — persists within a browser session only
+- **Data constants** (e.g., CLEARANCE_A1, dose rate constants) should be stored in external data files (JSON), not inline in HTML. When adding new constants, follow this pattern.
 
 ## Physics Notes
 
@@ -54,6 +59,18 @@ Or open directly via `file://` — the app handles both protocols.
 - Photon filter: G/X rays only, E ≥ 20 keV, yield ≥ 0.01%
 - Half-lives stored in seconds internally; display format handled separately
 - Dose types: H*(10) for d ≥ 25 cm (whole body), H'(0.07) for d < 25 cm (extremities)
+
+## Calculation Logic
+
+When editing calculator logic (decay, dose, clearance), always verify that cumulative/aggregate calculations account for all input parameters (e.g., number of administrations, weight, attenuation factors). Test edge cases after changes.
+
+## Domain Knowledge
+
+Regulatory references use RD 1029/2022 (not RD 783/2001). Dose limits: effective dose 20 mSv/year, lens of eye 20 mSv/year, skin 500 mSv/year.
+
+## UI / Styling Guidelines
+
+Dark mode is supported. When adding or modifying UI elements (tables, tooltips, graphs, markers), always check both light and dark mode contrast and visibility. Tooltips must not be clipped by overflow containers.
 
 ## Data
 
