@@ -1,6 +1,4 @@
-// AUTO-GENERATED from data/nuclides.json — do not edit directly
-// Regenerate with: node script.js
-var NUCLIDE_DATA = {
+const NUCLIDE_DATA = {
   "version": "1.0",
   "reference": "Cornejo Díaz N., Brosed Serreta A., Ruiz Manzano P. Constantes de tasa de kerma en aire y de tasa de equivalente de dosis ambiental de algunos radionucleidos utilizados en aplicaciones médicas. Rev. Fis. Med. 2006.",
   "notes": {
@@ -149,7 +147,7 @@ var NUCLIDE_DATA = {
       "decay_modes": [
         {
           "mode": "β-",
-          "fraction": 1
+          "fraction": 1.0
         }
       ],
       "clinical_use": "Research; rare diagnostic use (electrolyte studies)",
@@ -169,12 +167,12 @@ var NUCLIDE_DATA = {
       "Z": 19,
       "A": 42,
       "name": "Potassium-42",
-      "half_life_s": 44478,
+      "half_life_s": 44478.0,
       "half_life_display": "12.36 h",
       "decay_modes": [
         {
           "mode": "β-",
-          "fraction": 1
+          "fraction": 1.0
         }
       ],
       "clinical_use": "Research applications",
@@ -194,12 +192,12 @@ var NUCLIDE_DATA = {
       "Z": 24,
       "A": 51,
       "name": "Chromium-51",
-      "half_life_s": 2393496,
+      "half_life_s": 2393496.0,
       "half_life_display": "27.70 d",
       "decay_modes": [
         {
           "mode": "EC",
-          "fraction": 1
+          "fraction": 1.0
         }
       ],
       "clinical_use": "SPECT: red cell labelling (GFR, blood volume); ⁵¹Cr-EDTA GFR",
@@ -219,12 +217,12 @@ var NUCLIDE_DATA = {
       "Z": 27,
       "A": 57,
       "name": "Cobalt-57",
-      "half_life_s": 23478336,
+      "half_life_s": 23478336.0,
       "half_life_display": "271.74 d",
       "decay_modes": [
         {
           "mode": "EC",
-          "fraction": 1
+          "fraction": 1.0
         }
       ],
       "clinical_use": "Flood source / calibration phantom for gamma cameras",
@@ -244,7 +242,7 @@ var NUCLIDE_DATA = {
       "Z": 27,
       "A": 58,
       "name": "Cobalt-58",
-      "half_life_s": 6122304,
+      "half_life_s": 6122304.0,
       "half_life_display": "70.86 d",
       "decay_modes": [
         {
@@ -273,12 +271,12 @@ var NUCLIDE_DATA = {
       "Z": 26,
       "A": 59,
       "name": "Iron-59",
-      "half_life_s": 3843936,
+      "half_life_s": 3843936.0,
       "half_life_display": "44.49 d",
       "decay_modes": [
         {
           "mode": "β-",
-          "fraction": 1
+          "fraction": 1.0
         }
       ],
       "clinical_use": "Ferrokinetics; iron metabolism studies",
@@ -298,12 +296,12 @@ var NUCLIDE_DATA = {
       "Z": 27,
       "A": 60,
       "name": "Cobalt-60",
-      "half_life_s": 166348800,
+      "half_life_s": 166348800.0,
       "half_life_display": "5.27 y",
       "decay_modes": [
         {
           "mode": "β-",
-          "fraction": 1
+          "fraction": 1.0
         }
       ],
       "clinical_use": "Radiotherapy (teletherapy); calibration sources",
@@ -343,8 +341,8 @@ var NUCLIDE_DATA = {
       "category": "both",
       "modality": "PET",
       "gamma_Kair": 25.3,
-      "gamma_H10": 31,
-      "gamma_H007": 31,
+      "gamma_H10": 31.0,
+      "gamma_H007": 31.0,
       "H007_from_cornejo": false,
       "representative_energy_keV": 511,
       "source": "Cornejo et al.",
@@ -356,20 +354,20 @@ var NUCLIDE_DATA = {
       "Z": 31,
       "A": 67,
       "name": "Gallium-67",
-      "half_life_s": 281768,
+      "half_life_s": 281768.0,
       "half_life_display": "3.26 d",
       "decay_modes": [
         {
           "mode": "EC",
-          "fraction": 1
+          "fraction": 1.0
         }
       ],
       "clinical_use": "SPECT: ⁶⁷Ga-citrate (infection, lymphoma); largely replaced by ¹⁸F-FDG PET",
       "category": "diagnostic",
       "modality": "SPECT",
-      "gamma_Kair": 21,
-      "gamma_H10": 29,
-      "gamma_H007": 29,
+      "gamma_Kair": 21.0,
+      "gamma_H10": 29.0,
+      "gamma_H007": 29.0,
       "H007_from_cornejo": false,
       "representative_energy_keV": 93,
       "source": "Cornejo et al.",
@@ -410,18 +408,18 @@ var NUCLIDE_DATA = {
       "Z": 34,
       "A": 75,
       "name": "Selenium-75",
-      "half_life_s": 10347792,
+      "half_life_s": 10347792.0,
       "half_life_display": "119.78 d",
       "decay_modes": [
         {
           "mode": "EC",
-          "fraction": 1
+          "fraction": 1.0
         }
       ],
       "clinical_use": "Selenomethionine pancreas/parathyroid imaging (historical)",
       "category": "diagnostic",
       "modality": "SPECT",
-      "gamma_Kair": 51,
+      "gamma_Kair": 51.0,
       "gamma_H10": 69.3,
       "gamma_H007": 69.3,
       "H007_from_cornejo": false,
@@ -440,7 +438,7 @@ var NUCLIDE_DATA = {
       "decay_modes": [
         {
           "mode": "IT",
-          "fraction": 1
+          "fraction": 1.0
         }
       ],
       "clinical_use": "SPECT: bone, cardiac (MIBI), renal, lung, thyroid, hepatobiliary, sentinel node. Most widely used radionuclide in nuclear medicine.",
@@ -482,15 +480,15 @@ var NUCLIDE_DATA = {
       "decay_modes": [
         {
           "mode": "β-",
-          "fraction": 1
+          "fraction": 1.0
         }
       ],
       "clinical_use": "⁹⁹Mo/⁹⁹ᵐTc generator: source of ⁹⁹ᵐTc. Values correspond to equilibrium mixture.",
       "category": "diagnostic",
       "modality": "SPECT",
       "gamma_Kair": 33.9,
-      "gamma_H10": 45,
-      "gamma_H007": 45,
+      "gamma_H10": 45.0,
+      "gamma_H007": 45.0,
       "H007_from_cornejo": false,
       "representative_energy_keV": 141,
       "source": "Cornejo et al.",
@@ -507,7 +505,7 @@ var NUCLIDE_DATA = {
       "decay_modes": [
         {
           "mode": "EC",
-          "fraction": 1
+          "fraction": 1.0
         }
       ],
       "clinical_use": "Brachytherapy: permanent prostate seed implants",
@@ -515,7 +513,7 @@ var NUCLIDE_DATA = {
       "modality": "brachytherapy",
       "gamma_Kair": 35.9,
       "gamma_H10": 23.1,
-      "gamma_H007": 38,
+      "gamma_H007": 38.0,
       "H007_from_cornejo": true,
       "representative_energy_keV": 40,
       "source": "Cornejo et al. — H'(0.07)=38.0 used for extremities (all emissions < 300 keV, H'(0.07) > H*(10))",
@@ -532,7 +530,7 @@ var NUCLIDE_DATA = {
       "decay_modes": [
         {
           "mode": "EC",
-          "fraction": 1
+          "fraction": 1.0
         }
       ],
       "clinical_use": "SPECT: ¹¹¹In-Octreoscan (NET), ¹¹¹In-WBC (infection), ¹¹¹In-Zevalin (RIT)",
@@ -557,7 +555,7 @@ var NUCLIDE_DATA = {
       "decay_modes": [
         {
           "mode": "EC",
-          "fraction": 1
+          "fraction": 1.0
         }
       ],
       "clinical_use": "SPECT: ¹²³I-NaI thyroid, ¹²³I-MIBG (pheo, neuroblastoma), ¹²³I-DaTSCAN",
@@ -582,7 +580,7 @@ var NUCLIDE_DATA = {
       "decay_modes": [
         {
           "mode": "EC",
-          "fraction": 1
+          "fraction": 1.0
         }
       ],
       "clinical_use": "Brachytherapy: permanent prostate seed implants; RIA laboratory assays",
@@ -607,13 +605,13 @@ var NUCLIDE_DATA = {
       "decay_modes": [
         {
           "mode": "β-",
-          "fraction": 1
+          "fraction": 1.0
         }
       ],
       "clinical_use": "Therapy: differentiated thyroid cancer, hyperthyroidism. SPECT: ¹³¹I-MIBG therapy",
       "category": "both",
       "modality": "therapy",
-      "gamma_Kair": 52,
+      "gamma_Kair": 52.0,
       "gamma_H10": 65.7,
       "gamma_H007": 65.7,
       "H007_from_cornejo": false,
@@ -644,12 +642,12 @@ var NUCLIDE_DATA = {
       "Z": 54,
       "A": 133,
       "name": "Xenon-133",
-      "half_life_s": 453384,
+      "half_life_s": 453384.0,
       "half_life_display": "5.25 d",
       "decay_modes": [
         {
           "mode": "β-",
-          "fraction": 1
+          "fraction": 1.0
         }
       ],
       "clinical_use": "SPECT: ¹³³Xe ventilation lung studies",
@@ -669,12 +667,12 @@ var NUCLIDE_DATA = {
       "Z": 55,
       "A": 137,
       "name": "Caesium-137 + Barium-137m (equilibrium)",
-      "half_life_s": 951900000,
+      "half_life_s": 951900000.0,
       "half_life_display": "30.17 y",
       "decay_modes": [
         {
           "mode": "β-",
-          "fraction": 1
+          "fraction": 1.0
         }
       ],
       "clinical_use": "Calibration sources; brachytherapy (historical); radiation protection reference source",
@@ -694,12 +692,12 @@ var NUCLIDE_DATA = {
       "Z": 62,
       "A": 153,
       "name": "Samarium-153",
-      "half_life_s": 167400,
+      "half_life_s": 167400.0,
       "half_life_display": "46.50 h",
       "decay_modes": [
         {
           "mode": "β-",
-          "fraction": 1
+          "fraction": 1.0
         }
       ],
       "clinical_use": "Therapy: ¹⁵³Sm-EDTMP bone pain palliation (metastatic bone disease)",
@@ -724,13 +722,13 @@ var NUCLIDE_DATA = {
       "decay_modes": [
         {
           "mode": "EC",
-          "fraction": 1
+          "fraction": 1.0
         }
       ],
       "clinical_use": "Brachytherapy sources; research",
       "category": "therapeutic",
       "modality": "brachytherapy",
-      "gamma_Kair": 43,
+      "gamma_Kair": 43.0,
       "gamma_H10": 66.8,
       "gamma_H007": 66.8,
       "H007_from_cornejo": false,
@@ -744,7 +742,7 @@ var NUCLIDE_DATA = {
       "Z": 69,
       "A": 170,
       "name": "Thulium-170",
-      "half_life_s": 11111040,
+      "half_life_s": 11111040.0,
       "half_life_display": "128.6 d",
       "decay_modes": [
         {
@@ -774,15 +772,15 @@ var NUCLIDE_DATA = {
       "decay_modes": [
         {
           "mode": "β-",
-          "fraction": 1
+          "fraction": 1.0
         }
       ],
       "clinical_use": "Therapy: [¹⁷⁷Lu]-DOTATATE (NETs/Lutathera), [¹⁷⁷Lu]-PSMA-617 (prostate cancer)",
       "category": "therapeutic",
       "modality": "therapy",
       "gamma_Kair": 4.09,
-      "gamma_H10": 6,
-      "gamma_H007": 6,
+      "gamma_H10": 6.0,
+      "gamma_H007": 6.0,
       "H007_from_cornejo": false,
       "representative_energy_keV": 208,
       "source": "Cornejo et al.",
@@ -845,7 +843,7 @@ var NUCLIDE_DATA = {
       "decay_modes": [
         {
           "mode": "β-",
-          "fraction": 1
+          "fraction": 1.0
         }
       ],
       "clinical_use": "Therapy: ¹⁸⁸Re-HEDP bone pain palliation; ¹⁸⁸Re-generator from ¹⁸⁸W",
@@ -899,7 +897,7 @@ var NUCLIDE_DATA = {
       "decay_modes": [
         {
           "mode": "β-",
-          "fraction": 1
+          "fraction": 1.0
         }
       ],
       "clinical_use": "Brachytherapy (historical): ¹⁹⁸Au grain implants; research",
@@ -924,7 +922,7 @@ var NUCLIDE_DATA = {
       "decay_modes": [
         {
           "mode": "EC",
-          "fraction": 1
+          "fraction": 1.0
         }
       ],
       "clinical_use": "SPECT: myocardial perfusion imaging (largely replaced by ⁹⁹ᵐTc-MIBI)",
@@ -949,18 +947,18 @@ var NUCLIDE_DATA = {
       "decay_modes": [
         {
           "mode": "β-",
-          "fraction": 1
+          "fraction": 1.0
         }
       ],
       "clinical_use": "Therapy: ⁹⁰Y-microspheres (SIRT/radioembolization), ⁹⁰Y-ibritumomab (RIT), ⁹⁰Y-DOTATATE",
       "category": "therapeutic",
       "modality": "therapy",
       "gamma_Kair": null,
-      "gamma_H10": 0.003,
-      "gamma_H007": 0.003,
+      "gamma_H10": 0.167,
+      "gamma_H007": 0.167,
       "H007_from_cornejo": false,
-      "representative_energy_keV": 1761,
-      "source": "Calculated — Pure beta emitter (99.98% β⁻). Negligible gamma (1760.6 keV, yield 0.00115%). Bremsstrahlung not included.",
+      "representative_energy_keV": null,
+      "source": "Zanzonico et al., J Nucl Med 40(6), 1999. Pure beta emitter (99.98% β⁻); dose rate constant derived from bremsstrahlung in 10 mm PMMA container (clinical microsphere vial geometry).",
       "clearance_a1_kBq_per_kg": 1000
     }
   ]

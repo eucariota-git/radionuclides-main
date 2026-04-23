@@ -569,10 +569,10 @@
       "decay_modes": [{"mode": "β-", "fraction": 1.0}],
       "clinical_use": "Therapy: ⁹⁰Y-microspheres (SIRT/radioembolization), ⁹⁰Y-ibritumomab (RIT), ⁹⁰Y-DOTATATE",
       "category": "therapeutic", "modality": "therapy",
-      "gamma_Kair": null, "gamma_H10": 0.003, "gamma_H007": 0.003,
+      "gamma_Kair": null, "gamma_H10": 0.167, "gamma_H007": 0.167,
       "H007_from_cornejo": false,
-      "representative_energy_keV": 1761,
-      "source": "Calculated — Pure beta emitter (99.98% β⁻). Negligible gamma (1760.6 keV, yield 0.00115%). Bremsstrahlung not included.",
+      "representative_energy_keV": null,
+      "source": "Zanzonico et al., J Nucl Med 40(6), 1999. Pure beta emitter (99.98% β⁻); dose rate constant derived from bremsstrahlung in 10 mm PMMA container (clinical microsphere vial geometry).",
       "clearance_a1_kBq_per_kg": 1000
     }
   ]
