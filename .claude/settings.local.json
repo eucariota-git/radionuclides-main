@@ -3,7 +3,10 @@
     "allow": [
       "Bash(python -c ':*)",
       "Bash(node --check js/ui.js)",
-      "Read(//tmp/**)"
+      "Read(//tmp/**)",
+      "Bash(python:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m 'Update Y-90 gamma constant from bremsstrahlung \\(Zanzonico et al., 1999\\):*)"
     ]
   }
 }
