@@ -58,11 +58,12 @@
             <th class="has-tooltip tooltip-up" data-tooltip="Ambient dose equivalent rate constant. Whole-body dose at d ≥ 25 cm. Derived from ICRU 57 / ICRP 74. Units: μSv·h⁻¹·GBq⁻¹·m².">&#915;<sup>H*(10)</sup></th>
             <th class="has-tooltip tooltip-up" data-tooltip="Directional dose equivalent (0.07 mm depth). Extremity dose at d < 25 cm. Units: μSv·h⁻¹·GBq⁻¹·m².">&#915;<sup>H'(0.07)</sup></th>
             <th>Rep. energy</th>
+            <th class="has-tooltip tooltip-up" data-tooltip="Controlled liquid effluent concentration limit calculated from IS-28 Annex II II.A.4 using ICRP 119 adult ingestion coefficients. Units: Bq/L.">Liquid effluent</th>
             <th>Source</th>
           </tr>
         </thead>
         <tbody id="nuclideBody">
-          <tr><td colspan="9" class="text-muted text-sm loading-cell">Loading…</td></tr>
+          <tr><td colspan="10" class="text-muted text-sm loading-cell">Loading…</td></tr>
         </tbody>
       </table>
     </div>
@@ -101,6 +102,7 @@
       <li><strong>Cornejo et al.</strong> — primary source for &#915;<sup>H*(10)</sup> values for 32 nuclides.</li>
       <li>&#915;<sup>H'(0.07)</sup> values in parentheses from Cornejo et al. apply when all photon energies &lt; 300 keV and H'(0.07) > H*(10). Used for extremity dose estimation.</li>
       <li><strong>Ga-68</strong> constant calculated using ICRU 57 / ICRP 74 methodology. <strong>Y-90</strong> constant from Zanzonico et al. (J Nucl Med 40(6), 1999) — bremsstrahlung in 10 mm PMMA container.</li>
+      <li><strong>Liquid effluent limits</strong> calculated from IS-28 Annex II II.A.4 using ICRP 119 Annex F adult ingestion coefficients: (1 mSv / e(g)) / 600 L.</li>
       <li>The JSON database (<code>data/nuclides.json</code>) can be edited directly to update or add values.</li>
     </ul>
   </div>
@@ -130,7 +132,7 @@
     nuclides = await DB.load();
   } catch (e) {
     document.getElementById('nuclideBody').innerHTML =
-      `<tr><td colspan="9" style="color:var(--danger);padding:1rem;">Error loading database: ${e.message}</td></tr>`;
+      `<tr><td colspan="10" style="color:var(--danger);padding:1rem;">Error loading database: ${e.message}</td></tr>`;
     return;
   }
 
@@ -190,6 +192,25 @@
     return `<span class="mono">${val}</span>`;
   }
 
+  function fmtNumber(val) {
+    if (val === null || val === undefined || !isFinite(val)) return '—';
+    const abs = Math.abs(val);
+    if (abs !== 0 && (abs >= 1000 || abs < 0.01)) {
+      return Number(val).toExponential(3).replace('e+', 'E+').replace('e-', 'E-');
+    }
+    return Number(val).toPrecision(4);
+  }
+
+  function fmtEffluentLimit(n) {
+    if (n.effluent_liquid_components && n.effluent_liquid_components.length) {
+      return '<span class="text-muted" title="Assess mixture components separately">mixture</span>';
+    }
+    if (n.effluent_liquid_limit_Bq_per_L === null || n.effluent_liquid_limit_Bq_per_L === undefined) {
+      return '<span class="text-muted">—</span>';
+    }
+    return `<span class="mono">${fmtNumber(n.effluent_liquid_limit_Bq_per_L)}</span>`;
+  }
+
   function renderTable() {
     let data = DB.getAll();
     if (activeModality !== 'all') data = data.filter(n => n.modality === activeModality);
@@ -225,12 +246,13 @@
         <td class="num">${fmtGamma(n.gamma_H10)}</td>
         <td class="num">${fmtGamma(n.gamma_H007)}${h007note}</td>
         <td class="num">${n.representative_energy_keV} keV</td>
+        <td class="num">${fmtEffluentLimit(n)}</td>
         <td class="text-sm">${n._custom ? '<em>custom</em>' : n.source && !n.source.startsWith('Cornejo') ? 'Calc.' : 'Cornejo'}</td>
       </tr>`;
     }).join('');
 
     document.getElementById('nuclideBody').innerHTML = rows ||
-      '<tr><td colspan="9" class="text-muted text-sm" style="padding:1rem;">No results.</td></tr>';
+      '<tr><td colspan="10" class="text-muted text-sm" style="padding:1rem;">No results.</td></tr>';
 
     // Re-bind click handlers
     document.querySelectorAll('#nuclideBody tr[data-id]').forEach(tr => {
@@ -257,6 +279,15 @@
     const decayStr = (n.decay_modes || []).map(d =>
       `${d.mode}${d.fraction < 1 ? ' (' + (d.fraction * 100).toFixed(1) + '%)' : ''}`
     ).join(', ');
+    const effluentLimit = n.effluent_liquid_components && n.effluent_liquid_components.length
+      ? 'mixture'
+      : fmtNumber(n.effluent_liquid_limit_Bq_per_L);
+    const effluentNote = n.effluent_liquid_components && n.effluent_liquid_components.length
+      ? n.effluent_liquid_components
+          .map(c => `${c.id}: ${fmtNumber(c.effluent_liquid_limit_Bq_per_L)} Bq/L`)
+          .join('; ')
+      : 'Bq/L';
+    const ingestionCoeff = fmtNumber(n.ingestion_dose_coeff_adult_Sv_per_Bq);
 
     document.getElementById('detailProps').innerHTML = `
       <div class="prop-item">
@@ -288,6 +319,16 @@
         <div class="prop-val">${n.gamma_H007 !== null ? n.gamma_H007 : '—'}</div>
         <div class="prop-note">&#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;${n.H007_from_cornejo ? ' &#9888;' : ''}</div>
       </div>
+      <div class="prop-item">
+        <div class="prop-key">Adult ingestion e(g)</div>
+        <div class="prop-val">${ingestionCoeff}</div>
+        <div class="prop-note">Sv/Bq, ICRP 119 Annex F</div>
+      </div>
+      <div class="prop-item">
+        <div class="prop-key">Liquid effluent limit</div>
+        <div class="prop-val">${effluentLimit}</div>
+        <div class="prop-note">${effluentNote}</div>
+      </div>
     `;
 
     // Links to other calculators
@@ -296,11 +337,19 @@
 
     // Notes
     const noteEl = document.getElementById('detailNotes');
+    const notes = [];
     if (n.source && !n.source.startsWith('Cornejo')) {
-      noteEl.textContent = 'Source: ' + n.source;
-      noteEl.classList.remove('hidden');
+      notes.push('Source: ' + n.source);
     } else if (n.H007_from_cornejo) {
-      noteEl.textContent = 'H\'(0.07) value from Cornejo et al.: applies when all photon energies < 300 keV and H\'(0.07) > H*(10). Used instead of H*(10) for extremity dose estimation.';
+      notes.push('H\'(0.07) value from Cornejo et al.: applies when all photon energies < 300 keV and H\'(0.07) > H*(10). Used instead of H*(10) for extremity dose estimation.');
+    }
+    if (n.effluent_liquid_note) {
+      notes.push(n.effluent_liquid_note);
+    } else if (n.effluent_liquid_limit_source) {
+      notes.push('Liquid effluent limit source: ' + n.effluent_liquid_limit_source + '. Calculated as (1 mSv / e(g)) / 600 L.');
+    }
+    if (notes.length) {
+      noteEl.textContent = notes.join(' ');
       noteEl.classList.remove('hidden');
     } else {
       noteEl.classList.add('hidden');
@@ -333,7 +382,9 @@
   // CSV export
   document.getElementById('btnExportCsv').addEventListener('click', () => {
     const headers = ['id', 'symbol', 'name', 'half_life_display', 'decay_modes', 'modality',
-                     'gamma_Kair', 'gamma_H10', 'gamma_H007', 'representative_energy_keV', 'source'];
+                     'gamma_Kair', 'gamma_H10', 'gamma_H007', 'representative_energy_keV',
+                     'ingestion_dose_coeff_adult_Sv_per_Bq', 'effluent_liquid_limit_Bq_per_L',
+                     'effluent_liquid_limit_source', 'source'];
     const rows = currentData.map(n => [
       n.id,
       n.symbol,
@@ -345,6 +396,9 @@
       n.gamma_H10 ?? '',
       n.gamma_H007 ?? '',
       n.representative_energy_keV,
+      n.ingestion_dose_coeff_adult_Sv_per_Bq ?? '',
+      n.effluent_liquid_limit_Bq_per_L ?? '',
+      n.effluent_liquid_limit_source ?? '',
       n._custom ? 'custom' : (n.source || 'Cornejo')
     ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
     const csv = [headers.join(','), ...rows].join('\r\n');

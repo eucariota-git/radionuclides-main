@@ -13,6 +13,7 @@ Target users: medical physicists and radiation protection specialists.
 ### Properties (`index.html`)
 - Database of 34 radionuclides used in nuclear medicine (PET, SPECT, therapy, brachytherapy)
 - Dose rate constants Γ^H\*(10) and Γ^H'(0.07) from Cornejo et al. (2006)
+- Controlled liquid effluent concentration limits calculated from IS-28 and ICRP 119 adult ingestion coefficients
 - Filterable by category and modality
 
 ### Decay calculator (`decay.html`)
@@ -62,6 +63,7 @@ T(x) = e^(−μx)
 |------|--------|
 | Γ^H\*(10), Γ^H'(0.07) constants | Cornejo et al., *Rev. Fis. Med.* 2006 |
 | Fluence-to-dose coefficients h\*(10), h'(0.07) | ICRP Publication 74 / ICRU 57 |
+| Adult ingestion dose coefficients and liquid effluent limits | ICRP Publication 119 Annex F / IS-28 Annex II |
 | Mass attenuation coefficients | NIST XCOM |
 | Archer shielding parameters | Oumano et al., *J Appl Clin Med Phys* 2025 |
 | Nuclide emissions (custom upload) | IAEA LiveChart CSV format |

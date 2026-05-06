@@ -8,7 +8,10 @@ const NUCLIDE_DATA = {
     "gamma_H10_units": "μSv·h⁻¹·GBq⁻¹·m²",
     "gamma_H007_units": "μSv·h⁻¹·GBq⁻¹·m²",
     "H007_note": "H'(0.07) directional dose equivalent rate constant. Provided for nuclides with all photon energies < 300 keV and H'(0.07) > H*(10). For other nuclides, H*(10) value is used (conservative for high-energy emitters).",
-    "half_life_s_units": "seconds"
+    "half_life_s_units": "seconds",
+    "ingestion_dose_coeff_adult_units": "Sv/Bq",
+    "effluent_liquid_limit_units": "Bq/L",
+    "effluent_liquid_limit_note": "Calculated as (1 mSv / adult ingestion dose coefficient) / 600 L, using IS-28 Annex II II.A.4 and ICRP 119 Annex F Table F.1 adult ingestion coefficients."
   },
   "nuclides": [
     {
@@ -38,7 +41,10 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": false,
       "representative_energy_keV": 511,
       "source": "Cornejo et al.",
-      "clearance_a1_kBq_per_kg": null
+      "clearance_a1_kBq_per_kg": null,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 2.4e-11,
+      "effluent_liquid_limit_Bq_per_L": 69400.0,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
     },
     {
       "id": "N-13",
@@ -63,7 +69,11 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": false,
       "representative_energy_keV": 511,
       "source": "Cornejo et al.",
-      "clearance_a1_kBq_per_kg": null
+      "clearance_a1_kBq_per_kg": null,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": null,
+      "effluent_liquid_limit_Bq_per_L": null,
+      "effluent_liquid_limit_source": null,
+      "effluent_liquid_note": "No adult liquid-ingestion coefficient found in ICRP 119 Annex F; gaseous/inert-gas pathways should be assessed separately."
     },
     {
       "id": "O-15",
@@ -88,7 +98,11 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": false,
       "representative_energy_keV": 511,
       "source": "Cornejo et al.",
-      "clearance_a1_kBq_per_kg": null
+      "clearance_a1_kBq_per_kg": null,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": null,
+      "effluent_liquid_limit_Bq_per_L": null,
+      "effluent_liquid_limit_source": null,
+      "effluent_liquid_note": "No adult liquid-ingestion coefficient found in ICRP 119 Annex F; gaseous/inert-gas pathways should be assessed separately."
     },
     {
       "id": "F-18",
@@ -134,7 +148,10 @@ const NUCLIDE_DATA = {
           "gamma": 0.7475
         }
       },
-      "clearance_a1_kBq_per_kg": 10
+      "clearance_a1_kBq_per_kg": 10,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 4.9e-11,
+      "effluent_liquid_limit_Bq_per_L": 34000.0,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
     },
     {
       "id": "Na-24",
@@ -159,7 +176,10 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": false,
       "representative_energy_keV": 1369,
       "source": "Cornejo et al.",
-      "clearance_a1_kBq_per_kg": 1
+      "clearance_a1_kBq_per_kg": 1,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 4.3e-10,
+      "effluent_liquid_limit_Bq_per_L": 3880.0,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
     },
     {
       "id": "K-42",
@@ -184,7 +204,10 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": false,
       "representative_energy_keV": 1525,
       "source": "Cornejo et al.",
-      "clearance_a1_kBq_per_kg": 100
+      "clearance_a1_kBq_per_kg": 100,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 4.3e-10,
+      "effluent_liquid_limit_Bq_per_L": 3880.0,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
     },
     {
       "id": "Cr-51",
@@ -209,7 +232,10 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": false,
       "representative_energy_keV": 320,
       "source": "Cornejo et al.",
-      "clearance_a1_kBq_per_kg": 100
+      "clearance_a1_kBq_per_kg": 100,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 3.8e-11,
+      "effluent_liquid_limit_Bq_per_L": 43900.0,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
     },
     {
       "id": "Co-57",
@@ -234,7 +260,10 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": false,
       "representative_energy_keV": 122,
       "source": "Cornejo et al.",
-      "clearance_a1_kBq_per_kg": 1
+      "clearance_a1_kBq_per_kg": 1,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 2.1e-10,
+      "effluent_liquid_limit_Bq_per_L": 7940.0,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
     },
     {
       "id": "Co-58",
@@ -263,7 +292,10 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": false,
       "representative_energy_keV": 811,
       "source": "Cornejo et al.",
-      "clearance_a1_kBq_per_kg": 1
+      "clearance_a1_kBq_per_kg": 1,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 7.4e-10,
+      "effluent_liquid_limit_Bq_per_L": 2250.0,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
     },
     {
       "id": "Fe-59",
@@ -288,7 +320,10 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": false,
       "representative_energy_keV": 1099,
       "source": "Cornejo et al.",
-      "clearance_a1_kBq_per_kg": 1
+      "clearance_a1_kBq_per_kg": 1,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.8e-09,
+      "effluent_liquid_limit_Bq_per_L": 926.0,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
     },
     {
       "id": "Co-60",
@@ -313,7 +348,10 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": false,
       "representative_energy_keV": 1250,
       "source": "Cornejo et al.",
-      "clearance_a1_kBq_per_kg": 0.1
+      "clearance_a1_kBq_per_kg": 0.1,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 3.4e-09,
+      "effluent_liquid_limit_Bq_per_L": 490.0,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
     },
     {
       "id": "Cu-64",
@@ -346,7 +384,10 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": false,
       "representative_energy_keV": 511,
       "source": "Cornejo et al.",
-      "clearance_a1_kBq_per_kg": 100
+      "clearance_a1_kBq_per_kg": 100,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.2e-10,
+      "effluent_liquid_limit_Bq_per_L": 13900.0,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
     },
     {
       "id": "Ga-67",
@@ -371,7 +412,10 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": false,
       "representative_energy_keV": 93,
       "source": "Cornejo et al.",
-      "clearance_a1_kBq_per_kg": null
+      "clearance_a1_kBq_per_kg": null,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.9e-10,
+      "effluent_liquid_limit_Bq_per_L": 8770.0,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
     },
     {
       "id": "Ga-68",
@@ -400,7 +444,10 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": false,
       "representative_energy_keV": 511,
       "source": "Calculated (ICRU 57 methodology): 511 keV (yield 1.778) + 1077 keV (yield 0.032)",
-      "clearance_a1_kBq_per_kg": null
+      "clearance_a1_kBq_per_kg": null,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1e-10,
+      "effluent_liquid_limit_Bq_per_L": 16700.0,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
     },
     {
       "id": "Se-75",
@@ -425,7 +472,10 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": false,
       "representative_energy_keV": 265,
       "source": "Cornejo et al.",
-      "clearance_a1_kBq_per_kg": 1
+      "clearance_a1_kBq_per_kg": 1,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 2.6e-09,
+      "effluent_liquid_limit_Bq_per_L": 641.0,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
     },
     {
       "id": "Tc-99m",
@@ -467,7 +517,10 @@ const NUCLIDE_DATA = {
           "gamma": 0.4389
         }
       },
-      "clearance_a1_kBq_per_kg": 100
+      "clearance_a1_kBq_per_kg": 100,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 2.2e-11,
+      "effluent_liquid_limit_Bq_per_L": 75800.0,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
     },
     {
       "id": "Mo-99+Tc-99m",
@@ -492,7 +545,25 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": false,
       "representative_energy_keV": 141,
       "source": "Cornejo et al.",
-      "clearance_a1_kBq_per_kg": 10
+      "clearance_a1_kBq_per_kg": 10,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": null,
+      "effluent_liquid_limit_Bq_per_L": null,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_components": [
+        {
+          "id": "Mo-99",
+          "ingestion_dose_coeff_adult_Sv_per_Bq": 6e-10,
+          "effluent_liquid_limit_Bq_per_L": 2780.0,
+          "source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
+        },
+        {
+          "id": "Tc-99m",
+          "ingestion_dose_coeff_adult_Sv_per_Bq": 2.2e-11,
+          "effluent_liquid_limit_Bq_per_L": 75800.0,
+          "source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
+        }
+      ],
+      "effluent_liquid_note": "Assess generator effluents as a mixture of Mo-99 and Tc-99m components."
     },
     {
       "id": "Pd-103",
@@ -517,7 +588,10 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": true,
       "representative_energy_keV": 40,
       "source": "Cornejo et al. — H'(0.07)=38.0 used for extremities (all emissions < 300 keV, H'(0.07) > H*(10))",
-      "clearance_a1_kBq_per_kg": 1000
+      "clearance_a1_kBq_per_kg": 1000,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.9e-10,
+      "effluent_liquid_limit_Bq_per_L": 8770.0,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
     },
     {
       "id": "In-111",
@@ -542,7 +616,10 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": true,
       "representative_energy_keV": 171,
       "source": "Cornejo et al. — H'(0.07)=96.1 used for extremities (all emissions < 300 keV, H'(0.07) > H*(10))",
-      "clearance_a1_kBq_per_kg": 10
+      "clearance_a1_kBq_per_kg": 10,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 2.9e-10,
+      "effluent_liquid_limit_Bq_per_L": 5750.0,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
     },
     {
       "id": "I-123",
@@ -567,7 +644,10 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": false,
       "representative_energy_keV": 159,
       "source": "Cornejo et al.",
-      "clearance_a1_kBq_per_kg": 100
+      "clearance_a1_kBq_per_kg": 100,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 2.1e-10,
+      "effluent_liquid_limit_Bq_per_L": 7940.0,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
     },
     {
       "id": "I-125",
@@ -592,7 +672,10 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": true,
       "representative_energy_keV": 28,
       "source": "Cornejo et al. — H'(0.07)=40.9 used for extremities (all emissions < 300 keV, H'(0.07) > H*(10))",
-      "clearance_a1_kBq_per_kg": 100
+      "clearance_a1_kBq_per_kg": 100,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.5e-08,
+      "effluent_liquid_limit_Bq_per_L": 111.0,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
     },
     {
       "id": "I-131",
@@ -634,7 +717,10 @@ const NUCLIDE_DATA = {
           "gamma": 0.4847
         }
       },
-      "clearance_a1_kBq_per_kg": 10
+      "clearance_a1_kBq_per_kg": 10,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 2.2e-08,
+      "effluent_liquid_limit_Bq_per_L": 75.8,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
     },
     {
       "id": "Xe-133",
@@ -659,7 +745,11 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": true,
       "representative_energy_keV": 81,
       "source": "Cornejo et al. — H'(0.07)=16.8 used for extremities (all emissions < 300 keV, H'(0.07) > H*(10))",
-      "clearance_a1_kBq_per_kg": null
+      "clearance_a1_kBq_per_kg": null,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": null,
+      "effluent_liquid_limit_Bq_per_L": null,
+      "effluent_liquid_limit_source": null,
+      "effluent_liquid_note": "No adult liquid-ingestion coefficient found in ICRP 119 Annex F; gaseous/inert-gas pathways should be assessed separately."
     },
     {
       "id": "Cs-137",
@@ -684,7 +774,10 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": false,
       "representative_energy_keV": 662,
       "source": "Cornejo et al. — Values include ¹³⁷ᵐBa 661.7 keV gamma in secular equilibrium",
-      "clearance_a1_kBq_per_kg": 0.1
+      "clearance_a1_kBq_per_kg": 0.1,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.3e-08,
+      "effluent_liquid_limit_Bq_per_L": 128.0,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
     },
     {
       "id": "Sm-153",
@@ -709,7 +802,10 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": false,
       "representative_energy_keV": 103,
       "source": "Cornejo et al.",
-      "clearance_a1_kBq_per_kg": 100
+      "clearance_a1_kBq_per_kg": 100,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 7.4e-10,
+      "effluent_liquid_limit_Bq_per_L": 2250.0,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
     },
     {
       "id": "Yb-169",
@@ -734,7 +830,10 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": false,
       "representative_energy_keV": 177,
       "source": "Cornejo et al.",
-      "clearance_a1_kBq_per_kg": null
+      "clearance_a1_kBq_per_kg": null,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 7.1e-10,
+      "effluent_liquid_limit_Bq_per_L": 2350.0,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
     },
     {
       "id": "Tm-170",
@@ -759,7 +858,10 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": false,
       "representative_energy_keV": 84,
       "source": "Cornejo et al.",
-      "clearance_a1_kBq_per_kg": 100
+      "clearance_a1_kBq_per_kg": 100,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.3e-09,
+      "effluent_liquid_limit_Bq_per_L": 1280.0,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
     },
     {
       "id": "Lu-177",
@@ -801,7 +903,10 @@ const NUCLIDE_DATA = {
           "gamma": 0.5194
         }
       },
-      "clearance_a1_kBq_per_kg": 100
+      "clearance_a1_kBq_per_kg": 100,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 5.3e-10,
+      "effluent_liquid_limit_Bq_per_L": 3140.0,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
     },
     {
       "id": "Re-186",
@@ -830,7 +935,10 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": false,
       "representative_energy_keV": 137,
       "source": "Cornejo et al.",
-      "clearance_a1_kBq_per_kg": 1000
+      "clearance_a1_kBq_per_kg": 1000,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.5e-09,
+      "effluent_liquid_limit_Bq_per_L": 1110.0,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
     },
     {
       "id": "Re-188",
@@ -855,7 +963,10 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": false,
       "representative_energy_keV": 155,
       "source": "Cornejo et al.",
-      "clearance_a1_kBq_per_kg": 100
+      "clearance_a1_kBq_per_kg": 100,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.4e-09,
+      "effluent_liquid_limit_Bq_per_L": 1190.0,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
     },
     {
       "id": "Ir-192",
@@ -884,7 +995,10 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": false,
       "representative_energy_keV": 370,
       "source": "Cornejo et al. — Multi-energy emitter; representative energy is approximate",
-      "clearance_a1_kBq_per_kg": 1
+      "clearance_a1_kBq_per_kg": 1,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.4e-09,
+      "effluent_liquid_limit_Bq_per_L": 1190.0,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
     },
     {
       "id": "Au-198",
@@ -909,7 +1023,10 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": false,
       "representative_energy_keV": 412,
       "source": "Cornejo et al.",
-      "clearance_a1_kBq_per_kg": 10
+      "clearance_a1_kBq_per_kg": 10,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1e-09,
+      "effluent_liquid_limit_Bq_per_L": 1670.0,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
     },
     {
       "id": "Tl-201",
@@ -934,7 +1051,10 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": false,
       "representative_energy_keV": 71,
       "source": "Cornejo et al.",
-      "clearance_a1_kBq_per_kg": 100
+      "clearance_a1_kBq_per_kg": 100,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 9.5e-11,
+      "effluent_liquid_limit_Bq_per_L": 17500.0,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
     },
     {
       "id": "Y-90",
@@ -959,7 +1079,10 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": false,
       "representative_energy_keV": null,
       "source": "Zanzonico et al., J Nucl Med 40(6), 1999. Pure beta emitter (99.98% β⁻); dose rate constant derived from bremsstrahlung in 10 mm PMMA container (clinical microsphere vial geometry).",
-      "clearance_a1_kBq_per_kg": 1000
+      "clearance_a1_kBq_per_kg": 1000,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 2.7e-09,
+      "effluent_liquid_limit_Bq_per_L": 617.0,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
     }
   ]
 };
