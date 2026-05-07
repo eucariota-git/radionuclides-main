@@ -115,6 +115,7 @@
 </footer>
 
 <script src="data/nuclides-data.js"></script>
+<script src="data/icrp107-data.js"></script>
 <script src="js/data.js"></script>
 <script src="js/physics.js"></script>
 <script src="js/db.js"></script>
@@ -214,6 +215,25 @@
     return `<span class="mono">${fmtNumber(n.effluent_liquid_limit_Bq_per_L)}</span>`;
   }
 
+  function icrpDisplaySymbol(id) {
+    return id.replace('-', '<sup>').replace(/([a-z]?)$/, '$1</sup>');
+  }
+
+  function enrichIcrpNuclide(n) {
+    const constants = ICRP107.calcConstants(n.id);
+    return {
+      ...n,
+      _icrp107: true,
+      symbol: icrpDisplaySymbol(n.id),
+      name: n.id,
+      decay_modes: n.decay_modes || [],
+      representative_energy_keV: '—',
+      gamma_H10: constants ? Number(constants.gammaH10.toPrecision(4)) : null,
+      gamma_H007: constants ? Number(constants.gammaH007.toPrecision(4)) : null,
+      source: 'ICRP 107',
+    };
+  }
+
   function renderTable() {
     let data = DB.getAll();
     if (activeModality !== 'all') data = data.filter(n => n.modality === activeModality);
@@ -236,14 +256,7 @@
       if (data.length === 0 && ICRP107 && ICRP107.isReady()) {
         const icrpResults = ICRP107.search(activeSearch);
         // Add ICRP 107 results as synthetic entries (not filtered by modality, no clinical data)
-        data = icrpResults.map(n => ({
-          ...n,
-          _icrp107: true,
-          symbol: n.id.replace('-', '⁻'), // Unicode minus for display
-          decay_modes: n.decay_modes || [],
-          representative_energy_keV: '—',
-          source: 'ICRP 107',
-        }));
+        data = icrpResults.map(enrichIcrpNuclide);
       }
     }
 
@@ -263,8 +276,8 @@
           <td class="text-sm">${decayStr}</td>
           <td>${icrpBadge}</td>
           <td class="num text-muted">—</td>
-          <td class="num text-muted">—</td>
-          <td class="num text-muted">—</td>
+          <td class="num">${fmtGamma(n.gamma_H10)}</td>
+          <td class="num">${fmtGamma(n.gamma_H007)}</td>
           <td class="num text-muted">—</td>
           <td class="num text-muted">—</td>
           <td class="text-sm">${n.source}</td>
@@ -324,14 +337,7 @@
     }
 
     // Convert ICRP 107 results to table rows
-    currentData = icrpResults.map(n => ({
-      ...n,
-      _icrp107: true,
-      symbol: n.id.replace('-', '⁻'),
-      decay_modes: n.decay_modes || [],
-      representative_energy_keV: '—',
-      source: 'ICRP 107',
-    }));
+    currentData = icrpResults.map(enrichIcrpNuclide);
 
     const rows = currentData.map(n => {
       const sel = n.id === selectedId ? 'selected' : '';
@@ -343,8 +349,8 @@
         <td class="text-sm">${decayStr}</td>
         <td>${icrpBadge}</td>
         <td class="num text-muted">—</td>
-        <td class="num text-muted">—</td>
-        <td class="num text-muted">—</td>
+        <td class="num">${fmtGamma(n.gamma_H10)}</td>
+        <td class="num">${fmtGamma(n.gamma_H007)}</td>
         <td class="num text-muted">—</td>
         <td class="num text-muted">—</td>
         <td class="text-sm">${n.source}</td>
@@ -367,7 +373,7 @@
       n = ICRP107.get(id);
       if (n) {
         n._icrp107 = true;
-        n.symbol = n.id.replace('-', '⁻');
+        n.symbol = icrpDisplaySymbol(n.id);
       }
     }
     if (!n) return;
@@ -376,7 +382,7 @@
     panel.classList.add('visible');
 
     document.getElementById('detailTitle').textContent = n.id;
-    document.getElementById('detailSymbol').textContent = n.symbol;
+    document.getElementById('detailSymbol').innerHTML = n.symbol;
     document.getElementById('detailName').textContent   = n.id;
     document.getElementById('detailUse').textContent    = n.clinical_use || '—';
 
@@ -390,7 +396,7 @@
       const photonCount = n.photon_count_filtered || 0;
       const photonNote = photonCount > 0
         ? `${photonCount} G/X ray${photonCount !== 1 ? 's' : ''} (E≥20keV, yield≥0.01%)`
-        : 'No significant G/X rays';
+        : 'No significant G/X/AQ photons';
 
       // Calculate dose constants from photons
       let gammaH10 = '—', gammaH007 = '—', gammaKair = '—';
@@ -521,15 +527,23 @@
     }
 
     // Links to other calculators
-    document.getElementById('btnDecay').href = `decay.html?id=${encodeURIComponent(id)}`;
-    document.getElementById('btnDose').href  = `dose.html?id=${encodeURIComponent(id)}`;
+    const btnDecay = document.getElementById('btnDecay');
+    const btnDose = document.getElementById('btnDose');
+    const calcButtons = btnDecay.parentElement;
+    if (n._icrp107) {
+      calcButtons.classList.add('hidden');
+    } else {
+      calcButtons.classList.remove('hidden');
+      btnDecay.href = `decay.html?id=${encodeURIComponent(id)}`;
+      btnDose.href  = `dose.html?id=${encodeURIComponent(id)}`;
+    }
 
     // Notes
     const noteEl = document.getElementById('detailNotes');
     const notes = [];
 
     if (n._icrp107) {
-      notes.push('⚠ This nuclide is from the ICRP 107 extended database (1251 nuclides). Photon emissions are available from ICRP Publication 107 (2008). Constants have NOT been manually validated. For clinical/regulatory use, verify against primary sources.');
+      notes.push('&#9888; This nuclide is from the ICRP 107 extended database. Photon emissions are available from ICRP Publication 107 (2008). Constants have NOT been manually validated. For clinical/regulatory use, verify against primary sources. Decay and Dose calculators currently use only the curated main database.');
     }
 
     if (n.source && !n.source.startsWith('Cornejo') && !n._icrp107) {

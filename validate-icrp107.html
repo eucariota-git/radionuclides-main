@@ -26,6 +26,7 @@
   <div id="result" class="loading">Loading databases...</div>
 
   <script src="data/nuclides-data.js"></script>
+  <script src="data/icrp107-data.js"></script>
   <script src="js/data.js"></script>
   <script src="js/db.js"></script>
   <script src="js/icrp107-loader.js"></script>
@@ -124,11 +125,7 @@
             let statusText = '—';
             let note = '';
 
-            if (v.id === 'Ga-68') {
-              statusClass = 'diverge';
-              statusText = '⚠ β⁺ emitter*';
-              note = ' <span style="font-size:0.85em;color:var(--text-muted);">*Includes positron annihilation (511 keV) in published constant; ICRP 107 discrete gammas only. See README.</span>';
-            } else if (v.match) {
+            if (v.match) {
               statusClass = 'match';
               statusText = '✓ Match (< 5%)';
             } else if (v.close) {

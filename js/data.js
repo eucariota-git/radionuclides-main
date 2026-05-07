@@ -194,7 +194,8 @@ const PHYSICS = (() => {
    * from a list of photon emissions following Cornejo et al. methodology.
    *
    * @param {Array} emissions - [{energy_keV, yield_percent, type}]
-   *   type: 'G' = gamma, 'X' = X-ray (both included if E >= 20 keV and yield >= 0.01%)
+   *   type: 'G' = gamma, 'X' = X-ray, 'AQ' = annihilation quantum
+   *   (included if E >= 20 keV and yield >= 0.01%)
    * @returns {{ gammaH10: number, gammaH007: number, contributions: Array }}
    *   gammaH10 and gammaH007 in μSv·h⁻¹·GBq⁻¹·m²
    */
@@ -213,7 +214,7 @@ const PHYSICS = (() => {
       // Apply Cornejo et al. selection criteria
       if (E_MeV < ENERGY_THRESHOLD_MEV) continue;
       if (n < YIELD_THRESHOLD)          continue;
-      if (!['G', 'g', 'X', 'x'].includes(em.type)) continue;
+      if (!['G', 'g', 'X', 'x', 'AQ', 'aq'].includes(em.type)) continue;
 
       const h10  = getH10(E_MeV);
       const h007 = getH007(E_MeV);

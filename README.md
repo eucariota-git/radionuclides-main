@@ -36,9 +36,9 @@ Target users: medical physicists and radiation protection specialists.
 - Filter criteria: photons (G/X), E ≥ 20 keV, yield ≥ 0.01%
 
 ### Extended database — ICRP 107 (`index.html`)
-- Main database contains 34 curated radionuclides. For any other nuclide, the Properties page offers fallback search in **ICRP Publication 107** (1251 nuclides)
+- Main database contains 34 curated radionuclides. For any other nuclide, the Properties page offers fallback search in **ICRP Publication 107** (1252 nuclides)
 - **"Search in ICRP 107" button** appears when a nuclide is not found in the main database
-- Automatically calculates Γ^H\*(10) and Γ^H'(0.07) from ICRP 107 photon emissions (E ≥ 20 keV, yield ≥ 0.01%)
+- Automatically calculates Γ^H\*(10) and Γ^H'(0.07) from ICRP 107 photon emissions, including annihilation quanta where present (E ≥ 20 keV, yield ≥ 0.01%)
 - Displays photon spectrum (energy, yield, type) with warning that constants are not manually validated
 - **Validation tool** (`validate-icrp107.html`) compares calculated constants against published values for key nuclides (F-18, Tc-99m, I-131, Lu-177, Ga-68)
 - See `references/icrp107/README.md` for detailed documentation on ICRP 107 integration
@@ -75,14 +75,14 @@ T(x) = e^(−μx)
 | Mass attenuation coefficients | NIST XCOM |
 | Archer shielding parameters | Oumano et al., *J Appl Clin Med Phys* 2025 |
 | Nuclide emissions (custom upload) | IAEA LiveChart CSV format |
-| Extended nuclide database (1251 nuclides) | ICRP Publication 107 (Endo & Eckerman, 2008) |
+| Extended nuclide database (1252 nuclides) | ICRP Publication 107 (Endo & Eckerman, 2008) |
 | Photon emissions for extended database | ICRP-07.RAD and ICRP-07.NDX files |
 
 ---
 
 ## Compatibility
 
-Works on desktop and mobile browsers. Loads from `file://`, `content://` (Android) and HTTP/HTTPS without a server — data is embedded as an inline JS variable (`data/nuclides-data.js`).
+Works on desktop and mobile browsers. Loads from `file://`, `content://` (Android) and HTTP/HTTPS without a server — curated and ICRP 107 data are embedded as inline JS variables (`data/nuclides-data.js`, `data/icrp107-data.js`).
 
 ---
 
@@ -105,7 +105,8 @@ js/icrp107-loader.js   ICRP107 module — extended database search and dose calc
 
 data/nuclides.json  Radionuclide database (directly editable)
 data/nuclides-data.js  Auto-generated from nuclides.json (for file:// compatibility)
-data/icrp107-index.json  Extended database (1251 nuclides with photon emissions)
+data/icrp107-index.json  Extended database JSON (with photon emissions)
+data/icrp107-data.js     Embedded ICRP 107 data for file:// compatibility
 
 data/sources/icrp107/   ICRP Publication 107 source files (NDX, RAD, BET)
 

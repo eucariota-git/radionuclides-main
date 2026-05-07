@@ -41,7 +41,7 @@ The application has no installation or authentication. Simply open the link abov
 
 #### Extended Database — ICRP 107
 
-The application includes an **extended database of 1,251 radionuclides** from ICRP Publication 107 (2008). If you search for a nuclide not in the main database:
+The application includes an **extended database of 1,252 radionuclides** from ICRP Publication 107 (2008). If you search for a nuclide not in the main database:
 
 1. Search bar will show "No results in main database"
 2. Click **"Search in ICRP 107"** button
@@ -52,7 +52,7 @@ The application includes an **extended database of 1,251 radionuclides** from IC
    - **Photon emissions** — filtered table showing:
      - Energy [keV]
      - Yield [% per decay]
-     - Type (G = gamma, X = X-ray)
+     - Type (G = gamma, X = X-ray, AQ = annihilation quantum)
    - **Calculated dose constants**:
      - Γ^H\*(10) — **automatically calculated** from photon emissions using Cornejo et al. methodology
      - Γ^H'(0.07) — extremity dose constant
@@ -192,11 +192,11 @@ The application includes an **extended database of 1,251 radionuclides** from IC
 **Interpretation**:
 - ±5% deviations indicate reliable ICRP 107 calculations
 - Larger deviations may indicate:
-  - Insufficient photon data (missing beta/annihilation)
+  - Insufficient photon data or continuous beta-spectrum effects
   - Rounding differences
   - Different methodology for threshold filtering
 
-**Ga-68 note**: Published constant includes positron annihilation (511 keV). ICRP 107 discrete photons alone yield ~10 μSv·h⁻¹·GBq⁻¹·m². Annihilation contributes ~147, totaling ~157.
+**PET note**: Positron annihilation photons (511 keV) are included when present in ICRP 107 as `AQ` emissions.
 
 ---
 
@@ -224,13 +224,13 @@ Toggle dark/light mode using the **moon icon** (🌙) in the top-right corner. P
 - **Validation**: Manually reviewed and compared against literature
 - **Use case**: Clinical and regulatory submissions (with verification)
 
-### Extended Database (1,251 nuclides from ICRP 107)
+### Extended Database (1,252 nuclides from ICRP 107)
 - **Source**: ICRP Publication 107 (2008) — official decay data compilation
 - **Calculation**: Γ constants derived from photon spectrum using ICRU 57 / ICRP 74 conversion coefficients
-- **Validation**: ±5% agreement with published values for F-18, Tc-99m, I-131, Lu-177
+- **Validation**: ±5% agreement with published values for F-18, Tc-99m, I-131, Lu-177, Ga-68
 - **Use case**: Reference and estimation only — NOT validated for clinical use
 - **Limitations**:
-  - Excludes positron annihilation for β⁺ emitters (affects Ga-68, others)
+  - Includes positron annihilation only when present in ICRP 107 as `AQ`
   - Excludes continuous beta spectrum contribution
   - Derived constants not peer-reviewed
 

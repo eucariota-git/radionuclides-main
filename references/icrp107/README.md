@@ -21,13 +21,13 @@ The ICRP 107 data is used as an **extended database** for nuclides not included 
 
 ### Processing Pipeline
 
-1. **Parser** (`tools/parse-icrp107.js`) — Reads NDX/RAD/BET files and generates `data/icrp107-index.json`
+1. **Parser** (`tools/parse-icrp107.js`) — Reads NDX/RAD files and generates `data/icrp107-index.json` plus `data/icrp107-data.js`
    - Converts half-lives to seconds
-   - Extracts photon emissions (G, X rays; excludes beta, alpha, electrons)
+   - Extracts photon emissions (G, X rays, and annihilation quanta; excludes beta, alpha, electrons)
    - Applies Cornejo filter: E ≥ 20 keV, yield ≥ 0.01%
-   - Result: 1115 nuclides with at least one photon meeting criteria
+   - Result: nuclides with at least one photon meeting criteria
 
-2. **Browser Loader** (`js/icrp107-loader.js`) — Lazy-loads index on page load
+2. **Browser Loader** (`js/icrp107-loader.js`) — Loads the embedded JS data when available, with JSON `fetch()` fallback
    - Provides search by ID or name
    - Normalizes names ("Lu177" ↔ "Lu-177", "177Lu" ↔ "Lu-177")
    - Calculates gamma dose constants on-demand using `PHYSICS.calcGammaConstants()`
@@ -38,8 +38,8 @@ The ICRP 107 data is used as an **extended database** for nuclides not included 
    - When ICRP 107 result is selected:
      - Displays half-life, decay modes, photon spectrum (filtered)
      - **Automatically calculates** Γ^H*(10) and Γ^H'(0.07) from photon emissions
-     - Shows warning: "⚠ Constants calculated from ICRP 107 emissions — not manually validated"
-     - Photons table shows energy (keV), yield (%), and type (G/X)
+    - Shows warning: constants calculated from ICRP 107 emissions are not manually validated
+    - Photons table shows energy (keV), yield (%), and type (G/X/AQ)
 
 ## Gamma Dose Constants
 
@@ -66,11 +66,9 @@ A validation tool (`validate-icrp107.html`) is included to compare constants cal
 
 Access at `validate-icrp107.html` to run the comparison. Deviations < 5% indicate good agreement; 5–15% suggest acceptable approximation; > 15% warrant investigation.
 
-#### Ga-68 Special Case
+#### Positron Emitters
 
-Ga-68 undergoes β⁺ decay, producing positrons that annihilate with electrons, yielding **two 511 keV photons** per decay. The published constant (157 μSv·h⁻¹·GBq⁻¹·m²) includes this annihilation radiation. However, the ICRP 107 parser currently excludes annihilation photons (type `ann`, code 3) and only includes discrete gamma (G) and X-ray emissions. 
-
-**Result**: The calculated constant for Ga-68 from ICRP 107 discrete gammas alone is ~10 μSv·h⁻¹·GBq⁻¹·m² (derived from decay gammas at 1077, 1261, and 1883 keV). To achieve the published 157, the 511 keV annihilation contribution (~147 μSv·h⁻¹·GBq⁻¹·m²) must be added. This will be addressed in a future update to include positron annihilation for β⁺ emitters.
+Beta-plus emitters include positron annihilation quanta when present in `ICRP-07.RAD` (type code `3`, label `AQ`). This is required for PET nuclides such as F-18 and Ga-68, where the 511 keV photons dominate the external dose-rate constant.
 
 ## Data Quality Notes
 
@@ -79,6 +77,7 @@ Ga-68 undergoes β⁺ decay, producing positrons that annihilate with electrons,
 - **Yields**: Percent per decay; 4 decimal place precision
 - **Decay modes**: Limited; NDX parsing captures daughters and branching fractions where available
 - **Beta spectra**: Available in BET file (111K lines); NOT parsed in phase 1
+- **Calculators**: `decay.html` and `dose.html` currently use the curated main database only; ICRP 107 entries are reference/search results on the Properties page.
 
 ## License & Redistribution
 

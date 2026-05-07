@@ -89,7 +89,7 @@ radionuclides-main/
 ├── data/
 │   ├── nuclides.json             Radionuclide database (directly editable)
 │   ├── nuclides-data.js          Auto-generated from nuclides.json
-│   ├── icrp107-index.json        Extended ICRP 107 database (1251 nuclides)
+│   ├── icrp107-index.json        Extended ICRP 107 database (1252 nuclides)
 │   └── sources/
 │       └── icrp107/              ICRP Publication 107 source files
 │           ├── ICRP-07.NDX       Nuclide index
@@ -207,7 +207,7 @@ The parser:
 - Reads NDX (nuclide index) and RAD (discrete emissions)
 - Converts half-lives to seconds
 - Filters photons: type ∈ {G, X}, E ≥ 20 keV, yield ≥ 0.01%
-- Outputs JSON with 1251 entries
+- Outputs JSON with 1252 entries
 
 **Customization** (in `parse-icrp107.js`):
 - Change `ENERGY_THRESHOLD_MEV` to filter different energies
@@ -351,7 +351,7 @@ The parser:
 ### ICRP 107 Index
 
 - ~2.5 MB JSON file, loads lazily on first search
-- Subset operations (search, filter) are O(n) with 1251 items — acceptable
+- Subset operations (search, filter) are O(n) with 1252 items — acceptable
 - If search becomes slow, consider:
   - Building an indexed Map on load (already done in `icrp107-loader.js`)
   - Pagination for results

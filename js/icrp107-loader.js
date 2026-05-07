@@ -1,8 +1,8 @@
 /**
  * ICRP 107 Extended Nuclide Database Loader
  *
- * Provides search and access to the extended ICRP 107 nuclide database (1251 nuclides).
- * Only the filtered photons (G/X rays, E≥20keV, yield≥0.01%) are loaded.
+ * Provides search and access to the extended ICRP 107 nuclide database (1252 nuclides).
+ * Only the filtered photons (G/X/AQ, E>=20keV, yield>=0.01%) are loaded.
  *
  * API:
  *   ICRP107.search(query)      - Search by ID or normalized name
@@ -23,22 +23,31 @@ const ICRP107 = (function() {
     if (indexData) return;
 
     try {
-      const response = await fetch('data/icrp107-index.json');
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      indexData = await response.json();
-
-      // Build lookup map by ID (exact) and by normalized ID
-      for (const nuclide of indexData.nuclides) {
-        indexMap.set(nuclide.id, nuclide);
-        const normalized = normalize(nuclide.id);
-        if (normalized !== nuclide.id) {
-          indexMap.set(normalized, nuclide);
-        }
+      if (typeof ICRP107_DATA !== 'undefined') {
+        indexData = ICRP107_DATA;
+      } else {
+        const response = await fetch('data/icrp107-index.json');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        indexData = await response.json();
       }
+      buildIndex();
     } catch (err) {
       console.error('Failed to load ICRP 107 index:', err);
       throw err;
     }
+  }
+
+  function buildIndex() {
+    indexMap = new Map();
+    for (const nuclide of indexData.nuclides) {
+      indexMap.set(nuclide.id, nuclide);
+      indexMap.set(normalize(nuclide.id), nuclide);
+    }
+  }
+
+  function titleElement(symbol) {
+    if (!symbol) return '';
+    return symbol.slice(0, 1).toUpperCase() + symbol.slice(1).toLowerCase();
   }
 
   /**
@@ -48,19 +57,29 @@ const ICRP107 = (function() {
    */
   function normalize(name) {
     if (!name) return '';
+    const clean = String(name).trim().replace(/\s+/g, '');
 
     // Already normalized (e.g., "Lu-177")
-    if (/^[A-Z][a-z]?-\d+/.test(name)) return name;
+    const normalized = clean.match(/^([A-Za-z]{1,2})-(\d+[A-Za-z]?)$/);
+    if (normalized) return `${titleElement(normalized[1])}-${normalized[2]}`;
 
     // "Lu177" → "Lu-177"
-    const match1 = name.match(/^([A-Z][a-z]?)(\d+[a-z]?)$/);
-    if (match1) return match1[1] + '-' + match1[2];
+    const match1 = clean.match(/^([A-Za-z]{1,2})(\d+[A-Za-z]?)$/);
+    if (match1) return `${titleElement(match1[1])}-${match1[2]}`;
 
-    // "177Lu" → "Lu-177" (element at end)
-    const match2 = name.match(/^(\d+[a-z]?)([A-Z][a-z]?)$/i);
-    if (match2) return match2[2] + '-' + match2[1];
+    // "177Lu" -> "Lu-177", "99mTc" -> "Tc-99m"
+    const match2 = clean.match(/^(\d+)([A-Za-z]+)$/);
+    if (match2) {
+      let mass = match2[1];
+      let suffix = match2[2];
+      if (suffix.length > 2 && suffix[0] === suffix[0].toLowerCase()) {
+        mass += suffix[0].toLowerCase();
+        suffix = suffix.slice(1);
+      }
+      return `${titleElement(suffix)}-${mass}`;
+    }
 
-    return name;
+    return clean;
   }
 
   /**
@@ -74,11 +93,17 @@ const ICRP107 = (function() {
 
     if (!query) return [];
 
-    const q = query.toLowerCase();
+    const q = String(query).trim().toLowerCase();
+    const normalizedQ = normalize(query).toLowerCase();
     const results = [];
+    const exact = indexMap.get(normalize(query));
+    if (exact) results.push(exact);
 
     for (const nuclide of indexData.nuclides) {
+      if (results.includes(nuclide)) continue;
+      const normalizedId = normalize(nuclide.id).toLowerCase();
       if (nuclide.id.toLowerCase().includes(q) ||
+          normalizedId.includes(normalizedQ) ||
           nuclide.half_life_display.toLowerCase().includes(q)) {
         results.push(nuclide);
       }
