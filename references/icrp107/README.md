@@ -58,13 +58,19 @@ Constants calculated from ICRP 107 are **informational only**. They are NOT manu
 
 A validation tool (`validate-icrp107.html`) is included to compare constants calculated from ICRP 107 photons against published values from Cornejo et al. (2006) for key nuclides:
 
-- **F-18** — Published: 166 μSv·h⁻¹·GBq⁻¹·m²
-- **Tc-99m** — Published: 21.7 μSv·h⁻¹·GBq⁻¹·m²
-- **I-131** — Published: 65.7 μSv·h⁻¹·GBq⁻¹·m²
-- **Lu-177** — Published: 6.0 μSv·h⁻¹·GBq⁻¹·m²
-- **Ga-68** — Published: 157 μSv·h⁻¹·GBq⁻¹·m²
+- **F-18** — Published: 166 μSv·h⁻¹·GBq⁻¹·m² (Good agreement expected)
+- **Tc-99m** — Published: 21.7 μSv·h⁻¹·GBq⁻¹·m² (Good agreement expected)
+- **I-131** — Published: 65.7 μSv·h⁻¹·GBq⁻¹·m² (Good agreement expected)
+- **Lu-177** — Published: 6.0 μSv·h⁻¹·GBq⁻¹·m² (Good agreement expected)
+- **Ga-68** — Published: 157 μSv·h⁻¹·GBq⁻¹·m² (**Special case**: β⁺ emitter)
 
 Access at `validate-icrp107.html` to run the comparison. Deviations < 5% indicate good agreement; 5–15% suggest acceptable approximation; > 15% warrant investigation.
+
+#### Ga-68 Special Case
+
+Ga-68 undergoes β⁺ decay, producing positrons that annihilate with electrons, yielding **two 511 keV photons** per decay. The published constant (157 μSv·h⁻¹·GBq⁻¹·m²) includes this annihilation radiation. However, the ICRP 107 parser currently excludes annihilation photons (type `ann`, code 3) and only includes discrete gamma (G) and X-ray emissions. 
+
+**Result**: The calculated constant for Ga-68 from ICRP 107 discrete gammas alone is ~10 μSv·h⁻¹·GBq⁻¹·m² (derived from decay gammas at 1077, 1261, and 1883 keV). To achieve the published 157, the 511 keV annihilation contribution (~147 μSv·h⁻¹·GBq⁻¹·m²) must be added. This will be addressed in a future update to include positron annihilation for β⁺ emitters.
 
 ## Data Quality Notes
 

@@ -122,7 +122,13 @@
             const devStr = v.deviation !== null ? v.deviation.toFixed(2) : '—';
             let statusClass = '';
             let statusText = '—';
-            if (v.match) {
+            let note = '';
+
+            if (v.id === 'Ga-68') {
+              statusClass = 'diverge';
+              statusText = '⚠ β⁺ emitter*';
+              note = ' <span style="font-size:0.85em;color:var(--text-muted);">*Includes positron annihilation (511 keV) in published constant; ICRP 107 discrete gammas only. See README.</span>';
+            } else if (v.match) {
               statusClass = 'match';
               statusText = '✓ Match (< 5%)';
             } else if (v.close) {
@@ -143,6 +149,9 @@
                 <td class="num ${statusClass}">${statusText}</td>
               </tr>
             `;
+            if (note) {
+              html += `<tr><td colspan="6">${note}</td></tr>`;
+            }
           }
         }
 
