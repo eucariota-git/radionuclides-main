@@ -119,6 +119,7 @@
 <script src="js/physics.js"></script>
 <script src="js/db.js"></script>
 <script src="js/ui.js"></script>
+<script src="js/icrp107-loader.js"></script>
 <script>
 (async () => {
   // ---- UI initialization ----
@@ -130,6 +131,8 @@
   let nuclides = [];
   try {
     nuclides = await DB.load();
+    // Load ICRP 107 extended database
+    await ICRP107._ensureLoaded().catch(err => console.warn('ICRP 107 index not available:', err));
   } catch (e) {
     document.getElementById('nuclideBody').innerHTML =
       `<tr><td colspan="10" style="color:var(--danger);padding:1rem;">Error loading database: ${e.message}</td></tr>`;
@@ -214,6 +217,8 @@
   function renderTable() {
     let data = DB.getAll();
     if (activeModality !== 'all') data = data.filter(n => n.modality === activeModality);
+
+    // Apply search filter to DB results
     if (activeSearch) {
       const q = activeSearch.toLowerCase();
       data = data.filter(n => {
@@ -226,6 +231,20 @@
                nameEs.includes(q) ||
                (n.clinical_use || '').toLowerCase().includes(q);
       });
+
+      // If no DB results and we have a search query, try ICRP 107
+      if (data.length === 0 && ICRP107 && ICRP107.isReady()) {
+        const icrpResults = ICRP107.search(activeSearch);
+        // Add ICRP 107 results as synthetic entries (not filtered by modality, no clinical data)
+        data = icrpResults.map(n => ({
+          ...n,
+          _icrp107: true,
+          symbol: n.id.replace('-', '⁻'), // Unicode minus for display
+          decay_modes: n.decay_modes || [],
+          representative_energy_keV: '—',
+          source: 'ICRP 107',
+        }));
+      }
     }
 
     currentData = data;
@@ -233,7 +252,25 @@
 
     const rows = data.map(n => {
       const sel = n.id === selectedId ? 'selected' : '';
-      const decayStr = (n.decay_modes || []).map(d => d.mode).join(', ');
+      const decayStr = (n.decay_modes || []).map(d => d.mode || d.daughter ? `${d.mode || 'decay'}` : d.mode).join(', ');
+
+      if (n._icrp107) {
+        // ICRP 107 extended database entry
+        const icrpBadge = '<span class="tag tag-info" style="font-size:0.85em;">ICRP 107</span>';
+        return `<tr class="${sel}" data-id="${n.id}" style="opacity:0.85;">
+          <td class="sym">${n.symbol}</td>
+          <td>${n.half_life_display}</td>
+          <td class="text-sm">${decayStr}</td>
+          <td>${icrpBadge}</td>
+          <td class="num text-muted">—</td>
+          <td class="num text-muted">—</td>
+          <td class="num text-muted">—</td>
+          <td class="num text-muted">—</td>
+          <td class="num text-muted">—</td>
+          <td class="text-sm">${n.source}</td>
+        </tr>`;
+      }
+
       const h007note = n.H007_from_cornejo
         ? ` <span title="H'(0.07) from Cornejo et al. — applies for extremity dose" style="cursor:help;color:var(--warning)">&#9888;</span>`
         : '';
@@ -265,71 +302,138 @@
     selectedId = id;
     renderTable();
 
-    const n = DB.getById(id);
+    let n = DB.getById(id);
+    if (!n && ICRP107 && ICRP107.isReady()) {
+      n = ICRP107.get(id);
+      if (n) {
+        n._icrp107 = true;
+        n.symbol = n.id.replace('-', '⁻');
+      }
+    }
     if (!n) return;
 
     const panel = document.getElementById('detailPanel');
     panel.classList.add('visible');
 
-    document.getElementById('detailTitle').textContent = n.name;
+    document.getElementById('detailTitle').textContent = n.id;
     document.getElementById('detailSymbol').textContent = n.symbol;
-    document.getElementById('detailName').textContent   = n.name;
+    document.getElementById('detailName').textContent   = n.id;
     document.getElementById('detailUse').textContent    = n.clinical_use || '—';
 
-    const decayStr = (n.decay_modes || []).map(d =>
-      `${d.mode}${d.fraction < 1 ? ' (' + (d.fraction * 100).toFixed(1) + '%)' : ''}`
-    ).join(', ');
-    const effluentLimit = n.effluent_liquid_components && n.effluent_liquid_components.length
-      ? 'mixture'
-      : fmtNumber(n.effluent_liquid_limit_Bq_per_L);
-    const effluentNote = n.effluent_liquid_components && n.effluent_liquid_components.length
-      ? n.effluent_liquid_components
-          .map(c => `${c.id}: ${fmtNumber(c.effluent_liquid_limit_Bq_per_L)} Bq/L`)
-          .join('; ')
-      : 'Bq/L';
-    const ingestionCoeff = fmtNumber(n.ingestion_dose_coeff_adult_Sv_per_Bq);
+    // For ICRP 107 nuclides, show only basic info
+    if (n._icrp107) {
+      const decayStr = (n.decay_modes || []).map(d => {
+        if (d.mode && d.daughter) return `${d.mode} → ${d.daughter}${d.branching < 1 ? ' (' + (d.branching * 100).toFixed(1) + '%)' : ''}`;
+        return d.mode || '—';
+      }).join(', ');
 
-    document.getElementById('detailProps').innerHTML = `
-      <div class="prop-item">
-        <div class="prop-key">Half-life</div>
-        <div class="prop-val">${n.half_life_display.split(' ').slice(0, -1).join(' ')}</div>
-        <div class="prop-note">${n.half_life_display.split(' ').slice(-1)[0]}</div>
-      </div>
-      <div class="prop-item">
-        <div class="prop-key">Decay mode</div>
-        <div class="prop-val">${decayStr || '—'}</div>
-      </div>
-      <div class="prop-item">
-        <div class="prop-key">Representative &#947; energy</div>
-        <div class="prop-val">${n.representative_energy_keV}</div>
-        <div class="prop-note">keV</div>
-      </div>
-      <div class="prop-item">
-        <div class="prop-key">&#915;<sup>K-air</sup></div>
-        <div class="prop-val">${n.gamma_Kair !== null ? n.gamma_Kair : '—'}</div>
-        <div class="prop-note">&#956;Gy&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;</div>
-      </div>
-      <div class="prop-item">
-        <div class="prop-key">&#915;<sup>H*(10)</sup></div>
-        <div class="prop-val">${n.gamma_H10 !== null ? n.gamma_H10 : '—'}</div>
-        <div class="prop-note">&#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;</div>
-      </div>
-      <div class="prop-item">
-        <div class="prop-key">&#915;<sup>H'(0.07)</sup></div>
-        <div class="prop-val">${n.gamma_H007 !== null ? n.gamma_H007 : '—'}</div>
-        <div class="prop-note">&#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;${n.H007_from_cornejo ? ' &#9888;' : ''}</div>
-      </div>
-      <div class="prop-item">
-        <div class="prop-key">Adult ingestion e(g)</div>
-        <div class="prop-val">${ingestionCoeff}</div>
-        <div class="prop-note">Sv/Bq, ICRP 119 Annex F</div>
-      </div>
-      <div class="prop-item">
-        <div class="prop-key">Liquid effluent limit</div>
-        <div class="prop-val">${effluentLimit}</div>
-        <div class="prop-note">${effluentNote}</div>
-      </div>
-    `;
+      const photonCount = n.photon_count_filtered || 0;
+      const photonNote = photonCount > 0
+        ? `${photonCount} G/X ray${photonCount !== 1 ? 's' : ''} (E≥20keV, yield≥0.01%)`
+        : 'No significant G/X rays';
+
+      document.getElementById('detailProps').innerHTML = `
+        <div class="prop-item">
+          <div class="prop-key">Half-life</div>
+          <div class="prop-val">${n.half_life_display.split(' ').slice(0, -1).join(' ')}</div>
+          <div class="prop-note">${n.half_life_display.split(' ').slice(-1)[0]}</div>
+        </div>
+        <div class="prop-item">
+          <div class="prop-key">Decay mode</div>
+          <div class="prop-val">${decayStr || '—'}</div>
+        </div>
+        <div class="prop-item">
+          <div class="prop-key">Photon emissions</div>
+          <div class="prop-val">${photonNote}</div>
+          <div class="prop-note">Filtered from ICRP 107</div>
+        </div>
+      `;
+
+      // Show photon table for ICRP 107
+      if (n.photons && n.photons.length > 0) {
+        const photonRows = n.photons.map(p => `
+          <tr>
+            <td class="mono">${p.energy_keV}</td>
+            <td class="mono">${p.yield_percent.toFixed(3)}</td>
+            <td class="mono">${p.type}</td>
+          </tr>
+        `).join('');
+
+        document.getElementById('detailProps').innerHTML += `
+          <div style="margin-top:1rem;">
+            <div style="font-weight:600;margin-bottom:0.5rem;">Photon spectrum (filtered):</div>
+            <div class="overflow-x-auto" style="max-height:200px;overflow-y:auto;">
+              <table style="font-size:0.9em;width:100%;">
+                <thead style="position:sticky;top:0;background:var(--bg-elevated);border-bottom:1px solid var(--border);">
+                  <tr>
+                    <th style="padding:0.3rem 0.5rem;text-align:left;border-right:1px solid var(--border);">E [keV]</th>
+                    <th style="padding:0.3rem 0.5rem;text-align:left;border-right:1px solid var(--border);">Yield [%]</th>
+                    <th style="padding:0.3rem 0.5rem;text-align:left;">Type</th>
+                  </tr>
+                </thead>
+                <tbody>${photonRows}</tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+    } else {
+      // Standard nuclide from main database
+      const decayStr = (n.decay_modes || []).map(d =>
+        `${d.mode}${d.fraction < 1 ? ' (' + (d.fraction * 100).toFixed(1) + '%)' : ''}`
+      ).join(', ');
+      const effluentLimit = n.effluent_liquid_components && n.effluent_liquid_components.length
+        ? 'mixture'
+        : fmtNumber(n.effluent_liquid_limit_Bq_per_L);
+      const effluentNote = n.effluent_liquid_components && n.effluent_liquid_components.length
+        ? n.effluent_liquid_components
+            .map(c => `${c.id}: ${fmtNumber(c.effluent_liquid_limit_Bq_per_L)} Bq/L`)
+            .join('; ')
+        : 'Bq/L';
+      const ingestionCoeff = fmtNumber(n.ingestion_dose_coeff_adult_Sv_per_Bq);
+
+      document.getElementById('detailProps').innerHTML = `
+        <div class="prop-item">
+          <div class="prop-key">Half-life</div>
+          <div class="prop-val">${n.half_life_display.split(' ').slice(0, -1).join(' ')}</div>
+          <div class="prop-note">${n.half_life_display.split(' ').slice(-1)[0]}</div>
+        </div>
+        <div class="prop-item">
+          <div class="prop-key">Decay mode</div>
+          <div class="prop-val">${decayStr || '—'}</div>
+        </div>
+        <div class="prop-item">
+          <div class="prop-key">Representative &#947; energy</div>
+          <div class="prop-val">${n.representative_energy_keV}</div>
+          <div class="prop-note">keV</div>
+        </div>
+        <div class="prop-item">
+          <div class="prop-key">&#915;<sup>K-air</sup></div>
+          <div class="prop-val">${n.gamma_Kair !== null ? n.gamma_Kair : '—'}</div>
+          <div class="prop-note">&#956;Gy&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;</div>
+        </div>
+        <div class="prop-item">
+          <div class="prop-key">&#915;<sup>H*(10)</sup></div>
+          <div class="prop-val">${n.gamma_H10 !== null ? n.gamma_H10 : '—'}</div>
+          <div class="prop-note">&#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;</div>
+        </div>
+        <div class="prop-item">
+          <div class="prop-key">&#915;<sup>H'(0.07)</sup></div>
+          <div class="prop-val">${n.gamma_H007 !== null ? n.gamma_H007 : '—'}</div>
+          <div class="prop-note">&#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;${n.H007_from_cornejo ? ' &#9888;' : ''}</div>
+        </div>
+        <div class="prop-item">
+          <div class="prop-key">Adult ingestion e(g)</div>
+          <div class="prop-val">${ingestionCoeff}</div>
+          <div class="prop-note">Sv/Bq, ICRP 119 Annex F</div>
+        </div>
+        <div class="prop-item">
+          <div class="prop-key">Liquid effluent limit</div>
+          <div class="prop-val">${effluentLimit}</div>
+          <div class="prop-note">${effluentNote}</div>
+        </div>
+      `;
+    }
 
     // Links to other calculators
     document.getElementById('btnDecay').href = `decay.html?id=${encodeURIComponent(id)}`;
@@ -338,18 +442,23 @@
     // Notes
     const noteEl = document.getElementById('detailNotes');
     const notes = [];
-    if (n.source && !n.source.startsWith('Cornejo')) {
+
+    if (n._icrp107) {
+      notes.push('⚠ This nuclide is from the ICRP 107 extended database (1251 nuclides). Photon emissions are available from ICRP Publication 107 (2008). Constants have NOT been manually validated. For clinical/regulatory use, verify against primary sources.');
+    }
+
+    if (n.source && !n.source.startsWith('Cornejo') && !n._icrp107) {
       notes.push('Source: ' + n.source);
     } else if (n.H007_from_cornejo) {
       notes.push('H\'(0.07) value from Cornejo et al.: applies when all photon energies < 300 keV and H\'(0.07) > H*(10). Used instead of H*(10) for extremity dose estimation.');
     }
     if (n.effluent_liquid_note) {
       notes.push(n.effluent_liquid_note);
-    } else if (n.effluent_liquid_limit_source) {
+    } else if (n.effluent_liquid_limit_source && !n._icrp107) {
       notes.push('Liquid effluent limit source: ' + n.effluent_liquid_limit_source + '. Calculated as (1 mSv / e(g)) / 600 L.');
     }
     if (notes.length) {
-      noteEl.textContent = notes.join(' ');
+      noteEl.innerHTML = notes.map(note => note).join('<br>');
       noteEl.classList.remove('hidden');
     } else {
       noteEl.classList.add('hidden');
