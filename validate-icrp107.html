@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ICRP 107 Validation — Dose Constants</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { padding: 2rem; max-width: 1200px; margin: 0 auto; }
+    h1 { margin-bottom: 1rem; }
+    .validation-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    .validation-table th, .validation-table td { padding: 0.75rem; text-align: left; border: 1px solid var(--border); }
+    .validation-table th { background: var(--bg-elevated); font-weight: 600; }
+    .validation-table td.num { text-align: right; font-family: monospace; }
+    .validation-table .match { background-color: #4caf50; color: white; }
+    .validation-table .close { background-color: #ff9800; color: white; }
+    .validation-table .diverge { background-color: #f44336; color: white; }
+    .loading { color: var(--text-muted); }
+    .error { color: var(--danger); }
+  </style>
+</head>
+<body>
+  <h1>ICRP 107 Validation: Calculated vs Published Dose Constants</h1>
+  <p>Comparing Γ<sup>H*(10)</sup> values calculated from ICRP 107 photon emissions vs published values from Cornejo et al. (2006).</p>
+
+  <div id="result" class="loading">Loading databases...</div>
+
+  <script src="data/nuclides-data.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/icrp107-loader.js"></script>
+
+  <script>
+    async function validate() {
+      const result = document.getElementById('result');
+
+      try {
+        // Load main database
+        const nuclides = await DB.load();
+
+        // Load ICRP 107 database
+        await ICRP107._ensureLoaded();
+
+        // Test nuclides
+        const testIds = ['F-18', 'Tc-99m', 'I-131', 'Lu-177', 'Ga-68'];
+        const validations = [];
+
+        for (const id of testIds) {
+          const published = DB.getById(id);
+          const icrp = ICRP107.get(id);
+
+          if (!published || !icrp) {
+            validations.push({
+              id,
+              error: `Missing data (DB: ${published ? 'yes' : 'no'}, ICRP: ${icrp ? 'yes' : 'no'})`
+            });
+            continue;
+          }
+
+          // Calculate constants from ICRP 107 photons
+          let calculated = null;
+          if (icrp.photons && icrp.photons.length > 0) {
+            try {
+              calculated = PHYSICS.calcGammaConstants(icrp.photons);
+            } catch (e) {
+              validations.push({
+                id,
+                error: `Calculation failed: ${e.message}`
+              });
+              continue;
+            }
+          }
+
+          if (!calculated) {
+            validations.push({
+              id,
+              error: 'No photons or calculation failed'
+            });
+            continue;
+          }
+
+          const publishedH10 = published.gamma_H10;
+          const calculatedH10 = calculated.gammaH10;
+          const deviation = publishedH10 ? ((calculatedH10 - publishedH10) / publishedH10 * 100) : null;
+
+          validations.push({
+            id,
+            published: publishedH10,
+            calculated: calculatedH10,
+            photonCount: icrp.photons.length,
+            deviation,
+            match: deviation !== null && Math.abs(deviation) < 5,
+            close: deviation !== null && Math.abs(deviation) < 15,
+          });
+        }
+
+        // Render table
+        let html = `
+          <table class="validation-table">
+            <thead>
+              <tr>
+                <th>Nuclide</th>
+                <th>Published Γ<sup>H*(10)</sup><br/>(μSv·h⁻¹·GBq⁻¹·m²)</th>
+                <th>Calculated from ICRP 107<br/>(μSv·h⁻¹·GBq⁻¹·m²)</th>
+                <th>Photon Count</th>
+                <th>Deviation (%)</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+
+        for (const v of validations) {
+          if (v.error) {
+            html += `
+              <tr>
+                <td><strong>${v.id}</strong></td>
+                <td colspan="5" class="error">${v.error}</td>
+              </tr>
+            `;
+          } else {
+            const devStr = v.deviation !== null ? v.deviation.toFixed(2) : '—';
+            let statusClass = '';
+            let statusText = '—';
+            if (v.match) {
+              statusClass = 'match';
+              statusText = '✓ Match (< 5%)';
+            } else if (v.close) {
+              statusClass = 'close';
+              statusText = '~ Close (5–15%)';
+            } else if (v.deviation !== null) {
+              statusClass = 'diverge';
+              statusText = '✗ Diverge (> 15%)';
+            }
+
+            html += `
+              <tr>
+                <td><strong>${v.id}</strong></td>
+                <td class="num">${v.published.toFixed(1)}</td>
+                <td class="num">${v.calculated.toFixed(1)}</td>
+                <td class="num">${v.photonCount}</td>
+                <td class="num">${devStr}</td>
+                <td class="num ${statusClass}">${statusText}</td>
+              </tr>
+            `;
+          }
+        }
+
+        html += '</tbody></table>';
+        result.innerHTML = html;
+      } catch (error) {
+        result.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+        console.error(error);
+      }
+    }
+
+    // Run on page load
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', validate);
+    } else {
+      validate();
+    }
+  </script>
+</body>
+</html>

@@ -380,7 +380,7 @@
     document.getElementById('detailName').textContent   = n.id;
     document.getElementById('detailUse').textContent    = n.clinical_use || '—';
 
-    // For ICRP 107 nuclides, show only basic info
+    // For ICRP 107 nuclides, show info with calculated dose constants
     if (n._icrp107) {
       const decayStr = (n.decay_modes || []).map(d => {
         if (d.mode && d.daughter) return `${d.mode} → ${d.daughter}${d.branching < 1 ? ' (' + (d.branching * 100).toFixed(1) + '%)' : ''}`;
@@ -391,6 +391,21 @@
       const photonNote = photonCount > 0
         ? `${photonCount} G/X ray${photonCount !== 1 ? 's' : ''} (E≥20keV, yield≥0.01%)`
         : 'No significant G/X rays';
+
+      // Calculate dose constants from photons
+      let gammaH10 = '—', gammaH007 = '—', gammaKair = '—';
+      if (n.photons && n.photons.length > 0 && typeof PHYSICS !== 'undefined' && PHYSICS.calcGammaConstants) {
+        try {
+          const constants = PHYSICS.calcGammaConstants(n.photons);
+          if (constants) {
+            gammaH10 = (constants.gammaH10 || constants.gamma_H10 || '—').toString();
+            gammaH007 = (constants.gammaH007 || constants.gamma_H007 || '—').toString();
+            gammaKair = (constants.gammaKair || constants.gamma_Kair || gammaH10); // Fallback to H10
+          }
+        } catch (e) {
+          console.warn('Error calculating dose constants:', e);
+        }
+      }
 
       document.getElementById('detailProps').innerHTML = `
         <div class="prop-item">
@@ -406,6 +421,16 @@
           <div class="prop-key">Photon emissions</div>
           <div class="prop-val">${photonNote}</div>
           <div class="prop-note">Filtered from ICRP 107</div>
+        </div>
+        <div class="prop-item">
+          <div class="prop-key">Γ<sup>H*(10)</sup></div>
+          <div class="prop-val" style="font-family:monospace;">${gammaH10}</div>
+          <div class="prop-note">Calculated from photons</div>
+        </div>
+        <div class="prop-item">
+          <div class="prop-key">Γ<sup>H'(0.07)</sup></div>
+          <div class="prop-val" style="font-family:monospace;">${gammaH007}</div>
+          <div class="prop-note">Extremity dose constant</div>
         </div>
       `;
 

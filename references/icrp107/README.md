@@ -32,9 +32,14 @@ The ICRP 107 data is used as an **extended database** for nuclides not included 
    - Normalizes names ("Lu177" ↔ "Lu-177", "177Lu" ↔ "Lu-177")
    - Calculates gamma dose constants on-demand using `PHYSICS.calcGammaConstants()`
 
-3. **Properties Page** (`index.html`) — Falls back to ICRP 107 when main DB has no match
-   - Shows half-life, decay modes, photon spectrum
-   - Displays banner: "⚠ Extended ICRP 107 database — unvalidated"
+3. **Properties Page** (`index.html`) — Extended search with on-demand dose calculation
+   - Main search first queries `data/nuclides.json` (34 curated nuclides)
+   - If no match found, shows "Search in ICRP 107" button
+   - When ICRP 107 result is selected:
+     - Displays half-life, decay modes, photon spectrum (filtered)
+     - **Automatically calculates** Γ^H*(10) and Γ^H'(0.07) from photon emissions
+     - Shows warning: "⚠ Constants calculated from ICRP 107 emissions — not manually validated"
+     - Photons table shows energy (keV), yield (%), and type (G/X)
 
 ## Gamma Dose Constants
 
@@ -48,6 +53,18 @@ where:
 - $h(E_i)$ = ICRU 57 / ICRP 74 fluence-to-dose conversion coefficient
 
 Constants calculated from ICRP 107 are **informational only**. They are NOT manually validated and should not be used for clinical or regulatory submissions without independent verification.
+
+### Validation Against Published Values
+
+A validation tool (`validate-icrp107.html`) is included to compare constants calculated from ICRP 107 photons against published values from Cornejo et al. (2006) for key nuclides:
+
+- **F-18** — Published: 166 μSv·h⁻¹·GBq⁻¹·m²
+- **Tc-99m** — Published: 21.7 μSv·h⁻¹·GBq⁻¹·m²
+- **I-131** — Published: 65.7 μSv·h⁻¹·GBq⁻¹·m²
+- **Lu-177** — Published: 6.0 μSv·h⁻¹·GBq⁻¹·m²
+- **Ga-68** — Published: 157 μSv·h⁻¹·GBq⁻¹·m²
+
+Access at `validate-icrp107.html` to run the comparison. Deviations < 5% indicate good agreement; 5–15% suggest acceptable approximation; > 15% warrant investigation.
 
 ## Data Quality Notes
 
