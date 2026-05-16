@@ -974,9 +974,9 @@ a:hover { text-decoration: underline; }
 
 /* ---- Keyboard shortcuts ---- */
 kbd {
-  background: var(--gray-200);
-  color: var(--gray-800);
-  border: 1px solid var(--gray-500);
+  background: var(--gray-800);
+  color: var(--white);
+  border: 1px solid rgba(0,0,0,.12);
   border-radius: 3px;
   padding: .1rem .35rem;
   font-family: var(--font-mono);
@@ -986,8 +986,20 @@ kbd {
 .keyboard-hint {
   text-align: right;
   margin-top: 1.5rem;
-  opacity: .6;
   font-size: .82rem;
+  color: var(--gray-900);
+}
+
+/* Dark theme adjustments for keyboard hint and kbd */
+[data-theme="dark"] kbd {
+  background: var(--gray-200);
+  color: var(--gray-900);
+  border: 1px solid var(--gray-700);
+}
+
+[data-theme="dark"] .keyboard-hint {
+  color: var(--gray-100);
+  opacity: .95;
 }
 
 /* ---- Calculation history ---- */

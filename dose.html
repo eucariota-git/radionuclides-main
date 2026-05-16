@@ -39,12 +39,12 @@
     <div class="card-title">&#9881; Source Parameters</div>
     <div class="form-grid">
       <div class="form-group">
-        <label class="form-label" for="nuclideSearch">Radionuclide</label>
+        <label class="form-label" for="nuclideSearch" id="nuclideSearchLabel">Radionuclide</label>
         <div class="nuclide-combobox" id="nuclideCombobox">
-          <input type="search" class="form-input" id="nuclideSearch"
+             <input type="search" class="form-input" id="nuclideSearch"
                  placeholder="Search nuclide (e.g. Lu-177, F-18, Zr-89)…"
-                 autocomplete="off" spellcheck="false" title="Search nuclide">
-          <ul class="nuclide-dropdown hidden" id="nuclideDropdown" role="listbox"></ul>
+                 autocomplete="off" spellcheck="false" title="Search nuclide" aria-labelledby="nuclideSearchLabel">
+             <ul class="nuclide-dropdown hidden" id="nuclideDropdown" role="listbox" aria-labelledby="nuclideSearchLabel" title="Suggested nuclides"></ul>
           <input type="hidden" id="nuclideSelect" value="">
         </div>
       </div>
