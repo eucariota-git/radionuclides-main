@@ -413,6 +413,12 @@
         }
       }
 
+      // Build beta energy display
+      let betaEnergyHtml = '';
+      if (n.e_max_beta_MeV) {
+        betaEnergyHtml += `<div class="prop-item"><div class="prop-key">β E<sub>max</sub></div><div class="prop-val">${n.e_max_beta_MeV.toFixed(4)}</div><div class="prop-note">Endpoint energy (MeV)</div></div>`;
+      }
+
       document.getElementById('detailProps').innerHTML = `
         <div class="prop-item">
           <div class="prop-key">Half-life</div>
@@ -423,6 +429,7 @@
           <div class="prop-key">Decay mode</div>
           <div class="prop-val">${decayStr || '—'}</div>
         </div>
+        ${betaEnergyHtml}
         <div class="prop-item">
           <div class="prop-key">Photon emissions</div>
           <div class="prop-val">${photonNote}</div>
@@ -468,6 +475,25 @@
           </div>
         `;
       }
+
+      // Show ingestion dose and effluent limit for ICRP 107
+      if (n.dose_ingestion_Sv_per_Bq) {
+        const ingestionCoeff = fmtNumber(n.dose_ingestion_Sv_per_Bq);
+        const effluentLimitCalc = ICRP107.calcEffluentLimit ? ICRP107.calcEffluentLimit(n.id) : null;
+        const effluentHtml = effluentLimitCalc !== null
+          ? `<div class="prop-item"><div class="prop-key">Liquid effluent limit</div><div class="prop-val">${fmtNumber(effluentLimitCalc)}</div><div class="prop-note">Bq/L (calculated)</div></div>`
+          : '';
+        document.getElementById('detailProps').innerHTML += `
+          <div style="margin-top:1rem;">
+            <div class="prop-item">
+              <div class="prop-key">Adult ingestion e(g)</div>
+              <div class="prop-val">${ingestionCoeff}</div>
+              <div class="prop-note">Sv/Bq, ICRP 107</div>
+            </div>
+            ${effluentHtml}
+          </div>
+        `;
+      }
     } else {
       // Standard nuclide from main database
       const decayStr = (n.decay_modes || []).map(d =>
@@ -483,6 +509,12 @@
         : 'Bq/L';
       const ingestionCoeff = fmtNumber(n.ingestion_dose_coeff_adult_Sv_per_Bq);
 
+      // Build beta energy display
+      let betaEnergyHtml = '';
+      if (n.e_max_beta_MeV) {
+        betaEnergyHtml += `<div class="prop-item"><div class="prop-key">β E<sub>max</sub></div><div class="prop-val">${n.e_max_beta_MeV.toFixed(4)}</div><div class="prop-note">Endpoint energy (MeV)</div></div>`;
+      }
+
       document.getElementById('detailProps').innerHTML = `
         <div class="prop-item">
           <div class="prop-key">Half-life</div>
@@ -493,6 +525,7 @@
           <div class="prop-key">Decay mode</div>
           <div class="prop-val">${decayStr || '—'}</div>
         </div>
+        ${betaEnergyHtml}
         <div class="prop-item">
           <div class="prop-key">Representative &#947; energy</div>
           <div class="prop-val">${n.representative_energy_keV}</div>
@@ -524,6 +557,42 @@
           <div class="prop-note">${effluentNote}</div>
         </div>
       `;
+
+      // Show photon spectrum table for curated nuclides (from ICRP 107)
+      // Try to get photon data from ICRP 107 if available
+      let photonTable = '';
+      if (ICRP107 && ICRP107.isReady()) {
+        const icrpNuclide = ICRP107.get(n.id);
+        if (icrpNuclide && icrpNuclide.photons && icrpNuclide.photons.length > 0) {
+          const photonRows = icrpNuclide.photons.map(p => `
+            <tr>
+              <td class="mono">${p.energy_keV}</td>
+              <td class="mono">${p.yield_percent.toFixed(3)}</td>
+              <td class="mono">${p.type}</td>
+            </tr>
+          `).join('');
+          photonTable = `
+            <div style="margin-top:1rem;">
+              <div style="font-weight:600;margin-bottom:0.5rem;">Photon spectrum (E≥20keV, yield≥0.01%):</div>
+              <div class="overflow-x-auto" style="max-height:200px;overflow-y:auto;">
+                <table style="font-size:0.9em;width:100%;">
+                  <thead style="position:sticky;top:0;background:var(--bg-elevated);border-bottom:1px solid var(--border);">
+                    <tr>
+                      <th style="padding:0.3rem 0.5rem;text-align:left;border-right:1px solid var(--border);">E [keV]</th>
+                      <th style="padding:0.3rem 0.5rem;text-align:left;border-right:1px solid var(--border);">Yield [%]</th>
+                      <th style="padding:0.3rem 0.5rem;text-align:left;">Type</th>
+                    </tr>
+                  </thead>
+                  <tbody>${photonRows}</tbody>
+                </table>
+              </div>
+            </div>
+          `;
+        }
+      }
+      if (photonTable) {
+        document.getElementById('detailProps').innerHTML += photonTable;
+      }
     }
 
     // Links to other calculators

@@ -157,6 +157,25 @@ const ICRP107 = (function() {
   }
 
   /**
+   * Calculate liquid effluent limit from ingestion dose coefficient
+   * Formula: C_liq [Bq/L] = (1 mSv/year) / (dose_coeff [Sv/Bq] × 600 L/year)
+   *                        = 0.001 / (dose_coeff × 600)
+   *                        = 1.667e-6 / dose_coeff
+   */
+  function calcEffluentLimit(id) {
+    const nuclide = get(id);
+    if (!nuclide) return null;
+
+    const doseCoeff = nuclide.dose_ingestion_Sv_per_Bq;
+    if (!doseCoeff || doseCoeff <= 0) {
+      return null; // No coefficient available (e.g., noble gases)
+    }
+
+    const limit = 0.001 / (doseCoeff * 600);
+    return Math.round(limit * 10) / 10; // Round to 1 decimal place
+  }
+
+  /**
    * Check if data is loaded
    */
   function isReady() {
@@ -171,6 +190,7 @@ const ICRP107 = (function() {
     get,
     normalize,
     calcConstants,
+    calcEffluentLimit,
     isReady,
     // For testing:
     _ensureLoaded: ensureLoaded,

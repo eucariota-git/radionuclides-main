@@ -6,7 +6,11 @@
       "Read(//tmp/**)",
       "Bash(python:*)",
       "Bash(git add:*)",
-      "Bash(git commit -m 'Update Y-90 gamma constant from bremsstrahlung \\(Zanzonico et al., 1999\\):*)"
+      "Bash(git commit -m 'Update Y-90 gamma constant from bremsstrahlung \\(Zanzonico et al., 1999\\):*)",
+      "PowerShell($json = Get-Content 'c:\\\\Users\\\\ramon\\\\MyClaude\\\\radionuclides-main\\\\data\\\\icrp107-index.json' -Raw | ConvertFrom-Json; $lu177 = $json.nuclides | Where-Object { $_.id -eq 'Lu-177' }; if \\($lu177\\) { $lu177 | ConvertTo-Json -Depth 5 } else { Write-Output \"Lu-177 not found\" })",
+      "Bash(node -e \"const fs = require\\('fs'\\); const data = JSON.parse\\(fs.readFileSync\\('data/icrp107-index.json', 'utf8'\\)\\); const ac226 = data.nuclides.find\\(n => n.id === 'Ac-226'\\); console.log\\(JSON.stringify\\({id: ac226.id, e_mean_alpha: ac226.e_mean_alpha_MeV, e_mean_electron: ac226.e_mean_electron_MeV, e_mean_photon: ac226.e_mean_photon_MeV, Z: ac226.Z, e_max_beta: ac226.e_max_beta_MeV}, null, 2\\)\\);\")",
+      "Bash(node -e \"const fs = require\\('fs'\\); const line = fs.readFileSync\\('data/sources/icrp107/ICRP-07.NDX', 'utf8'\\).split\\('\\\\n'\\)[5]; const parts = line.split\\(/\\\\s+/\\).filter\\(p => p\\); console.log\\('Total parts:', parts.length\\); console.log\\('Parts 18-25:', parts.slice\\(18, 26\\)\\);\")",
+      "Bash(node -e \"const fs = require\\('fs'\\); const data = JSON.parse\\(fs.readFileSync\\('data/icrp107-index.json', 'utf8'\\)\\); const ac226 = data.nuclides.find\\(n => n.id === 'Ac-226'\\); console.log\\(JSON.stringify\\({id: ac226.id, e_mean_alpha: ac226.e_mean_alpha_MeV, e_mean_electron: ac226.e_mean_electron_MeV, e_mean_photon: ac226.e_mean_photon_MeV, Z: ac226.Z, atomic_mass: ac226.atomic_mass_u, dose_inh: ac226.dose_inhalation_Sv_per_Bq, dose_ing: ac226.dose_ingestion_Sv_per_Bq, e_max_beta: ac226.e_max_beta_MeV}, null, 2\\)\\);\")"
     ]
   }
 }
