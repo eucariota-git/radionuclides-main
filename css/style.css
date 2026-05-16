@@ -720,6 +720,90 @@ a:hover { text-decoration: underline; }
   width: 80px;
 }
 
+/* Nuclide combobox */
+.nuclide-combobox {
+  position: relative;
+}
+
+.nuclide-dropdown {
+  position: absolute; top: 100%; left: 0; right: 0; z-index: 200;
+  background: var(--gray-100);
+  border: 1px solid var(--gray-500);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  max-height: 260px;
+  overflow-y: auto;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}
+
+[data-theme="dark"] .nuclide-dropdown {
+  background: var(--gray-200);
+  border-color: var(--gray-700);
+}
+
+.nuclide-dropdown.hidden {
+  display: none;
+}
+
+.nuclide-option {
+  display: flex;
+  align-items: baseline;
+  gap: .75rem;
+  padding: .4rem .75rem;
+  cursor: pointer;
+  font-size: .875rem;
+  color: var(--gray-800);
+}
+
+[data-theme="dark"] .nuclide-option {
+  color: var(--gray-900);
+}
+
+.nuclide-option:hover,
+.nuclide-option:focus {
+  background: var(--green-100);
+  outline: none;
+  font-weight: 600;
+}
+
+[data-theme="dark"] .nuclide-option:hover,
+[data-theme="dark"] .nuclide-option:focus {
+  background: var(--green-100);
+  color: var(--gray-900);
+}
+
+.nuclide-opt-id {
+  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: .95rem;
+}
+
+.nuclide-opt-meta {
+  color: var(--gray-700);
+  font-size: .8rem;
+}
+
+[data-theme="dark"] .nuclide-opt-meta {
+  color: var(--gray-500);
+}
+
+.tag-icrp107 {
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-size: .7rem;
+  padding: .1rem .4rem;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+[data-theme="dark"] .tag-icrp107 {
+  background: #0c3b66;
+  color: #93d5ff;
+}
+
 .overflow-x-auto {
   overflow-x: auto;
 }

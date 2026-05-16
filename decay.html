@@ -35,10 +35,14 @@
     <div class="card-title">&#9881; Parameters</div>
     <div class="form-grid">
       <div class="form-group">
-        <label class="form-label">Radionuclide</label>
-        <select class="form-select" id="nuclideSelect" title="Radionuclide">
-          <option value="">Loading…</option>
-        </select>
+        <label class="form-label" for="nuclideSearch">Radionuclide</label>
+        <div class="nuclide-combobox" id="nuclideCombobox">
+          <input type="search" class="form-input" id="nuclideSearch"
+                 placeholder="Search nuclide (e.g. Lu-177, F-18, Zr-89)…"
+                 autocomplete="off" spellcheck="false" title="Search nuclide">
+          <ul class="nuclide-dropdown hidden" id="nuclideDropdown" role="listbox"></ul>
+          <input type="hidden" id="nuclideSelect" value="">
+        </div>
       </div>
       <div class="form-group">
         <label class="form-label">Initial Activity A&#8320;</label>
@@ -163,6 +167,8 @@
 <script src="js/physics.js"></script>
 <script src="js/db.js"></script>
 <script src="js/ui.js"></script>
+<script src="data/icrp107-data.js"></script>
+<script src="js/icrp107-loader.js"></script>
 <script>
 (async () => {
   // ---- UI initialization ----
@@ -170,17 +176,100 @@
   UI.initPrint();
   UI.initKeyboard();
   await DB.load();
-  const nuclides = DB.getAll();
+  await ICRP107._ensureLoaded().catch(err => console.warn('ICRP107 not available:', err));
 
-  // ---- Populate select ----
-  const sel = document.getElementById('nuclideSelect');
-  sel.innerHTML = nuclides.map(n =>
-    `<option value="${n.id}">${n.symbol} — ${n.name} (T½: ${n.half_life_display})</option>`
-  ).join('');
+  // ---- Nuclide resolution function ----
+  function resolveNuclide(id) {
+    const dbNuclide = DB.getById(id);
+    if (dbNuclide) return dbNuclide;
 
-  // Pre-select from URL
+    const icrpN = ICRP107.get(id);
+    if (!icrpN) return null;
+
+    const constants = ICRP107.calcConstants(id);
+    if (!constants) return null;
+
+    return {
+      id: icrpN.id,
+      symbol: icrpN.id,
+      name: icrpN.id,
+      half_life_s: icrpN.half_life_s,
+      half_life_display: icrpN.half_life_display,
+      gamma_H10: constants.gamma_H10,
+      gamma_H007: constants.gamma_H007,
+      gamma_Kair: constants.gamma_Kair,
+      _icrp107: true,
+      source: 'ICRP 107 (calculated)',
+    };
+  }
+
+  // ---- Combobox initialization ----
+  const searchInput  = document.getElementById('nuclideSearch');
+  const hiddenSelect = document.getElementById('nuclideSelect');
+  const dropdown     = document.getElementById('nuclideDropdown');
+  const dbNuclides   = DB.getAll();
+  let selectedNuclide = null;
+
+  function showDropdown(results) {
+    dropdown.innerHTML = results.map(n =>
+      `<li class="nuclide-option" role="option" data-id="${n.id}" tabindex="-1">
+         <span class="nuclide-opt-id">${n.id}</span>
+         <span class="nuclide-opt-meta">T½ ${n.half_life_display}${n._icrp107 ? ' · ICRP 107' : ''}</span>
+       </li>`
+    ).join('');
+    dropdown.classList.toggle('hidden', results.length === 0);
+  }
+
+  function selectNuclide(id) {
+    const n = resolveNuclide(id);
+    if (!n) return;
+    selectedNuclide = n;
+    hiddenSelect.value = id;
+    searchInput.value = id;
+    dropdown.classList.add('hidden');
+  }
+
+  searchInput.addEventListener('focus', () => {
+    const q = searchInput.value.trim();
+    if (!q) showDropdown(dbNuclides.map(n => ({...n, _icrp107: false})));
+  });
+
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.trim();
+    hiddenSelect.value = '';
+    selectedNuclide = null;
+    if (!q) { showDropdown(dbNuclides.map(n => ({...n, _icrp107: false}))); return; }
+
+    const dbResults   = DB.search(q).map(n => ({...n, _icrp107: false}));
+    const icrpResults = ICRP107.isReady()
+      ? ICRP107.search(q).filter(n => !DB.getById(n.id)).map(n => ({...n, _icrp107: true}))
+      : [];
+    showDropdown([...dbResults, ...icrpResults].slice(0, 20));
+  });
+
+  dropdown.addEventListener('click', e => {
+    const li = e.target.closest('[data-id]');
+    if (li) selectNuclide(li.dataset.id);
+  });
+
+  document.addEventListener('click', e => {
+    if (!document.getElementById('nuclideCombobox').contains(e.target)) {
+      dropdown.classList.add('hidden');
+    }
+  });
+
+  searchInput.addEventListener('keydown', e => {
+    const items = [...dropdown.querySelectorAll('[data-id]')];
+    const idx = items.indexOf(document.activeElement);
+    if (e.key === 'ArrowDown') { e.preventDefault(); (items[idx+1] || items[0])?.focus(); }
+    if (e.key === 'ArrowUp')   { e.preventDefault(); (items[idx-1] || items[items.length-1])?.focus(); }
+    if (e.key === 'Escape')    { dropdown.classList.add('hidden'); searchInput.focus(); }
+    if (e.key === 'Enter' && items[idx]) { selectNuclide(items[idx].dataset.id); }
+  });
+
   const urlId = new URLSearchParams(location.search).get('id');
-  if (urlId) sel.value = urlId;
+  if (urlId) selectNuclide(urlId);
+  else selectNuclide(dbNuclides[0]?.id);
 
   // Set default datetime to now
   const now = new Date();
@@ -202,8 +291,8 @@
   }
 
   function calculate() {
-    const n = DB.getById(sel.value);
-    if (!n) return;
+    const n = selectedNuclide || resolveNuclide(hiddenSelect.value);
+    if (!n) { alert('Select a valid nuclide first.'); return; }
 
     const A0raw    = parseFloat(document.getElementById('A0').value);
     const A0unit   = document.getElementById('A0unit').value;
@@ -241,8 +330,11 @@
     const card = document.getElementById('resultsCard');
     card.classList.remove('hidden');
 
+    const sourceTag = n._icrp107
+      ? `<span class="tag tag-icrp107" title="Decay data from ICRP 107">ICRP 107</span>`
+      : '';
     document.getElementById('nuclideInfo').innerHTML =
-      `<strong>${n.symbol} — ${n.name}</strong> &nbsp;|&nbsp; T&#189; = ${n.half_life_display} &nbsp;|&nbsp;
+      `<strong>${n.symbol} — ${n.name}</strong> ${sourceTag} &nbsp;|&nbsp; T&#189; = ${n.half_life_display} &nbsp;|&nbsp;
        &lambda; = ${CALC.lambda(T_half_h).toExponential(3)} h&#8315;&#185;`;
 
     document.getElementById('resultGrid').innerHTML = `

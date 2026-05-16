@@ -530,13 +530,10 @@
     const btnDecay = document.getElementById('btnDecay');
     const btnDose = document.getElementById('btnDose');
     const calcButtons = btnDecay.parentElement;
-    if (n._icrp107) {
-      calcButtons.classList.add('hidden');
-    } else {
-      calcButtons.classList.remove('hidden');
-      btnDecay.href = `decay.html?id=${encodeURIComponent(id)}`;
-      btnDose.href  = `dose.html?id=${encodeURIComponent(id)}`;
-    }
+    // Both Cornejo and ICRP 107 nuclides support both calculators
+    calcButtons.classList.remove('hidden');
+    btnDecay.href = `decay.html?id=${encodeURIComponent(id)}`;
+    btnDose.href  = `dose.html?id=${encodeURIComponent(id)}`;
 
     // Notes
     const noteEl = document.getElementById('detailNotes');
