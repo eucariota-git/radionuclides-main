@@ -1,0 +1,24 @@
+::1 - - [16/May/2026 09:58:18] "GET /dose.html HTTP/1.1" 200 -
+::1 - - [16/May/2026 10:00:10] "GET /dose.html HTTP/1.1" 200 -
+::1 - - [16/May/2026 10:00:10] "GET /css/style.css HTTP/1.1" 200 -
+::1 - - [16/May/2026 10:00:10] "GET /data/nuclides-data.js HTTP/1.1" 200 -
+::1 - - [16/May/2026 10:00:10] "GET /js/physics.js HTTP/1.1" 200 -
+::1 - - [16/May/2026 10:00:10] "GET /js/data.js HTTP/1.1" 200 -
+::1 - - [16/May/2026 10:00:10] "GET /js/db.js HTTP/1.1" 200 -
+::1 - - [16/May/2026 10:00:10] "GET /js/ui.js HTTP/1.1" 200 -
+::1 - - [16/May/2026 10:00:10] "GET /data/icrp107-data.js HTTP/1.1" 200 -
+::1 - - [16/May/2026 10:00:10] "GET /js/icrp107-loader.js HTTP/1.1" 200 -
+::1 - - [16/May/2026 10:00:11] "GET /data/nuclides.json HTTP/1.1" 200 -
+::1 - - [16/May/2026 10:00:11] code 404, message File not found
+::1 - - [16/May/2026 10:00:11] "GET /favicon.ico HTTP/1.1" 404 -
+::1 - - [16/May/2026 10:00:13] "GET /index.html HTTP/1.1" 200 -
+::1 - - [16/May/2026 10:00:34] "GET /decay.html HTTP/1.1" 200 -
+::1 - - [16/May/2026 10:00:34] "GET /css/style.css HTTP/1.1" 304 -
+::1 - - [16/May/2026 10:02:35] "GET /index.html HTTP/1.1" 200 -
+::1 - - [16/May/2026 10:02:45] "GET /index.html HTTP/1.1" 200 -
+::1 - - [16/May/2026 10:02:45] "GET /css/style.css HTTP/1.1" 304 -
+::1 - - [16/May/2026 10:02:56] "GET /dose.html?id=Zr-89 HTTP/1.1" 200 -
+::1 - - [16/May/2026 10:03:02] "GET /index.html HTTP/1.1" 304 -
+::1 - - [16/May/2026 10:04:32] "GET /decay.html HTTP/1.1" 200 -
+::1 - - [16/May/2026 10:04:43] "GET /index.html HTTP/1.1" 200 -
+::1 - - [16/May/2026 10:04:43] "GET /css/style.css HTTP/1.1" 304 -
