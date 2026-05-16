@@ -54,11 +54,11 @@
             <th>T&#189;</th>
             <th>Decay</th>
             <th>Modality</th>
-            <th class="has-tooltip tooltip-up" data-tooltip="Air kerma rate constant. Photon field intensity at 1 m from 1 GBq. Units: μGy·h⁻¹·GBq⁻¹·m². Source: Cornejo (2006).">&#915;<sup>K-air</sup></th>
-            <th class="has-tooltip tooltip-up" data-tooltip="Ambient dose equivalent rate constant. Whole-body dose at d ≥ 25 cm. Derived from ICRU 57 / ICRP 74. Units: μSv·h⁻¹·GBq⁻¹·m².">&#915;<sup>H*(10)</sup></th>
-            <th class="has-tooltip tooltip-up" data-tooltip="Directional dose equivalent (0.07 mm depth). Extremity dose at d < 25 cm. Units: μSv·h⁻¹·GBq⁻¹·m².">&#915;<sup>H'(0.07)</sup></th>
-            <th>Rep. energy</th>
-            <th class="has-tooltip tooltip-up" data-tooltip="Controlled liquid effluent concentration limit calculated from IS-28 Annex II II.A.4 using ICRP 119 adult ingestion coefficients. Units: Bq/L.">Liquid effluent</th>
+            <th class="has-tooltip tooltip-up" data-tooltip="Air kerma rate constant. Photon field intensity at 1 m from 1 GBq. Units: μGy·h⁻¹·GBq⁻¹·m². Source: Cornejo (2006).">&#915;<sup>K-air</sup><span class="th-unit">μGy·h⁻¹·GBq⁻¹·m²</span></th>
+            <th class="has-tooltip tooltip-up" data-tooltip="Ambient dose equivalent rate constant. Whole-body dose at d ≥ 25 cm. Derived from ICRU 57 / ICRP 74. Units: μSv·h⁻¹·GBq⁻¹·m².">&#915;<sup>H*(10)</sup><span class="th-unit">μSv·h⁻¹·GBq⁻¹·m²</span></th>
+            <th class="has-tooltip tooltip-up" data-tooltip="Directional dose equivalent (0.07 mm depth). Extremity dose at d < 25 cm. Units: μSv·h⁻¹·GBq⁻¹·m².">&#915;<sup>H'(0.07)</sup><span class="th-unit">μSv·h⁻¹·GBq⁻¹·m²</span></th>
+            <th>Rep. energy<span class="th-unit">keV</span></th>
+            <th class="has-tooltip tooltip-up" data-tooltip="Controlled liquid effluent concentration limit calculated from IS-28 Annex II II.A.4 using ICRP 119 adult ingestion coefficients. Units: Bq/L.">Liquid effluent<span class="th-unit">Bq/L</span></th>
             <th>Source</th>
           </tr>
         </thead>
@@ -295,7 +295,7 @@
         <td class="num">${fmtGamma(n.gamma_Kair)}</td>
         <td class="num">${fmtGamma(n.gamma_H10)}</td>
         <td class="num">${fmtGamma(n.gamma_H007)}${h007note}</td>
-        <td class="num">${n.representative_energy_keV} keV</td>
+        <td class="num">${n.representative_energy_keV}</td>
         <td class="num">${fmtEffluentLimit(n)}</td>
         <td class="text-sm">${n._custom ? '<em>custom</em>' : n.source && !n.source.startsWith('Cornejo') ? 'Calc.' : 'Cornejo'}</td>
       </tr>`;
