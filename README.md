@@ -102,6 +102,7 @@ js/physics.js       CALC module — decay, dose, Archer/narrow-beam transmission
 js/db.js            DB module — nuclide database management
 js/csv-parser.js    CSV_PARSER module — IAEA LiveChart format
 js/icrp107-loader.js   ICRP107 module — extended database search and dose calculation
+js/ui.js            UI module — dark mode, print, keyboard shortcuts, history management
 
 data/nuclides.json  Radionuclide database (directly editable)
 data/nuclides-data.js  Auto-generated from nuclides.json (for file:// compatibility)
@@ -111,6 +112,7 @@ data/icrp107-data.js     Embedded ICRP 107 data for file:// compatibility
 data/sources/icrp107/   ICRP Publication 107 source files (NDX, RAD, BET)
 
 tools/parse-icrp107.js  Parser for ICRP 107 files (generates icrp107-index.json)
+tools/recalc-gamma.js   Recalculates dose rate constants Γ from photon emissions using ICRU 57 / ICRP 74
 
 references/         Source articles (Cornejo 2006, Oumano 2025, ICRP 107)
 ```
