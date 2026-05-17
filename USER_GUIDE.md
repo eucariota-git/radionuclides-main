@@ -37,7 +37,7 @@ The application has no installation or authentication. Simply open the link abov
 3. **Clinical use**: See modality and intended clinical applications
 4. **Export**: Download the table as CSV
 
-**Main database**: 34 radionuclides from **Cornejo et al. (2006)** — peer-reviewed, manually validated values.
+**Main database**: 32 radionuclides primarily from **Cornejo et al. (2006)** plus **Ga-68** and **Y-90** as additions. Some operational values recalculated from ICRP 107 photon data; published Cornejo values preserved in `cornejo_validation`.
 
 #### Extended Database — ICRP 107
 
@@ -220,9 +220,10 @@ Toggle dark/light mode using the **moon icon** (🌙) in the top-right corner. P
 ## Data Quality & Limitations
 
 ### Main Database (34 nuclides)
-- **Source**: Cornejo et al. (2006) — peer-reviewed journal article
-- **Validation**: Manually reviewed and compared against literature
-- **Use case**: Clinical and regulatory submissions (with verification)
+- **Primary source**: Cornejo et al. (2006) for 32 nuclides (ΓKair matches published table)
+- **Additional nuclides**: Ga-68 (ICRU 57 / ICRP 74) and Y-90 (Zanzonico et al. 1999)
+- **Note**: Operational Γ H*(10) / H'(0.07) values use ICRP 107 nuclear data; Cornejo published values stored in `cornejo_validation` for traceability
+- **Use case**: Radiation protection estimation; verify against primary sources for regulatory submissions
 
 ### Extended Database (1,252 nuclides from ICRP 107)
 - **Source**: ICRP Publication 107 (2008) — official decay data compilation

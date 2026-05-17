@@ -145,11 +145,10 @@ http://localhost:8000
 
 2. Regenerate `data/nuclides-data.js` for offline support:
    ```bash
-   # JavaScript (in browser console)
-   const json = JSON.stringify(NUCLIDE_DATA); // Copy from console
-   // Then replace contents of nuclides-data.js with:
-   // const NUCLIDE_DATA = { /* ... */ };
+   node tools/generate-data.js
    ```
+   This wraps `nuclides.json` as a JavaScript variable without modifying any data.
+   **Do not use `tools/recalc-gamma.js`** for this purpose — see tools/recalc-gamma.js warning.
 
 3. Test both online and offline (`file://` protocol)
 

@@ -107,7 +107,7 @@
 
         // Render table
         let html = `
-          <p><strong>Validation against Cornejo et al. 2006 (independent reference):</strong></p>
+          <p><strong>Validation against published reference values (Cornejo et al. 2006 and ICRP 107 recalculations):</strong></p>
           <table class="validation-table">
             <thead>
               <tr>
@@ -147,10 +147,11 @@
               statusText = '✗ Diverge (> 15%)';
             }
 
+            const isNonCornejo = ['Ga-68'].includes(v.id);
             html += `
               <tr>
                 <td><strong>${v.id}</strong></td>
-                <td class="num">${v.cornejo ? v.cornejo.toFixed(1) : '—'}</td>
+                <td class="num">${v.cornejo ? v.cornejo.toFixed(1) : '—'}${isNonCornejo ? '<br><span class="text-muted" style="font-size:0.8em">(not in Cornejo)</span>' : ''}</td>
                 <td class="num">${v.calculated.toFixed(1)}</td>
                 <td class="num">${v.photonCount}</td>
                 <td class="num">${devStr}</td>

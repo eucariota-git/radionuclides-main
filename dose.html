@@ -444,7 +444,11 @@
     // Select dose rate constant based on distance
     const isExtremity = d_m < 0.25;
     const gammaWB  = n.gamma_H10;
-    const gammaExt = (n.gamma_H007 && n.gamma_H007 > n.gamma_H10) ? n.gamma_H007 : n.gamma_H10;
+    const useH007 = n.gamma_H007
+      && n.gamma_H007 > n.gamma_H10
+      && n.representative_energy_keV
+      && n.representative_energy_keV < 300;
+    const gammaExt = useH007 ? n.gamma_H007 : n.gamma_H10;
     const shieldMethod = (mat !== 'none' && thick > 0)
       ? (ap ? 'Archer (broad beam, Oumano et al. 2025)' : 'Narrow beam (fallback)')
       : null;
@@ -460,7 +464,10 @@
       `<strong>${n.symbol} — ${n.name}</strong> ${sourceTag} &nbsp;|&nbsp; T&#189; = ${n.half_life_display} &nbsp;|&nbsp;
        A&#8320; = ${A0raw} ${A0unit} (${A0_GBq.toPrecision(4)} GBq) &nbsp;|&nbsp;
        d = ${d_m} m &nbsp;|&nbsp; t = ${t_h.toFixed(2)} h/admin &nbsp;|&nbsp; n = ${nAdmin} admin/y &nbsp;|&nbsp; patient Tx = ${(patientTx*100).toFixed(1)}% &nbsp;|&nbsp;
-       &#915;<sup>H*(10)</sup> = ${gammaWB} &nbsp;|&nbsp; &#915;<sup>H'(0.07)</sup> = ${gammaExt} &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;`;
+       &#915;<sup>H*(10)</sup> = ${gammaWB} &nbsp;|&nbsp; ${useH007
+         ? `&#915;<sup>H'(0.07)</sup> = ${gammaExt}`
+         : `&#915;<sup>H'(0.07)</sup> = ${n.gamma_H007 ?? '—'} <span style="color:var(--text-muted)">(H*(10) used as conservative)</span>`
+       } &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;`;
 
     // Dose rate at t=0 (at 1 m)
     const Hdot_WB  = CALC.doseRate(gammaWB,  A0_GBq, 1, thick, E_MeV, mat, ap) * patientTx;
@@ -516,7 +523,10 @@
         <td class="num">${fmtR(Hdot_Ext_t)}</td>
         <td class="num">${fmt(H_Ext_cum * nAdmin)}</td>
         <td class="text-sm text-muted">
-          &#915;<sup>H'(0.07)</sup> = ${gammaExt} &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;
+          &#915;${useH007
+            ? `<sup>H'(0.07)</sup> = ${gammaExt}`
+            : `<sup>H*(10)</sup> = ${gammaExt} <span class="text-muted">(conservative — H'(0.07) not applicable)</span>`
+          } &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;
           ${n.H007_from_cornejo ? '<br><span style="color:var(--warning);">&#9888; H\'(0.07) from Cornejo et al.</span>' : ''}
         </td>
       </tr>
@@ -546,6 +556,18 @@
       `;
     } else {
       shieldEl.classList.add('hidden');
+    }
+
+    // Check for pure beta emitters (no photon dose)
+    if (!gammaWB || gammaWB === 0) {
+      document.getElementById('distChartContainer').innerHTML = `
+        <div class="alert alert-warning" style="margin-top:1rem;">
+          <strong>Y-90 is a pure β⁻ emitter</strong><br>
+          External dose estimation for pure beta emitters requires bremsstrahlung data specific to the container geometry.
+          See Zanzonico et al. (J Nucl Med 40(6), 1999).
+        </div>
+      `;
+      return;
     }
 
     // ---- Dose vs distance chart ----
