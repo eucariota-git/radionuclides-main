@@ -1,5 +1,24 @@
 #!/usr/bin/env node
 
+/**
+ * ⚠️ WARNING ⚠️
+ *
+ * This script recalculates dose rate constants (gamma) from ICRP 107 photon emissions
+ * using ICRU 57 conversion coefficients. It then OVERWRITES nuclides.json with the
+ * calculated values and stores the PREVIOUS values in cornejo_validation.
+ *
+ * DANGER: If executed carelessly, this destroys the published Cornejo et al. 2006
+ * reference values that are critical for data integrity and validation.
+ *
+ * DO NOT RUN ROUTINELY. Only use this script if:
+ *   - You are explicitly auditing gamma constants against ICRP 107
+ *   - You have backed up nuclides.json
+ *   - You understand the implications of overwriting cornejo_validation
+ *
+ * FOR ROUTINE DATA SYNCHRONIZATION: Use tools/generate-data.js instead.
+ * It only wraps nuclides.json as JavaScript without modifying any data.
+ */
+
 const fs = require('fs');
 const path = require('path');
 

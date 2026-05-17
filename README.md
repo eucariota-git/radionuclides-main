@@ -12,7 +12,9 @@ Target users: medical physicists and radiation protection specialists.
 
 ### Properties (`index.html`)
 - Database of 34 radionuclides used in nuclear medicine (PET, SPECT, therapy, brachytherapy)
-- Dose rate constants Γ^H\*(10) and Γ^H'(0.07) from Cornejo et al. (2006)
+  - 32 nuclides: dose rate constants from Cornejo et al. (2006)
+  - 2 nuclides (Ga-68, Y-90): additions with recalculated constants using ICRP 107 photon data and ICRU 57 conversion coefficients
+  - Note: Some values differ from Cornejo due to updated nuclear data in ICRP 107; published Cornejo values are preserved in `cornejo_validation` field
 - Controlled liquid effluent concentration limits calculated from IS-28 and ICRP 119 adult ingestion coefficients
 - Filterable by category and modality
 
@@ -69,7 +71,8 @@ T(x) = e^(−μx)
 
 | Data | Source |
 |------|--------|
-| Γ^H\*(10), Γ^H'(0.07) constants (34 nuclides) | Cornejo et al., *Rev. Fis. Med.* 2006 |
+| Γ^H\*(10), Γ^H'(0.07) constants (32 curated nuclides) | Cornejo et al., *Rev. Fis. Med.* 2006 |
+| Γ^H\*(10), Γ^H'(0.07) constants (Ga-68, Y-90, + recalculations) | ICRP 107 photon data + ICRU 57 conversion coefficients |
 | Fluence-to-dose coefficients h\*(10), h'(0.07) | ICRP Publication 74 / ICRU 57 |
 | Adult ingestion dose coefficients and liquid effluent limits | ICRP Publication 119 Annex F / IS-28 Annex II |
 | Mass attenuation coefficients | NIST XCOM |

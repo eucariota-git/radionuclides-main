@@ -319,7 +319,7 @@
       const h007 = PHYSICS.getH007(em.energy_keV / 1000).toFixed(3);
       const meetsLabel = meets
         ? '<span class="meets-yes">&#10003; Yes</span>'
-        : `<span class="meets-no">&#10007; ${em.energy_keV < 20 ? 'E<20keV' : em.yield_percent < 0.01 ? 'yield<0.01%' : 'not G/X'}</span>`;
+        : `<span class="meets-no">&#10007; ${em.energy_keV < 20 ? 'E<20keV' : em.yield_percent < 0.01 ? 'yield<0.01%' : 'not G/X/AQ'}</span>`;
       if (meets) included++;
       rows += `<tr ${rowCls}>
         <td><input type="checkbox" class="em-check" data-idx="${unique.indexOf(em)}" ${checked}></td>
@@ -337,7 +337,7 @@
     }
     document.getElementById('emissionsBody').innerHTML = rows;
     document.getElementById('emissionsCount').textContent =
-      `${unique.length} unique emission lines | ${included} meet Cornejo et al. criteria (E ≥ 20 keV, yield ≥ 0.01%, type G or X)`;
+      `${unique.length} unique emission lines | ${included} meet Cornejo et al. criteria (E ≥ 20 keV, yield ≥ 0.01%, type G, X or AQ)`;
 
     window._parsedUnique = unique;
   }

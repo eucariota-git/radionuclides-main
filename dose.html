@@ -444,7 +444,7 @@
     // Select dose rate constant based on distance
     const isExtremity = d_m < 0.25;
     const gammaWB  = n.gamma_H10;
-    const gammaExt = n.gamma_H007 || n.gamma_H10;
+    const gammaExt = (n.gamma_H007 && n.gamma_H007 > n.gamma_H10) ? n.gamma_H007 : n.gamma_H10;
     const shieldMethod = (mat !== 'none' && thick > 0)
       ? (ap ? 'Archer (broad beam, Oumano et al. 2025)' : 'Narrow beam (fallback)')
       : null;

@@ -32,14 +32,13 @@
   <script src="js/icrp107-loader.js"></script>
 
   <script>
-    // Cornejo et al. 2006 reference values (independent source)
-    // These are the published values from the original article
+    // Cornejo et al. 2006 reference values (from cornejo_validation in nuclides.json)
     const CORNEJO_REFERENCE = {
-      'F-18':    { gammaH10: 18.0 },
+      'F-18':    { gammaH10: 166 },
       'Tc-99m':  { gammaH10: 21.7 },
-      'I-131':   { gammaH10: 63.0 },
-      'Lu-177':  { gammaH10: 108.0 },
-      'Ga-68':   { gammaH10: 157.0 }
+      'I-131':   { gammaH10: 65.7 },
+      'Lu-177':  { gammaH10: 6 },
+      'Ga-68':   { gammaH10: 157 }
     };
 
     async function validate() {
