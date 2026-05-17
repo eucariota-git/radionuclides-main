@@ -68,9 +68,11 @@
       </table>
     </div>
     <p class="text-sm text-muted mt-1">
-      Dose rate constants from Cornejo et al. (2006). Energy threshold &#948; = 20 keV, yield &ge; 0.01%.
+      Dose rate constants primarily from Cornejo et al. (2006); some values recalculated using ICRP 107 photon emissions and ICRU 57 conversion coefficients.
+      Energy threshold &#948; = 20 keV, yield &ge; 0.01%.
       Units: &#915;<sup>K-air</sup> in &#181;Gy&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;;
       &#915;<sup>H*(10)</sup> and &#915;<sup>H'(0.07)</sup> in &#181;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;.
+      Published Cornejo values are preserved in <code>cornejo_validation</code> field for reference.
     </p>
   </div>
 
@@ -99,9 +101,10 @@
   <div class="card mt-2">
     <div class="card-title">Reference & Data Notes</div>
     <ul class="text-sm ref-list" id="refList">
-      <li><strong>Cornejo et al.</strong> — primary source for &#915;<sup>H*(10)</sup> values for 32 nuclides.</li>
-      <li>&#915;<sup>H'(0.07)</sup> values in parentheses from Cornejo et al. apply when all photon energies &lt; 300 keV and H'(0.07) > H*(10). Used for extremity dose estimation.</li>
-      <li><strong>Ga-68</strong> constant calculated using ICRU 57 / ICRP 74 methodology. <strong>Y-90</strong> constant from Zanzonico et al. (J Nucl Med 40(6), 1999) — bremsstrahlung in 10 mm PMMA container.</li>
+      <li><strong>32 nuclides:</strong> primary source from Cornejo et al. (2006). Some values differ from published Cornejo due to more recent ICRP 107 nuclear decay data.</li>
+      <li><strong>2 nuclides:</strong> <strong>Ga-68</strong> and <strong>Y-90</strong> are additions beyond Cornejo et al. Ga-68 calculated using ICRU 57 / ICRP 74. Y-90 from Zanzonico et al. (J Nucl Med 40(6), 1999) — bremsstrahlung in PMMA container.</li>
+      <li>&#915;<sup>H'(0.07)</sup> used for extremity dose (d &lt; 25 cm) only when H'(0.07) > H*(10) and all photon energies &lt; 300 keV; otherwise H*(10) is conservatively applied.</li>
+      <li><strong>Published Cornejo values</strong> preserved in <code>cornejo_validation</code> field for audit trail. Differences from Cornejo indicate use of updated nuclear data.</li>
       <li><strong>Liquid effluent limits</strong> calculated from IS-28 Annex II II.A.4 using ICRP 119 Annex F adult ingestion coefficients: (1 mSv / e(g)) / 600 L.</li>
       <li>The JSON database (<code>data/nuclides.json</code>) can be edited directly to update or add values.</li>
     </ul>
