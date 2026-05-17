@@ -185,7 +185,7 @@ const CSV_PARSER = (() => {
     return emissions.filter(e =>
       e.energy_keV >= 20 &&
       e.yield_percent >= 0.01 &&
-      ['G', 'X'].includes(e.type.toUpperCase())
+      ['G', 'X', 'AQ'].includes(e.type.toUpperCase())
     );
   }
 

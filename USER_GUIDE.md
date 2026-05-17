@@ -94,7 +94,7 @@ The application includes an **extended database of 1,252 radionuclides** from IC
 
 **Example**:
 - Initial: 1000 MBq Tc-99m
-- After 6 hours: 884 MBq (89% of initial)
+- After 6 hours: ~501 MBq (50% of initial, approximately one half-life)
 - Time to reach 100 MBq: 20.6 hours
 
 ---
@@ -133,9 +133,9 @@ The application includes an **extended database of 1,252 radionuclides** from IC
    - Shows **status**: ✓ Safe | ⚠ Caution | ✗ Exceeds limit
 
 **Example**:
-- 100 MBq Tc-99m at 50 cm: 38.8 μSv/h
-- With 5 mm lead shielding: 3.9 μSv/h (90% reduction)
-- 200 administrations/year with 5mm lead: 1.6 mSv/year (Safe)
+- 100 MBq Tc-99m at 50 cm: ~8.7 μSv/h (Γ = 21.7 μSv·h⁻¹·GBq⁻¹·m²)
+- With 5 mm lead shielding: ~0.9 μSv/h (~90% reduction)
+- 200 administrations/year with 5mm lead: ~1.6 mSv/year (Safe)
 
 ---
 

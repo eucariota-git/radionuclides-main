@@ -558,7 +558,7 @@
       const E = em.energy_keV / 1000;
       const n = em.yield_percent / 100;
       if (E < 0.020 || n < 0.0001) continue;
-      if (!['G','X','g','x'].includes(em.type)) continue;
+      if (!['G','X','AQ','g','x','aq'].includes(em.type)) continue;
       const h10  = PHYSICS.getH10(E);
       const h007 = PHYSICS.getH007(E);
       const c10  = n * h10;

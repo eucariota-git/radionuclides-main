@@ -254,8 +254,8 @@
       name: icrpN.id,
       half_life_s: icrpN.half_life_s,
       half_life_display: icrpN.half_life_display,
-      gamma_H10: constants.gamma_H10,
-      gamma_H007: constants.gamma_H007,
+      gamma_H10: constants.gammaH10,
+      gamma_H007: constants.gammaH007,
       gamma_Kair: constants.gamma_Kair,
       representative_energy_keV: repPhoton.energy_keV,
       archer_params: null,
@@ -477,8 +477,10 @@
       H_WB_cum  = CALC.cumulativeDose(gammaWB,  A0_GBq, d_m, t_h, T_half_h, thick, E_MeV, mat, ap) * patientTx;
       H_Ext_cum = CALC.cumulativeDose(gammaExt, A0_GBq, d_m, t_h, T_half_h, thick, E_MeV, mat, ap) * patientTx;
     } else {
-      H_WB_cum  = Hdot_WB  * t_h;
-      H_Ext_cum = Hdot_Ext * t_h;
+      const Hdot_WB_d  = CALC.doseRate(gammaWB,  A0_GBq, d_m, thick, E_MeV, mat, ap) * patientTx;
+      const Hdot_Ext_d = CALC.doseRate(gammaExt, A0_GBq, d_m, thick, E_MeV, mat, ap) * patientTx;
+      H_WB_cum  = Hdot_WB_d  * t_h;
+      H_Ext_cum = Hdot_Ext_d * t_h;
     }
 
     function fmt(v) {

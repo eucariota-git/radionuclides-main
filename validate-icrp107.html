@@ -32,6 +32,16 @@
   <script src="js/icrp107-loader.js"></script>
 
   <script>
+    // Cornejo et al. 2006 reference values (independent source)
+    // These are the published values from the original article
+    const CORNEJO_REFERENCE = {
+      'F-18':    { gammaH10: 18.0 },
+      'Tc-99m':  { gammaH10: 21.7 },
+      'I-131':   { gammaH10: 63.0 },
+      'Lu-177':  { gammaH10: 108.0 },
+      'Ga-68':   { gammaH10: 157.0 }
+    };
+
     async function validate() {
       const result = document.getElementById('result');
 
@@ -49,6 +59,7 @@
         for (const id of testIds) {
           const published = DB.getById(id);
           const icrp = ICRP107.get(id);
+          const cornejo_ref = CORNEJO_REFERENCE[id];
 
           if (!published || !icrp) {
             validations.push({
@@ -80,13 +91,13 @@
             continue;
           }
 
-          const publishedH10 = published.gamma_H10;
+          const corneloH10 = cornejo_ref?.gammaH10;
           const calculatedH10 = calculated.gammaH10;
-          const deviation = publishedH10 ? ((calculatedH10 - publishedH10) / publishedH10 * 100) : null;
+          const deviation = corneloH10 ? ((calculatedH10 - corneloH10) / corneloH10 * 100) : null;
 
           validations.push({
             id,
-            published: publishedH10,
+            cornejo: corneloH10,
             calculated: calculatedH10,
             photonCount: icrp.photons.length,
             deviation,
@@ -97,11 +108,12 @@
 
         // Render table
         let html = `
+          <p><strong>Validation against Cornejo et al. 2006 (independent reference):</strong></p>
           <table class="validation-table">
             <thead>
               <tr>
                 <th>Nuclide</th>
-                <th>Published Γ<sup>H*(10)</sup><br/>(μSv·h⁻¹·GBq⁻¹·m²)</th>
+                <th>Cornejo et al. 2006<br/>(μSv·h⁻¹·GBq⁻¹·m²)</th>
                 <th>Calculated from ICRP 107<br/>(μSv·h⁻¹·GBq⁻¹·m²)</th>
                 <th>Photon Count</th>
                 <th>Deviation (%)</th>
@@ -139,7 +151,7 @@
             html += `
               <tr>
                 <td><strong>${v.id}</strong></td>
-                <td class="num">${v.published.toFixed(1)}</td>
+                <td class="num">${v.cornejo ? v.cornejo.toFixed(1) : '—'}</td>
                 <td class="num">${v.calculated.toFixed(1)}</td>
                 <td class="num">${v.photonCount}</td>
                 <td class="num">${devStr}</td>
