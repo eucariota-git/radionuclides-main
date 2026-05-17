@@ -192,7 +192,7 @@
 
     <!-- Dose vs distance chart -->
     <div class="card-title" id="chartTitle">Dose Rate vs Distance (unshielded)</div>
-    <div class="chart-wrap">
+    <div class="chart-wrap" id="distChartContainer">
       <canvas id="distChart"></canvas>
     </div>
 
@@ -411,6 +411,7 @@
 
   // ---- Calculate ----
   let distChart = null;
+  let lastCalcResult = null;
 
   document.getElementById('btnCalc').addEventListener('click', () => {
     const n = selectedNuclide || resolveNuclide(hiddenSelect.value);
@@ -446,9 +447,34 @@
     const gammaWB  = n.gamma_H10;
     const useH007 = n.gamma_H007
       && n.gamma_H007 > n.gamma_H10
-      && n.representative_energy_keV
-      && n.representative_energy_keV < 300;
+      && n.max_photon_energy_keV !== null
+      && n.max_photon_energy_keV < 300;
     const gammaExt = useH007 ? n.gamma_H007 : n.gamma_H10;
+
+    // Early exit for pure beta emitters
+    if (!gammaWB || gammaWB === 0) {
+      const card = document.getElementById('resultsCard');
+      card.classList.remove('hidden');
+      document.getElementById('nuclideInfo').innerHTML =
+        `<strong>${n.symbol} — ${n.name}</strong> &nbsp;|&nbsp; T&#189; = ${n.half_life_display}`;
+      document.getElementById('resultsBody').innerHTML = `
+        <tr><td colspan="5" style="padding:1rem;">
+          <strong>Pure &beta;&#8315; emitter</strong> — no photon dose component (&#915;<sup>H*(10)</sup> = 0).
+          External dose requires bremsstrahlung data specific to container geometry.
+        </td></tr>`;
+      document.getElementById('shieldingInfo').classList.add('hidden');
+      document.getElementById('limitComparison').innerHTML = '';
+      document.getElementById('chartTitle').textContent = '';
+      if (distChart) { distChart.destroy(); distChart = null; }
+      document.getElementById('distChartContainer').innerHTML = `
+        <div class="alert alert-warning" style="margin:1rem 0;">
+          <strong>${n.symbol} is a pure &beta;&#8315; emitter.</strong><br>
+          External dose estimation requires bremsstrahlung data specific to the container geometry.
+          See Zanzonico et al. (J Nucl Med 40(6), 1999).
+        </div>`;
+      return;
+    }
+
     const shieldMethod = (mat !== 'none' && thick > 0)
       ? (ap ? 'Archer (broad beam, Oumano et al. 2025)' : 'Narrow beam (fallback)')
       : null;
@@ -556,18 +582,6 @@
       `;
     } else {
       shieldEl.classList.add('hidden');
-    }
-
-    // Check for pure beta emitters (no photon dose)
-    if (!gammaWB || gammaWB === 0) {
-      document.getElementById('distChartContainer').innerHTML = `
-        <div class="alert alert-warning" style="margin-top:1rem;">
-          <strong>Y-90 is a pure β⁻ emitter</strong><br>
-          External dose estimation for pure beta emitters requires bremsstrahlung data specific to the container geometry.
-          See Zanzonico et al. (J Nucl Med 40(6), 1999).
-        </div>
-      `;
-      return;
     }
 
     // ---- Dose vs distance chart ----
@@ -690,13 +704,16 @@
 
     // Export CSV button
     document.getElementById('btnExportDoseCsv').onclick = () => {
+      if (!lastCalcResult) { alert('Calculate dose first.'); return; }
+      const { useH007, gammaExt, gammaWB, nAdmin, H_WB_cum, H_Ext_cum, Hdot_WB, Hdot_WB_t, Hdot_Ext, Hdot_Ext_t, n, A0raw, A0unit, d_m } = lastCalcResult;
       const date = new Date().toISOString().slice(0, 10);
+      const extLabel = useH007 ? "H'(0.07) extremities" : "H*(10) extremities (conservative)";
       const rows = [
         ['Quantity', 'Dose_rate_at_t0_μSv_h', 'Dose_rate_at_time_μSv_h', 'Annual_dose_μSv', 'Notes'],
         ['H*(10) whole body', Hdot_WB.toPrecision(5), Hdot_WB_t.toPrecision(5), (H_WB_cum * nAdmin).toPrecision(5),
          `γ=${gammaWB} μSv·h⁻¹·GBq⁻¹·m²`],
-        ["H'(0.07) extremities", Hdot_Ext.toPrecision(5), Hdot_Ext_t.toPrecision(5), (H_Ext_cum * nAdmin).toPrecision(5),
-         `γ=${gammaExt} μSv·h⁻¹·GBq⁻¹·m²`],
+        [extLabel, Hdot_Ext.toPrecision(5), Hdot_Ext_t.toPrecision(5), (H_Ext_cum * nAdmin).toPrecision(5),
+         `γ=${gammaExt} μSv·h⁻¹·GBq⁻¹·m²${useH007 ? '' : ' (conservative fallback)'}`],
       ];
       const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\r\n');
       const blob = new Blob([csv], { type: 'text/csv' });
@@ -705,6 +722,8 @@
       a.download = `dose_${n.id}_${A0raw}${A0unit}_${d_m.toFixed(2)}m_${date}.csv`;
       a.click();
     };
+
+    lastCalcResult = { useH007, gammaExt, gammaWB, nAdmin, H_WB_cum, H_Ext_cum, Hdot_WB, Hdot_WB_t, Hdot_Ext, Hdot_Ext_t, n, A0raw, A0unit, A0_GBq, d_m, t_h };
 
     card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     updateHvlInfo();

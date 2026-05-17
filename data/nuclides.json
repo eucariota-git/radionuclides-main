@@ -49,7 +49,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 171,
         "gamma_H007_Cornejo": 171
-      }
+      },
+      "max_photon_energy_keV": 511
     },
     {
       "id": "N-13",
@@ -83,7 +84,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 171,
         "gamma_H007_Cornejo": 171
-      }
+      },
+      "max_photon_energy_keV": 511
     },
     {
       "id": "O-15",
@@ -117,7 +119,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 171,
         "gamma_H007_Cornejo": 171
-      }
+      },
+      "max_photon_energy_keV": 511
     },
     {
       "id": "F-18",
@@ -171,7 +174,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 166,
         "gamma_H007_Cornejo": 166
-      }
+      },
+      "max_photon_energy_keV": 511
     },
     {
       "id": "Na-24",
@@ -204,7 +208,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 496,
         "gamma_H007_Cornejo": 496
-      }
+      },
+      "max_photon_energy_keV": 3866.2
     },
     {
       "id": "K-42",
@@ -237,7 +242,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 37.2,
         "gamma_H007_Cornejo": 37.2
-      }
+      },
+      "max_photon_energy_keV": 2424.3
     },
     {
       "id": "Cr-51",
@@ -269,7 +275,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 5.44,
         "gamma_H007_Cornejo": 5.44
-      }
+      },
+      "max_photon_energy_keV": 320.1
     },
     {
       "id": "Co-57",
@@ -301,7 +308,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 20.7,
         "gamma_H007_Cornejo": 20.7
-      }
+      },
+      "max_photon_energy_keV": 692.4
     },
     {
       "id": "Co-58",
@@ -338,7 +346,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 155,
         "gamma_H007_Cornejo": 155
-      }
+      },
+      "max_photon_energy_keV": 1674.7
     },
     {
       "id": "Fe-59",
@@ -371,7 +380,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 171,
         "gamma_H007_Cornejo": 171
-      }
+      },
+      "max_photon_energy_keV": 1481.7
     },
     {
       "id": "Co-60",
@@ -404,7 +414,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 355,
         "gamma_H007_Cornejo": 355
-      }
+      },
+      "max_photon_energy_keV": 1332.5
     },
     {
       "id": "Cu-64",
@@ -445,7 +456,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 31,
         "gamma_H007_Cornejo": 31
-      }
+      },
+      "max_photon_energy_keV": 1345.8
     },
     {
       "id": "Ga-67",
@@ -477,7 +489,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 29,
         "gamma_H007_Cornejo": 29
-      }
+      },
+      "max_photon_energy_keV": 887.7
     },
     {
       "id": "Ga-68",
@@ -514,7 +527,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 157,
         "gamma_H007_Cornejo": 157
-      }
+      },
+      "max_photon_energy_keV": 1883.2
     },
     {
       "id": "Se-75",
@@ -546,7 +560,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 69.3,
         "gamma_H007_Cornejo": 69.3
-      }
+      },
+      "max_photon_energy_keV": 572.2
     },
     {
       "id": "Tc-99m",
@@ -596,7 +611,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 21.7,
         "gamma_H007_Cornejo": 21.7
-      }
+      },
+      "max_photon_energy_keV": 142.6
     },
     {
       "id": "Mo-99+Tc-99m",
@@ -639,7 +655,8 @@
           "source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
         }
       ],
-      "effluent_liquid_note": "Assess generator effluents as a mixture of Mo-99 and Tc-99m components."
+      "effluent_liquid_note": "Assess generator effluents as a mixture of Mo-99 and Tc-99m components.",
+      "max_photon_energy_keV": null
     },
     {
       "id": "Pd-103",
@@ -671,7 +688,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 23.1,
         "gamma_H007_Cornejo": 38
-      }
+      },
+      "max_photon_energy_keV": 357.5
     },
     {
       "id": "In-111",
@@ -703,7 +721,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 89.9,
         "gamma_H007_Cornejo": 96.1
-      }
+      },
+      "max_photon_energy_keV": 245.4
     },
     {
       "id": "I-123",
@@ -735,7 +754,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 46.4,
         "gamma_H007_Cornejo": 46.4
-      }
+      },
+      "max_photon_energy_keV": 783.6
     },
     {
       "id": "I-125",
@@ -767,7 +787,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 35.3,
         "gamma_H007_Cornejo": 40.9
-      }
+      },
+      "max_photon_energy_keV": 35.5
     },
     {
       "id": "I-131",
@@ -817,7 +838,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 65.7,
         "gamma_H007_Cornejo": 65.7
-      }
+      },
+      "max_photon_energy_keV": 722.9
     },
     {
       "id": "Xe-133",
@@ -851,7 +873,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 16.3,
         "gamma_H007_Cornejo": 16.8
-      }
+      },
+      "max_photon_energy_keV": 160.6
     },
     {
       "id": "Cs-137",
@@ -879,7 +902,8 @@
       "clearance_a1_kBq_per_kg": 0.1,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 1.3e-8,
       "effluent_liquid_limit_Bq_per_L": 128,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "max_photon_energy_keV": null
     },
     {
       "id": "Sm-153",
@@ -912,7 +936,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 16.7,
         "gamma_H007_Cornejo": 16.7
-      }
+      },
+      "max_photon_energy_keV": 609.5
     },
     {
       "id": "Yb-169",
@@ -944,7 +969,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 66.8,
         "gamma_H007_Cornejo": 66.8
-      }
+      },
+      "max_photon_energy_keV": 307.7
     },
     {
       "id": "Tm-170",
@@ -977,7 +1003,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 0.957,
         "gamma_H007_Cornejo": 0.957
-      }
+      },
+      "max_photon_energy_keV": 84.3
     },
     {
       "id": "Lu-177",
@@ -1027,7 +1054,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 6,
         "gamma_H007_Cornejo": 6
-      }
+      },
+      "max_photon_energy_keV": 321.3
     },
     {
       "id": "Re-186",
@@ -1064,7 +1092,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 3.86,
         "gamma_H007_Cornejo": 3.86
-      }
+      },
+      "max_photon_energy_keV": 767.5
     },
     {
       "id": "Re-188",
@@ -1097,7 +1126,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 9.44,
         "gamma_H007_Cornejo": 9.44
-      }
+      },
+      "max_photon_energy_keV": 1957
     },
     {
       "id": "Ir-192",
@@ -1134,7 +1164,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 139,
         "gamma_H007_Cornejo": 139
-      }
+      },
+      "max_photon_energy_keV": 1061.5
     },
     {
       "id": "Au-198",
@@ -1167,7 +1198,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 68.6,
         "gamma_H007_Cornejo": 68.6
-      }
+      },
+      "max_photon_energy_keV": 1087.7
     },
     {
       "id": "Tl-201",
@@ -1199,7 +1231,8 @@
       "cornejo_validation": {
         "gamma_H10_Cornejo": 17.4,
         "gamma_H007_Cornejo": 17.4
-      }
+      },
+      "max_photon_energy_keV": 167.4
     },
     {
       "id": "Y-90",
@@ -1227,7 +1260,8 @@
       "clearance_a1_kBq_per_kg": 1000,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 2.7e-9,
       "effluent_liquid_limit_Bq_per_L": 617,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "max_photon_energy_keV": null
     }
   ]
 }

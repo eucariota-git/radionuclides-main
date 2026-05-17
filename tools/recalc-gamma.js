@@ -96,6 +96,11 @@ function calcGammaConstants(photons) {
 }
 
 function main() {
+  if (!process.argv.includes('--force')) {
+    console.error('ERROR: This script overwrites cornejo_validation fields. Run with --force to confirm you have a backup.');
+    process.exit(1);
+  }
+
   const nuclideJsonPath = path.join(__dirname, '../data/nuclides.json');
   const icrpJsonPath = path.join(__dirname, '../data/icrp107-index.json');
 

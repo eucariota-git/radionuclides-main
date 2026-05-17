@@ -300,7 +300,14 @@
         <td class="num">${fmtGamma(n.gamma_H007)}${h007note}</td>
         <td class="num">${n.representative_energy_keV}</td>
         <td class="num">${fmtEffluentLimit(n)}</td>
-        <td class="text-sm">${n._custom ? '<em>custom</em>' : n.source && !n.source.startsWith('Cornejo') ? 'Calc.' : 'Cornejo'}</td>
+        <td class="text-sm">${
+          n._custom ? '<em>custom</em>'
+          : !n.source ? '—'
+          : n.source.startsWith('Cornejo') ? 'Cornejo 2006'
+          : n.source.startsWith('Zanzonico') ? 'Zanzonico 1999'
+          : n.source.startsWith('ICRP 107') ? 'ICRP 107'
+          : 'Calc.'
+        }</td>
       </tr>`;
     }).join('');
 

@@ -120,10 +120,11 @@ The application includes an **extended database of 1,252 radionuclides** from IC
    - Uses **narrow-beam** (NIST XCOM) for other nuclides
 
 5. **Cumulative dose**:
-   - Enter number of **administrations** (doses given to patients)
-   - Enter **time between doses** (hours/days)
-   - Accounts for radioactive decay between doses
-   - Total cumulative dose is calculated
+   - Enter **exposure time per administration** (hours/min): time the worker is near the source per patient
+   - Enter **number of administrations per year**
+   - Models radioactive decay *during* each exposure (with decay mode enabled)
+   - Annual total = single-administration dose × number of administrations
+   - **Note**: inter-administration decay is not modelled; each administration is treated independently
 
 6. **Annual dose limit check**:
    - Compares to EU RD 1029/2022 limits:
