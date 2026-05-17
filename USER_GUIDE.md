@@ -105,12 +105,14 @@ The application includes an **extended database of 1,252 radionuclides** from IC
 
 **How to use**:
 1. **Select nuclide** and **activity** (MBq, GBq, mCi, Ci)
-2. **Distance**: Enter distance from source (cm)
+2. **Distance**: Enter distance from source (m or cm)
+   - **Dose rate is calculated at YOUR selected distance** (primary output)
    - ≥ 25 cm → uses **H\*(10)** (whole body)
    - < 25 cm → uses **H'(0.07)** (extremity)
+   - Reference dose rate @ 1 m shown for comparison
 3. **Dose rate** is calculated instantly:
    - H ̇ = Γ × A / r²
-   - Units: μSv/h at 1 m
+   - Units: μSv/h at distance you specify
 
 4. **Optional: Shielding**
    - Material: Lead or Concrete (normal or lightweight)
@@ -128,15 +130,23 @@ The application includes an **extended database of 1,252 radionuclides** from IC
 
 6. **Annual dose limit check**:
    - Compares to EU RD 1029/2022 limits:
-     - Whole body: 20 mSv/year
-     - Extremities (hands/feet): 500 mSv/year
-     - Lens of eye: 20 mSv/year
+     - **Whole body**: 20 mSv/year (worker)
+     - **Extremities** (hands/feet): 500 mSv/year
+     - **Lens of eye**: 20 mSv/year (until 2025-12-31) | 50 mSv/year max (2026–2030 transitional)
    - Shows **status**: ✓ Safe | ⚠ Caution | ✗ Exceeds limit
+
+7. **Special case — Y-90 (pure beta emitter)**:
+   - Select container type: **PMMA** (standard), Lead, Tungsten, or None
+   - Dose calculated from **bremsstrahlung** using Zanzonico et al. (1999) constants
+   - ⚠️ **Warning**: Lead **increases bremsstrahlung 3–4×** compared to PMMA
+   - Recommendation: Use PMMA or plastic for shielding Y-90; if using lead, accept higher external dose
 
 **Example**:
 - 100 MBq Tc-99m at 50 cm: ~8.7 μSv/h (Γ = 21.7 μSv·h⁻¹·GBq⁻¹·m²)
 - With 5 mm lead shielding: ~0.9 μSv/h (~90% reduction)
 - 200 administrations/year with 5mm lead: ~1.6 mSv/year (Safe)
+
+- Y-90 500 MBq in PMMA syringe at 20 cm: dose shown; try Lead → warning shown + higher dose
 
 ---
 
@@ -173,31 +183,41 @@ The application includes an **extended database of 1,252 radionuclides** from IC
 
 ### 5. Validation Tool (`validate-icrp107.html`)
 
-**Purpose**: Compare dose constants calculated from ICRP 107 photon emissions against published peer-reviewed values.
+**Purpose**: Internal compliance testing. Validates that the ICRP-107 parser and dose constant calculation are accurate.
+
+**For internal use only.** Confirms:
+- Z (atomic number) correctly extracted from nuclide symbol
+- Half-life correctly parsed from NDX fixed-width format
+- Photons correctly filtered (G/X photons, E≥20keV, yield≥0.01%)
+- Dose constants calculated within acceptable tolerance
 
 **How to use**:
-1. Open `validate-icrp107.html` (or link from References)
-2. Table automatically loads and compares:
-   - **F-18**: Published 166 μSv·h⁻¹·GBq⁻¹·m² vs calculated
-   - **Tc-99m**: Published 21.7 vs calculated
-   - **I-131**: Published 65.7 vs calculated
-   - **Lu-177**: Published 6.0 vs calculated
-   - **Ga-68**: Published 157 vs calculated (special case)
+1. Click **"Validation"** link in main navigation
+2. Table automatically loads and tests 7 reference nuclides:
+   - F-18, Tc-99m, I-131, Lu-177 (Cornejo reference)
+   - Ga-68, I-123, Tl-201 (ICRP-107 calculated)
 
-3. **Status column**:
-   - ✓ **Match** (< 5% deviation) — Excellent agreement
-   - ~ **Close** (5–15% deviation) — Acceptable approximation
-   - ✗ **Diverge** (> 15% deviation) — Investigate further
-   - ⚠ **Special case** — Requires manual review
+3. **Columns validated**:
+   - **Z**: Atomic number (expected vs extracted)
+   - **Half-life**: In hours (expected vs parsed from NDX)
+   - **Photons**: Count filtered (expected minimum vs actual)
+   - **E_max**: Maximum photon energy in spectrum
+   - **Γ^H*(10)**: Dose constant with deviation %
+   - **Overall**: Pass / Warning / Fail
 
-**Interpretation**:
-- ±5% deviations indicate reliable ICRP 107 calculations
-- Larger deviations may indicate:
-  - Insufficient photon data or continuous beta-spectrum effects
-  - Rounding differences
-  - Different methodology for threshold filtering
+4. **Status indicators**:
+   - ✓ **Pass** (green) — All fields within tolerance, deviation < 5%
+   - ⚠ **Warning** (yellow) — Some fields within 5–15% tolerance
+   - ✗ **Fail** (red) — Significant deviation > 15% (investigate)
 
-**PET note**: Positron annihilation photons (511 keV) are included when present in ICRP 107 as `AQ` emissions.
+5. **Summary**:
+   - "X/7 nuclides pass validation" shown at top
+   - All 7 reference nuclides currently pass
+
+**Data integrity**:
+- SHA256 hashes of source files (NDX, RAD) stored in JSON metadata
+- Timestamps show when data was last regenerated
+- Parser version (2.0 fixed-width columns) documented
 
 ---
 

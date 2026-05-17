@@ -144,8 +144,16 @@ const ICRP107 = (function() {
     try {
       // PHYSICS.calcGammaConstants expects [{energy_keV, yield_percent, type}]
       const result = PHYSICS.calcGammaConstants(nuclide.photons);
+
+      // Calculate max photon energy for H'(0.07) assessment
+      let maxPhotonEnergy = null;
+      if (nuclide.photons && nuclide.photons.length > 0) {
+        maxPhotonEnergy = Math.max(...nuclide.photons.map(p => p.energy_keV));
+      }
+
       return {
         ...result,
+        max_photon_energy_keV: maxPhotonEnergy,
         source: 'ICRP 107',
         method: 'calculated_from_photon_emissions',
         nuclide_id: nuclide.id,

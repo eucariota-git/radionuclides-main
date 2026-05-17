@@ -165,8 +165,9 @@
         <thead>
           <tr>
             <th class="has-tooltip" data-tooltip="Ambient dose equivalent (whole-body H*(10)) or directional dose equivalent (extremity H'(0.07)) depending on distance from source.">Quantity</th>
-            <th>D'(0) at 1 m</th>
-            <th id="doseRateAtTimeHeader">D'(t) at 1 m</th>
+            <th id="doseRate0Header">D'(0)</th>
+            <th id="doseRateAtTimeHeader">D'(t)</th>
+            <th class="has-tooltip" data-tooltip="Dose rate at 1 m (reference)">Ref @ 1 m</th>
             <th>D(annual)</th>
             <th>Notes</th>
           </tr>
@@ -202,8 +203,9 @@
     <div class="card-title">Annual dose limit comparison</div>
     <div id="limitComparison"></div>
     <div class="alert alert-warning mt-1">
-      Annual limits: workers 20 mSv/y effective, 500 mSv/y extremities, 20 mSv/y lens of eye; public 1 mSv/y
-      (Royal Decree 1029/2022 / EURATOM Directive 2013/59).
+      Annual limits (RD 1029/2022 / EURATOM 2013/59): workers 20 mSv/y effective &amp; lens of eye (until 31 Dec 2025),
+      500 mSv/y extremities; public 1 mSv/y.
+      <strong>Transitional regime (1 Jan 2026 – 31 Dec 2030):</strong> lens of eye 100 mSv/5y, max 50 mSv/y.
       These are regulatory limits, not design targets.
     </div>
   </div>
@@ -257,6 +259,7 @@
       gamma_H10: constants.gammaH10,
       gamma_H007: constants.gammaH007,
       gamma_Kair: constants.gamma_Kair,
+      max_photon_energy_keV: constants.max_photon_energy_keV,
       representative_energy_keV: repPhoton.energy_keV,
       archer_params: null,
       _icrp107: true,
@@ -457,11 +460,106 @@
       card.classList.remove('hidden');
       document.getElementById('nuclideInfo').innerHTML =
         `<strong>${n.symbol} — ${n.name}</strong> &nbsp;|&nbsp; T&#189; = ${n.half_life_display}`;
-      document.getElementById('resultsBody').innerHTML = `
-        <tr><td colspan="5" style="padding:1rem;">
-          <strong>Pure &beta;&#8315; emitter</strong> — no photon dose component (&#915;<sup>H*(10)</sup> = 0).
-          External dose requires bremsstrahlung data specific to container geometry.
-        </td></tr>`;
+
+      // Special handling for Y-90 with Zanzonico table
+      if (n.id === 'Y-90') {
+        const A0raw = parseFloat(document.getElementById('A0').value);
+        const A0unit = document.getElementById('A0unit').value;
+        const A0_GBq = CALC.convertActivity(A0raw, A0unit, 'GBq');
+        const distRaw = parseFloat(document.getElementById('distance').value);
+        const distUnit = document.getElementById('distUnit').value;
+        const d_m = distUnit === 'cm' ? distRaw / 100 : distRaw;
+        const t_h = parseFloat(document.getElementById('expTime').value);
+        const nAdmin = Math.max(1, parseInt(document.getElementById('nAdmin').value) || 1);
+        const patientTx = Math.min(100, Math.max(0, parseFloat(document.getElementById('patientTx').value) || 100)) / 100;
+        const T_half_h = DB.halfLifeHours(n);
+        const withDecay = document.getElementById('decayMode').value === 'with_decay';
+
+        // Y-90 bremsstrahlung container selector
+        const containers = {
+          none: { name: 'No container', gamma_H10: 0.001 },
+          pmma: { name: 'PMMA (acrylic)', gamma_H10: 0.009, gamma_H007: 0.012 },
+          pb: { name: 'Lead (Pb)', gamma_H10: 0.034, gamma_H007: 0.042, warning: true },
+          tungsten: { name: 'Tungsten (W)', gamma_H10: 0.016, gamma_H007: 0.020 }
+        };
+
+        let containerHTML = '<div style="margin:1rem 0;"><strong>Y-90 Bremsstrahlung Container:</strong><br>';
+        containerHTML += '<div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; margin-top:0.5rem;">';
+        for (const [key, container] of Object.entries(containers)) {
+          const isSelected = document.getElementById('y90ContainerId')?.value === key;
+          containerHTML += `<label style="padding:0.5rem; border:1px solid var(--border); border-radius:4px; cursor:pointer; ${isSelected ? 'background:var(--green-100);' : ''}">
+            <input type="radio" name="y90Container" value="${key}" ${isSelected ? 'checked' : ''} style="margin-right:0.5rem;">
+            ${container.name}
+          </label>`;
+        }
+        containerHTML += '</div></div>';
+
+        const selectedContainer = document.querySelector('input[name="y90Container"]:checked')?.value || 'pmma';
+        const gamma = containers[selectedContainer].gamma_H10;
+        const pbWarning = containers[selectedContainer].warning
+          ? '<div class="alert alert-danger" style="margin-top:0.5rem;">⚠️  <strong>Lead increases bremsstrahlung 3–4× vs PMMA.</strong> Use PMMA or plastic for Y-90, or accept higher external dose.</div>'
+          : '';
+
+        // Calculate dose with selected container
+        const Hdot_WB = CALC.doseRate(gamma, A0_GBq, d_m, 0, 0.1, 'none', null) * patientTx;
+        const At_GBq = CALC.activityAtTime(A0_GBq, T_half_h, t_h);
+        const Hdot_WB_t = CALC.doseRate(gamma, At_GBq, d_m, 0, 0.1, 'none', null) * patientTx;
+
+        let H_WB_cum;
+        if (withDecay) {
+          H_WB_cum = CALC.cumulativeDose(gamma, A0_GBq, d_m, t_h, T_half_h, 0, 0.1, 'none', null) * patientTx;
+        } else {
+          const Hdot_WB_d = CALC.doseRate(gamma, A0_GBq, d_m, 0, 0.1, 'none', null) * patientTx;
+          H_WB_cum = Hdot_WB_d * t_h;
+        }
+
+        function fmtR(v) {
+          const f = CALC.formatDoseRate(v);
+          return `<strong>${f.display}</strong>`;
+        }
+        function fmt(v) {
+          const f = CALC.formatDose(v);
+          return `<strong>${f.display}</strong>`;
+        }
+
+        document.getElementById('resultsBody').innerHTML = `
+          <tr style="background:var(--warning-100);">
+            <td colspan="6">
+              <strong>Y-90 Bremsstrahlung Dose (Zanzonico et al. 1999)</strong>
+              ${containerHTML}
+              ${pbWarning}
+              <div style="margin-top:1rem;">
+                <strong>Dose rate at ${d_m.toFixed(2)} m:</strong> ${fmtR(Hdot_WB)} (t=0) | ${fmtR(Hdot_WB_t)} (after ${t_h.toFixed(2)}h decay)
+                <br><strong>Annual dose:</strong> ${fmt(H_WB_cum * nAdmin)}
+              </div>
+            </td>
+          </tr>`;
+
+        // Store container selector
+        if (!document.getElementById('y90ContainerId')) {
+          const el = document.createElement('input');
+          el.id = 'y90ContainerId';
+          el.type = 'hidden';
+          el.value = selectedContainer;
+          document.getElementById('resultsCard').appendChild(el);
+        }
+
+        // Container selection handler
+        document.querySelectorAll('input[name="y90Container"]').forEach(radio => {
+          radio.addEventListener('change', () => {
+            document.getElementById('y90ContainerId').value = radio.value;
+            document.getElementById('btnCalc').click();
+          });
+        });
+      } else {
+        // Generic pure beta emitter (not Y-90)
+        document.getElementById('resultsBody').innerHTML = `
+          <tr><td colspan="5" style="padding:1rem;">
+            <strong>Pure &beta;&#8315; emitter</strong> — no photon dose component (&#915;<sup>H*(10)</sup> = 0).
+            External dose requires bremsstrahlung data specific to container geometry.
+          </td></tr>`;
+      }
+
       document.getElementById('shieldingInfo').classList.add('hidden');
       document.getElementById('limitComparison').innerHTML = '';
       document.getElementById('chartTitle').textContent = '';
@@ -469,8 +567,9 @@
       document.getElementById('distChartContainer').innerHTML = `
         <div class="alert alert-warning" style="margin:1rem 0;">
           <strong>${n.symbol} is a pure &beta;&#8315; emitter.</strong><br>
-          External dose estimation requires bremsstrahlung data specific to the container geometry.
-          See Zanzonico et al. (J Nucl Med 40(6), 1999).
+          ${n.id === 'Y-90'
+            ? 'Dose shown above uses bremsstrahlung constants from Zanzonico et al. (J Nucl Med 40(6):906-915, 1999).'
+            : 'External dose estimation requires bremsstrahlung data specific to the container geometry. See Zanzonico et al. (J Nucl Med 40(6), 1999).'}
         </div>`;
       return;
     }
@@ -495,14 +594,22 @@
          : `&#915;<sup>H'(0.07)</sup> = ${n.gamma_H007 ?? '—'} <span style="color:var(--text-muted)">(H*(10) used as conservative)</span>`
        } &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;`;
 
-    // Dose rate at t=0 (at 1 m)
-    const Hdot_WB  = CALC.doseRate(gammaWB,  A0_GBq, 1, thick, E_MeV, mat, ap) * patientTx;
-    const Hdot_Ext = CALC.doseRate(gammaExt, A0_GBq, 1, thick, E_MeV, mat, ap) * patientTx;
+    // Dose rate at t=0 (at selected distance)
+    const Hdot_WB  = CALC.doseRate(gammaWB,  A0_GBq, d_m, thick, E_MeV, mat, ap) * patientTx;
+    const Hdot_Ext = CALC.doseRate(gammaExt, A0_GBq, d_m, thick, E_MeV, mat, ap) * patientTx;
 
-    // Dose rate at t=time (after decay, at 1 m)
+    // Dose rate at t=0 (at 1 m reference)
+    const Hdot_WB_1m  = CALC.doseRate(gammaWB,  A0_GBq, 1, thick, E_MeV, mat, ap) * patientTx;
+    const Hdot_Ext_1m = CALC.doseRate(gammaExt, A0_GBq, 1, thick, E_MeV, mat, ap) * patientTx;
+
+    // Dose rate at t=time (after decay, at selected distance)
     const At_GBq   = CALC.activityAtTime(A0_GBq, T_half_h, t_h);
-    const Hdot_WB_t  = CALC.doseRate(gammaWB,  At_GBq, 1, thick, E_MeV, mat, ap) * patientTx;
-    const Hdot_Ext_t = CALC.doseRate(gammaExt, At_GBq, 1, thick, E_MeV, mat, ap) * patientTx;
+    const Hdot_WB_t  = CALC.doseRate(gammaWB,  At_GBq, d_m, thick, E_MeV, mat, ap) * patientTx;
+    const Hdot_Ext_t = CALC.doseRate(gammaExt, At_GBq, d_m, thick, E_MeV, mat, ap) * patientTx;
+
+    // Dose rate at t=time (after decay, at 1 m reference)
+    const Hdot_WB_t_1m  = CALC.doseRate(gammaWB,  At_GBq, 1, thick, E_MeV, mat, ap) * patientTx;
+    const Hdot_Ext_t_1m = CALC.doseRate(gammaExt, At_GBq, 1, thick, E_MeV, mat, ap) * patientTx;
 
     // Cumulative dose
     let H_WB_cum, H_Ext_cum;
@@ -527,6 +634,10 @@
 
     const highlight = (use) => use ? 'style="background:var(--green-100);font-weight:700;"' : '';
 
+    // Update column headers to show distance
+    document.getElementById('doseRate0Header').textContent = `D'(0) at ${d_m.toFixed(2)} m`;
+    document.getElementById('doseRateAtTimeHeader').textContent = `D'(t) at ${d_m.toFixed(2)} m`;
+
     document.getElementById('resultsBody').innerHTML = `
       <tr ${highlight(!isExtremity)}>
         <td>
@@ -536,6 +647,7 @@
         </td>
         <td class="num">${fmtR(Hdot_WB)}</td>
         <td class="num">${fmtR(Hdot_WB_t)}</td>
+        <td class="num text-muted">${fmtR(Hdot_WB_1m)}</td>
         <td class="num">${fmt(H_WB_cum * nAdmin)}</td>
         <td class="text-sm text-muted">&#915;<sup>H*(10)</sup> = ${gammaWB} &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;</td>
       </tr>
@@ -547,6 +659,7 @@
         </td>
         <td class="num">${fmtR(Hdot_Ext)}</td>
         <td class="num">${fmtR(Hdot_Ext_t)}</td>
+        <td class="num text-muted">${fmtR(Hdot_Ext_1m)}</td>
         <td class="num">${fmt(H_Ext_cum * nAdmin)}</td>
         <td class="text-sm text-muted">
           &#915;${useH007
@@ -694,6 +807,10 @@
         &nbsp;— ${pct(annualDoseWB, 20)} of 20 mSv/y worker limit
         &nbsp;|&nbsp; ${pct(annualDoseWB, 1)} of 1 mSv/y public limit
         <br>
+        <strong>Lens of eye (occupational):</strong> ${CALC.formatDose(annualDoseWB).display}/y
+        &nbsp;— ${pct(annualDoseWB, 20)} of 20 mSv/y (current limit, until 31 Dec 2025)
+        &nbsp;|&nbsp; ${pct(annualDoseWB, 50)} of 50 mSv/y max (transitional, 2026–2030)
+        <br>
         <strong>Extremities H'(0.07):</strong> ${CALC.formatDose(annualDoseExt).display}/y
         &nbsp;— ${pct(annualDoseExt, 500)} of 500 mSv/y extremity limit
       </div>
@@ -705,14 +822,14 @@
     // Export CSV button
     document.getElementById('btnExportDoseCsv').onclick = () => {
       if (!lastCalcResult) { alert('Calculate dose first.'); return; }
-      const { useH007, gammaExt, gammaWB, nAdmin, H_WB_cum, H_Ext_cum, Hdot_WB, Hdot_WB_t, Hdot_Ext, Hdot_Ext_t, n, A0raw, A0unit, d_m } = lastCalcResult;
+      const { useH007, gammaExt, gammaWB, nAdmin, H_WB_cum, H_Ext_cum, Hdot_WB, Hdot_WB_t, Hdot_Ext, Hdot_Ext_t, Hdot_WB_1m, Hdot_WB_t_1m, Hdot_Ext_1m, Hdot_Ext_t_1m, n, A0raw, A0unit, d_m } = lastCalcResult;
       const date = new Date().toISOString().slice(0, 10);
       const extLabel = useH007 ? "H'(0.07) extremities" : "H*(10) extremities (conservative)";
       const rows = [
-        ['Quantity', 'Dose_rate_at_t0_μSv_h', 'Dose_rate_at_time_μSv_h', 'Annual_dose_μSv', 'Notes'],
-        ['H*(10) whole body', Hdot_WB.toPrecision(5), Hdot_WB_t.toPrecision(5), (H_WB_cum * nAdmin).toPrecision(5),
+        ['Quantity', `Dose_rate_t0_at_${d_m.toFixed(2)}m_μSv_h`, `Dose_rate_time_at_${d_m.toFixed(2)}m_μSv_h`, 'Dose_rate_t0_at_1m_μSv_h', 'Dose_rate_time_at_1m_μSv_h', 'Annual_dose_μSv', 'Notes'],
+        ['H*(10) whole body', Hdot_WB.toPrecision(5), Hdot_WB_t.toPrecision(5), Hdot_WB_1m.toPrecision(5), Hdot_WB_t_1m.toPrecision(5), (H_WB_cum * nAdmin).toPrecision(5),
          `γ=${gammaWB} μSv·h⁻¹·GBq⁻¹·m²`],
-        [extLabel, Hdot_Ext.toPrecision(5), Hdot_Ext_t.toPrecision(5), (H_Ext_cum * nAdmin).toPrecision(5),
+        [extLabel, Hdot_Ext.toPrecision(5), Hdot_Ext_t.toPrecision(5), Hdot_Ext_1m.toPrecision(5), Hdot_Ext_t_1m.toPrecision(5), (H_Ext_cum * nAdmin).toPrecision(5),
          `γ=${gammaExt} μSv·h⁻¹·GBq⁻¹·m²${useH007 ? '' : ' (conservative fallback)'}`],
       ];
       const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\r\n');
@@ -723,7 +840,7 @@
       a.click();
     };
 
-    lastCalcResult = { useH007, gammaExt, gammaWB, nAdmin, H_WB_cum, H_Ext_cum, Hdot_WB, Hdot_WB_t, Hdot_Ext, Hdot_Ext_t, n, A0raw, A0unit, A0_GBq, d_m, t_h };
+    lastCalcResult = { useH007, gammaExt, gammaWB, nAdmin, H_WB_cum, H_Ext_cum, Hdot_WB, Hdot_WB_t, Hdot_Ext, Hdot_Ext_t, Hdot_WB_1m, Hdot_WB_t_1m, Hdot_Ext_1m, Hdot_Ext_t_1m, n, A0raw, A0unit, A0_GBq, d_m, t_h };
 
     card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     updateHvlInfo();

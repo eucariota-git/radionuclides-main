@@ -1,0 +1,39 @@
+{
+  "nuclide": "Y-90",
+  "reference": "Zanzonico et al. J Nucl Med 40(6):906-915, 1999. Bremsstrahlung dose rates for pure beta emitters.",
+  "notes": "Dose rate constants for bremsstrahlung from Y-90 beta particles in different container geometries. Values are μSv·h⁻¹·GBq⁻¹·m².",
+  "containers": [
+    {
+      "id": "none",
+      "name": "No container",
+      "description": "Beta particles unshielded; minimal bremsstrahlung",
+      "gamma_H10": 0.001,
+      "gamma_H007": 0.001,
+      "warning": null
+    },
+    {
+      "id": "pmma",
+      "name": "PMMA (acrylic) container",
+      "description": "Syringe or vial in PMMA; standard geometry",
+      "gamma_H10": 0.009,
+      "gamma_H007": 0.012,
+      "warning": null
+    },
+    {
+      "id": "pb",
+      "name": "Lead (Pb) container",
+      "description": "Shielded in lead; higher atomic number increases bremsstrahlung",
+      "gamma_H10": 0.034,
+      "gamma_H007": 0.042,
+      "warning": "⚠️  Lead increases bremsstrahlung significantly (3–4×) compared to PMMA. Use PMMA or plastic for Y-90 shielding, or accept increased external dose from bremsstrahlung."
+    },
+    {
+      "id": "tungsten",
+      "name": "Tungsten (W) container",
+      "description": "High-Z alternative shielding (better than Pb for beta)",
+      "gamma_H10": 0.016,
+      "gamma_H007": 0.020,
+      "warning": null
+    }
+  ]
+}

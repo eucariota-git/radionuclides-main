@@ -21,6 +21,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 // ICRU 57 / ICRP 74 conversion coefficients [energy_MeV, h_H10, h_H007]
 const ICRU57 = [
@@ -109,11 +110,19 @@ function main() {
   const nuclides = nuclideData.nuclides;
 
   console.log('Loading icrp107-index.json...');
-  const icrpData = JSON.parse(fs.readFileSync(icrpJsonPath, 'utf8'));
+  const icrpFileContent = fs.readFileSync(icrpJsonPath, 'utf8');
+  const icrpData = JSON.parse(icrpFileContent);
+  const icrpSha256 = crypto.createHash('sha256').update(icrpFileContent).digest('hex');
   const icrpMap = {};
   for (const n of icrpData.nuclides) {
     icrpMap[n.id] = n;
   }
+
+  // Add traceability fields to notes
+  nuclideData.notes = nuclideData.notes || {};
+  nuclideData.notes.generated_at = new Date().toISOString();
+  nuclideData.notes.generated_by_script = 'tools/recalc-gamma.js';
+  nuclideData.notes.icrp107_index_sha256 = icrpSha256;
 
   console.log(`\nRecalculating gamma constants for ${nuclides.length} nuclides...\n`);
 

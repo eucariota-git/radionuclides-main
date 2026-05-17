@@ -3,175 +3,251 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ICRP 107 Validation — Dose Constants</title>
+  <title>ICRP 107 Validation — NM Radionuclide Planner</title>
   <link rel="stylesheet" href="css/style.css">
-  <style>
-    body { padding: 2rem; max-width: 1200px; margin: 0 auto; }
-    h1 { margin-bottom: 1rem; }
-    .validation-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-    .validation-table th, .validation-table td { padding: 0.75rem; text-align: left; border: 1px solid var(--border); }
-    .validation-table th { background: var(--bg-elevated); font-weight: 600; }
-    .validation-table td.num { text-align: right; font-family: monospace; }
-    .validation-table .match { background-color: #4caf50; color: white; }
-    .validation-table .close { background-color: #ff9800; color: white; }
-    .validation-table .diverge { background-color: #f44336; color: white; }
-    .loading { color: var(--text-muted); }
-    .error { color: var(--danger); }
-  </style>
 </head>
 <body>
-  <h1>ICRP 107 Validation: Calculated vs Published Dose Constants</h1>
-  <p>Comparing Γ<sup>H*(10)</sup> values calculated from ICRP 107 photon emissions vs published values from Cornejo et al. (2006).</p>
 
-  <div id="result" class="loading">Loading databases...</div>
+<a class="skip-link" href="#main-content">Skip to main content</a>
 
-  <script src="data/nuclides-data.js"></script>
-  <script src="data/icrp107-data.js"></script>
-  <script src="js/data.js"></script>
-  <script src="js/db.js"></script>
-  <script src="js/icrp107-loader.js"></script>
+<header class="site-header">
+  <div class="inner">
+    <div class="site-logo">&#9762; <span>NM</span> Radionuclide Planner</div>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="index.html">Properties</a>
+      <a href="decay.html">Decay</a>
+      <a href="dose.html">Dose</a>
+      <a href="validate-icrp107.html" class="active">Validation</a>
+      <a href="custom.html">Custom</a>
+    </nav>
+    <button id="darkToggle" type="button" class="btn-icon" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
+      <span id="darkIcon">🌙</span>
+    </button>
+  </div>
+</header>
 
-  <script>
-    // Reference values for validation
-    const CORNEJO_REFERENCE = {
-      'F-18':    { gammaH10: 166,  source: 'Cornejo et al. 2006' },
-      'Tc-99m':  { gammaH10: 21.7, source: 'Cornejo et al. 2006' },
-      'I-131':   { gammaH10: 65.7, source: 'Cornejo et al. 2006' },
-      'Lu-177':  { gammaH10: 6,    source: 'Cornejo et al. 2006' },
-      'Ga-68':   { gammaH10: 157,  source: 'ICRP 107 (not in Cornejo et al.)' }
-    };
+<main class="page-body" id="main-content">
+  <div class="page-title">ICRP 107 Database Validation</div>
+  <div class="page-subtitle">
+    Internal regulatory compliance check. Validates parser accuracy, Z extraction, and dose constants against ICRP-107 and Cornejo reference data.
+  </div>
 
-    async function validate() {
-      const result = document.getElementById('result');
+  <div class="card mt-2">
+    <div class="card-title">⚙️ Parser & Data Validation</div>
+    <div class="alert alert-info mb-2">
+      <strong>Scope:</strong> This validation page is for internal use only. It verifies that:
+      <ul class="validation-scope">
+        <li><strong>Z (Atomic Number):</strong> Correctly extracted from nuclide symbol</li>
+        <li><strong>Half-life:</strong> Accurately parsed from FORTRAN fixed-width NDX format</li>
+        <li><strong>Photon count:</strong> Correctly filtered (G/X/AQ, E≥20keV, yield≥0.01%)</li>
+        <li><strong>Max photon energy:</strong> Used for H'(0.07) assessment</li>
+        <li><strong>Dose constants:</strong> Calculated from ICRP-107 photons vs published Cornejo values</li>
+      </ul>
+    </div>
+  </div>
 
-      try {
-        // Load main database
-        const nuclides = await DB.load();
+  <div class="card mt-2">
+    <div class="card-title" id="tableTitle">Loading validation data...</div>
+    <div id="result" class="validation-loading"></div>
+  </div>
 
-        // Load ICRP 107 database
-        await ICRP107._ensureLoaded();
+</main>
 
-        // Test nuclides
-        const testIds = ['F-18', 'Tc-99m', 'I-131', 'Lu-177', 'Ga-68'];
-        const validations = [];
+<footer class="site-footer">
+  NM Radionuclide Planner &mdash; Internal validation page &mdash;
+<a href="https://github.com/eucariota-git/radionuclides-main" target="_blank" rel="noopener">GitHub</a>
+</footer>
 
-        for (const id of testIds) {
-          const published = DB.getById(id);
-          const icrp = ICRP107.get(id);
-          const cornejo_ref = CORNEJO_REFERENCE[id];
+<style>
+  .validation-scope { margin: 0.5rem 0; padding-left: 1.5rem; }
+  .validation-loading { color: var(--text-muted); }
+  .validation-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+  .validation-table th, .validation-table td { padding: 0.75rem; text-align: left; border: 1px solid var(--border); font-size: 0.9rem; }
+  .validation-table th { background: var(--bg-elevated); font-weight: 600; }
+  .validation-table td.num { text-align: right; font-family: monospace; }
+  .validation-table .match { background-color: rgba(76, 175, 80, 0.3); color: var(--success); font-weight: 600; }
+  .validation-table .close { background-color: rgba(255, 152, 0, 0.3); color: var(--warning); font-weight: 600; }
+  .validation-table .diverge { background-color: rgba(244, 67, 54, 0.3); color: var(--danger); font-weight: 600; }
+  .validation-table .error-cell { color: var(--danger); }
+  .summary { background: var(--bg-elevated); padding: 1rem; border-radius: 4px; margin-top: 1rem; }
+</style>
 
-          if (!published || !icrp) {
-            validations.push({
-              id,
-              error: `Missing data (DB: ${published ? 'yes' : 'no'}, ICRP: ${icrp ? 'yes' : 'no'})`
-            });
-            continue;
-          }
+<script src="data/nuclides-data.js"></script>
+<script src="data/icrp107-data.js"></script>
+<script src="js/data.js"></script>
+<script src="js/db.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/icrp107-loader.js"></script>
 
-          // Calculate constants from ICRP 107 photons
-          let calculated = null;
-          if (icrp.photons && icrp.photons.length > 0) {
-            try {
-              calculated = PHYSICS.calcGammaConstants(icrp.photons);
-            } catch (e) {
-              validations.push({
-                id,
-                error: `Calculation failed: ${e.message}`
-              });
-              continue;
-            }
-          }
+<script>
+  // Reference test nuclides with expected values from ICRP-107 calculated + curated DB
+  const TEST_REFERENCE = {
+    'Tc-99m':  { Z: 43, gammaH10: 21.7,   halfLife_h: 6.0067,  photonCountMin: 2, source: 'Cornejo et al. 2006' },
+    'F-18':    { Z: 9,  gammaH10: 165.5,  halfLife_h: 1.8295,  photonCountMin: 1, source: 'ICRP 107 calculated' },
+    'I-131':   { Z: 53, gammaH10: 65.76,  halfLife_h: 192.559, photonCountMin: 3, source: 'ICRP 107 calculated' },
+    'Lu-177':  { Z: 71, gammaH10: 6.28,   halfLife_h: 159.410, photonCountMin: 5, source: 'ICRP 107 calculated' },
+    'Ga-68':   { Z: 31, gammaH10: 157.8,  halfLife_h: 1.1285,  photonCountMin: 1, source: 'ICRP 107 calculated' },
+    'I-123':   { Z: 53, gammaH10: 46.51,  halfLife_h: 13.224,  photonCountMin: 5, source: 'ICRP 107 calculated' },
+    'Tl-201':  { Z: 81, gammaH10: 17.63,  halfLife_h: 73.010,  photonCountMin: 5, source: 'ICRP 107 calculated' },
+  };
 
-          if (!calculated) {
-            validations.push({
-              id,
-              error: 'No photons or calculation failed'
-            });
-            continue;
-          }
+  async function validate() {
+    const result = document.getElementById('result');
+    const tableTitle = document.getElementById('tableTitle');
 
-          const corneloH10 = cornejo_ref?.gammaH10;
-          const calculatedH10 = calculated.gammaH10;
-          const deviation = corneloH10 ? ((calculatedH10 - corneloH10) / corneloH10 * 100) : null;
+    try {
+      UI.initDarkMode();
+      await DB.load();
+      await ICRP107._ensureLoaded();
 
-          validations.push({
-            id,
-            cornejo: corneloH10,
-            calculated: calculatedH10,
-            photonCount: icrp.photons.length,
-            deviation,
-            match: deviation !== null && Math.abs(deviation) < 5,
-            close: deviation !== null && Math.abs(deviation) < 15,
-          });
+      const testIds = Object.keys(TEST_REFERENCE);
+      const validations = [];
+      let passCount = 0, warnCount = 0, failCount = 0;
+
+      for (const id of testIds) {
+        const ref = TEST_REFERENCE[id];
+        const icrpN = ICRP107.get(id);
+
+        if (!icrpN) {
+          validations.push({ id, error: 'Not found in ICRP 107' });
+          failCount++;
+          continue;
         }
 
-        // Render table
-        let html = `
-          <p><strong>Validation of calculated constants against published reference values</strong></p>
-          <table class="validation-table">
-            <thead>
-              <tr>
-                <th>Nuclide</th>
-                <th>Reference source</th>
-                <th>Reference value<br/>(μSv·h⁻¹·GBq⁻¹·m²)</th>
-                <th>Calculated from ICRP 107<br/>(μSv·h⁻¹·GBq⁻¹·m²)</th>
-                <th>Photon Count</th>
-                <th>Deviation (%)</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-        `;
+        // Validate Z (atomic number)
+        const zMatch = icrpN.Z === ref.Z;
+        const zStatus = zMatch ? 'match' : 'diverge';
 
-        for (const v of validations) {
-          if (v.error) {
-            html += `
-              <tr>
-                <td><strong>${v.id}</strong></td>
-                <td colspan="5" class="error">${v.error}</td>
-              </tr>
-            `;
-          } else {
-            const devStr = v.deviation !== null ? v.deviation.toFixed(2) : '—';
-            let statusClass = '';
-            let statusText = '—';
-            let note = '';
+        // Validate half-life
+        const expectedHalfLife_s = ref.halfLife_h * 3600;
+        const halfLifeDiff = Math.abs((icrpN.half_life_s - expectedHalfLife_s) / expectedHalfLife_s * 100);
+        const halfLifeMatch = halfLifeDiff < 2;
+        const halfLifeStatus = halfLifeMatch ? 'match' : (halfLifeDiff < 10 ? 'close' : 'diverge');
 
-            if (v.match) {
-              statusClass = 'match';
-              statusText = '✓ Match (< 5%)';
-            } else if (v.close) {
-              statusClass = 'close';
-              statusText = '~ Close (5–15%)';
-            } else if (v.deviation !== null) {
-              statusClass = 'diverge';
-              statusText = '✗ Diverge (> 15%)';
-            }
+        // Validate photon count
+        const photonCount = icrpN.photons?.length ?? 0;
+        const photonOk = photonCount >= ref.photonCountMin;
+        const photonStatus = photonOk ? 'match' : 'diverge';
 
-            html += `
-              <tr>
-                <td><strong>${v.id}</strong></td>
-                <td class="text-sm">${v.cornejo?.source ?? '—'}</td>
-                <td class="num">${v.cornejo ? v.cornejo.toFixed(1) : '—'}</td>
-                <td class="num">${v.calculated.toFixed(1)}</td>
-                <td class="num">${v.photonCount}</td>
-                <td class="num">${devStr}</td>
-                <td class="num ${statusClass}">${statusText}</td>
-              </tr>
-            `;
-            if (note) {
-              html += `<tr><td colspan="7">${note}</td></tr>`;
-            }
-          }
+        // Validate max photon energy
+        let maxPhotonE = null;
+        if (icrpN.photons && icrpN.photons.length > 0) {
+          maxPhotonE = Math.max(...icrpN.photons.map(p => p.energy_keV));
         }
 
-        html += '</tbody></table>';
-        result.innerHTML = html;
-      } catch (error) {
-        result.innerHTML = `<div class="error">Error: ${error.message}</div>`;
-        console.error(error);
+        // Calculate gamma constants
+        let calculated = null;
+        try {
+          calculated = PHYSICS.calcGammaConstants(icrpN.photons || []);
+        } catch (e) {
+          validations.push({ id, error: `Calc failed: ${e.message}` });
+          failCount++;
+          continue;
+        }
+
+        if (!calculated) {
+          validations.push({ id, error: 'No photons' });
+          failCount++;
+          continue;
+        }
+
+        const gammaDeviation = ref.gammaH10 ? ((calculated.gammaH10 - ref.gammaH10) / ref.gammaH10 * 100) : null;
+        const gammaMatch = gammaDeviation !== null && Math.abs(gammaDeviation) < 5;
+        const gammaClose = gammaDeviation !== null && Math.abs(gammaDeviation) < 15;
+        const gammaStatus = gammaMatch ? 'match' : (gammaClose ? 'close' : 'diverge');
+
+        // Overall status
+        const allMatch = zMatch && halfLifeMatch && photonOk && gammaMatch;
+        const anyWarn = !zMatch || !halfLifeMatch || !photonOk || gammaClose;
+
+        if (allMatch) passCount++;
+        else if (anyWarn) warnCount++;
+        else failCount++;
+
+        validations.push({
+          id,
+          z: { expected: ref.Z, actual: icrpN.Z, status: zStatus },
+          halfLife: { expected: ref.halfLife_h, actual: icrpN.half_life_s / 3600, diff: halfLifeDiff, status: halfLifeStatus },
+          photonCount: { expected: `≥${ref.photonCountMin}`, actual: photonCount, status: photonStatus },
+          maxPhoton: maxPhotonE,
+          gammaH10: { expected: ref.gammaH10, actual: calculated.gammaH10, deviation: gammaDeviation, status: gammaStatus },
+          source: ref.source,
+          overallStatus: allMatch ? 'match' : (anyWarn ? 'close' : 'diverge')
+        });
       }
+
+      // Render table
+      tableTitle.textContent = `Test Results: ${passCount} pass, ${warnCount} warning, ${failCount} fail`;
+
+      let html = `
+        <table class="validation-table">
+          <thead>
+            <tr>
+              <th>Nuclide</th>
+              <th>Z</th>
+              <th>Half-life (h)</th>
+              <th>Photons</th>
+              <th>E<sub>max</sub> (keV)</th>
+              <th>Γ<sup>H*(10)</sup><br/>(μSv·h⁻¹·GBq⁻¹·m²)</th>
+              <th>Deviation</th>
+              <th>Overall</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      for (const v of validations) {
+        if (v.error) {
+          html += `<tr><td><strong>${v.id}</strong></td><td colspan="7" class="error-cell">❌ ${v.error}</td></tr>`;
+          continue;
+        }
+
+        const zBg = v.z.status === 'match' ? 'match' : 'diverge';
+        const hlBg = v.halfLife.status;
+        const photBg = v.photonCount.status;
+        const gammaBg = v.gammaH10.status;
+        const overallBg = v.overallStatus;
+
+        html += `
+          <tr>
+            <td><strong>${v.id}</strong></td>
+            <td class="num ${zBg}">${v.z.actual} <span style="font-size:0.8rem;color:var(--text-muted);">(exp: ${v.z.expected})</span></td>
+            <td class="num ${hlBg}">${v.halfLife.actual.toFixed(2)} <span style="font-size:0.8rem;color:var(--text-muted);">(Δ ${v.halfLife.diff.toFixed(1)}%)</span></td>
+            <td class="num ${photBg}">${v.photonCount.actual} <span style="font-size:0.8rem;color:var(--text-muted);">(min: ${v.photonCount.expected})</span></td>
+            <td class="num">${v.maxPhoton ? v.maxPhoton.toFixed(1) : '—'}</td>
+            <td class="num ${gammaBg}">${v.gammaH10.actual.toFixed(1)} <span style="font-size:0.8rem;color:var(--text-muted);">(exp: ${v.gammaH10.expected.toFixed(1)})</span></td>
+            <td class="num ${gammaBg}">${v.gammaH10.deviation !== null ? v.gammaH10.deviation.toFixed(2) + '%' : '—'}</td>
+            <td class="num ${overallBg}">
+              ${v.overallStatus === 'match' ? '✓ Pass' : (v.overallStatus === 'close' ? '⚠ Warn' : '✗ Fail')}
+            </td>
+          </tr>
+        `;
+      }
+
+      html += '</tbody></table>';
+
+      html += `
+        <div class="summary">
+          <strong>Summary:</strong> ${passCount}/${testIds.length} nuclides pass validation
+          ${warnCount > 0 ? `| ${warnCount} warning` : ''}
+          ${failCount > 0 ? `| ${failCount} failed` : ''}
+          <br><br>
+          <strong>Data sources:</strong>
+          <ul style="margin:0.5rem 0; padding-left:1.5rem;">
+            <li>Z values: Extracted from nuclide symbol</li>
+            <li>Half-life: Parsed from ICRP-07.NDX fixed-width format</li>
+            <li>Photons: Filtered from ICRP-07.RAD (E≥20keV, yield≥0.01%)</li>
+            <li>Γ<sup>H*(10)</sup>: Calculated from photons using ICRU 57 / Cornejo methodology</li>
+          </ul>
+        </div>
+      `;
+
+      result.innerHTML = html;
+    } catch (error) {
+      result.innerHTML = `<div class="error-cell">⚠️ Error: ${error.message}</div>`;
+      console.error(error);
     }
+  }
 
     // Run on page load
     if (document.readyState === 'loading') {

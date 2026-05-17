@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 const ICRP107_DIR = path.join(__dirname, '../data/sources/icrp107');
 const OUTPUT_FILE = path.join(__dirname, '../data/icrp107-index.json');
@@ -84,163 +85,158 @@ function formatHalfLife(seconds) {
 }
 
 /**
- * Parse NDX file to extract nuclide metadata
+ * Parse NDX file to extract nuclide metadata using fixed-width FORTRAN column positions
+ * FORTRAN format: (A7,A8,A2,A8,3I7,I6,1X,3(A7,I6,E11.0,1X),A7,I6,E11.0,F7.0,2F8.0,3I4,I5,I4,E11.0,E10.0,E9.0)
+ * Record length: 226 characters
+ * Note: Z (atomic number) is NOT in the NDX file; it must be derived from the nuclide symbol
  */
+
+// Element atomic numbers lookup
+const ATOMIC_NUMBERS = {
+  H: 1, He: 2, Li: 3, Be: 4, B: 5, C: 6, N: 7, O: 8, F: 9, Ne: 10,
+  Na: 11, Mg: 12, Al: 13, Si: 14, P: 15, S: 16, Cl: 17, Ar: 18, K: 19, Ca: 20,
+  Sc: 21, Ti: 22, V: 23, Cr: 24, Mn: 25, Fe: 26, Co: 27, Ni: 28, Cu: 29, Zn: 30,
+  Ga: 31, Ge: 32, As: 33, Se: 34, Br: 35, Kr: 36, Rb: 37, Sr: 38, Y: 39, Zr: 40,
+  Nb: 41, Mo: 42, Tc: 43, Ru: 44, Rh: 45, Pd: 46, Ag: 47, Cd: 48, In: 49, Sn: 50,
+  Sb: 51, Te: 52, I: 53, Xe: 54, Cs: 55, Ba: 56, La: 57, Ce: 58, Pr: 59, Nd: 60,
+  Pm: 61, Sm: 62, Eu: 63, Gd: 64, Tb: 65, Dy: 66, Ho: 67, Er: 68, Tm: 69, Yb: 70,
+  Lu: 71, Hf: 72, Ta: 73, W: 74, Re: 75, Os: 76, Ir: 77, Pt: 78, Au: 79, Hg: 80,
+  Tl: 81, Pb: 82, Bi: 83, Po: 84, At: 85, Rn: 86, Fr: 87, Ra: 88, Ac: 89, Th: 90,
+  Pa: 91, U: 92, Np: 93, Pu: 94, Am: 95, Cm: 96, Bk: 97, Cf: 98, Es: 99, Fm: 100,
+  Md: 101, No: 102, Lr: 103, Rf: 104, Db: 105, Sg: 106, Bh: 107, Hs: 108, Mt: 109, Ds: 110,
+  Rg: 111, Cn: 112, Nh: 113, Fl: 114, Mc: 115, Lv: 116, Ts: 117, Og: 118,
+};
+
+function getZFromNuclideName(nuclideId) {
+  // Extract element symbol from nuclide ID (e.g., "Tc-99m" → "Tc")
+  const match = nuclideId.match(/^([A-Z][a-z]?)-/);
+  if (match) {
+    return ATOMIC_NUMBERS[match[1]] || null;
+  }
+  return null;
+}
+
 function parseNDX(ndxPath) {
   const content = fs.readFileSync(ndxPath, 'utf8');
   const lines = content.split(/\r?\n/);
 
   const nuclides = {};
 
+  // Fixed-width column positions (1-based FORTRAN → 0-based JavaScript)
+  const cols = {
+    nuclide: [0, 7],       // A7
+    half_life: [7, 15],    // A8
+    units: [15, 17],       // A2
+    decay_mode: [17, 25],  // A8
+    ptr1: [25, 32],        // I7
+    ptr2: [32, 39],        // I7
+    ptr3: [39, 46],        // I7
+    ptr4: [46, 52],        // I6
+    d1_name: [53, 60],     // A7
+    d1_rec: [60, 66],      // I6
+    d1_branch: [66, 77],   // E11.0
+    d2_name: [78, 85],     // A7
+    d2_rec: [85, 91],      // I6
+    d2_branch: [91, 102],  // E11.0
+    d3_name: [103, 110],   // A7
+    d3_rec: [110, 116],    // I6
+    d3_branch: [116, 127], // E11.0
+    d4_name: [128, 135],   // A7
+    d4_rec: [135, 141],    // I6
+    d4_branch: [141, 152], // E11.0
+    e_alpha: [153, 160],   // F7.0
+    e_electron: [160, 168], // F8.0
+    e_photon: [168, 176],  // F8.0
+    num1: [176, 180],      // I4
+    num2: [180, 184],      // I4
+    num3: [184, 188],      // I4
+    num4: [188, 193],      // I5
+    num5: [193, 197],      // I4
+    amu: [197, 208],       // E11.0
+    gamma10: [208, 218],   // E10.0
+    kair: [218, 226],      // E9.0
+  };
+
+  function extractField(line, colName) {
+    const col = cols[colName];
+    return line.substring(col[0], col[1]).trim();
+  }
+
   // First line is the format descriptor. Nuclide records begin on line 2.
   for (let i = 1; i < lines.length; i++) {
     const line = lines[i];
-    if (!line.trim()) continue;
+    if (line.length < 226 || !line.trim()) continue;
 
-    // Split by spaces and filter empty strings
-    const parts = line.split(/\s+/).filter(p => p);
-    if (parts.length < 4) continue;
+    const nuclideId = extractField(line, 'nuclide');
+    if (!nuclideId || !nuclideId.match(/^[A-Z][a-z]?-\d+/)) continue;
 
-    const nuclideId = parts[0];
-    const halfLifeStr = parts[1];
-
-    // Decay modes (parts[2])
-    // RAD offset (parts[3])
-    // BET offset (parts[4])
-
-    const radOffset = parseInt(parts[3], 10) || 0;
-    const betOffset = parseInt(parts[4], 10) || 0;
-
-    // Daughters are in groups of (name, ndxIdx, branching), starting at parts[7].
-    const daughters = [];
-    let daughterEndIdx = 7;
-    for (let j = 7; j + 2 < parts.length && daughters.length < 4; j += 3) {
-      const potentialName = parts[j];
-      const potentialIdx = parseInt(parts[j + 1], 10);
-      const potentialBranch = parseFloat(parts[j + 2]);
-
-      // Valid daughter: is a name (element symbol like "Fr-219", "Ra-224"),
-      // has valid index, has valid branching < 1.0
-      if (potentialName && potentialName.match(/^[A-Z][a-z]?-\d+$/) &&
-          !isNaN(potentialIdx) && potentialIdx >= 0 &&
-          !isNaN(potentialBranch) && potentialBranch > 0 && potentialBranch <= 1.0) {
-        daughters.push({ name: potentialName, branching: potentialBranch });
-        daughterEndIdx = j + 3;
-      } else {
-        // Stop if we encounter invalid data (end of daughters section)
-        break;
-      }
-    }
-
-    // After daughters, extract mean energies and dose coefficients
-    // NDX format always has 4 daughter triplets (12 values starting at position 7), then:
-    //   e_mean_alpha_MeV e_mean_electron_MeV e_mean_photon_MeV Z radCount betCount betEmissions alphaCount atomic_mass dose_inhalation dose_ingestion
-    // The daughters section is always 4 triplets = 12 values, regardless of whether all 4 are filled
-
-    let e_mean_alpha_MeV = null;
-    let e_mean_electron_MeV = null;
-    let e_mean_photon_MeV = null;
-    let Z = null;
-    let atomic_mass_u = null;
-    let dose_inhalation_Sv_per_Bq = null;
-    let dose_ingestion_Sv_per_Bq = null;
-
-    // Daughters always occupy 4 triplets = positions 7-18 (12 values)
-    // Position 7 + 12 values = positions 7-18, so meanEnergyStart is 19? NO!
-    // Positions: 7,8,9 = triplet 1
-    //           10,11,12 = triplet 2
-    //           13,14,15 = triplet 3
-    //           16,17,18 = triplet 4 (positions 7 through 18 inclusive = 12 values)
-    // So position 18 is the last daughter value, and position 19 is... wait, let me recount.
-    // parts[7] to parts[18] = 12 values. parts[19] would be the 13th value.
-    // But the first mean energy is at parts[18]. So the formula is: start = 7 + 11 = 18
-    const meanEnergyStart = 18;
-
-    if (parts.length >= meanEnergyStart + 3) {
-      const val1 = parseFloat(parts[meanEnergyStart]);
-      const val2 = parseFloat(parts[meanEnergyStart + 1]);
-      const val3 = parseFloat(parts[meanEnergyStart + 2]);
-
-      if (!isNaN(val1)) e_mean_alpha_MeV = Math.round(val1 * 100000) / 100000;
-      if (!isNaN(val2)) e_mean_electron_MeV = Math.round(val2 * 100000) / 100000;
-      if (!isNaN(val3)) e_mean_photon_MeV = Math.round(val3 * 100000) / 100000;
-    }
-
-    // Z is at mean_energy_start + 3
-    if (parts.length >= meanEnergyStart + 4) {
-      const zVal = parseInt(parts[meanEnergyStart + 3], 10);
-      if (!isNaN(zVal) && zVal > 0 && zVal <= 120) Z = zVal;
-    }
-
-    // Extract from the end: atomic_mass, then the two dose coefficients
-    // The second-to-last value is atomic_mass, the last value is concatenated dose coefficients
-    // Example: parts[26]="226.026097", parts[27]="1.048E-171.048E-17"
-    if (parts.length >= 2) {
-      const aMass = parseFloat(parts[parts.length - 2]);
-      if (!isNaN(aMass) && aMass > 0 && aMass < 300) {
-        atomic_mass_u = Math.round(aMass * 1000000) / 1000000;
-      }
-
-      // The last value is concatenated dose_inhalation + dose_ingestion in scientific notation
-      // Example: "1.048E-171.048E-17" = two consecutive numbers without separator
-      // Both numbers have the format: d.dddEsx where s is sign, x are exponent digits
-      // Strategy: find all positions where "E" appears, then split after first exponent
-      // Exponent is sign (optional) + digits, stops at decimal point or next E
-      const lastVal = parts[parts.length - 1];
-      const ePositions = [];
-      for (let i = 0; i < lastVal.length; i++) {
-        if (lastVal[i].toUpperCase() === 'E') {
-          ePositions.push(i);
-        }
-      }
-
-      if (ePositions.length === 2) {
-        // Find the end of first exponent (continue past sign and digits, stop at decimal)
-        let splitPos = ePositions[0] + 1;
-        if (lastVal[splitPos] === '+' || lastVal[splitPos] === '-') splitPos++;
-        // Continue consuming digits until we hit a decimal point or run out of digits
-        while (splitPos < lastVal.length && /\d/.test(lastVal[splitPos]) && lastVal[splitPos + 1] !== '.') {
-          splitPos++;
-        }
-        // If the next character after digits is a decimal, stop before it
-        if (/\d/.test(lastVal[splitPos])) splitPos++;
-
-        const doseInh = parseFloat(lastVal.substring(0, splitPos));
-        const doseIng = parseFloat(lastVal.substring(splitPos));
-        if (!isNaN(doseInh)) dose_inhalation_Sv_per_Bq = doseInh;
-        if (!isNaN(doseIng)) dose_ingestion_Sv_per_Bq = doseIng;
-      }
-    }
-
-    // Find RAD count and BET count - they should be near the end
-    // Look for two consecutive integers that seem reasonable (between 0-2000)
-    let radCount = 0;
-    let betCount = 0;
-    for (let j = parts.length - 15; j < parts.length - 2; j++) {
-      const val = parseInt(parts[j], 10);
-      if (!isNaN(val) && val > 0 && val < 2000) {
-        if (radCount === 0) {
-          radCount = val;
-        } else if (betCount === 0) {
-          betCount = val;
-          break;
-        }
-      }
-    }
-
+    const halfLifeStr = extractField(line, 'half_life') + extractField(line, 'units');
     const halfLifeS = parseHalfLife(halfLifeStr);
     const halfLifeDisplay = formatHalfLife(halfLifeS);
+
+    // Daughters
+    const daughters = [];
+    const daughterData = [
+      { name: extractField(line, 'd1_name'), rec: extractField(line, 'd1_rec'), branch: extractField(line, 'd1_branch') },
+      { name: extractField(line, 'd2_name'), rec: extractField(line, 'd2_rec'), branch: extractField(line, 'd2_branch') },
+      { name: extractField(line, 'd3_name'), rec: extractField(line, 'd3_rec'), branch: extractField(line, 'd3_branch') },
+      { name: extractField(line, 'd4_name'), rec: extractField(line, 'd4_rec'), branch: extractField(line, 'd4_branch') },
+    ];
+
+    for (const d of daughterData) {
+      const dName = d.name.trim();
+      const dRec = parseInt(d.rec, 10);
+      const dBranch = parseFloat(d.branch);
+      if (dName && dName.match(/^[A-Z][a-z]?-\d+$/) && !isNaN(dRec) && dRec > 0 && !isNaN(dBranch) && dBranch > 0 && dBranch <= 1.0) {
+        daughters.push({ name: dName, branching: dBranch });
+      }
+    }
+
+    // Energies
+    const e_mean_alpha_MeV = (() => {
+      const v = parseFloat(extractField(line, 'e_alpha'));
+      return !isNaN(v) && v !== 0 ? Math.round(v * 100000) / 100000 : null;
+    })();
+
+    const e_mean_electron_MeV = (() => {
+      const v = parseFloat(extractField(line, 'e_electron'));
+      return !isNaN(v) && v !== 0 ? Math.round(v * 100000) / 100000 : null;
+    })();
+
+    const e_mean_photon_MeV = (() => {
+      const v = parseFloat(extractField(line, 'e_photon'));
+      return !isNaN(v) && v !== 0 ? Math.round(v * 100000) / 100000 : null;
+    })();
+
+    // Z: derive from nuclide symbol (not in NDX file)
+    const Z = getZFromNuclideName(nuclideId);
+
+    // Atomic mass
+    const amu = parseFloat(extractField(line, 'amu'));
+    const atomic_mass_u = (!isNaN(amu) && amu > 0 && amu < 300) ? Math.round(amu * 1000000) / 1000000 : null;
+
+    // NOTE: NDX does NOT contain ICRP-119 dose coefficients (ingestion/inhalation).
+    // Those values should be sourced from the curated DB or ICRP-119 tables directly.
+    // The gamma10/kair fields contain air kerma data, not dose coefficients.
+    const dose_inhalation_Sv_per_Bq = null;
+    const dose_ingestion_Sv_per_Bq = null;
+
+    // RAD and BET counts
+    const num2 = parseInt(extractField(line, 'num2'), 10) || 0;
+    const num3 = parseInt(extractField(line, 'num3'), 10) || 0;
+    const rad_offset = parseInt(extractField(line, 'ptr1'), 10) || 0;
+    const bet_offset = parseInt(extractField(line, 'ptr2'), 10) || 0;
 
     nuclides[nuclideId] = {
       id: nuclideId,
       half_life_s: halfLifeS,
       half_life_display: halfLifeDisplay,
-      decay_mode_raw: parts[2],
+      decay_mode_raw: extractField(line, 'decay_mode'),
       daughters,
-      rad_offset: radOffset,
-      rad_count: radCount,
-      bet_offset: betOffset,
-      bet_count: betCount,
+      rad_offset,
+      rad_count: num2,
+      bet_offset,
+      bet_count: num3,
       e_mean_alpha_MeV,
       e_mean_electron_MeV,
       e_mean_photon_MeV,
@@ -438,11 +434,21 @@ function main() {
   // Convert to array sorted by nuclide ID
   const nucledesArray = Object.values(nuclides).sort((a, b) => a.id.localeCompare(b.id));
 
+  // Calculate hash of NDX file for traceability
+  const ndxContent = fs.readFileSync(ndxPath, 'utf8');
+  const ndxSha256 = crypto.createHash('sha256').update(ndxContent).digest('hex');
+
   // Write output
   const output = {
     version: 'ICRP 107',
     source: 'ICRP Publication 107: Nuclear Decay Data for Dosimetric Calculations',
     publication_date: '2008-06-16',
+    notes: {
+      generated_at: new Date().toISOString(),
+      generated_by_script: 'tools/parse-icrp107.js',
+      icrp107_ndx_sha256: ndxSha256,
+      parser_version: '2.0 (fixed-width columns)',
+    },
     nuclides: nucledesArray,
   };
 
