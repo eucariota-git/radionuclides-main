@@ -59,11 +59,12 @@
             <th class="has-tooltip tooltip-up" data-tooltip="Directional dose equivalent (0.07 mm depth). Extremity dose at d < 25 cm. Units: μSv·h⁻¹·GBq⁻¹·m².">&#915;<sup>H'(0.07)</sup><span class="th-unit">μSv·h⁻¹·GBq⁻¹·m²</span></th>
             <th>Rep. energy<span class="th-unit">keV</span></th>
             <th class="has-tooltip tooltip-up" data-tooltip="Controlled liquid effluent concentration limit calculated from IS-28 Annex II II.A.4 using ICRP 119 adult ingestion coefficients. Units: Bq/L.">Liquid effluent<span class="th-unit">Bq/L</span></th>
+            <th class="has-tooltip tooltip-up" data-tooltip="Clearance level for release from regulatory control (RD 1217/2024, Tabla A.1). Units: kBq/kg (= Bq/g)." title="Clearance level">Clearance<br><span class="th-unit">(kBq/kg)</span></th>
             <th>Source</th>
           </tr>
         </thead>
         <tbody id="nuclideBody">
-          <tr><td colspan="10" class="text-muted text-sm loading-cell">Loading…</td></tr>
+          <tr><td colspan="11" class="text-muted text-sm loading-cell">Loading…</td></tr>
         </tbody>
       </table>
     </div>
@@ -105,6 +106,7 @@
       <li><strong>2 nuclides:</strong> <strong>Ga-68</strong> and <strong>Y-90</strong> are additions beyond Cornejo et al. Ga-68 calculated using ICRU 57 / ICRP 74. Y-90 from Zanzonico et al. (J Nucl Med 40(6), 1999) — bremsstrahlung in PMMA container.</li>
       <li>&#915;<sup>H'(0.07)</sup> used for extremity dose (d &lt; 25 cm) only when H'(0.07) > H*(10) and all photon energies &lt; 300 keV; otherwise H*(10) is conservatively applied.</li>
       <li><strong>Published Cornejo values</strong> preserved in <code>cornejo_validation</code> field for audit trail. Differences from Cornejo indicate use of updated nuclear data.</li>
+      <li><strong>Clearance levels</strong>: RD 1217/2024 Tabla A.1 (niveles de autorización para la exención de materiales radiactivos del control regulatorio).</li>
       <li><strong>Liquid effluent limits</strong> calculated from IS-28 Annex II II.A.4 using ICRP 119 Annex F adult ingestion coefficients: (1 mSv / e(g)) / 600 L.</li>
       <li>The JSON database (<code>data/nuclides.json</code>) can be edited directly to update or add values.</li>
     </ul>
@@ -139,7 +141,7 @@
     await ICRP107._ensureLoaded().catch(err => console.warn('ICRP 107 index not available:', err));
   } catch (e) {
     document.getElementById('nuclideBody').innerHTML =
-      `<tr><td colspan="10" style="color:var(--danger);padding:1rem;">Error loading database: ${e.message}</td></tr>`;
+      `<tr><td colspan="11" style="color:var(--danger);padding:1rem;">Error loading database: ${e.message}</td></tr>`;
     return;
   }
 
@@ -300,6 +302,7 @@
         <td class="num">${fmtGamma(n.gamma_H007)}${h007note}</td>
         <td class="num">${n.representative_energy_keV}</td>
         <td class="num">${fmtEffluentLimit(n)}</td>
+        <td class="num">${n.clearance_a1_kBq_per_kg != null ? n.clearance_a1_kBq_per_kg : '—'}</td>
         <td class="text-sm">${
           n._custom ? '<em>custom</em>'
           : !n.source ? '—'
@@ -314,14 +317,14 @@
     if (!rows && activeSearch) {
       // No results in main DB and there's a search query
       document.getElementById('nuclideBody').innerHTML =
-        `<tr><td colspan="10" class="text-muted text-sm" style="padding:1rem;">
+        `<tr><td colspan="11" class="text-muted text-sm" style="padding:1rem;">
           No results in main database.
           <button id="btnSearchIcrp107" class="btn btn-secondary btn-sm" style="margin-left:0.5rem;">Search in ICRP 107</button>
         </td></tr>`;
       document.getElementById('btnSearchIcrp107').addEventListener('click', () => searchIcrp107());
     } else {
       document.getElementById('nuclideBody').innerHTML = rows ||
-        '<tr><td colspan="10" class="text-muted text-sm" style="padding:1rem;">No results.</td></tr>';
+        '<tr><td colspan="11" class="text-muted text-sm" style="padding:1rem;">No results.</td></tr>';
     }
 
     // Re-bind click handlers
@@ -340,7 +343,7 @@
     const icrpResults = ICRP107.search(activeSearch);
     if (icrpResults.length === 0) {
       document.getElementById('nuclideBody').innerHTML =
-        `<tr><td colspan="10" class="text-muted text-sm" style="padding:1rem;">
+        `<tr><td colspan="11" class="text-muted text-sm" style="padding:1rem;">
           No results found in ICRP 107 either. Try a different search term.
         </td></tr>`;
       return;
@@ -556,11 +559,13 @@
           <div class="prop-val">${n.gamma_H007 !== null ? n.gamma_H007 : '—'}</div>
           <div class="prop-note">&#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;${n.H007_from_cornejo ? ' &#9888;' : ''}</div>
         </div>
-        <div class="prop-item">
-          <div class="prop-key">Adult ingestion e(g)</div>
-          <div class="prop-val">${ingestionCoeff}</div>
-          <div class="prop-note">Sv/Bq, ICRP 119 Annex F</div>
-        </div>
+        ${n.clearance_a1_kBq_per_kg != null
+          ? `<div class="prop-item">
+               <div class="prop-key">Clearance level</div>
+               <div class="prop-val">${n.clearance_a1_kBq_per_kg}</div>
+               <div class="prop-note">kBq/kg · RD 1217/2024 Tabla A.1</div>
+             </div>`
+          : ''}
         <div class="prop-item">
           <div class="prop-key">Liquid effluent limit</div>
           <div class="prop-val">${effluentLimit}</div>
