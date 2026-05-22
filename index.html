@@ -146,44 +146,6 @@
     return;
   }
 
-  // Spanish names for search (items not already matched by English name/clinical_use)
-  const ES_NAMES = {
-    'C-11':          'carbono',
-    'N-13':          'nitrógeno nitrogeno',
-    'O-15':          'oxígeno oxigeno',
-    'F-18':          'flúor fluor',
-    'Na-24':         'sodio',
-    'K-42':          'potasio',
-    'Cr-51':         'cromo',
-    'Co-57':         'cobalto',
-    'Co-58':         'cobalto',
-    'Fe-59':         'hierro',
-    'Co-60':         'cobalto',
-    'Cu-64':         'cobre',
-    'Ga-67':         'galio',
-    'Ga-68':         'galio',
-    'Se-75':         'selenio',
-    'Tc-99m':        'tecnecio',
-    'Mo-99+Tc-99m':  'molibdeno tecnecio',
-    'Pd-103':        'paladio',
-    'In-111':        'indio',
-    'I-123':         'yodo',
-    'I-125':         'yodo',
-    'I-131':         'yodo',
-    'Xe-133':        'xenón xenon',
-    'Cs-137':        'cesio',
-    'Sm-153':        'samario',
-    'Yb-169':        'iterbio',
-    'Tm-170':        'tulio',
-    'Lu-177':        'lutecio',
-    'Re-186':        'renio',
-    'Re-188':        'renio',
-    'Ir-192':        'iridio',
-    'Au-198':        'oro',
-    'Tl-201':        'talio',
-    'Y-90':          'itrio',
-  };
-
   let activeModality = 'all';
   let activeSearch   = '';
   let selectedId     = null;
@@ -246,17 +208,8 @@
 
     // Apply search filter to DB results
     if (activeSearch) {
-      const q = activeSearch.toLowerCase();
-      data = data.filter(n => {
-        const idWithSpace = n.id.toLowerCase().replace('-', ' '); // "F-18" → "f 18"
-        const nameEs = (ES_NAMES[n.id] || '').toLowerCase();
-        return n.id.toLowerCase().includes(q) ||
-               idWithSpace.includes(q) ||
-               n.name.toLowerCase().includes(q) ||
-               n.symbol.toLowerCase().includes(q) ||
-               nameEs.includes(q) ||
-               (n.clinical_use || '').toLowerCase().includes(q);
-      });
+      data = DB.search(activeSearch);
+      if (activeModality !== 'all') data = data.filter(n => n.modality === activeModality);
 
       // If no DB results and we have a search query, try ICRP 107
       if (data.length === 0 && ICRP107 && ICRP107.isReady()) {

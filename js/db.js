@@ -17,6 +17,44 @@ const DB = (() => {
   let _nuclides = [];
   let _meta     = {};
 
+  // Spanish names for search
+  const ES_NAMES = {
+    'C-11':          'carbono',
+    'N-13':          'nitrógeno nitrogeno',
+    'O-15':          'oxígeno oxigeno',
+    'F-18':          'flúor fluor',
+    'Na-24':         'sodio',
+    'K-42':          'potasio',
+    'Cr-51':         'cromo',
+    'Co-57':         'cobalto',
+    'Co-58':         'cobalto',
+    'Fe-59':         'hierro',
+    'Co-60':         'cobalto',
+    'Cu-64':         'cobre',
+    'Ga-67':         'galio',
+    'Ga-68':         'galio',
+    'Se-75':         'selenio',
+    'Tc-99m':        'tecnecio',
+    'Mo-99+Tc-99m':  'molibdeno tecnecio',
+    'Pd-103':        'paladio',
+    'In-111':        'indio',
+    'I-123':         'yodo',
+    'I-125':         'yodo',
+    'I-131':         'yodo',
+    'Xe-133':        'xenón xenon',
+    'Cs-137':        'cesio',
+    'Sm-153':        'samario',
+    'Yb-169':        'iterbio',
+    'Tm-170':        'tulio',
+    'Lu-177':        'lutecio',
+    'Re-186':        'renio',
+    'Re-188':        'renio',
+    'Ir-192':        'iridio',
+    'Au-198':        'oro',
+    'Tl-201':        'talio',
+    'Y-90':          'itrio',
+  };
+
   // ---------------------------------------------------------------------------
   // Load
   // ---------------------------------------------------------------------------
@@ -73,17 +111,19 @@ const DB = (() => {
   }
 
   /**
-   * Search by query string — matches id, name, symbol, clinical_use (case-insensitive).
+   * Search by query string — matches id, name, symbol, clinical_use, and Spanish names (case-insensitive).
    */
   function search(query) {
     if (!query || query.trim() === '') return _nuclides;
     const q = query.trim().toLowerCase();
-    return _nuclides.filter(n =>
-      n.id.toLowerCase().includes(q)       ||
-      n.name.toLowerCase().includes(q)     ||
-      n.symbol.toLowerCase().includes(q)   ||
-      (n.clinical_use || '').toLowerCase().includes(q)
-    );
+    return _nuclides.filter(n => {
+      const nameEs = (ES_NAMES[n.id] || '').toLowerCase();
+      return n.id.toLowerCase().includes(q)       ||
+             n.name.toLowerCase().includes(q)     ||
+             n.symbol.toLowerCase().includes(q)   ||
+             nameEs.includes(q)                   ||
+             (n.clinical_use || '').toLowerCase().includes(q);
+    });
   }
 
   /**
