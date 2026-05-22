@@ -29,7 +29,7 @@
 <main class="page-body" id="main-content">
   <div class="page-title">ICRP 107 Database Validation</div>
   <div class="page-subtitle">
-    Internal regulatory compliance check. Validates parser accuracy, Z extraction, and dose constants against ICRP-107 and Cornejo reference data.
+    Internal regulatory compliance check. Validates parser accuracy, Z extraction, and dose constants against ICRP-107 and Cornejo reference data. <strong>Phase 2 Validation: 15 radionuclides</strong> (7 original + 8 expanded, including I-125).
   </div>
 
   <div class="card mt-2">
@@ -80,8 +80,9 @@
 <script src="js/icrp107-loader.js"></script>
 
 <script>
-  // Reference test nuclides with expected values from ICRP-107 calculated + curated DB
+  // Reference test nuclides with expected values from ICRP-107 + Cornejo et al. 2006
   const TEST_REFERENCE = {
+    // Phase 1: Original 7 nuclides (Cornejo validation)
     'Tc-99m':  { Z: 43, gammaH10: 21.7,   halfLife_h: 6.0067,  photonCountMin: 2, source: 'Cornejo et al. 2006' },
     'F-18':    { Z: 9,  gammaH10: 165.5,  halfLife_h: 1.8295,  photonCountMin: 1, source: 'ICRP 107 calculated' },
     'I-131':   { Z: 53, gammaH10: 65.76,  halfLife_h: 192.559, photonCountMin: 3, source: 'ICRP 107 calculated' },
@@ -89,6 +90,15 @@
     'Ga-68':   { Z: 31, gammaH10: 157.8,  halfLife_h: 1.1285,  photonCountMin: 1, source: 'ICRP 107 calculated' },
     'I-123':   { Z: 53, gammaH10: 46.51,  halfLife_h: 13.224,  photonCountMin: 5, source: 'ICRP 107 calculated' },
     'Tl-201':  { Z: 81, gammaH10: 17.63,  halfLife_h: 73.010,  photonCountMin: 5, source: 'ICRP 107 calculated' },
+    // Phase 2: Expanded 8 additional nuclides (up to 15 total)
+    'I-125':   { Z: 53, gammaH10: 36.04,  halfLife_h: 1426.43, photonCountMin: 1, source: 'Cornejo et al. 2006' },
+    'Co-60':   { Z: 27, gammaH10: 349.35, halfLife_h: 46208.0, photonCountMin: 2, source: 'ICRP 107 calculated' },
+    'Se-75':   { Z: 34, gammaH10: 65.76,  halfLife_h: 2874.39, photonCountMin: 4, source: 'ICRP 107 calculated' },
+    'In-111':  { Z: 49, gammaH10: 89.15,  halfLife_h: 67.31,   photonCountMin: 2, source: 'ICRP 107 calculated' },
+    'Sm-153':  { Z: 62, gammaH10: 17.54,  halfLife_h: 46.50,   photonCountMin: 1, source: 'ICRP 107 calculated' },
+    'Re-186':  { Z: 75, gammaH10: 7.77,   halfLife_h: 89.24,   photonCountMin: 3, source: 'ICRP 107 calculated' },
+    'Ir-192':  { Z: 77, gammaH10: 138.83, halfLife_h: 1771.90, photonCountMin: 5, source: 'ICRP 107 calculated' },
+    'Pd-103':  { Z: 46, gammaH10: 20.58,  halfLife_h: 407.78,  photonCountMin: 1, source: 'ICRP 107 calculated' },
   };
 
   async function validate() {
