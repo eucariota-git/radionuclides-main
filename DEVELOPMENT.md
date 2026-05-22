@@ -116,10 +116,10 @@ D = ∫₀ᵗ Γ · A(τ) / r² dτ, where A(τ) = A₀ · e^(−λτ)
 ## Testing Checklist
 
 ```
-□ validate-icrp107.html: all 7 nuclides show ✓ Pass
+□ validate-icrp107.html: all 20 nuclides show ✓ Pass
 □ Dose at selected distance (not 1m hardcoded)
 □ Y-90 container selector + Pb warning
-□ Crystal lens: 20 mSv/y (current) + 50 mSv/y (transitional)
+□ Crystal lens: 50 mSv/y max annual + 100 mSv/5-year cycle
 □ Dark mode, print, offline file://, CSV upload
 □ Data integrity: JSON valid, hashes match
 ```

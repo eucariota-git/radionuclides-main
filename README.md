@@ -35,7 +35,7 @@ Target users: medical physicists and radiation protection specialists.
 - **Annual dose limit comparison** (RD 1029/2022 / EURATOM 2013/59):
   - Effective dose: 20 mSv/y worker, 1 mSv/y public
   - Extremities: 500 mSv/y
-  - **Lens of eye: 50 mSv/y max annual, 100 mSv/5-year cycle (current regime since 22 Jun 2024)**
+  - **Lens of eye:** Both conditions must be satisfied: 50 mSv/y max annual AND 100 mSv over any rolling 5-year period (current regime since 22 Jun 2024)
   - Crystal lens calculation with both limits displayed
 - CSV export includes dose rates at both selected distance and 1 m reference
 
@@ -122,7 +122,7 @@ All generated JSON files include metadata for audit trail:
 ### Critical Fixes
 - **Y-90 time unit conversion:** Fixed calculation of exposure time — now correctly applies unit conversion (min/h/d) in dose estimation
 - **Y-90 H'(0.07) selection:** Y-90 bremsstrahlung now correctly applies H'(0.07) for extremities (d < 25 cm) in PMMA, Pb, and W containers
-- **Lens of eye limits (RD 1029/2022):** Updated regulatory compliance to reflect new limits (100 mSv/5-year cycle from Jan 1 2026)
+- **Lens of eye limits (RD 1029/2022):** Updated regulatory compliance to reflect current limits (50 mSv/y max annual, 100 mSv/5-year cycle since 2024-06-22)
 
 ### Medium Priority
 - **Y-90 data consolidation:** Zanzonico bremsstrahlung table now sourced from `PHYSICS.Y90_CONTAINERS` (single source of truth in `js/data.js`)

@@ -132,7 +132,7 @@ The application includes an **extended database of 1,252 radionuclides** from IC
    - Compares to EU RD 1029/2022 limits:
      - **Whole body**: 20 mSv/year (worker)
      - **Extremities** (hands/feet): 500 mSv/year
-     - **Lens of eye**: 20 mSv/year (until 2025-12-31) | 50 mSv/year max (2026–2030 transitional)
+     - **Lens of eye**: <em>Both conditions must be satisfied:</em> 50 mSv/year max annual AND 100 mSv over any rolling 5-year period (current regime since 2024-06-22)
    - Shows **status**: ✓ Safe | ⚠ Caution | ✗ Exceeds limit
 
 7. **Special case — Y-90 (pure beta emitter)**:
@@ -194,8 +194,9 @@ The application includes an **extended database of 1,252 radionuclides** from IC
 **How to use**:
 1. Click **"Validation"** link in main navigation
 2. Table automatically loads and tests 20 reference nuclides:
-   - F-18, Tc-99m, I-131, Lu-177 (Cornejo reference)
-   - Ga-68, I-123, Tl-201 (ICRP-107 calculated)
+   - Phase 1: F-18, Tc-99m, I-131, Lu-177, Ga-68, I-123, Tl-201
+   - Phase 2: I-125, Co-60, Se-75, In-111, Sm-153, Re-186, Ir-192, Pd-103
+   - Phase 3: Cu-64, Re-188, Tm-170, Au-198, Yb-169
 
 3. **Columns validated**:
    - **Z**: Atomic number (expected vs extracted)
@@ -211,8 +212,8 @@ The application includes an **extended database of 1,252 radionuclides** from IC
    - ✗ **Fail** (red) — Significant deviation > 15% (investigate)
 
 5. **Summary**:
-   - "X/7 nuclides pass validation" shown at top
-   - All 7 reference nuclides currently pass
+   - "X/20 nuclides pass validation" shown at top
+   - All 20 reference nuclides currently pass
 
 **Data integrity**:
 - SHA256 hashes of source files (NDX, RAD) stored in JSON metadata
