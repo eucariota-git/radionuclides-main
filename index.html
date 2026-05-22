@@ -286,6 +286,7 @@
           <td class="num">${fmtGamma(n.gamma_H007)}</td>
           <td class="num text-muted">—</td>
           <td class="num text-muted">—</td>
+          <td class="num text-muted">—</td>
           <td class="text-sm">${n.source}</td>
         </tr>`;
       }
@@ -365,6 +366,7 @@
         <td class="num text-muted">—</td>
         <td class="num">${fmtGamma(n.gamma_H10)}</td>
         <td class="num">${fmtGamma(n.gamma_H007)}</td>
+        <td class="num text-muted">—</td>
         <td class="num text-muted">—</td>
         <td class="num text-muted">—</td>
         <td class="text-sm">${n.source}</td>
@@ -674,7 +676,7 @@
     const headers = ['id', 'symbol', 'name', 'half_life_display', 'decay_modes', 'modality',
                      'gamma_Kair', 'gamma_H10', 'gamma_H007', 'representative_energy_keV',
                      'ingestion_dose_coeff_adult_Sv_per_Bq', 'effluent_liquid_limit_Bq_per_L',
-                     'effluent_liquid_limit_source', 'source'];
+                     'effluent_liquid_limit_source', 'clearance_a1_kBq_per_kg', 'source'];
     const rows = currentData.map(n => [
       n.id,
       n.symbol,
@@ -689,6 +691,7 @@
       n.ingestion_dose_coeff_adult_Sv_per_Bq ?? '',
       n.effluent_liquid_limit_Bq_per_L ?? '',
       n.effluent_liquid_limit_source ?? '',
+      n.clearance_a1_kBq_per_kg ?? '',
       n._custom ? 'custom' : (n.source || 'Cornejo')
     ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
     const csv = [headers.join(','), ...rows].join('\r\n');

@@ -10,7 +10,7 @@ const NUCLIDE_DATA = {
     "gamma_H007_units": "μSv·h⁻¹·GBq⁻¹·m²",
     "H007_note": "H'(0.07) directional dose equivalent rate constant. Provided for nuclides with all photon energies < 300 keV and H'(0.07) > H*(10). For other nuclides, H*(10) value is used (conservative for high-energy emitters).",
     "Y90_note": "Y-90 is a pure β⁻ emitter with negligible photon emissions (no gamma rays or X-rays ≥20 keV). Dose constants gamma_Kair, gamma_H10, gamma_H007 are null (not measured/not applicable). External dose from Y-90 sources comes from bremsstrahlung radiation in container material (see PHYSICS.Y90_CONTAINERS in js/data.js for Zanzonico et al. 1999 data).",
-    "clearance_a1_kBq_per_kg_note": "Activity limit (A1) for radioactive material classification under IAEA transport regulations (IAEA Safety Standards SSR-6). null indicates either: (1) nuclide not listed in transport regulations (e.g., short-lived diagnostics), (2) A1 not determined, or (3) not applicable for this dataset. Reference: IAEA Regulations for the Safe Transport of Radioactive Material (2018).",
+    "clearance_a1_kBq_per_kg_note": "Exemption clearance level (A1) under RD 1217/2024 Annex IV Table A.1 and EU EURATOM Directive 2013/59. Units: kBq/kg (= Bq/g). null indicates either: (1) nuclide not listed in clearance regulations (e.g., short-lived diagnostics), (2) clearance level not determined, or (3) not applicable. Reference: RD 1217/2024 (Spanish) and EURATOM Directive 2013/59 (EU).",
     "half_life_s_units": "seconds",
     "ingestion_dose_coeff_adult_units": "Sv/Bq",
     "effluent_liquid_limit_units": "Bq/L",

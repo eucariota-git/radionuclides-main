@@ -66,7 +66,7 @@ When editing calculator logic (decay, dose, clearance), always verify that cumul
 
 ## Domain Knowledge
 
-Regulatory references use RD 1029/2022 (not RD 783/2001). Dose limits: effective dose 20 mSv/year, lens of eye — both conditions must be satisfied: 50 mSv/y max annual AND 100 mSv over any rolling 5-year period (current regime since 22 Jun 2024), skin 500 mSv/year.
+Regulatory references use RD 1029/2022 (not RD 783/2001). Dose limits: effective dose 20 mSv/year, lens of eye — both conditions must be satisfied: 50 mSv/y max annual AND 100 mSv over any consecutive 5-year period (current regime since 22 Jun 2024), skin 500 mSv/year.
 
 ## UI / Styling Guidelines
 

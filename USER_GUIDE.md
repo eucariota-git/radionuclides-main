@@ -132,7 +132,7 @@ The application includes an **extended database of 1,252 radionuclides** from IC
    - Compares to EU RD 1029/2022 limits:
      - **Whole body**: 20 mSv/year (worker)
      - **Extremities** (hands/feet): 500 mSv/year
-     - **Lens of eye**: <em>Both conditions must be satisfied:</em> 50 mSv/year max annual AND 100 mSv over any rolling 5-year period (current regime since 2024-06-22)
+     - **Lens of eye**: <em>Both conditions must be satisfied:</em> 50 mSv/year max annual AND 100 mSv over any consecutive 5-year period (current regime since 2024-06-22)
    - Shows **status**: ✓ Safe | ⚠ Caution | ✗ Exceeds limit
 
 7. **Special case — Y-90 (pure beta emitter)**:

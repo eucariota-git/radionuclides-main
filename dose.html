@@ -205,7 +205,7 @@
     <div id="limitComparison"></div>
     <div class="alert alert-warning mt-1">
       Annual limits (RD 1029/2022 / EURATOM 2013/59): workers 20 mSv/y effective dose, 500 mSv/y extremities; public 1 mSv/y.
-      <strong>Lens of eye (current regime, since 22 Jun 2024):</strong> <em>Both conditions must be satisfied:</em> 50 mSv/y max annual AND 100 mSv over any rolling 5-year period.
+      <strong>Lens of eye (current regime, since 22 Jun 2024):</strong> <em>Both conditions must be satisfied:</em> 50 mSv/y max annual AND 100 mSv over any consecutive 5-year period.
       These are regulatory limits, not design targets.
     </div>
   </div>
@@ -699,8 +699,8 @@
       `<strong>${n.symbol} — ${n.name}</strong> ${sourceTag} &nbsp;|&nbsp; T&#189; = ${n.half_life_display} &nbsp;|&nbsp;
        A&#8320; = ${A0raw} ${A0unit} (${A0_GBq.toPrecision(4)} GBq) &nbsp;|&nbsp;
        d = ${d_m} m &nbsp;|&nbsp; t = ${t_h.toFixed(2)} h/admin &nbsp;|&nbsp; n = ${nAdmin} admin/y &nbsp;|&nbsp; patient Tx = ${(patientTx*100).toFixed(1)}% &nbsp;|&nbsp;`
-       + (n.representative_energy_keV ? `` : '') + energyWarning;
-       &#915;<sup>H*(10)</sup> = ${gammaWB} &nbsp;|&nbsp; ${useH007
+       + (n.representative_energy_keV ? `` : '') + energyWarning +
+       `&#915;<sup>H*(10)</sup> = ${gammaWB} &nbsp;|&nbsp; ${useH007
          ? `&#915;<sup>H'(0.07)</sup> = ${gammaExt}`
          : `&#915;<sup>H'(0.07)</sup> = ${n.gamma_H007 ?? '—'} <span style="color:var(--text-muted)">(H*(10) used as conservative)</span>`
        } &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;`;
@@ -927,7 +927,7 @@
         <strong>Lens of eye (occupational, RD 1029/2022):</strong> ${CALC.formatDose(annualDoseWB).display}/y <em style="font-size:0.9em;">estimated with H*(10)</em>
         <br><em style="font-size:0.9em;">Both conditions must be satisfied:</em>
         &nbsp;— ${pct(annualDoseWB, 50)} of 50 mSv/y max annual
-        &nbsp;|&nbsp; ${pct(annualDoseWB, 100)} of 100 mSv over rolling 5-year period (current regime since 22 Jun 2024)
+        &nbsp;|&nbsp; ${pct(annualDoseWB, 100)} of 100 mSv over consecutive 5-year period (current regime since 22 Jun 2024)
         <br>
         <strong>Extremities H'(0.07):</strong> ${CALC.formatDose(annualDoseExt).display}/y
         &nbsp;— ${pct(annualDoseExt, 500)} of 500 mSv/y extremity limit

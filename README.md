@@ -13,7 +13,8 @@ Target users: medical physicists and radiation protection specialists.
 ### Properties (`index.html`)
 - Database of 36 radionuclides used in nuclear medicine (PET, SPECT, therapy, brachytherapy)
   - 32 nuclides: dose rate constants from Cornejo et al. (2006)
-  - 4 nuclides (Ga-67, Ga-68, Yb-169, Y-90): additions with recalculated constants using ICRP 107 photon data and ICRU 57 conversion coefficients
+  - 3 nuclides (Ga-67, Ga-68, Yb-169): additions with recalculated constants using ICRP 107 photon data and ICRU 57 conversion coefficients
+  - 1 nuclide (Y-90): pure β⁻ emitter with dose from bremsstrahlung radiation (Zanzonico et al. 1999)
   - Note: Some values differ from Cornejo due to updated nuclear data in ICRP 107; published Cornejo values are preserved in `cornejo_validation` field
 - Controlled liquid effluent concentration limits calculated from IS-28 and ICRP 119 adult ingestion coefficients
 - Filterable by category and modality
@@ -35,7 +36,7 @@ Target users: medical physicists and radiation protection specialists.
 - **Annual dose limit comparison** (RD 1029/2022 / EURATOM 2013/59):
   - Effective dose: 20 mSv/y worker, 1 mSv/y public
   - Extremities: 500 mSv/y
-  - **Lens of eye:** Both conditions must be satisfied: 50 mSv/y max annual AND 100 mSv over any rolling 5-year period (current regime since 22 Jun 2024)
+  - **Lens of eye:** Both conditions must be satisfied: 50 mSv/y max annual AND 100 mSv over any consecutive 5-year period (current regime since 22 Jun 2024)
   - Crystal lens calculation with both limits displayed
 - CSV export includes dose rates at both selected distance and 1 m reference
 
