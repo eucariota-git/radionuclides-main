@@ -11,7 +11,7 @@ A static web application for medical physicists and radiation protection special
 ## Tech Stack
 
 - **Pure vanilla JavaScript** — no frameworks, no build step, no package.json
-- **Chart.js v4.4.0** via CDN (decay visualization)
+- **Chart.js v4.4.0** bundled locally (`js/chart.umd.min.js`, no CDN) for offline support
 - **Static site** — deployable to GitHub Pages, works offline (file://) and on Android (content://)
 
 ## Project Structure
