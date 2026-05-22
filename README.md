@@ -35,7 +35,7 @@ Target users: medical physicists and radiation protection specialists.
 - **Annual dose limit comparison** (RD 1029/2022 / EURATOM 2013/59):
   - Effective dose: 20 mSv/y worker, 1 mSv/y public
   - Extremities: 500 mSv/y
-  - **Lens of eye: 20 mSv/y (current, until Dec 31 2025) | 50 mSv/y max annual (from Jan 1 2026: 100 mSv/5-year cycle)**
+  - **Lens of eye: 50 mSv/y max annual, 100 mSv/5-year cycle (current regime since 22 Jun 2024)**
   - Crystal lens calculation with both limits displayed
 - CSV export includes dose rates at both selected distance and 1 m reference
 

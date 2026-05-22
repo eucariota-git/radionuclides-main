@@ -193,7 +193,7 @@ The application includes an **extended database of 1,252 radionuclides** from IC
 
 **How to use**:
 1. Click **"Validation"** link in main navigation
-2. Table automatically loads and tests 7 reference nuclides:
+2. Table automatically loads and tests 20 reference nuclides:
    - F-18, Tc-99m, I-131, Lu-177 (Cornejo reference)
    - Ga-68, I-123, Tl-201 (ICRP-107 calculated)
 

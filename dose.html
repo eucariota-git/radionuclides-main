@@ -204,7 +204,7 @@
     <div id="limitComparison"></div>
     <div class="alert alert-warning mt-1">
       Annual limits (RD 1029/2022 / EURATOM 2013/59): workers 20 mSv/y effective dose, 500 mSv/y extremities; public 1 mSv/y.
-      <strong>Lens of eye (current regime, since 18 Jun 2024):</strong> 100 mSv/5-year cycle, max 50 mSv/y.
+      <strong>Lens of eye (current regime, since 22 Jun 2024):</strong> 100 mSv/5-year cycle, max 50 mSv/y.
       These are regulatory limits, not design targets.
     </div>
   </div>
@@ -439,7 +439,8 @@
     const expMul  = { h: 1, min: 1/60, d: 24 };
     const t_h     = expRaw * (expMul[expUnit] || 1);
     const nAdmin  = Math.max(1, parseInt(document.getElementById('nAdmin').value) || 1);
-    const patientTx = Math.min(100, Math.max(0, parseFloat(document.getElementById('patientTx').value) ?? 100)) / 100;
+    const parsed = parseFloat(document.getElementById('patientTx').value);
+    const patientTx = Math.min(100, Math.max(0, isNaN(parsed) ? 100 : parsed)) / 100;
 
     const T_half_h = DB.halfLifeHours(n);
     const withDecay = document.getElementById('decayMode').value === 'with_decay';
@@ -473,7 +474,8 @@
         const expMul = { h: 1, min: 1/60, d: 24 };
         const t_h = expRaw * (expMul[expUnit] || 1);
         const nAdmin = Math.max(1, parseInt(document.getElementById('nAdmin').value) || 1);
-        const patientTx = Math.min(100, Math.max(0, parseFloat(document.getElementById('patientTx').value) ?? 100)) / 100;
+        const parsed = parseFloat(document.getElementById('patientTx').value);
+    const patientTx = Math.min(100, Math.max(0, isNaN(parsed) ? 100 : parsed)) / 100;
         const T_half_h = DB.halfLifeHours(n);
         const withDecay = document.getElementById('decayMode').value === 'with_decay';
 
@@ -604,13 +606,21 @@
           const cls = pctVal > 100 ? 'danger' : pctVal > 50 ? 'warning' : 'success';
           return `<span style="color:var(--${cls === 'success' ? 'green-700' : cls === 'warning' ? 'warning' : 'danger'});font-weight:700;">${pctVal.toFixed(1)}%</span>`;
         }
+
+        const quantityLabel = useH007 ? "H'(0.07) extremities" : "H*(10) whole body";
+        const limitHTML = useH007
+          ? `<strong>Y-90 Bremsstrahlung ${quantityLabel}:</strong> ${CALC.formatDose(annualDoseWB).display}/y
+             &nbsp;— ${pct(annualDoseWB, 500)} of 500 mSv/y extremity limit
+             &nbsp;|&nbsp; ${pct(annualDoseWB, 20)} of 20 mSv/y lens of eye limit`
+          : `<strong>Y-90 Bremsstrahlung ${quantityLabel}:</strong> ${CALC.formatDose(annualDoseWB).display}/y
+             &nbsp;— ${pct(annualDoseWB, 20)} of 20 mSv/y worker limit
+             &nbsp;|&nbsp; ${pct(annualDoseWB, 1)} of 1 mSv/y public limit`;
+
         document.getElementById('limitComparison').innerHTML = `
           <div class="alert alert-info text-sm">
             Annual dose from ${nAdmin} administration${nAdmin !== 1 ? 's' : ''}/y &times; ${t_h.toFixed(2)} h/admin:
             <br><br>
-            <strong>Y-90 Bremsstrahlung H*(10):</strong> ${CALC.formatDose(annualDoseWB).display}/y
-            &nbsp;— ${pct(annualDoseWB, 20)} of 20 mSv/y worker limit
-            &nbsp;|&nbsp; ${pct(annualDoseWB, 1)} of 1 mSv/y public limit
+            ${limitHTML}
           </div>
         `;
       } else if (n.id !== 'Y-90') {
@@ -861,7 +871,7 @@
         <br>
         <strong>Lens of eye (occupational, RD 1029/2022):</strong> ${CALC.formatDose(annualDoseWB).display}/y <em style="font-size:0.9em;">estimated with H*(10)</em>
         &nbsp;— ${pct(annualDoseWB, 50)} of 50 mSv/y max annual
-        &nbsp;|&nbsp; ${pct(annualDoseWB, 100)} of 100 mSv/5-year cycle (current regime since 18 Jun 2024)
+        &nbsp;|&nbsp; ${pct(annualDoseWB, 100)} of 100 mSv/5-year cycle (current regime since 22 Jun 2024)
         <br>
         <strong>Extremities H'(0.07):</strong> ${CALC.formatDose(annualDoseExt).display}/y
         &nbsp;— ${pct(annualDoseExt, 500)} of 500 mSv/y extremity limit

@@ -107,7 +107,7 @@ D = ∫₀ᵗ Γ · A(τ) / r² dτ, where A(τ) = A₀ · e^(−λτ)
 - **Output**: JSON with SHA256 hashes for audit trail
 
 ### Validation
-`validate-icrp107.html` tests 7 reference nuclides:
+`validate-icrp107.html` tests 20 reference nuclides:
 - Z extraction, half-life parsing, photon filtering, dose constant calculation
 - All currently pass (< 5% deviation from published)
 

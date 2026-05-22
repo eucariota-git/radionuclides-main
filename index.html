@@ -275,7 +275,7 @@
 
       if (n._icrp107) {
         // ICRP 107 extended database entry
-        const icrpBadge = '<span class="tag tag-info" style="font-size:0.85em;">ICRP 107</span>';
+        const icrpBadge = '<span class="tag tag-icrp107" style="font-size:0.85em;">ICRP 107</span>';
         return `<tr class="${sel}" data-id="${n.id}" style="opacity:0.85;">
           <td class="sym">${n.symbol}</td>
           <td>${n.half_life_display}</td>
@@ -356,7 +356,7 @@
     const rows = currentData.map(n => {
       const sel = n.id === selectedId ? 'selected' : '';
       const decayStr = (n.decay_modes || []).map(d => d.mode || d.daughter ? `${d.mode || 'decay'}` : d.mode).join(', ');
-      const icrpBadge = '<span class="tag tag-info" style="font-size:0.85em;">ICRP 107</span>';
+      const icrpBadge = '<span class="tag tag-icrp107" style="font-size:0.85em;">ICRP 107</span>';
       return `<tr class="${sel}" data-id="${n.id}" style="opacity:0.85;">
         <td class="sym">${n.symbol}</td>
         <td>${n.half_life_display}</td>
