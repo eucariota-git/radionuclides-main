@@ -19,7 +19,7 @@ Target users: medical physicists and radiation protection specialists.
 - Filterable by category and modality
 
 ### Decay calculator (`decay.html`)
-- A(t) = A₀ · e^(−λt) with interactive Chart.js curve
+- A(t) = A₀ · e^(−λt) with interactive Chart.js v4.4.0 curve (loaded locally, no CDN dependency)
 - Supports MBq, GBq, mCi, Ci
 - Time to target activity
 
@@ -27,7 +27,7 @@ Target users: medical physicists and radiation protection specialists.
 - **Dose rate at user-selected distance** (primary output) with 1 m reference column
 - **H\*(10)** ambient dose equivalent for whole body (d ≥ 25 cm)
 - **H'(0.07)** directional dose equivalent for extremities (d < 25 cm); used when available for low-energy emitters, otherwise H*(10) is conservatively applied
-- **Y-90 bremsstrahlung table** (Zanzonico et al. 1999) with interactive container selection (PMMA, Pb, W, none) and Pb warning
+- **Y-90 bremsstrahlung table** (Zanzonico et al. 1999) with interactive container selection (PMMA, Pb, W, none); applies H'(0.07) at d < 25 cm where applicable; Pb warning and dose consolidation via `PHYSICS.Y90_CONTAINERS`
 - Shielding: Lead and concrete (normal-weight and light-weight)
 - **Archer broad-beam method** (Monte Carlo, Oumano et al. 2025) for Tc-99m, F-18, I-131, Lu-177
 - Narrow-beam fallback (NIST XCOM) for all other nuclides
@@ -117,9 +117,29 @@ All generated JSON files include metadata for audit trail:
 
 ---
 
+## Recent Improvements & Bug Fixes (2026-05)
+
+### Critical Fixes
+- **Y-90 time unit conversion:** Fixed calculation of exposure time — now correctly applies unit conversion (min/h/d) in dose estimation
+- **Y-90 H'(0.07) selection:** Y-90 bremsstrahlung now correctly applies H'(0.07) for extremities (d < 25 cm) in PMMA, Pb, and W containers
+- **Lens of eye limits (RD 1029/2022):** Updated regulatory compliance to reflect new limits (100 mSv/5-year cycle from Jan 1 2026)
+
+### Medium Priority
+- **Y-90 data consolidation:** Zanzonico bremsstrahlung table now sourced from `PHYSICS.Y90_CONTAINERS` (single source of truth in `js/data.js`)
+- **Chart.js offline support:** v4.4.0 bundled locally (`js/chart.umd.min.js`); no CDN dependency for offline compatibility
+- **CSS variables:** Defined missing variables (`--border`, `--bg-elevated`, `--text-muted`, `--warning-100`, `--success`) for consistent styling
+
+### Low Priority
+- **Custom nuclides:** Added `max_photon_energy_keV` field for correct H'(0.07) assessment in user-uploaded nuclides
+- **Validation expansion:** Extended ICRP 107 compliance testing from 7 to 20 reference nuclides (Phases 1–3)
+
+---
+
 ## Compatibility
 
-Works on desktop and mobile browsers. Loads from `file://`, `content://` (Android) and HTTP/HTTPS without a server — curated and ICRP 107 data are embedded as inline JS variables (`data/nuclides-data.js`, `data/icrp107-data.js`).
+Works on desktop and mobile browsers. Loads from `file://`, `content://` (Android) and HTTP/HTTPS without a server — all dependencies are local:
+- Curated and ICRP 107 data embedded as inline JS variables (`data/nuclides-data.js`, `data/icrp107-data.js`)
+- Chart.js v4.4.0 bundled locally (`js/chart.umd.min.js`, no CDN dependency)
 
 ---
 
@@ -134,7 +154,7 @@ custom.html             Custom nuclide upload
 
 css/style.css           Shared styles
 
-js/data.js              PHYSICS module — ICRU57 tables, attenuation coefficients
+js/data.js              PHYSICS module — ICRU57 tables, attenuation coefficients, Y90_CONTAINERS (Zanzonico bremsstrahlung)
 js/physics.js           CALC module — decay, dose, Archer/narrow-beam transmission
 js/db.js                DB module — nuclide database management
 js/csv-parser.js        CSV_PARSER module — IAEA LiveChart format
@@ -145,7 +165,7 @@ data/nuclides.json      Radionuclide database (directly editable, source of trut
 data/nuclides-data.js   Auto-generated from nuclides.json (for file:// compatibility)
 data/icrp107-index.json Extended database JSON (1252 nuclides with photon emissions)
 data/icrp107-data.js    Embedded ICRP 107 data (for file:// compatibility)
-data/y90-bremsstrahlung.json  Y-90 Zanzonico bremsstrahlung table by container type
+data/y90-bremsstrahlung.json  Y-90 Zanzonico bremsstrahlung table (source; consolidated in PHYSICS.Y90_CONTAINERS)
 
 data/sources/icrp107/   ICRP Publication 107 source files (NDX, RAD, BET)
 
