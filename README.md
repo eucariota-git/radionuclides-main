@@ -11,9 +11,9 @@ Target users: medical physicists and radiation protection specialists.
 ## Features
 
 ### Properties (`index.html`)
-- Database of 34 radionuclides used in nuclear medicine (PET, SPECT, therapy, brachytherapy)
+- Database of 36 radionuclides used in nuclear medicine (PET, SPECT, therapy, brachytherapy)
   - 32 nuclides: dose rate constants from Cornejo et al. (2006)
-  - 2 nuclides (Ga-68, Y-90): additions with recalculated constants using ICRP 107 photon data and ICRU 57 conversion coefficients
+  - 4 nuclides (Ga-67, Ga-68, Yb-169, Y-90): additions with recalculated constants using ICRP 107 photon data and ICRU 57 conversion coefficients
   - Note: Some values differ from Cornejo due to updated nuclear data in ICRP 107; published Cornejo values are preserved in `cornejo_validation` field
 - Controlled liquid effluent concentration limits calculated from IS-28 and ICRP 119 adult ingestion coefficients
 - Filterable by category and modality
@@ -45,7 +45,7 @@ Target users: medical physicists and radiation protection specialists.
 - Filter criteria: photons (G/X), E ≥ 20 keV, yield ≥ 0.01%
 
 ### Extended database — ICRP 107 (`index.html` + `validate-icrp107.html`)
-- Main database contains 34 curated radionuclides. For any other nuclide, the Properties page offers fallback search in **ICRP Publication 107** (1252 nuclides)
+- Main database contains 36 curated radionuclides. For any other nuclide, the Properties page offers fallback search in **ICRP Publication 107** (1252 nuclides)
 - **"Search in ICRP 107" button** appears when a nuclide is not found in the main database
 - Automatically calculates Γ^H\*(10) and Γ^H'(0.07) from ICRP 107 photon emissions, including annihilation quanta where present (E ≥ 20 keV, yield ≥ 0.01%)
 - Displays photon spectrum (energy, yield, type) with **max photon energy** for H'(0.07) assessment
