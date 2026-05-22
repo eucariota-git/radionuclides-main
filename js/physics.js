@@ -222,6 +222,9 @@ const CALC = (() => {
    * @param {'MBq'|'GBq'|'mCi'|'Ci'|'kBq'|'Bq'} toUnit
    */
   function convertActivity(value, fromUnit, toUnit) {
+    // Activity unit conversion reference (SI and legacy units):
+    // SI:     Bq (1/s), kBq (10³/s), MBq (10⁶/s), GBq (10⁹/s)
+    // Legacy: mCi (37 MBq), Ci (37000 MBq = 37 GBq) — per IAEA definition
     const toMBq = { Bq: 1e-6, kBq: 1e-3, MBq: 1, GBq: 1e3, mCi: 37, Ci: 37000 };
     const valMBq = value * (toMBq[fromUnit] || 1);
     return valMBq / (toMBq[toUnit] || 1);

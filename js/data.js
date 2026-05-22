@@ -29,6 +29,13 @@ const PHYSICS = (() => {
   // ---------------------------------------------------------------------------
   // Dose rate constant factor K
   // Γ [μSv·h⁻¹·GBq⁻¹·m²] = K * Σ(n_i * h_i[pSv·cm²])
+  //
+  // Unit conversion breakdown:
+  //   1/(4π) = geometric factor for point source (solid angle)
+  //   1e9     = conversions from GBq (10⁹ Bq) to decay rate [dis/s]
+  //   3600    = hours to seconds conversion [s/h]
+  //   1e6     = microsieverts to sieverts [μSv/Sv]
+  //   1e-16   = pico-sievert-square-centimeter to sievert-square-meter [pSv·cm² → Sv·m²]
   // ---------------------------------------------------------------------------
   const GAMMA_FACTOR = 1 / (4 * Math.PI) * 1e9 * 3600 * 1e6 * 1e-16;
   // = 1/(4π) × 3.6×10¹⁸ × 10⁻¹⁶ = 1/(4π) × 360 = 28.648

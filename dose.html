@@ -468,6 +468,9 @@
     const withDecay = document.getElementById('decayMode').value === 'with_decay';
 
     // Select dose rate constant based on distance
+    // Per ICRU 51: d < 0.25 m (25 cm) → extremities scenario, use H'(0.07)
+    // d ≥ 0.25 m → whole-body scenario, use H*(10)
+    // Reference: ICRU Report 51 (1993); ICRP 74 (1996)
     const isExtremity = d_m < 0.25;
     const gammaWB  = n.gamma_H10;
     const useH007 = n.gamma_H007
