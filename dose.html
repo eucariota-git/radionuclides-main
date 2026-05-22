@@ -423,7 +423,7 @@
     const date = new Date().toISOString().slice(0, 10);
     const extLabel = useH007 ? "H'(0.07) extremities" : "H*(10) extremities (conservative)";
     const rows = [
-      ['Quantity', `Dose_rate_t0_at_${d_m.toFixed(2)}m_μSv_h`, `Dose_rate_time_at_${d_m.toFixed(2)}m_μSv_h`, 'Dose_rate_t0_at_1m_μSv_h', 'Dose_rate_time_at_1m_μSv_h', 'Annual_dose_μSv', 'Notes'],
+      ['Quantity', `Dose_rate_t0_at_${d_m.toFixed(2)}m_μSv/h`, `Dose_rate_at_${d_m.toFixed(2)}m_after_decay_μSv/h`, 'Dose_rate_t0_at_1m_reference_μSv/h', 'Dose_rate_at_1m_after_decay_μSv/h', 'Annual_dose_per_year_μSv', 'Notes'],
       [isY90 ? 'Y-90 H*(10) whole body' : 'H*(10) whole body', Hdot_WB.toPrecision(5), Hdot_WB_t.toPrecision(5), Hdot_WB_1m.toPrecision(5), Hdot_WB_t_1m.toPrecision(5), (H_WB_cum * nAdmin).toPrecision(5),
        `γ=${gammaWB} μSv·h⁻¹·GBq⁻¹·m²`],
       [isY90 ? `Y-90 ${extLabel}` : extLabel, Hdot_Ext.toPrecision(5), Hdot_Ext_t.toPrecision(5), Hdot_Ext_1m.toPrecision(5), Hdot_Ext_t_1m.toPrecision(5), (H_Ext_cum * nAdmin).toPrecision(5),
@@ -516,16 +516,23 @@
           document.getElementById('resultsCard').appendChild(el);
         }
 
+        const selectedContainer_init = document.querySelector('input[name="y90Container"]:checked')?.value || 'pmma';
+        const container_init = containers[selectedContainer_init];
         let containerHTML = '<div style="margin:1rem 0;"><strong>Y-90 Bremsstrahlung Container:</strong><br>';
         containerHTML += '<div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; margin-top:0.5rem;">';
         for (const [key, container] of Object.entries(containers)) {
-          const isSelected = document.getElementById('y90ContainerId')?.value === key;
+          const isSelected = selectedContainer_init === key;
           containerHTML += `<label style="padding:0.5rem; border:1px solid var(--border); border-radius:4px; cursor:pointer; ${isSelected ? 'background:var(--green-100);' : ''}">
             <input type="radio" name="y90Container" value="${key}" ${isSelected ? 'checked' : ''} style="margin-right:0.5rem;">
             ${container.name}
           </label>`;
         }
-        containerHTML += '</div></div>';
+        containerHTML += '</div>';
+        // Proactive warning for lead container
+        if (container_init.warning) {
+          containerHTML += '<div class="alert alert-danger" style="margin-top:0.5rem;">⚠️ <strong>Lead increases bremsstrahlung 3–4× vs PMMA.</strong> Use PMMA or plastic for Y-90, or accept higher external dose.</div>';
+        }
+        containerHTML += '</div>';
 
         const selectedContainer = document.querySelector('input[name="y90Container"]:checked')?.value || 'pmma';
         const isExtremity = d_m < 0.25;
@@ -684,10 +691,14 @@
     const sourceTag = n._icrp107
       ? `<span class="tag tag-icrp107" title="Dose constants calculated from ICRP 107 photon spectrum using ICRU 57 / Cornejo methodology">ICRP 107</span>`
       : '';
+    const energyWarning = !n.representative_energy_keV
+      ? '<div class="alert alert-warning mt-1" style="font-size:0.9rem;">⚠️ Representative energy not defined; shielding calculations use narrow-beam approximation.</div>'
+      : '';
     document.getElementById('nuclideInfo').innerHTML =
       `<strong>${n.symbol} — ${n.name}</strong> ${sourceTag} &nbsp;|&nbsp; T&#189; = ${n.half_life_display} &nbsp;|&nbsp;
        A&#8320; = ${A0raw} ${A0unit} (${A0_GBq.toPrecision(4)} GBq) &nbsp;|&nbsp;
-       d = ${d_m} m &nbsp;|&nbsp; t = ${t_h.toFixed(2)} h/admin &nbsp;|&nbsp; n = ${nAdmin} admin/y &nbsp;|&nbsp; patient Tx = ${(patientTx*100).toFixed(1)}% &nbsp;|&nbsp;
+       d = ${d_m} m &nbsp;|&nbsp; t = ${t_h.toFixed(2)} h/admin &nbsp;|&nbsp; n = ${nAdmin} admin/y &nbsp;|&nbsp; patient Tx = ${(patientTx*100).toFixed(1)}% &nbsp;|&nbsp;`
+       + (n.representative_energy_keV ? `` : '') + energyWarning;
        &#915;<sup>H*(10)</sup> = ${gammaWB} &nbsp;|&nbsp; ${useH007
          ? `&#915;<sup>H'(0.07)</sup> = ${gammaExt}`
          : `&#915;<sup>H'(0.07)</sup> = ${n.gamma_H007 ?? '—'} <span style="color:var(--text-muted)">(H*(10) used as conservative)</span>`

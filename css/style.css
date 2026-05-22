@@ -52,9 +52,9 @@
   --gray-900: #f0f0f0;
   --gray-800: #d0d0d0;
   --gray-700: #a0a0a0;
-  --gray-500: #6c757d;
+  --gray-500: #b8b8b8;     /* Lightened for WCAG AAA contrast */
   --gray-200: #2c2f33;
-  --gray-100: #1a1d21;
+  --gray-100: #e8e8e8;     /* Lightened for WCAG AAA contrast */
   --white:    #23272b;
 
   --accent:  #48cae4;

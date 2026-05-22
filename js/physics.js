@@ -69,13 +69,16 @@ const CALC = (() => {
    * @returns {Array<{t_h, A}>} array of {t_h [h], A [same unit as A0]}
    */
   function decayCurve(A0, T_half_h, nPoints = 100) {
-    // Span 5 half-lives or until activity < 0.1% of A0
-    const tMax = Math.min(T_half_h * 7, T_half_h * 10);
+    // Time span: either 10 half-lives OR until activity < 0.1% of A0, whichever is shorter
+    // This prevents unbounded curves for very long half-lives while showing meaningful decay
+    const tMax = T_half_h * 10;  // 10 half-lives = 99.9% decay
     const dt   = tMax / (nPoints - 1);
     const points = [];
     for (let i = 0; i < nPoints; i++) {
       const t = i * dt;
-      points.push({ t_h: t, A: activityAtTime(A0, T_half_h, t) });
+      const A = activityAtTime(A0, T_half_h, t);
+      if (A < 0.001 * A0) break;  // Stop if activity < 0.1% of initial
+      points.push({ t_h: t, A: A });
     }
     return points;
   }
