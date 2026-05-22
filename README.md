@@ -35,7 +35,7 @@ Target users: medical physicists and radiation protection specialists.
 - **Annual dose limit comparison** (RD 1029/2022 / EURATOM 2013/59):
   - Effective dose: 20 mSv/y worker, 1 mSv/y public
   - Extremities: 500 mSv/y
-  - **Lens of eye: 20 mSv/y (current, until Dec 31 2025) | 50 mSv/y max (transitional regime 2026–2030)**
+  - **Lens of eye: 20 mSv/y (current, until Dec 31 2025) | 50 mSv/y max annual (from Jan 1 2026: 100 mSv/5-year cycle)**
   - Crystal lens calculation with both limits displayed
 - CSV export includes dose rates at both selected distance and 1 m reference
 
@@ -50,7 +50,7 @@ Target users: medical physicists and radiation protection specialists.
 - Automatically calculates Γ^H\*(10) and Γ^H'(0.07) from ICRP 107 photon emissions, including annihilation quanta where present (E ≥ 20 keV, yield ≥ 0.01%)
 - Displays photon spectrum (energy, yield, type) with **max photon energy** for H'(0.07) assessment
 - **Validation tool** (`validate-icrp107.html`) — internal compliance tool:
-  - Tests 7 reference nuclides (Tc-99m, F-18, I-131, Lu-177, Ga-68, I-123, Tl-201)
+  - Tests 15 reference nuclides (7 original + 8 expanded, including I-125)
   - Validates: Z extraction, half-life parsing, photon count filtering, dose constant calculation
   - Color-coded status: ✓ Pass (< 5% deviation) | ⚠ Warning (5–15%) | ✗ Fail (> 15%)
   - All tests currently passing

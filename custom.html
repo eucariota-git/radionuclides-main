@@ -406,6 +406,11 @@
       ? contributions.sort((a, b) => b.contrib_H10 - a.contrib_H10)[0].energy_keV
       : 140;
 
+    // Max photon energy (for H'(0.07) assessment)
+    let maxE = contributions.length > 0
+      ? Math.max(...contributions.map(c => c.energy_keV))
+      : 140;
+
     document.getElementById('gammaResults').innerHTML = `
       <div class="result-box">
         <div class="result-label">&#915;<sup>H*(10)</sup></div>
@@ -446,8 +451,9 @@
       </tr>`).join('');
     document.getElementById('contribBody').innerHTML = tbody;
 
-    // Store dominant energy
+    // Store dominant energy and max photon energy
     window._calcDomE = domE;
+    window._calcMaxE = maxE;
   }
 
   // ---- Add to session DB ----
@@ -479,6 +485,7 @@
       gamma_H007:  parseFloat(calcResult.gammaH007.toPrecision(4)),
       H007_from_cornejo: false,
       representative_energy_keV: window._calcDomE || 140,
+      max_photon_energy_keV: window._calcMaxE || null,
       source: `Calculated from IAEA LiveChart CSV — ICRU 57 methodology`,
       ingestion_dose_coeff_adult_Sv_per_Bq: null,
       effluent_liquid_limit_Bq_per_L: null,

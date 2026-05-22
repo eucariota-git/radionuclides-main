@@ -244,6 +244,14 @@ const PHYSICS = (() => {
     };
   }
 
+  // Y-90 Bremsstrahlung containers (Zanzonico et al. 1999)
+  const Y90_CONTAINERS = {
+    none: { name: 'No container', gamma_H10: 0.001, gamma_H007: 0.001 },
+    pmma: { name: 'PMMA (acrylic)', gamma_H10: 0.009, gamma_H007: 0.012 },
+    pb: { name: 'Lead (Pb)', gamma_H10: 0.034, gamma_H007: 0.042, warning: true },
+    tungsten: { name: 'Tungsten (W)', gamma_H10: 0.016, gamma_H007: 0.020 }
+  };
+
   return {
     GAMMA_FACTOR,
     ICRU57,
@@ -251,6 +259,7 @@ const PHYSICS = (() => {
     RHO_PB,
     RHO_CONCRETE,
     RHO_CONCRETE_LW,
+    Y90_CONTAINERS,
     getH10,
     getH007,
     getMu,
