@@ -50,7 +50,7 @@ Target users: medical physicists and radiation protection specialists.
 - Automatically calculates Γ^H\*(10) and Γ^H'(0.07) from ICRP 107 photon emissions, including annihilation quanta where present (E ≥ 20 keV, yield ≥ 0.01%)
 - Displays photon spectrum (energy, yield, type) with **max photon energy** for H'(0.07) assessment
 - **Validation tool** (`validate-icrp107.html`) — internal compliance tool:
-  - Tests 15 reference nuclides (7 original + 8 expanded, including I-125)
+  - Tests 20 reference nuclides (7 original + 8 Phase 2 + 5 Phase 3, including I-125, Cu-64, Re-188, Tm-170, Au-198, Yb-169)
   - Validates: Z extraction, half-life parsing, photon count filtering, dose constant calculation
   - Color-coded status: ✓ Pass (< 5% deviation) | ⚠ Warning (5–15%) | ✗ Fail (> 15%)
   - All tests currently passing

@@ -29,7 +29,7 @@
 <main class="page-body" id="main-content">
   <div class="page-title">ICRP 107 Database Validation</div>
   <div class="page-subtitle">
-    Internal regulatory compliance check. Validates parser accuracy, Z extraction, and dose constants against ICRP-107 and Cornejo reference data. <strong>Phase 2 Validation: 15 radionuclides</strong> (7 original + 8 expanded, including I-125).
+    Internal regulatory compliance check. Validates parser accuracy, Z extraction, and dose constants against ICRP-107 and Cornejo reference data. <strong>Phase 3 Validation: 20 radionuclides</strong> (7 original + 8 expanded Phase 2 + 5 Phase 3).
   </div>
 
   <div class="card mt-2">
@@ -99,6 +99,12 @@
     'Re-186':  { Z: 75, gammaH10: 7.77,   halfLife_h: 89.24,   photonCountMin: 3, source: 'ICRP 107 calculated' },
     'Ir-192':  { Z: 77, gammaH10: 138.83, halfLife_h: 1771.90, photonCountMin: 5, source: 'ICRP 107 calculated' },
     'Pd-103':  { Z: 46, gammaH10: 20.58,  halfLife_h: 407.78,  photonCountMin: 1, source: 'ICRP 107 calculated' },
+    // Phase 3: 5 additional nuclides (up to 20 total) — elemental and modality expansion
+    'Cu-64':   { Z: 29, gammaH10: 30.65,  halfLife_h: 12.70,   photonCountMin: 2, source: 'ICRP 107 calculated' },
+    'Re-188':  { Z: 75, gammaH10: 9.91,   halfLife_h: 17.00,   photonCountMin: 2, source: 'ICRP 107 calculated' },
+    'Tm-170':  { Z: 69, gammaH10: 0.90,   halfLife_h: 3086.4,  photonCountMin: 1, source: 'ICRP 107 calculated' },
+    'Au-198':  { Z: 79, gammaH10: 68.49,  halfLife_h: 64.66,   photonCountMin: 2, source: 'ICRP 107 calculated' },
+    'Yb-169':  { Z: 70, gammaH10: 71.37,  halfLife_h: 768.43,  photonCountMin: 4, source: 'ICRP 107 calculated' },
   };
 
   async function validate() {
