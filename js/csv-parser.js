@@ -39,6 +39,8 @@ const CSV_PARSER = (() => {
    * @returns {{ nuclide: Object, emissions: Array }} parsed nuclide info and emission list
    */
   function parse(csvText) {
+    // Remove UTF-8 BOM (U+FEFF) if present — required for file:// protocol compatibility
+    // and some browser implementations that include the BOM when reading local files
     const normalizedText = csvText.replace(/^﻿/, '');
     const rows = parseCSVToRows(normalizedText);
     if (rows.length < 2) throw new Error('CSV file appears empty or has no data rows.');

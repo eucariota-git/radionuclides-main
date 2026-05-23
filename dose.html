@@ -274,6 +274,7 @@
   const dropdown     = document.getElementById('nuclideDropdown');
   const dbNuclides   = DB.getAll();
   let selectedNuclide = null;
+  let comboboxInitialized = false;
 
   function showDropdown(results) {
     dropdown.innerHTML = results.map(n =>
@@ -295,12 +296,13 @@
     updateHvlInfo();
   }
 
-  searchInput.addEventListener('focus', () => {
+  // Named event handlers for proper cleanup capability
+  const onSearchFocus = () => {
     const q = searchInput.value.trim();
     if (!q) showDropdown(dbNuclides.map(n => ({...n, _icrp107: false})));
-  });
+  };
 
-  searchInput.addEventListener('input', () => {
+  const onSearchInput = () => {
     const q = searchInput.value.trim();
     hiddenSelect.value = '';
     selectedNuclide = null;
@@ -311,27 +313,37 @@
       ? ICRP107.search(q).filter(n => !DB.getById(n.id)).map(n => ({...n, _icrp107: true}))
       : [];
     showDropdown([...dbResults, ...icrpResults].slice(0, 20));
-  });
+  };
 
-  dropdown.addEventListener('click', e => {
+  const onDropdownClick = (e) => {
     const li = e.target.closest('[data-id]');
     if (li) selectNuclide(li.dataset.id);
-  });
+  };
 
-  document.addEventListener('click', e => {
+  const onDocumentClick = (e) => {
     if (!document.getElementById('nuclideCombobox').contains(e.target)) {
       dropdown.classList.add('hidden');
     }
-  });
+  };
 
-  searchInput.addEventListener('keydown', e => {
+  const onSearchKeydown = (e) => {
     const items = [...dropdown.querySelectorAll('[data-id]')];
     const idx = items.indexOf(document.activeElement);
     if (e.key === 'ArrowDown') { e.preventDefault(); (items[idx+1] || items[0])?.focus(); }
     if (e.key === 'ArrowUp')   { e.preventDefault(); (items[idx-1] || items[items.length-1])?.focus(); }
     if (e.key === 'Escape')    { dropdown.classList.add('hidden'); searchInput.focus(); }
     if (e.key === 'Enter' && items[idx]) { selectNuclide(items[idx].dataset.id); }
-  });
+  };
+
+  // Initialize combobox only once (prevent duplicate listeners)
+  if (!comboboxInitialized) {
+    searchInput.addEventListener('focus', onSearchFocus);
+    searchInput.addEventListener('input', onSearchInput);
+    dropdown.addEventListener('click', onDropdownClick);
+    document.addEventListener('click', onDocumentClick);
+    searchInput.addEventListener('keydown', onSearchKeydown);
+    comboboxInitialized = true;
+  }
 
   const urlId = new URLSearchParams(location.search).get('id');
   if (urlId) selectNuclide(urlId);
@@ -461,7 +473,11 @@
     const A0unit  = document.getElementById('A0unit').value;
     const A0_GBq  = CALC.convertActivity(A0raw, A0unit, 'GBq');
 
-    const distRaw  = parseFloat(document.getElementById('distance').value);
+    const distStr = document.getElementById('distance').value.trim();
+    if (!/^[0-9]*\.?[0-9]+([eE][+-]?[0-9]+)?$/.test(distStr)) {
+      alert('Distance must be a valid number.'); return;
+    }
+    const distRaw  = parseFloat(distStr);
     if (!Number.isFinite(distRaw) || distRaw <= 0) {
       alert('Distance must be a positive number.'); return;
     }
@@ -478,7 +494,11 @@
     const E_MeV   = n.representative_energy_keV / 1000;
     const ap      = getArcherParams(n, mat);  // Archer params or null
 
-    const expRaw  = parseFloat(document.getElementById('expTime').value);
+    const expStr = document.getElementById('expTime').value.trim();
+    if (!/^[0-9]*\.?[0-9]+([eE][+-]?[0-9]+)?$/.test(expStr)) {
+      alert('Exposure time must be a valid number.'); return;
+    }
+    const expRaw  = parseFloat(expStr);
     if (!Number.isFinite(expRaw) || expRaw <= 0) {
       alert('Exposure time must be a positive number.'); return;
     }

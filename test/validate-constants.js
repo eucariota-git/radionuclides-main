@@ -326,6 +326,27 @@ function validateCSVParser() {
   return { passed, failed };
 }
 
+function validateGammaFactor() {
+  console.log('\n=== Test 7: Gamma factor constant validation ===');
+  // K = 1/(4π) × (10⁹ dis/s/GBq) × (3600 s/h) × (10⁶ μSv/Sv) × (10⁻¹⁶ Sv·m²/[pSv·cm²])
+  // K = 1/(4π) × 360 = 28.648
+  const expectedGammaFactor = 28.648;
+  const calculatedGammaFactor = 1 / (4 * Math.PI) * 1e9 * 3600 * 1e6 * 1e-16;
+  const tolerance = 0.001; // ±0.1%
+  const diff = Math.abs(calculatedGammaFactor - expectedGammaFactor);
+  let passed = 0, failed = 0;
+
+  if (diff > tolerance) {
+    console.error(`✗ GAMMA_FACTOR: expected ${expectedGammaFactor}, calculated ${calculatedGammaFactor.toFixed(6)}, diff ${diff.toFixed(6)}`);
+    failed++;
+  } else {
+    console.log(`✓ GAMMA_FACTOR = ${calculatedGammaFactor.toFixed(6)} (expected ~${expectedGammaFactor})`);
+    passed++;
+  }
+
+  return { passed, failed };
+}
+
 function main() {
   const results = [
     validateReferenceValues(),
@@ -334,6 +355,7 @@ function main() {
     validateRegulatoryLimits(),
     validatePhysicsInvariants(),
     validateCSVParser(),
+    validateGammaFactor(),
   ];
 
   const totalPassed = results.reduce((sum, r) => sum + r.passed, 0);

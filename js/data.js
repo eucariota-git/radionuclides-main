@@ -166,8 +166,9 @@ const PHYSICS = (() => {
    * Get linear attenuation coefficient μ [cm⁻¹] for a material.
    * Handles Pb K-edge discontinuity explicitly.
    * @param {number} E_MeV - photon energy in MeV
-   * @param {'Pb'|'concrete'} material
+   * @param {'Pb'|'concrete'|'concrete_NW'|'concrete_LW'} material - shielding material
    * @returns {number} μ in cm⁻¹
+   * @throws {Error} if material is not recognized
    */
   function getMu(E_MeV, material) {
     const PB_KEDGE = 0.08800; // MeV
@@ -181,11 +182,14 @@ const PHYSICS = (() => {
         : interpLogLog(superEdge, E_MeV, 0, 1);
       return muRho * RHO_PB;
     }
+
     // All concrete variants share the same elemental composition (μ/ρ)
     const muRho = interpLogLog(ATTENUATION, E_MeV, 0, 2);
     if (material === 'concrete_LW') return muRho * RHO_CONCRETE_LW;
-    // 'concrete', 'concrete_NW', or unknown → ordinary/NW density
-    return muRho * RHO_CONCRETE;
+    if (material === 'concrete_NW' || material === 'concrete') return muRho * RHO_CONCRETE;
+
+    // Unknown material: throw error instead of silently defaulting
+    throw new Error(`Unknown material "${material}". Expected: 'Pb', 'concrete', 'concrete_NW', or 'concrete_LW'.`);
   }
 
   /**

@@ -84,8 +84,10 @@ const ICRP107 = (function() {
 
   /**
    * Search for nuclides by ID or name (case-insensitive substring)
+   * @param {string} query - search string
+   * @param {number} limit - max results to return (default 50)
    */
-  function search(query) {
+  function search(query, limit = 50) {
     if (!indexData) {
       console.error('ICRP 107 data not yet loaded. Call ICRP107.search after page load or use async.');
       return [];
@@ -94,12 +96,15 @@ const ICRP107 = (function() {
     if (!query) return [];
 
     const q = String(query).trim().toLowerCase();
+    if (q.length < 2) return []; // Require at least 2 characters to avoid huge result sets
+
     const normalizedQ = normalize(query).toLowerCase();
     const results = [];
     const exact = indexMap.get(normalize(query));
-    if (exact) results.push(exact);
+    if (exact && results.length < limit) results.push(exact);
 
     for (const nuclide of indexData.nuclides) {
+      if (results.length >= limit) break;
       if (results.includes(nuclide)) continue;
       const normalizedId = normalize(nuclide.id).toLowerCase();
       if (nuclide.id.toLowerCase().includes(q) ||

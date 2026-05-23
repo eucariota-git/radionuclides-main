@@ -424,12 +424,12 @@
 
     document.getElementById('gammaResults').innerHTML = `
       <div class="result-box">
-        <div class="result-label">&#915;<sup>H*(10)</sup></div>
+        <div class="result-label" title="Ambient dose equivalent H*(10): whole-body dose rate constant, used for d ≥ 25 cm (ICRU 51)">&#915;<sup>H*(10)</sup></div>
         <div class="result-value">${UTILS.fmt(gammaH10)}</div>
         <div class="result-unit">&#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;</div>
       </div>
       <div class="result-box">
-        <div class="result-label">&#915;<sup>H'(0.07)</sup></div>
+        <div class="result-label" title="Directional dose equivalent H'(0.07): extremity dose rate constant at 0.07 mm depth, used for d &lt; 25 cm (ICRU 51)">&#915;<sup>H'(0.07)</sup></div>
         <div class="result-value">${UTILS.fmt(gammaH007)}</div>
         <div class="result-unit">&#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;</div>
       </div>
@@ -473,8 +473,16 @@
     const id   = document.getElementById('customId').value.trim();
     const name = document.getElementById('customName').value.trim();
     if (!id || !name) { alert('Please fill in Nuclide ID and Full name.'); return; }
-    if (!/^[A-Za-z0-9\-+:.\s]+$/.test(id)) {
-      alert('Nuclide ID can only contain letters, digits, hyphens, colons, periods, + and spaces.');
+
+    // Validate ID: alphanumeric start, 3-20 chars, hyphens allowed (e.g., "Lu-177", "Tc-99m")
+    if (!/^[A-Za-z0-9][A-Za-z0-9\-]*$/.test(id) || id.length < 3 || id.length > 20) {
+      alert('Nuclide ID must be 3-20 characters, start with letter/digit, contain only letters, digits, and hyphens.');
+      return;
+    }
+
+    // Check for duplicates
+    if (DB.getById(id)) {
+      alert(`Nuclide ID "${id}" already exists. Choose a different ID (e.g., "custom:${id}").`);
       return;
     }
 
