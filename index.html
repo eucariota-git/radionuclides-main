@@ -374,9 +374,9 @@
         try {
           const constants = PHYSICS.calcGammaConstants(n.photons);
           if (constants) {
-            gammaH10 = (constants.gammaH10 || constants.gamma_H10 || '—').toString();
-            gammaH007 = (constants.gammaH007 || constants.gamma_H007 || '—').toString();
-            gammaKair = (constants.gammaKair || constants.gamma_Kair || gammaH10); // Fallback to H10
+            gammaH10 = (constants.gammaH10 || constants.gamma_H10) != null ? UTILS.fmt(constants.gammaH10 || constants.gamma_H10) : '—';
+            gammaH007 = (constants.gammaH007 || constants.gamma_H007) != null ? UTILS.fmt(constants.gammaH007 || constants.gamma_H007) : '—';
+            gammaKair = (constants.gammaKair || constants.gamma_Kair) != null ? UTILS.fmt(constants.gammaKair || constants.gamma_Kair) : gammaH10; // Fallback to H10
           }
         } catch (e) {
           console.warn('Error calculating dose constants:', e);
