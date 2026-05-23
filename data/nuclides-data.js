@@ -17,7 +17,7 @@ const NUCLIDE_DATA = {
     "effluent_liquid_limit_note": "Calculated as (1 mSv / adult ingestion dose coefficient) / 600 L, using IS-28 Annex II II.A.4 and ICRP 119 Annex F Table F.1 adult ingestion coefficients.",
     "generated_at": "2026-05-17T19:27:27.191Z",
     "generated_by_script": "tools/recalc-gamma.js",
-    "icrp107_index_sha256": "aed2f295ac1ea1b54bab2227aba9c9494a92afed92be38161ad717beef437a7e"
+    "icrp107_index_sha256": "6eb6afa3a77c95cbc8c6ce49575f33d25ec137c6c84e8e8172a16809de384536"
   },
   "nuclides": [
     {
@@ -500,7 +500,7 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": false,
       "representative_energy_keV": 93,
       "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
-      "clearance_a1_kBq_per_kg": null,
+      "clearance_a1_kBq_per_kg": 100,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 1.9e-10,
       "effluent_liquid_limit_Bq_per_L": 8770,
       "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
@@ -991,7 +991,7 @@ const NUCLIDE_DATA = {
       "H007_from_cornejo": false,
       "representative_energy_keV": 177,
       "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
-      "clearance_a1_kBq_per_kg": null,
+      "clearance_a1_kBq_per_kg": 100,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 7.1e-10,
       "effluent_liquid_limit_Bq_per_L": 2350,
       "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",

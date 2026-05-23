@@ -582,10 +582,6 @@
           </label>`;
         }
         containerHTML += '</div>';
-        // Proactive warning for lead container
-        if (container_init.warning) {
-          containerHTML += '<div class="alert alert-danger" style="margin-top:0.5rem;">⚠️ <strong>Lead increases bremsstrahlung 3–4× vs PMMA.</strong> Use PMMA or plastic for Y-90, or accept higher external dose.</div>';
-        }
         containerHTML += '</div>';
 
         const selectedContainer = document.querySelector('input[name="y90Container"]:checked')?.value || 'pmma';
@@ -700,15 +696,19 @@
         if (t_h > 0) {
           const annualDoseWB = H_WB_cum * nAdmin;
           const annualDoseExt = H_Ext_cum * nAdmin;
-          limitHTML = useH007
-            ? `<strong>Y-90 Bremsstrahlung H'(0.07) extremities:</strong> ${CALC.formatDose(annualDoseExt).display}/y
-               &nbsp;— ${pct(annualDoseExt, 500)} of 500 mSv/y extremity limit
-               <br><strong>Y-90 Bremsstrahlung H*(10) whole body:</strong> ${CALC.formatDose(annualDoseWB).display}/y
-               &nbsp;— ${pct(annualDoseWB, 20)} of 20 mSv/y worker limit
-               &nbsp;|&nbsp; ${pct(annualDoseWB, 1)} of 1 mSv/y public limit`
-            : `<strong>Y-90 Bremsstrahlung H*(10) whole body:</strong> ${CALC.formatDose(annualDoseWB).display}/y
-               &nbsp;— ${pct(annualDoseWB, 20)} of 20 mSv/y worker limit
-               &nbsp;|&nbsp; ${pct(annualDoseWB, 1)} of 1 mSv/y public limit`;
+          limitHTML = `
+            <strong>Whole body H*(10):</strong> ${CALC.formatDose(annualDoseWB).display}/y
+            &nbsp;— ${pct(annualDoseWB, 20)} of 20 mSv/y worker limit
+            &nbsp;|&nbsp; ${pct(annualDoseWB, 1)} of 1 mSv/y public limit
+            <br>
+            <strong>Lens of eye (occupational, RD 1029/2022):</strong> ${CALC.formatDose(annualDoseWB).display}/y <em style="font-size:0.9em;">estimated with H*(10)</em>
+            <br><em style="font-size:0.9em;">Both conditions must be satisfied:</em>
+            &nbsp;— ${pct(annualDoseWB, 50)} of 50 mSv/y max annual
+            &nbsp;|&nbsp; ${pct(annualDoseWB * 5, 100)} of 100 mSv over consecutive 5-year period (current regime since 22 Jun 2024)
+            <br>
+            ${useH007 ? `<strong>Extremities H'(0.07):</strong> ${CALC.formatDose(annualDoseExt).display}/y
+            &nbsp;— ${pct(annualDoseExt, 500)} of 500 mSv/y extremity limit` : ''}
+          `;
         }
 
         document.getElementById('limitComparison').innerHTML = `

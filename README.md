@@ -85,7 +85,8 @@ T(x) = e^(−μx)
 | Data | Source |
 |------|--------|
 | Γ^H\*(10), Γ^H'(0.07) constants (32 curated nuclides) | Cornejo et al., *Rev. Fis. Med.* 2006 |
-| Γ^H\*(10), Γ^H'(0.07) constants (Ga-68, Y-90, + recalculations) | ICRP 107 photon data + ICRU 57 conversion coefficients |
+| Γ^H\*(10), Γ^H'(0.07) constants (Ga-68 + recalculations) | ICRP 107 photon data + ICRU 57 conversion coefficients |
+| Γ^H\*(10), Γ^H'(0.07) constants (Y-90) | Zanzonico et al. 1999 bremsstrahlung + ICRU 57 conversion coefficients |
 | Fluence-to-dose coefficients h\*(10), h'(0.07) | ICRP Publication 74 / ICRU 57 |
 | Adult ingestion dose coefficients and liquid effluent limits | ICRP Publication 119 Annex F / IS-28 Annex II |
 | Mass attenuation coefficients | NIST XCOM |

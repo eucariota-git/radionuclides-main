@@ -451,8 +451,8 @@
       .map(c => `<tr>
         <td class="num">${UTILS.fmt(c.energy_keV)}</td>
         <td class="num">${UTILS.fmt(c.yield_percent)}</td>
-        <td>${c.type}</td>
-        <td>${c.decay_mode || '—'}</td>
+        <td>${UTILS.escapeHtml(c.type)}</td>
+        <td>${UTILS.escapeHtml(c.decay_mode || '—')}</td>
         <td class="num">${c.decay_percent !== null && c.decay_percent !== undefined ? UTILS.fmt(c.decay_percent) : '—'}</td>
         <td class="num">${UTILS.fmt(c.h10_pSvcm2)}</td>
         <td class="num">${UTILS.fmt(c.h007_pSvcm2)}</td>
