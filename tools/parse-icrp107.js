@@ -434,19 +434,19 @@ function main() {
   // Convert to array sorted by nuclide ID
   const nucledesArray = Object.values(nuclides).sort((a, b) => a.id.localeCompare(b.id));
 
-  // Calculate hashes of source files for traceability
-  const ndxContent = fs.readFileSync(ndxPath, 'utf8');
+  // Calculate hashes of source files for traceability (using raw bytes for platform-independent hashing)
+  const ndxContent = fs.readFileSync(ndxPath);
   const ndxSha256 = crypto.createHash('sha256').update(ndxContent).digest('hex');
 
   let radSha256 = null;
   if (fs.existsSync(radPath)) {
-    const radContent = fs.readFileSync(radPath, 'utf8');
+    const radContent = fs.readFileSync(radPath);
     radSha256 = crypto.createHash('sha256').update(radContent).digest('hex');
   }
 
   let betSha256 = null;
   if (fs.existsSync(betPath)) {
-    const betContent = fs.readFileSync(betPath, 'utf8');
+    const betContent = fs.readFileSync(betPath);
     betSha256 = crypto.createHash('sha256').update(betContent).digest('hex');
   }
 

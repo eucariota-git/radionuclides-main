@@ -475,6 +475,9 @@
     if (!id || !name) { alert('Please fill in Nuclide ID and Full name.'); return; }
 
     const hlS    = parseFloat(document.getElementById('customHalfLifeS').value);
+    if (!Number.isFinite(hlS) || hlS <= 0) {
+      alert('Half-life must be a positive number.'); return;
+    }
     const hlDisp = document.getElementById('customHalfLifeDisplay').value;
     const modality = document.getElementById('customModality').value;
     const use    = document.getElementById('customClinicalUse').value;

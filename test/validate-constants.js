@@ -40,7 +40,8 @@ function loadNuclideData() {
   return nuclideMap;
 }
 
-function validateNuclides() {
+function validateReferenceValues() {
+  console.log('=== Test 1: Reference value comparison (14 curated nuclides) ===');
   const nuclideMap = loadNuclideData();
   let passed = 0, failed = 0;
 
@@ -62,6 +63,14 @@ function validateNuclides() {
       }
     }
 
+    if (expected.halfLife_h !== null && actual.half_life_s !== null) {
+      const actualHours = actual.half_life_s / 3600;
+      const relDiff = Math.abs(actualHours - expected.halfLife_h) / expected.halfLife_h;
+      if (relDiff > 0.005) {
+        errors.push(`T½: expected ${expected.halfLife_h} h, got ${actualHours.toFixed(4)} h (${(relDiff*100).toFixed(2)}% diff)`);
+      }
+    }
+
     if (actual.photon_count_filtered < expected.photonCountMin) {
       errors.push(`photon count: expected ≥${expected.photonCountMin}, got ${actual.photon_count_filtered}`);
     }
@@ -79,8 +88,64 @@ function validateNuclides() {
     }
   }
 
-  console.log(`\nResults: ${passed} passed, ${failed} failed out of ${Object.keys(REFERENCE_VALUES).length} checks`);
-  process.exit(failed > 0 ? 1 : 0);
+  return { passed, failed };
 }
 
-validateNuclides();
+function validatePhysicalBounds() {
+  console.log('\n=== Test 2: Physical bounds (all ICRP 107 nuclides) ===');
+  const nuclideMap = loadNuclideData();
+  const allNuclides = Object.values(nuclideMap);
+  let passed = 0, failed = 0;
+
+  for (const n of allNuclides) {
+    const errors = [];
+
+    if (n.half_life_s !== null && (!Number.isFinite(n.half_life_s) || n.half_life_s <= 0)) {
+      errors.push(`invalid half_life_s: ${n.half_life_s}`);
+    }
+
+    if (n.gamma_H10 !== null && n.gamma_H10 !== undefined && (!Number.isFinite(n.gamma_H10) || n.gamma_H10 < 0)) {
+      errors.push(`invalid gamma_H10: ${n.gamma_H10}`);
+    }
+
+    if (n.photon_count_filtered !== null && (n.photon_count_filtered < 0)) {
+      errors.push(`invalid photon_count_filtered: ${n.photon_count_filtered}`);
+    }
+
+    if (errors.length > 0) {
+      console.error(`✗ ${n.id}: ${errors.join(', ')}`);
+      failed++;
+    } else {
+      passed++;
+    }
+  }
+
+  if (failed === 0) console.log(`✓ All ${allNuclides.length} nuclides have valid physical bounds`);
+  else console.log(`Checked ${allNuclides.length} nuclides: ${passed} OK, ${failed} failed`);
+
+  return { passed: allNuclides.length - failed, failed };
+}
+
+function validateCSVParser() {
+  console.log('\n=== Test 3: CSV parser (fixtures) ===');
+  console.warn(`⚠ CSV parser tests skipped: browser-only module, run in browser instead`);
+  return { passed: 0, failed: 0 };
+}
+
+function main() {
+  const results = [
+    validateReferenceValues(),
+    validatePhysicalBounds(),
+    validateCSVParser(),
+  ];
+
+  const totalPassed = results.reduce((sum, r) => sum + r.passed, 0);
+  const totalFailed = results.reduce((sum, r) => sum + r.failed, 0);
+
+  console.log(`\n=== Summary ===`);
+  console.log(`Total: ${totalPassed} passed, ${totalFailed} failed`);
+
+  process.exit(totalFailed > 0 ? 1 : 0);
+}
+
+main();
