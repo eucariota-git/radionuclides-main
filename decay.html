@@ -213,9 +213,9 @@
 
   function showDropdown(results) {
     dropdown.innerHTML = results.map(n =>
-      `<li class="nuclide-option" role="option" data-id="${n.id}" tabindex="-1">
-         <span class="nuclide-opt-id">${n.id}</span>
-         <span class="nuclide-opt-meta">T½ ${n.half_life_display}${n._icrp107 ? ' · ICRP 107' : ''}</span>
+      `<li class="nuclide-option" role="option" data-id="${UTILS.escapeHtml(n.id)}" tabindex="-1">
+         <span class="nuclide-opt-id">${UTILS.escapeHtml(n.id)}</span>
+         <span class="nuclide-opt-meta">T½ ${UTILS.escapeHtml(n.half_life_display)}${n._icrp107 ? ' · ICRP 107' : ''}</span>
        </li>`
     ).join('');
     dropdown.classList.toggle('hidden', results.length === 0);

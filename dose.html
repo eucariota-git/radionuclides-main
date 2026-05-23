@@ -277,9 +277,9 @@
 
   function showDropdown(results) {
     dropdown.innerHTML = results.map(n =>
-      `<li class="nuclide-option" role="option" data-id="${n.id}" tabindex="-1">
-         <span class="nuclide-opt-id">${n.id}</span>
-         <span class="nuclide-opt-meta">T½ ${n.half_life_display}${n._icrp107 ? ' · ICRP 107' : ''}</span>
+      `<li class="nuclide-option" role="option" data-id="${UTILS.escapeHtml(n.id)}" tabindex="-1">
+         <span class="nuclide-opt-id">${UTILS.escapeHtml(n.id)}</span>
+         <span class="nuclide-opt-meta">T½ ${UTILS.escapeHtml(n.half_life_display)}${n._icrp107 ? ' · ICRP 107' : ''}</span>
        </li>`
     ).join('');
     dropdown.classList.toggle('hidden', results.length === 0);
@@ -507,7 +507,7 @@
       const card = document.getElementById('resultsCard');
       card.classList.remove('hidden');
       document.getElementById('nuclideInfo').innerHTML =
-        `<strong>${n.symbol} — ${n.name}</strong> &nbsp;|&nbsp; T&#189; = ${n.half_life_display}`;
+        `<strong>${UTILS.escapeHtml(n.symbol)} — ${UTILS.escapeHtml(n.name)}</strong> &nbsp;|&nbsp; T&#189; = ${UTILS.escapeHtml(n.half_life_display)}`;
 
       // Special handling for Y-90 with Zanzonico table
       if (n.id === 'Y-90') {
@@ -660,7 +660,7 @@
       if (distChart) { distChart.destroy(); distChart = null; }
       document.getElementById('distChartContainer').innerHTML = `
         <div class="alert alert-warning" style="margin:1rem 0;">
-          <strong>${n.symbol} is a pure &beta;&#8315; emitter.</strong><br>
+          <strong>${UTILS.escapeHtml(n.symbol)} is a pure &beta;&#8315; emitter.</strong><br>
           ${n.id === 'Y-90'
             ? 'Dose shown above uses bremsstrahlung constants from Zanzonico et al. (J Nucl Med 40(6):906-915, 1999).'
             : 'External dose estimation requires bremsstrahlung data specific to the container geometry. See Zanzonico et al. (J Nucl Med 40(6), 1999).'}

@@ -473,6 +473,10 @@
     const id   = document.getElementById('customId').value.trim();
     const name = document.getElementById('customName').value.trim();
     if (!id || !name) { alert('Please fill in Nuclide ID and Full name.'); return; }
+    if (!/^[A-Za-z0-9\-+:.\s]+$/.test(id)) {
+      alert('Nuclide ID can only contain letters, digits, hyphens, colons, periods, + and spaces.');
+      return;
+    }
 
     const hlS    = parseFloat(document.getElementById('customHalfLifeS').value);
     if (!Number.isFinite(hlS) || hlS <= 0) {
@@ -560,8 +564,9 @@
   }
 
   window.removeCustom = (id) => {
-    if (confirm(`Remove custom nuclide "${id}" from session?`)) {
-      DB.removeCustomNuclide(id);
+    const decodedId = decodeURIComponent(id);
+    if (confirm(`Remove custom nuclide "${UTILS.escapeHtml(decodedId)}" from session?`)) {
+      DB.removeCustomNuclide(decodedId);
       refreshCustomList();
     }
   };

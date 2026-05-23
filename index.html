@@ -312,10 +312,10 @@
       const sel = n.id === selectedId ? 'selected' : '';
       const decayStr = (n.decay_modes || []).map(d => d.mode || d.daughter ? `${d.mode || 'decay'}` : d.mode).join(', ');
       const icrpBadge = '<span class="tag tag-icrp107" style="font-size:0.85em;">ICRP 107</span>';
-      return `<tr class="${sel}" data-id="${n.id}" style="opacity:0.85;">
-        <td class="sym">${n.symbol}</td>
-        <td>${n.half_life_display}</td>
-        <td class="text-sm">${decayStr}</td>
+      return `<tr class="${sel}" data-id="${UTILS.escapeHtml(n.id)}" style="opacity:0.85;">
+        <td class="sym">${UTILS.escapeHtml(n.symbol)}</td>
+        <td>${UTILS.escapeHtml(n.half_life_display)}</td>
+        <td class="text-sm">${UTILS.escapeHtml(decayStr)}</td>
         <td>${icrpBadge}</td>
         <td class="num text-muted">—</td>
         <td class="num">${fmtGamma(n.gamma_H10)}</td>
@@ -323,7 +323,7 @@
         <td class="num text-muted">—</td>
         <td class="num text-muted">—</td>
         <td class="num text-muted">—</td>
-        <td class="text-sm">${n.source}</td>
+        <td class="text-sm">${UTILS.escapeHtml(n.source)}</td>
       </tr>`;
     }).join('');
 

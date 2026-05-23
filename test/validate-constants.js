@@ -40,15 +40,29 @@ function loadNuclideData() {
   return nuclideMap;
 }
 
+function loadCuratedData() {
+  const jsonPath = path.join(__dirname, '../data/nuclides.json');
+  if (!fs.existsSync(jsonPath)) {
+    console.error(`Cannot find ${jsonPath}`);
+    process.exit(1);
+  }
+  const data = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+  const nuclideMap = {};
+  for (const n of data.nuclides) {
+    nuclideMap[n.id] = n;
+  }
+  return nuclideMap;
+}
+
 function validateReferenceValues() {
   console.log('=== Test 1: Reference value comparison (14 curated nuclides) ===');
-  const nuclideMap = loadNuclideData();
+  const nuclideMap = loadCuratedData();
   let passed = 0, failed = 0;
 
   for (const [id, expected] of Object.entries(REFERENCE_VALUES)) {
     const actual = nuclideMap[id];
     if (!actual) {
-      console.error(`✗ ${id}: not found in parsed data`);
+      console.error(`✗ ${id}: not found in curated data`);
       failed++;
       continue;
     }
@@ -58,7 +72,9 @@ function validateReferenceValues() {
     if (expected.gammaH10 !== null) {
       const tolerance = 0.1;
       const diff = Math.abs(actual.gamma_H10 - expected.gammaH10);
-      if (diff > tolerance) {
+      if (!Number.isFinite(diff)) {
+        errors.push(`gamma_H10 missing or undefined (got ${actual.gamma_H10})`);
+      } else if (diff > tolerance) {
         errors.push(`γ_H10: expected ${expected.gammaH10}, got ${actual.gamma_H10} (diff: ${diff.toFixed(2)})`);
       }
     }
