@@ -2,6 +2,11 @@
 
 This document tracks all fixes implemented for the audit findings.
 
+## Status: Complete ✅
+
+All audit findings requiring fixes have been addressed (except AUD-005, AUD-007, AUD-011 per user request).
+Test suite passes: **1266/1266 checks** ✓
+
 ## ✅ Fixed Findings
 
 ### AUD-001 (Alta): Custom nuclides overwriting curated ones
@@ -132,9 +137,67 @@ All changes have been verified:
 - ✓ HTTP server test (app loads and serves correctly)
 - ✓ Code review of each fix
 
+---
+
+## Round 2: Additional fixes for AUD-003, 004, 008, 012
+
+Subsequent review revealed 4 remaining issues that required targeted fixes.
+
+### AUD-003 (Revisited): Unescaped innerHTML in detail panel
+**File**: `index.html:355`
+**Issue**: `detailSymbol.innerHTML = n.symbol` was the only remaining unescaped innerHTML assignment in the nuclide detail panel
+**Fix**: Changed to `textContent` to prevent HTML injection while still displaying nuclide symbols correctly
+**Verification**: Symbols like `Tc-99m` render as plain text, not HTML
+
+---
+
+### AUD-004 (Revisited): NaN half-life allowed in custom nuclide save
+**File**: `custom.html:477-489`
+**Issue**: `half_life_s` was accepted without validation; NaN values could be saved
+**Fix**: Added `Number.isFinite(hlS) || hlS <= 0` check before calling `DB.addCustomNuclide()`
+**Verification**: Empty or invalid half-life values are now rejected with user alert
+
+---
+
+### AUD-008 (Revisited): Hash computed over UTF-8 text, not bytes
+**Files**: `tools/parse-icrp107.js`, `data/icrp107-index.json`, `data/icrp107-data.js`
+**Issue 1**: Hash computed over decoded UTF-8 strings (not platform-independent)
+**Issue 2**: Data files still contained old format with only `icrp107_ndx_sha256`
+**Fix**:
+- Removed `'utf8'` encoding from all three `fs.readFileSync()` calls to use raw byte Buffers
+- Re-generated `data/icrp107-index.json` and `data/icrp107-data.js`
+- Hash values now reflect byte-level computation (NDX hash changed from `6aa2f8d7...` to `ac84a9cf...`)
+- Data files now contain full `source_files_hashes` structure with all three hashes
+
+**Verification**: 
+```bash
+grep -A3 "source_files_hashes" data/icrp107-index.json
+# Shows: icrp107_ndx_sha256, icrp107_rad_sha256, icrp107_bet_sha256
+```
+
+---
+
+### AUD-012 (Revisited): Test coverage expanded
+**File**: `test/validate-constants.js`
+**Previous coverage**: 14 curated nuclides (γ_H10, photon count only)
+**Additional tests**:
+1. **Half-life comparison**: Verify T½ within 0.5% relative tolerance for all 14 curated nuclides
+2. **Physical bounds (all 1252 ICRP nuclides)**:
+   - `half_life_s` must be `null` (stable) or positive finite number
+   - `gamma_H10` must be `null` or non-negative finite number
+   - `photon_count_filtered >= 0`
+3. **CSV parser fixtures**: (marked as browser-only, skipped in Node.js)
+
+**Test results**: 1266 checks pass, 0 fail
+- 14 reference nuclides validated
+- 1252 nuclides checked for physical bounds
+- All fields finite, non-NaN, within physics constraints
+
+---
+
 ## Deployment
 
-To regenerate ICRP 107 data with new hash traceability:
+To regenerate ICRP 107 data (if source files updated):
 
 ```bash
 node tools/parse-icrp107.js
@@ -144,4 +207,21 @@ To run automated validation:
 
 ```bash
 node test/validate-constants.js
+```
+
+Expected output:
+```
+=== Test 1: Reference value comparison (14 curated nuclides) ===
+✓ Tc-99m: OK
+✓ F-18: OK
+... (12 more)
+
+=== Test 2: Physical bounds (all ICRP 107 nuclides) ===
+✓ All 1252 nuclides have valid physical bounds
+
+=== Test 3: CSV parser (fixtures) ===
+⚠ CSV parser tests skipped: browser-only module
+
+=== Summary ===
+Total: 1266 passed, 0 failed
 ```
