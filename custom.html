@@ -327,20 +327,20 @@
       const meets = filteredSet.has(key);
       const checked = meets ? 'checked' : '';
       const rowCls = meets ? '' : 'class="emission-row-dim"';
-      const h10  = PHYSICS.getH10(em.energy_keV / 1000).toFixed(3);
-      const h007 = PHYSICS.getH007(em.energy_keV / 1000).toFixed(3);
+      const h10  = UTILS.fmt(PHYSICS.getH10(em.energy_keV / 1000));
+      const h007 = UTILS.fmt(PHYSICS.getH007(em.energy_keV / 1000));
       const meetsLabel = meets
         ? '<span class="meets-yes">&#10003; Yes</span>'
         : `<span class="meets-no">&#10007; ${em.energy_keV < 20 ? 'E<20keV' : em.yield_percent < 0.01 ? 'yield<0.01%' : 'not G/X/AQ'}</span>`;
       if (meets) included++;
       rows += `<tr ${rowCls}>
         <td><input type="checkbox" class="em-check" data-idx="${unique.indexOf(em)}" ${checked}></td>
-        <td class="num">${em.energy_keV.toFixed(4)}</td>
-        <td class="num">${em.yield_percent.toFixed(4)}</td>
+        <td class="num">${UTILS.fmt(em.energy_keV)}</td>
+        <td class="num">${UTILS.fmt(em.yield_percent)}</td>
         <td>${UTILS.escapeHtml(em.type)}</td>
         <td>${UTILS.escapeHtml(em.decay_mode || '—')}</td>
-        <td class="num">${em.decay_percent !== null && em.decay_percent !== undefined ? em.decay_percent.toFixed(2) : '—'}</td>
-        <td class="num">${em.parent_energy_keV !== null ? em.parent_energy_keV.toFixed(3) : '—'}</td>
+        <td class="num">${em.decay_percent !== null && em.decay_percent !== undefined ? UTILS.fmt(em.decay_percent) : '—'}</td>
+        <td class="num">${em.parent_energy_keV !== null ? UTILS.fmt(em.parent_energy_keV) : '—'}</td>
         <td class="num">${em.half_life_display || '—'}</td>
         <td>${meetsLabel}</td>
         <td class="num">${meets ? h10 : '—'}</td>
@@ -425,17 +425,17 @@
     document.getElementById('gammaResults').innerHTML = `
       <div class="result-box">
         <div class="result-label">&#915;<sup>H*(10)</sup></div>
-        <div class="result-value">${gammaH10.toPrecision(4)}</div>
+        <div class="result-value">${UTILS.fmt(gammaH10)}</div>
         <div class="result-unit">&#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;</div>
       </div>
       <div class="result-box">
         <div class="result-label">&#915;<sup>H'(0.07)</sup></div>
-        <div class="result-value">${gammaH007.toPrecision(4)}</div>
+        <div class="result-value">${UTILS.fmt(gammaH007)}</div>
         <div class="result-unit">&#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;</div>
       </div>
       <div class="result-box">
         <div class="result-label">H'(0.07) / H*(10)</div>
-        <div class="result-value">${gammaH10 > 0 ? (gammaH007 / gammaH10).toFixed(3) : '—'}</div>
+        <div class="result-value">${gammaH10 > 0 ? UTILS.fmt(gammaH007 / gammaH10) : '—'}</div>
         <div class="result-unit">${gammaH007 > gammaH10 ? '&#9888; H\'(0.07) > H*(10)' : 'H*(10) dominant'}</div>
       </div>
       <div class="result-box">
@@ -449,16 +449,16 @@
     const tbody = contributions
       .sort((a, b) => b.contrib_H10 - a.contrib_H10)
       .map(c => `<tr>
-        <td class="num">${c.energy_keV.toFixed(3)}</td>
-        <td class="num">${c.yield_percent.toFixed(4)}</td>
+        <td class="num">${UTILS.fmt(c.energy_keV)}</td>
+        <td class="num">${UTILS.fmt(c.yield_percent)}</td>
         <td>${c.type}</td>
         <td>${c.decay_mode || '—'}</td>
-        <td class="num">${c.decay_percent !== null && c.decay_percent !== undefined ? c.decay_percent.toFixed(2) : '—'}</td>
-        <td class="num">${c.h10_pSvcm2.toFixed(4)}</td>
-        <td class="num">${c.h007_pSvcm2.toFixed(4)}</td>
-        <td class="num">${c.contrib_H10.toFixed(4)}</td>
-        <td class="num">${c.contrib_H007.toFixed(4)}</td>
-        <td class="num">${(c.contrib_H10 / totalH10 * 100).toFixed(2)}%</td>
+        <td class="num">${c.decay_percent !== null && c.decay_percent !== undefined ? UTILS.fmt(c.decay_percent) : '—'}</td>
+        <td class="num">${UTILS.fmt(c.h10_pSvcm2)}</td>
+        <td class="num">${UTILS.fmt(c.h007_pSvcm2)}</td>
+        <td class="num">${UTILS.fmt(c.contrib_H10)}</td>
+        <td class="num">${UTILS.fmt(c.contrib_H007)}</td>
+        <td class="num">${UTILS.fmt(c.contrib_H10 / totalH10 * 100)}%</td>
       </tr>`).join('');
     document.getElementById('contribBody').innerHTML = tbody;
 
@@ -515,11 +515,6 @@
     refreshCustomList();
   });
 
-  // Sanitize filename for cross-platform compatibility
-  function safeFilename(id) {
-    return id.trim().replace(/[^A-Za-z0-9\-_.]/g, '_').replace(/_+/g, '_').slice(0, 64);
-  }
-
   // ---- Export JSON ----
   document.getElementById('btnExportJson').addEventListener('click', () => {
     if (!calcResult) return;
@@ -533,9 +528,11 @@
     };
     const blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
     const a    = document.createElement('a');
-    a.href     = URL.createObjectURL(blob);
-    a.download = `gamma_constants_${safeFilename(id)}.json`;
+    const url  = URL.createObjectURL(blob);
+    a.href     = url;
+    a.download = `gamma_constants_${UTILS.safeFilename(id)}.json`;
     a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 0);
   });
 
   // ---- Refresh custom list ----

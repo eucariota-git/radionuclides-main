@@ -39,14 +39,14 @@ const CSV_PARSER = (() => {
    * @returns {{ nuclide: Object, emissions: Array }} parsed nuclide info and emission list
    */
   function parse(csvText) {
-    const normalizedText = csvText.replace(/^\uFEFF/, '');
-    const lines = normalizedText.split(/\r?\n/).filter(l => l.trim() !== '');
-    if (lines.length < 2) throw new Error('CSV file appears empty or has no data rows.');
+    const normalizedText = csvText.replace(/^﻿/, '');
+    const rows = parseCSVToRows(normalizedText);
+    if (rows.length < 2) throw new Error('CSV file appears empty or has no data rows.');
 
     // Skip header row(s) — identify header by presence of 'energy' in first column
     let dataStart = 0;
-    for (let i = 0; i < Math.min(5, lines.length); i++) {
-      if (lines[i].trim().toLowerCase().startsWith('energy')) {
+    for (let i = 0; i < Math.min(5, rows.length); i++) {
+      if (rows[i][0] && rows[i][0].trim().toLowerCase().startsWith('energy')) {
         dataStart = i + 1;
         break;
       }
@@ -60,8 +60,8 @@ const CSV_PARSER = (() => {
     let parentZ      = null;
     let parentN      = null;
 
-    for (let i = dataStart; i < lines.length; i++) {
-      const cols = splitCSVLine(lines[i]);
+    for (let i = dataStart; i < rows.length; i++) {
+      const cols = rows[i];
       if (cols.length < 6) continue;
 
       const energy_keV   = parseFloat(cols[0]);
@@ -184,6 +184,47 @@ const CSV_PARSER = (() => {
     }
     result.push(current);
     return result;
+  }
+
+  /**
+   * Parse entire CSV text to rows respecting quoted fields (RFC 4180 with multiline support).
+   * @param {string} text - full CSV content
+   * @returns {Array<Array<string>>} array of rows, each row is array of fields
+   */
+  function parseCSVToRows(text) {
+    const rows = [];
+    let row = [];
+    let field = '';
+    let inQuote = false;
+    const chars = [...text];
+
+    for (let i = 0; i < chars.length; i++) {
+      const ch = chars[i];
+      if (ch === '"') {
+        if (inQuote && chars[i + 1] === '"') {
+          field += '"';
+          i++;
+        } else {
+          inQuote = !inQuote;
+        }
+      } else if (ch === ',' && !inQuote) {
+        row.push(field);
+        field = '';
+      } else if ((ch === '\r' || ch === '\n') && !inQuote) {
+        if (ch === '\r' && chars[i + 1] === '\n') i++;
+        row.push(field);
+        field = '';
+        if (row.some(f => f !== '')) { rows.push(row); }
+        row = [];
+      } else {
+        field += ch;
+      }
+    }
+    if (field || row.length > 0) {
+      row.push(field);
+      if (row.some(f => f !== '')) rows.push(row);
+    }
+    return rows;
   }
 
   /**

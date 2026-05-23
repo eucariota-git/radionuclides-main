@@ -260,7 +260,11 @@
 
       result.innerHTML = html;
     } catch (error) {
-      result.innerHTML = `<div class="error-cell">⚠️ Error: ${error.message}</div>`;
+      const errorDiv = document.createElement('div');
+      errorDiv.className = 'error-cell';
+      errorDiv.textContent = `⚠️ Error: ${error.message}`;
+      result.innerHTML = '';
+      result.appendChild(errorDiv);
       console.error(error);
     }
   }

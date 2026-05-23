@@ -59,6 +59,40 @@ const DB = (() => {
   // Load
   // ---------------------------------------------------------------------------
 
+  /**
+   * Validate a custom nuclide loaded from sessionStorage.
+   * Returns true if valid, false otherwise. Logs warning if invalid.
+   */
+  function _isValidCustomNuclide(cn, id) {
+    if (!cn.id || typeof cn.id !== 'string') {
+      console.warn(`Custom nuclide: missing or invalid id`);
+      return false;
+    }
+    if (cn.half_life_s !== null && cn.half_life_s !== undefined) {
+      if (!Number.isFinite(cn.half_life_s) || cn.half_life_s <= 0) {
+        console.warn(`Custom nuclide "${cn.id}": half_life_s must be null, undefined, or positive finite number, got ${cn.half_life_s}`);
+        return false;
+      }
+    }
+    if (cn.decay_constant_s !== null && cn.decay_constant_s !== undefined) {
+      if (!Number.isFinite(cn.decay_constant_s) || cn.decay_constant_s <= 0) {
+        console.warn(`Custom nuclide "${cn.id}": decay_constant_s must be null, undefined, or positive finite number, got ${cn.decay_constant_s}`);
+        return false;
+      }
+    }
+    if (cn.gamma_H10 !== null && cn.gamma_H10 !== undefined) {
+      if (!Number.isFinite(cn.gamma_H10) || cn.gamma_H10 < 0) {
+        console.warn(`Custom nuclide "${cn.id}": gamma_H10 must be null, undefined, or non-negative finite number, got ${cn.gamma_H10}`);
+        return false;
+      }
+    }
+    if (cn.emissions && !Array.isArray(cn.emissions)) {
+      console.warn(`Custom nuclide "${cn.id}": emissions must be an array`);
+      return false;
+    }
+    return true;
+  }
+
   async function load() {
     let data = null;
 
@@ -82,13 +116,16 @@ const DB = (() => {
     _meta     = { version: data.version, reference: data.reference, notes: data.notes };
     _nuclides = (data.nuclides || []).slice();
 
-    // 3. Merge custom nuclides from sessionStorage
+    // 3. Merge custom nuclides from sessionStorage (with validation)
     const customRaw = sessionStorage.getItem('custom_nuclides');
     const curatedIds = new Set(_nuclides.map(n => n.id));
     if (customRaw) {
       try {
         const custom = JSON.parse(customRaw);
         for (const cn of custom) {
+          if (!_isValidCustomNuclide(cn)) {
+            continue;
+          }
           if (curatedIds.has(cn.id)) {
             console.warn(`Cannot add custom nuclide "${cn.id}": conflicts with curated database entry. Use a different ID (e.g., "custom:${cn.id}").`);
             continue;

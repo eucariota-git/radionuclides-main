@@ -166,12 +166,7 @@
   }
 
   function fmtNumber(val) {
-    if (val === null || val === undefined || !isFinite(val)) return '—';
-    const abs = Math.abs(val);
-    if (abs !== 0 && (abs >= 1000 || abs < 0.01)) {
-      return Number(val).toExponential(3).replace('e+', 'E+').replace('e-', 'E-');
-    }
-    return Number(val).toPrecision(4);
+    return UTILS.fmt(val);
   }
 
   function fmtEffluentLimit(n) {
@@ -185,7 +180,12 @@
   }
 
   function icrpDisplaySymbol(id) {
-    return id.replace('-', '<sup>').replace(/([a-z]?)$/, '$1</sup>');
+    const sup = {'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','m':'ᵐ'};
+    const dash = id.indexOf('-');
+    if (dash === -1) return id;
+    const element = id.slice(0, dash);
+    const mass    = id.slice(dash + 1).replace(/./g, c => sup[c] ?? c);
+    return mass + element;
   }
 
   function enrichIcrpNuclide(n) {
@@ -359,7 +359,7 @@
     // For ICRP 107 nuclides, show info with calculated dose constants
     if (n._icrp107) {
       const decayStr = (n.decay_modes || []).map(d => {
-        if (d.mode && d.daughter) return `${d.mode} → ${d.daughter}${d.branching < 1 ? ' (' + (d.branching * 100).toFixed(1) + '%)' : ''}`;
+        if (d.mode && d.daughter) return `${d.mode} → ${d.daughter}${d.branching < 1 ? ' (' + UTILS.fmt(d.branching * 100) + '%)' : ''}`;
         return d.mode || '—';
       }).join(', ');
 
@@ -386,7 +386,7 @@
       // Build beta energy display
       let betaEnergyHtml = '';
       if (n.e_max_beta_MeV) {
-        betaEnergyHtml += `<div class="prop-item"><div class="prop-key">β E<sub>max</sub></div><div class="prop-val">${n.e_max_beta_MeV.toFixed(4)}</div><div class="prop-note">Endpoint energy (MeV)</div></div>`;
+        betaEnergyHtml += `<div class="prop-item"><div class="prop-key">β E<sub>max</sub></div><div class="prop-val">${UTILS.fmt(n.e_max_beta_MeV)}</div><div class="prop-note">Endpoint energy (MeV)</div></div>`;
       }
 
       const hlParts = n.half_life_display.split(' ');
@@ -423,7 +423,7 @@
         const photonRows = n.photons.map(p => `
           <tr>
             <td class="mono">${p.energy_keV}</td>
-            <td class="mono">${p.yield_percent.toFixed(3)}</td>
+            <td class="mono">${UTILS.fmt(p.yield_percent)}</td>
             <td class="mono">${UTILS.escapeHtml(p.type)}</td>
           </tr>
         `).join('');
@@ -468,7 +468,7 @@
     } else {
       // Standard nuclide from main database
       const decayStr = (n.decay_modes || []).map(d =>
-        `${UTILS.escapeHtml(d.mode)}${d.fraction < 1 ? ' (' + (d.fraction * 100).toFixed(1) + '%)' : ''}`
+        `${UTILS.escapeHtml(d.mode)}${d.fraction < 1 ? ' (' + UTILS.fmt(d.fraction * 100) + '%)' : ''}`
       ).join(', ');
       const effluentLimit = n.effluent_liquid_components && n.effluent_liquid_components.length
         ? 'mixture'
@@ -483,7 +483,7 @@
       // Build beta energy display
       let betaEnergyHtml = '';
       if (n.e_max_beta_MeV) {
-        betaEnergyHtml += `<div class="prop-item"><div class="prop-key">β E<sub>max</sub></div><div class="prop-val">${n.e_max_beta_MeV.toFixed(4)}</div><div class="prop-note">Endpoint energy (MeV)</div></div>`;
+        betaEnergyHtml += `<div class="prop-item"><div class="prop-key">β E<sub>max</sub></div><div class="prop-val">${UTILS.fmt(n.e_max_beta_MeV)}</div><div class="prop-note">Endpoint energy (MeV)</div></div>`;
       }
 
       const hlParts2 = n.half_life_display.split(' ');
@@ -541,7 +541,7 @@
           const photonRows = icrpNuclide.photons.map(p => `
             <tr>
               <td class="mono">${p.energy_keV}</td>
-              <td class="mono">${p.yield_percent.toFixed(3)}</td>
+              <td class="mono">${UTILS.fmt(p.yield_percent)}</td>
               <td class="mono">${p.type}</td>
             </tr>
           `).join('');
@@ -657,9 +657,11 @@
     const csv = [headers.join(','), ...rows].join('\r\n');
     const blob = new Blob([csv], { type: 'text/csv' });
     const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
+    const url = URL.createObjectURL(blob);
+    a.href = url;
     a.download = `radionuclide_properties_${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 0);
   });
 
   // Auto-select from URL param

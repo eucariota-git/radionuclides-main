@@ -240,10 +240,10 @@ const CALC = (() => {
    */
   function formatDose(value_uSv) {
     if (!isFinite(value_uSv) || value_uSv < 0) return { value: value_uSv, unit: 'μSv', display: '—' };
-    if (value_uSv >= 1e6)  return { value: value_uSv / 1e6, unit: 'Sv',  display: (value_uSv / 1e6).toPrecision(4) + ' Sv' };
-    if (value_uSv >= 1e3)  return { value: value_uSv / 1e3, unit: 'mSv', display: (value_uSv / 1e3).toPrecision(4) + ' mSv' };
-    if (value_uSv >= 1)    return { value: value_uSv,       unit: 'μSv', display: value_uSv.toPrecision(4) + ' μSv' };
-    return { value: value_uSv * 1e3, unit: 'nSv', display: (value_uSv * 1e3).toPrecision(4) + ' nSv' };
+    if (value_uSv >= 1e6)  return { value: value_uSv / 1e6, unit: 'Sv',  display: UTILS.fmt(value_uSv / 1e6) + ' Sv' };
+    if (value_uSv >= 1e3)  return { value: value_uSv / 1e3, unit: 'mSv', display: UTILS.fmt(value_uSv / 1e3) + ' mSv' };
+    if (value_uSv >= 1)    return { value: value_uSv,       unit: 'μSv', display: UTILS.fmt(value_uSv) + ' μSv' };
+    return { value: value_uSv * 1e3, unit: 'nSv', display: UTILS.fmt(value_uSv * 1e3) + ' nSv' };
   }
 
   function formatDoseRate(value_uSvh) {
@@ -256,11 +256,11 @@ const CALC = (() => {
    * @param {number} t_s - time in seconds
    */
   function formatHalfLife(t_s) {
-    if (t_s < 60)        return t_s.toFixed(2) + ' s';
-    if (t_s < 3600)      return (t_s / 60).toFixed(2) + ' min';
-    if (t_s < 86400)     return (t_s / 3600).toFixed(3) + ' h';
-    if (t_s < 31557600)  return (t_s / 86400).toFixed(2) + ' d';
-    return (t_s / 31557600).toFixed(2) + ' y';
+    if (t_s < 60)        return UTILS.fmt(t_s) + ' s';
+    if (t_s < 3600)      return UTILS.fmt(t_s / 60) + ' min';
+    if (t_s < 86400)     return UTILS.fmt(t_s / 3600) + ' h';
+    if (t_s < 31557600)  return UTILS.fmt(t_s / 86400) + ' d';
+    return UTILS.fmt(t_s / 31557600) + ' y';
   }
 
   return {

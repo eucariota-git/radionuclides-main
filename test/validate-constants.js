@@ -300,6 +300,29 @@ function validateCSVParser() {
     failed++;
   }
 
+  // Test 6c: parse() with quoted field containing comma (RFC 4180 compliance)
+  const commaCsv = `energy, unc_en, intensity_%, unc_i, col4, type, col6, col7, col8, col9, multipolarity, mixing_ratio, unc, conversion_coeff, unc, parent_Z, N, symbol, parent_energy_shift, parent_energy_keV, unc, jp, half_life, half-life_operator, unc, unit, half_life_s, unc, decay, decay_%, unc, Q, unc, Z, N, symbol, ENSDF_cut-off, authors, Extraction_date
+140.511,0.001,89.53,0.1,,"G,X",,,,,,,,,43,56,Tc,,0,,5/2+,6.0067,,0.0003,h,21624.12,,IT,100,,,,,43,56,Tc-99,,,`;
+
+  try {
+    const result = csvParser.parse(commaCsv);
+    const emission = result.emissions[0];
+    let commateErrors = [];
+
+    if (emission.type !== 'G,X') commateErrors.push(`type with comma: expected 'G,X', got '${emission.type}'`);
+
+    if (commateErrors.length > 0) {
+      console.error(`✗ parse() quoted field with comma: ${commateErrors.join(', ')}`);
+      failed++;
+    } else {
+      console.log(`✓ parse() quoted field with comma: type="G,X" preserved`);
+      passed++;
+    }
+  } catch (e) {
+    console.error(`✗ parse() quoted comma test threw error: ${e.message}`);
+    failed++;
+  }
+
   return { passed, failed };
 }
 

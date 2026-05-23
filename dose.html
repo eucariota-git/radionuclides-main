@@ -388,10 +388,10 @@
     el.classList.remove('hidden');
     el.innerHTML = `
       <strong>${matLabel(mat)}</strong> at ${n.representative_energy_keV} keV ${methodBadge} —
-      HVL = <strong>${hvl_cm.toFixed(3)} cm</strong> &nbsp;|&nbsp;
-      TVL = <strong>${tvl_cm.toFixed(3)} cm</strong>
-      ${mu_cm !== null ? `&nbsp;|&nbsp; &mu; = ${mu_cm.toFixed(3)} cm&#8315;&#185;` : ''}
-      ${thickRaw > 0 ? `&nbsp;|&nbsp; Transmission = <strong>${(T * 100).toFixed(3)}%</strong> (${thickRaw} ${thickUnit})` : ''}
+      HVL = <strong>${UTILS.fmt(hvl_cm)} cm</strong> &nbsp;|&nbsp;
+      TVL = <strong>${UTILS.fmt(tvl_cm)} cm</strong>
+      ${mu_cm !== null ? `&nbsp;|&nbsp; &mu; = ${UTILS.fmt(mu_cm)} cm&#8315;&#185;` : ''}
+      ${thickRaw > 0 ? `&nbsp;|&nbsp; Transmission = <strong>${UTILS.fmt(T * 100)}%</strong> (${thickRaw} ${thickUnit})` : ''}
     `;
   }
 
@@ -434,9 +434,11 @@
     const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\r\n');
     const blob = new Blob([csv], { type: 'text/csv' });
     const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `dose_${n.id}_${A0raw}${A0unit}_${d_m.toFixed(2)}m_${date}.csv`;
+    const url = URL.createObjectURL(blob);
+    a.href = url;
+    a.download = `dose_${UTILS.safeFilename(n.id)}_${A0raw}${A0unit}_${d_m.toFixed(2)}m_${date}.csv`;
     a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 0);
   };
 
   document.getElementById('btnCalc').addEventListener('click', () => {
@@ -489,6 +491,15 @@
 
     const T_half_h = DB.halfLifeHours(n);
     const withDecay = document.getElementById('decayMode').value === 'with_decay';
+
+    function fmtR(v) {
+      const f = CALC.formatDoseRate(v);
+      return `<strong>${f.display}</strong>`;
+    }
+    function fmt(v) {
+      const f = CALC.formatDose(v);
+      return `<strong>${f.display}</strong>`;
+    }
 
     // Select dose rate constant based on distance
     // Per ICRU 51: d < 0.25 m (25 cm) → extremities scenario, use H'(0.07)
@@ -590,15 +601,6 @@
         const Hdot_primary_t = useH007 ? Hdot_Ext_t : Hdot_WB_t;
         const H_primary_cum = useH007 ? H_Ext_cum : H_WB_cum;
 
-        function fmtR(v) {
-          const f = CALC.formatDoseRate(v);
-          return `<strong>${f.display}</strong>`;
-        }
-        function fmt(v) {
-          const f = CALC.formatDose(v);
-          return `<strong>${f.display}</strong>`;
-        }
-
         document.getElementById('resultsBody').innerHTML = `
           <tr style="background:var(--warning-100);">
             <td colspan="6">
@@ -606,7 +608,7 @@
               ${containerHTML}
               ${pbWarning}
               <div style="margin-top:1rem;">
-                <strong>Dose rate at ${d_m.toFixed(2)} m (${primaryLabel}):</strong> ${fmtR(Hdot_primary)} (t=0) | ${fmtR(Hdot_primary_t)} (after ${t_h.toFixed(2)}h decay)
+                <strong>Dose rate at ${UTILS.fmt(d_m)} m (${primaryLabel}):</strong> ${fmtR(Hdot_primary)} (t=0) | ${fmtR(Hdot_primary_t)} (after ${UTILS.fmt(t_h)}h decay)
                 <br><strong>Annual dose (${primaryLabel}):</strong> ${fmt(H_primary_cum * nAdmin)}
                 ${useH007 ? `<br><span class="text-sm">Whole body H*(10): ${fmt(H_WB_cum * nAdmin)}/y</span>` : ''}
               </div>
@@ -671,7 +673,7 @@
         function pct(val, limit_mSv) {
           const pctVal = (val / 1000 / limit_mSv * 100);
           const cls = pctVal > 100 ? 'danger' : pctVal > 50 ? 'warning' : 'success';
-          return `<span style="color:var(--${cls === 'success' ? 'green-700' : cls === 'warning' ? 'warning' : 'danger'});font-weight:700;">${pctVal.toFixed(1)}%</span>`;
+          return `<span style="color:var(--${cls === 'success' ? 'green-700' : cls === 'warning' ? 'warning' : 'danger'});font-weight:700;">${UTILS.fmt(pctVal)}%</span>`;
         }
 
         let limitHTML = 'Enter an exposure time &gt; 0 to see the annual limit comparison.';
@@ -691,7 +693,7 @@
 
         document.getElementById('limitComparison').innerHTML = `
           <div class="alert alert-info text-sm">
-            Annual dose from ${nAdmin} administration${nAdmin !== 1 ? 's' : ''}/y &times; ${t_h.toFixed(2)} h/admin:
+            Annual dose from ${nAdmin} administration${nAdmin !== 1 ? 's' : ''}/y &times; ${UTILS.fmt(t_h)} h/admin:
             <br><br>
             ${limitHTML}
           </div>
@@ -719,8 +721,8 @@
       : '';
     document.getElementById('nuclideInfo').innerHTML =
       `<strong>${UTILS.escapeHtml(n.symbol)} — ${UTILS.escapeHtml(n.name)}</strong> ${sourceTag} &nbsp;|&nbsp; T&#189; = ${UTILS.escapeHtml(n.half_life_display)} &nbsp;|&nbsp;
-       A&#8320; = ${A0raw} ${A0unit} (${A0_GBq.toPrecision(4)} GBq) &nbsp;|&nbsp;
-       d = ${d_m} m &nbsp;|&nbsp; t = ${t_h.toFixed(2)} h/admin &nbsp;|&nbsp; n = ${nAdmin} admin/y &nbsp;|&nbsp; patient Tx = ${(patientTx*100).toFixed(1)}% &nbsp;|&nbsp;`
+       A&#8320; = ${A0raw} ${A0unit} (${UTILS.fmt(A0_GBq)} GBq) &nbsp;|&nbsp;
+       d = ${d_m} m &nbsp;|&nbsp; t = ${UTILS.fmt(t_h)} h/admin &nbsp;|&nbsp; n = ${nAdmin} admin/y &nbsp;|&nbsp; patient Tx = ${UTILS.fmt(patientTx*100)}% &nbsp;|&nbsp;`
        + (n.representative_energy_keV ? `` : '') + energyWarning +
        `&#915;<sup>H*(10)</sup> = ${gammaWB} &nbsp;|&nbsp; ${useH007
          ? `&#915;<sup>H'(0.07)</sup> = ${gammaExt}`
@@ -754,15 +756,6 @@
       const Hdot_Ext_d = CALC.doseRate(gammaExt, A0_GBq, d_m, thick, E_MeV, mat, ap) * patientTx;
       H_WB_cum  = Hdot_WB_d  * t_h;
       H_Ext_cum = Hdot_Ext_d * t_h;
-    }
-
-    function fmt(v) {
-      const f = CALC.formatDose(v);
-      return `<strong>${f.display}</strong>`;
-    }
-    function fmtR(v) {
-      const f = CALC.formatDoseRate(v);
-      return `<strong>${f.display}</strong>`;
     }
 
     const highlight = (use) => use ? 'style="background:var(--green-100);font-weight:700;"' : '';
@@ -818,13 +811,13 @@
         <div class="prop-item"><div class="prop-key">Material</div><div class="prop-val">${matLabel(mat)}</div></div>
         <div class="prop-item"><div class="prop-key">Method</div><div class="prop-val">${methodLabel}</div>
           <div class="prop-note">${method === 'archer' ? 'Monte Carlo, Oumano et al. 2025' : 'e⁻ᵘˣ, NIST XCOM'}</div></div>
-        <div class="prop-item"><div class="prop-key">Thickness</div><div class="prop-val">${thick} cm</div><div class="prop-note">${(thick * 10).toFixed(1)} mm</div></div>
-        ${mu_cm !== null ? `<div class="prop-item"><div class="prop-key">&#956; (${(E_MeV * 1000).toFixed(0)} keV)</div><div class="prop-val">${mu_cm.toFixed(4)} cm&#8315;&#185;</div></div>` : ''}
-        <div class="prop-item"><div class="prop-key">HVL</div><div class="prop-val">${hvl_cm.toFixed(3)} cm</div><div class="prop-note">${(hvl_cm * 10).toFixed(2)} mm</div></div>
-        <div class="prop-item"><div class="prop-key">TVL</div><div class="prop-val">${tvl_cm.toFixed(3)} cm</div><div class="prop-note">${(tvl_cm * 10).toFixed(2)} mm</div></div>
-        <div class="prop-item"><div class="prop-key">Transmission</div><div class="prop-val">${(T * 100).toFixed(4)}%</div><div class="prop-note">Attenuation factor: ${(1/T).toExponential(3)}</div></div>
-        <div class="prop-item"><div class="prop-key">n HVLs</div><div class="prop-val">${(thick / hvl_cm).toFixed(2)}</div></div>
-        <div class="prop-item"><div class="prop-key">Patient transmission</div><div class="prop-val">${(patientTx * 100).toFixed(1)}%</div><div class="prop-note">${patientTx < 1 ? 'Patient attenuation applied' : 'No patient attenuation'}</div></div>
+        <div class="prop-item"><div class="prop-key">Thickness</div><div class="prop-val">${thick} cm</div><div class="prop-note">${UTILS.fmt(thick * 10)} mm</div></div>
+        ${mu_cm !== null ? `<div class="prop-item"><div class="prop-key">&#956; (${UTILS.fmt(E_MeV * 1000)} keV)</div><div class="prop-val">${UTILS.fmt(mu_cm)} cm&#8315;&#185;</div></div>` : ''}
+        <div class="prop-item"><div class="prop-key">HVL</div><div class="prop-val">${UTILS.fmt(hvl_cm)} cm</div><div class="prop-note">${UTILS.fmt(hvl_cm * 10)} mm</div></div>
+        <div class="prop-item"><div class="prop-key">TVL</div><div class="prop-val">${UTILS.fmt(tvl_cm)} cm</div><div class="prop-note">${UTILS.fmt(tvl_cm * 10)} mm</div></div>
+        <div class="prop-item"><div class="prop-key">Transmission</div><div class="prop-val">${UTILS.fmt(T * 100)}%</div><div class="prop-note">Attenuation factor: ${UTILS.fmt(1/T)}</div></div>
+        <div class="prop-item"><div class="prop-key">n HVLs</div><div class="prop-val">${UTILS.fmt(thick / hvl_cm)}</div></div>
+        <div class="prop-item"><div class="prop-key">Patient transmission</div><div class="prop-val">${UTILS.fmt(patientTx * 100)}%</div><div class="prop-note">${patientTx < 1 ? 'Patient attenuation applied' : 'No patient attenuation'}</div></div>
       `;
     } else {
       shieldEl.classList.add('hidden');
@@ -935,12 +928,12 @@
     function pct(val, limit_mSv) {
       const pctVal = (val / 1000 / limit_mSv * 100);
       const cls = pctVal > 100 ? 'danger' : pctVal > 50 ? 'warning' : 'success';
-      return `<span style="color:var(--${cls === 'success' ? 'green-700' : cls === 'warning' ? 'warning' : 'danger'});font-weight:700;">${pctVal.toFixed(1)}%</span>`;
+      return `<span style="color:var(--${cls === 'success' ? 'green-700' : cls === 'warning' ? 'warning' : 'danger'});font-weight:700;">${UTILS.fmt(pctVal)}%</span>`;
     }
 
     document.getElementById('limitComparison').innerHTML = `
       <div class="alert alert-info text-sm">
-        Annual dose from ${nAdmin} administration${nAdmin !== 1 ? 's' : ''}/y &times; ${t_h.toFixed(2)} h/admin:
+        Annual dose from ${nAdmin} administration${nAdmin !== 1 ? 's' : ''}/y &times; ${UTILS.fmt(t_h)} h/admin:
         <br><br>
         <strong>Whole body H*(10):</strong> ${CALC.formatDose(annualDoseWB).display}/y
         &nbsp;— ${pct(annualDoseWB, 20)} of 20 mSv/y worker limit
