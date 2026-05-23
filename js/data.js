@@ -152,14 +152,14 @@ const PHYSICS = (() => {
   // Public API
   // ---------------------------------------------------------------------------
 
-  /** Get h*(10) [pSv·cm²] at energy E_MeV (linear interp on ICRU57 table) */
+  /** Get h*(10) [pSv·cm²] at energy E_MeV (log-linear interp on ICRU57 table, per ICRP 74 §5.2) */
   function getH10(E_MeV) {
-    return interpLinear(ICRU57, E_MeV, 0, 1);
+    return interpLogLog(ICRU57, E_MeV, 0, 1);
   }
 
   /** Get h'(0.07) [pSv·cm²] at energy E_MeV */
   function getH007(E_MeV) {
-    return interpLinear(ICRU57, E_MeV, 0, 2);
+    return interpLogLog(ICRU57, E_MeV, 0, 2);
   }
 
   /**

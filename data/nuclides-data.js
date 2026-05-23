@@ -892,6 +892,7 @@ const NUCLIDE_DATA = {
       "representative_energy_keV": 81,
       "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": null,
+      "clearance_note": "Noble gas (inert): airborne release pathway; solid waste clearance not applicable. EU BSS 2013/59 Annex VI does not assign a kBq/kg limit.",
       "ingestion_dose_coeff_adult_Sv_per_Bq": null,
       "effluent_liquid_limit_Bq_per_L": null,
       "effluent_liquid_limit_source": null,

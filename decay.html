@@ -627,13 +627,23 @@
           const A = CALC.activityAtTime(A0_MBq, T_half_h, s);
           const A_kBq = CALC.convertActivity(A, 'MBq', 'kBq');
           const conc = A_kBq / weight_kg;
-          return `${s.toFixed(4)},${conc.toPrecision(6)},${(A/A0_MBq).toPrecision(5)}`;
+          const vals = [s.toFixed(4), conc.toPrecision(6), (A/A0_MBq).toPrecision(5)];
+          return vals.map(v => {
+            const str = String(v);
+            const safe = /^[=+\-@\t\r]/.test(str) ? "'" + str : str;
+            return safe;
+          }).join(',');
         }).join('\n');
       } else {
         header = 'Time_h,Activity_MBq,Activity_mCi,Activity_GBq,Fraction\n';
         rows = steps.map(s => {
           const A = CALC.activityAtTime(A0_MBq, T_half_h, s);
-          return `${s.toFixed(4)},${A.toPrecision(6)},${CALC.convertActivity(A,'MBq','mCi').toPrecision(5)},${CALC.convertActivity(A,'MBq','GBq').toPrecision(5)},${(A/A0_MBq).toPrecision(5)}`;
+          const vals = [s.toFixed(4), A.toPrecision(6), CALC.convertActivity(A,'MBq','mCi').toPrecision(5), CALC.convertActivity(A,'MBq','GBq').toPrecision(5), (A/A0_MBq).toPrecision(5)];
+          return vals.map(v => {
+            const str = String(v);
+            const safe = /^[=+\-@\t\r]/.test(str) ? "'" + str : str;
+            return safe;
+          }).join(',');
         }).join('\n');
       }
       const blob = new Blob([header + rows], { type: 'text/csv' });
