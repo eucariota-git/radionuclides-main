@@ -5,7 +5,9 @@ This document tracks all fixes implemented for the audit findings.
 ## Status: Complete ✅
 
 All audit findings requiring fixes have been addressed (except AUD-005, AUD-007, AUD-011 per user request).
-Test suite passes: **1266/1266 checks** ✓
+Test suite passes: **1275/1275 checks** ✓
+
+**Round 3 (Final)** — Closed remaining edge cases in AUD-003, AUD-004, AUD-012
 
 ## ✅ Fixed Findings
 
@@ -133,15 +135,20 @@ Test suite passes: **1266/1266 checks** ✓
 
 All changes have been verified:
 - ✓ JavaScript syntax validation (all files pass `node --check`)
-- ✓ Automated validation suite (14/14 checks pass)
+- ✓ Automated validation suite (1275 checks pass)
+  - 14 reference nuclides (gamma H*(10), photon count, half-life tolerance)
+  - 1252 ICRP nuclides (physical bounds checking)
+  - 1 Y-90 special case (pure beta verification)
+  - 4 regulatory limits formulas
+  - 4 physics decay model invariants
 - ✓ HTTP server test (app loads and serves correctly)
 - ✓ Code review of each fix
 
 ---
 
-## Round 2: Additional fixes for AUD-003, 004, 008, 012
+## Round 2: Targeted fixes for AUD-003, 004, 008, 012
 
-Subsequent review revealed 4 remaining issues that required targeted fixes.
+Subsequent review revealed 4 remaining issues that required targeted fixes (partially closed; see Round 3 for final edge case closures).
 
 ### AUD-003 (Revisited): Unescaped innerHTML in detail panel
 **File**: `index.html:355`
@@ -192,6 +199,67 @@ grep -A3 "source_files_hashes" data/icrp107-index.json
 - 14 reference nuclides validated
 - 1252 nuclides checked for physical bounds
 - All fields finite, non-NaN, within physics constraints
+
+---
+
+---
+
+## Round 3: Final edge case closures
+
+Subsequent comprehensive review identified 3 additional issues in previously-closed findings.
+
+### AUD-003 (Revisited): Complete HTML escaping in detail panel
+**File**: `index.html`
+**Issues**: 
+- `decayStr` in both ICRP 107 and standard nuclide detail sections was unescaped
+- Photon table `p.type` field was unescaped
+- Effluent component `c.id` field was unescaped
+- Notes block strings (`n.source`, `n.effluent_liquid_note`, `n.effluent_liquid_limit_source`) were unescaped
+**Fix**:
+- Applied `UTILS.escapeHtml()` to `decayStr` before template interpolation (both sections)
+- Applied `UTILS.escapeHtml()` to `p.type` in photon table map function
+- Applied `UTILS.escapeHtml()` to `c.id` in effluent component map function
+- Applied `UTILS.escapeHtml()` to all note string fields before concatenation
+**Verification**: Detail panel with specially-crafted custom nuclides containing HTML tags renders safely as text
+
+---
+
+### AUD-004 (Revisited): Guard for negative elapsed time in decay calculator
+**File**: `decay.html`
+**Issue**: When target date is before reference date (datetime picker path), `t_h` becomes negative without guard. Negative time causes `activityAtTime()` to return activity greater than A0 (unphysical). Direct hours input had guard but datetime path didn't.
+**Fix**: Added explicit check after finite-ness validation:
+```js
+if (Number.isFinite(t_h) && t_h < 0) {
+  alert('Target date must be after reference date.');
+  return;
+}
+```
+**Verification**: Setting target date before reference date shows alert and blocks calculation
+
+---
+
+### AUD-012 (Revisited): Expanded test coverage for edge cases
+**File**: `test/validate-constants.js`
+**Previous coverage**: 14 reference nuclides (gamma, photon count); 1252 ICRP nuclides (physical bounds)
+**New tests added**:
+1. **Test 3 — Y-90 special case**: Verifies pure beta emitter has `gamma_H10 === null || undefined`, `half_life_s > 0`, `representative_energy_keV === null`
+2. **Test 4 — Regulatory limits formula**: Validates `pct()` arithmetic for dose limit comparisons
+   - Worker at annual whole-body limit: 20000 μSv / 20 mSv = 100%
+   - Quintennial (5-year) lens limit: 25000 μSv / 100 mSv = 25%
+   - Extremity annual limit: 500000 μSv / 500 mSv = 100%
+3. **Test 5 — Physics invariants**: Inline implementation of decay formula verifies
+   - Zero time → initial activity (A = A0)
+   - One half-life → 50% (A = A0/2)
+   - Two half-lives → 25% (A = A0/4)
+   - Infinite time → zero (A → 0)
+
+**Test results**: 1275 checks pass, 0 fail
+- 14 reference nuclides (gamma + photon count + half-life)
+- 1252 ICRP nuclides (physical bounds)
+- 1 Y-90 special case
+- 4 regulatory limits formulas
+- 4 physics invariants
+- CSV parser skipped (browser-only)
 
 ---
 
