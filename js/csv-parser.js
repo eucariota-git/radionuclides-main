@@ -161,14 +161,24 @@ const CSV_PARSER = (() => {
   }
 
   /**
-   * Split a CSV line respecting quoted fields.
+   * Split a CSV line respecting quoted fields (RFC 4180 with "" escape support).
    */
   function splitCSVLine(line) {
     const result = [];
     let current = '';
     let inQuote = false;
-    for (const ch of line) {
-      if (ch === '"') { inQuote = !inQuote; continue; }
+    const chars = [...line];
+    for (let i = 0; i < chars.length; i++) {
+      const ch = chars[i];
+      if (ch === '"') {
+        if (inQuote && chars[i + 1] === '"') {
+          current += '"';
+          i++;
+        } else {
+          inQuote = !inQuote;
+        }
+        continue;
+      }
       if (ch === ',' && !inQuote) { result.push(current); current = ''; continue; }
       current += ch;
     }
@@ -192,3 +202,6 @@ const CSV_PARSER = (() => {
   return { parse, filterEmissions, splitCSVLine };
 
 })();
+
+// CommonJS export for Node.js testing (no-op in browser)
+if (typeof module !== 'undefined' && module.exports) module.exports = CSV_PARSER;

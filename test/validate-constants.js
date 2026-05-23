@@ -239,8 +239,68 @@ function validatePhysicsInvariants() {
 
 function validateCSVParser() {
   console.log('\n=== Test 6: CSV parser (fixtures) ===');
-  console.warn(`⚠ CSV parser tests skipped: browser-only module, run in browser instead`);
-  return { passed: 0, failed: 0 };
+
+  let csvParser = null;
+  try {
+    csvParser = require('../js/csv-parser');
+  } catch (e) {
+    console.error(`✗ CSV_PARSER module not available: ${e.message}`);
+    return { passed: 0, failed: 1 };
+  }
+
+  let passed = 0, failed = 0;
+
+  // Test 6a: splitCSVLine unit tests
+  const splitTests = [
+    { input: 'a,b,c', expected: ['a','b','c'], desc: 'unquoted' },
+    { input: '"a,b",c', expected: ['a,b','c'], desc: 'quoted with comma' },
+    { input: '"say ""hi"""', expected: ['say "hi"'], desc: 'escaped quote ""' },
+    { input: '"",b', expected: ['','b'], desc: 'empty quoted field' },
+    { input: ',b', expected: ['','b'], desc: 'empty unquoted field' },
+    { input: 'a,"b,c",d', expected: ['a','b,c','d'], desc: 'multiple quoted fields' },
+  ];
+
+  for (const test of splitTests) {
+    const result = csvParser.splitCSVLine(test.input);
+    if (JSON.stringify(result) === JSON.stringify(test.expected)) {
+      console.log(`✓ splitCSVLine: ${test.desc}`);
+      passed++;
+    } else {
+      console.error(`✗ splitCSVLine ${test.desc}: expected ${JSON.stringify(test.expected)}, got ${JSON.stringify(result)}`);
+      failed++;
+    }
+  }
+
+  // Test 6b: Full parse() with IAEA LiveChart fixture
+  const iaeaCsv = `energy, unc_en, intensity_%, unc_i, col4, type, col6, col7, col8, col9, multipolarity, mixing_ratio, unc, conversion_coeff, unc, parent_Z, N, symbol, parent_energy_shift, parent_energy_keV, unc, jp, half_life, half-life_operator, unc, unit, half_life_s, unc, decay, decay_%, unc, Q, unc, Z, N, symbol, ENSDF_cut-off, authors, Extraction_date
+140.511,0.001,89.53,0.1,,G,,,,,,,,,43,56,Tc,,0,,5/2+,6.0067,,0.0003,h,21624.12,,IT,100,,,,,43,56,Tc-99,,,`;
+
+  try {
+    const result = csvParser.parse(iaeaCsv);
+    const nuclide = result.nuclide;
+    const emissions = result.emissions;
+    let parseErrors = [];
+
+    if (nuclide.symbol !== 'Tc') parseErrors.push(`symbol: expected 'Tc', got '${nuclide.symbol}'`);
+    if (Math.abs(nuclide.half_life_s - 21624.12) > 1) parseErrors.push(`half_life_s: expected ~21624.12, got ${nuclide.half_life_s}`);
+    if (emissions.length !== 1) parseErrors.push(`emissions count: expected 1, got ${emissions.length}`);
+
+    const filtered = csvParser.filterEmissions(emissions);
+    if (filtered.length !== 1) parseErrors.push(`filtered emissions: expected 1, got ${filtered.length}`);
+
+    if (parseErrors.length > 0) {
+      console.error(`✗ parse() IAEA fixture: ${parseErrors.join(', ')}`);
+      failed++;
+    } else {
+      console.log(`✓ parse() IAEA fixture: Tc-99m with 140.5 keV photon`);
+      passed++;
+    }
+  } catch (e) {
+    console.error(`✗ parse() threw error: ${e.message}`);
+    failed++;
+  }
+
+  return { passed, failed };
 }
 
 function main() {

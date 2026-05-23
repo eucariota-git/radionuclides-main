@@ -515,6 +515,11 @@
     refreshCustomList();
   });
 
+  // Sanitize filename for cross-platform compatibility
+  function safeFilename(id) {
+    return id.trim().replace(/[^A-Za-z0-9\-_.]/g, '_').replace(/_+/g, '_').slice(0, 64);
+  }
+
   // ---- Export JSON ----
   document.getElementById('btnExportJson').addEventListener('click', () => {
     if (!calcResult) return;
@@ -529,7 +534,7 @@
     const blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
     const a    = document.createElement('a');
     a.href     = URL.createObjectURL(blob);
-    a.download = `gamma_constants_${id}.json`;
+    a.download = `gamma_constants_${safeFilename(id)}.json`;
     a.click();
   });
 

@@ -649,7 +649,11 @@
       n.effluent_liquid_limit_source ?? '',
       n.clearance_a1_kBq_per_kg ?? '',
       n._custom ? 'custom' : (n.source || 'Cornejo')
-    ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
+    ].map(v => {
+      const str = String(v);
+      const safe = /^[=+\-@\t\r]/.test(str) ? "'" + str : str;
+      return `"${safe.replace(/"/g, '""')}"`;
+    }).join(','));
     const csv = [headers.join(','), ...rows].join('\r\n');
     const blob = new Blob([csv], { type: 'text/csv' });
     const a = document.createElement('a');
