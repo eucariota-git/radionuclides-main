@@ -204,6 +204,7 @@
 <script src="js/db.js"></script>
 <script src="js/csv-parser.js"></script>
 <script src="js/ui.js"></script>
+<script src="js/utils.js"></script>
 <script>
 (async () => {
   // ---- UI initialization ----
@@ -235,6 +236,11 @@
   });
 
   function processFile(file) {
+    const MAX_FILE_SIZE = 10 * 1024 * 1024;
+    if (file.size > MAX_FILE_SIZE) {
+      document.getElementById('fileStatus').textContent = `Error: File too large (${(file.size / 1024 / 1024).toFixed(1)} MB). Maximum size is ${(MAX_FILE_SIZE / 1024 / 1024).toFixed(0)} MB.`;
+      return;
+    }
     document.getElementById('fileStatus').textContent = `Reading: ${file.name} (${(file.size / 1024).toFixed(1)} kB)…`;
     const reader = new FileReader();
     reader.onload = e => {
@@ -242,6 +248,11 @@
         const result = CSV_PARSER.parse(e.target.result);
         parsedNuclide   = result.nuclide;
         parsedEmissions = result.emissions;
+
+        if (parsedEmissions.length > 10000) {
+          document.getElementById('fileStatus').textContent = `Error: Too many emission lines (${parsedEmissions.length}). Maximum 10000 rows allowed.`;
+          return;
+        }
 
         document.getElementById('fileStatus').textContent =
           `Loaded ${file.name}: ${parsedEmissions.length} emission lines${parsedNuclide.symbol ? `, parent = ${parsedNuclide.symbol}` : ''}`;
@@ -326,8 +337,8 @@
         <td><input type="checkbox" class="em-check" data-idx="${unique.indexOf(em)}" ${checked}></td>
         <td class="num">${em.energy_keV.toFixed(4)}</td>
         <td class="num">${em.yield_percent.toFixed(4)}</td>
-        <td>${em.type}</td>
-        <td>${em.decay_mode || '—'}</td>
+        <td>${UTILS.escapeHtml(em.type)}</td>
+        <td>${UTILS.escapeHtml(em.decay_mode || '—')}</td>
         <td class="num">${em.decay_percent !== null && em.decay_percent !== undefined ? em.decay_percent.toFixed(2) : '—'}</td>
         <td class="num">${em.parent_energy_keV !== null ? em.parent_energy_keV.toFixed(3) : '—'}</td>
         <td class="num">${em.half_life_display || '—'}</td>
@@ -531,15 +542,15 @@
           <th>Actions</th>
         </tr></thead>
         <tbody>${customs.map(n => `<tr>
-          <td class="sym">${n.symbol || n.id}</td>
-          <td>${n.name}</td>
-          <td>${n.half_life_display || CALC.formatHalfLife(n.half_life_s)}</td>
+          <td class="sym">${UTILS.escapeHtml(n.symbol || n.id)}</td>
+          <td>${UTILS.escapeHtml(n.name)}</td>
+          <td>${UTILS.escapeHtml(n.half_life_display || CALC.formatHalfLife(n.half_life_s))}</td>
           <td class="num">${n.gamma_H10}</td>
           <td class="num">${n.gamma_H007}</td>
           <td>
             <a class="btn btn-secondary btn-sm" href="decay.html?id=${encodeURIComponent(n.id)}">Decay</a>
             <a class="btn btn-secondary btn-sm" href="dose.html?id=${encodeURIComponent(n.id)}">Dose</a>
-            <button class="btn btn-danger btn-sm" onclick="removeCustom('${n.id}')">Remove</button>
+            <button class="btn btn-danger btn-sm" onclick="removeCustom('${encodeURIComponent(n.id)}')">Remove</button>
           </td>
         </tr>`).join('')}</tbody>
       </table>`;

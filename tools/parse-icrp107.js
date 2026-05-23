@@ -434,9 +434,21 @@ function main() {
   // Convert to array sorted by nuclide ID
   const nucledesArray = Object.values(nuclides).sort((a, b) => a.id.localeCompare(b.id));
 
-  // Calculate hash of NDX file for traceability
+  // Calculate hashes of source files for traceability
   const ndxContent = fs.readFileSync(ndxPath, 'utf8');
   const ndxSha256 = crypto.createHash('sha256').update(ndxContent).digest('hex');
+
+  let radSha256 = null;
+  if (fs.existsSync(radPath)) {
+    const radContent = fs.readFileSync(radPath, 'utf8');
+    radSha256 = crypto.createHash('sha256').update(radContent).digest('hex');
+  }
+
+  let betSha256 = null;
+  if (fs.existsSync(betPath)) {
+    const betContent = fs.readFileSync(betPath, 'utf8');
+    betSha256 = crypto.createHash('sha256').update(betContent).digest('hex');
+  }
 
   // Write output
   const output = {
@@ -446,7 +458,11 @@ function main() {
     notes: {
       generated_at: new Date().toISOString(),
       generated_by_script: 'tools/parse-icrp107.js',
-      icrp107_ndx_sha256: ndxSha256,
+      source_files_hashes: {
+        icrp107_ndx_sha256: ndxSha256,
+        icrp107_rad_sha256: radSha256,
+        icrp107_bet_sha256: betSha256,
+      },
       parser_version: '2.0 (fixed-width columns)',
     },
     nuclides: nucledesArray,

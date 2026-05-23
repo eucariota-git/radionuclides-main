@@ -224,6 +224,7 @@
 <script src="js/ui.js"></script>
 <script src="data/icrp107-data.js"></script>
 <script src="js/icrp107-loader.js"></script>
+<script src="js/utils.js"></script>
 <script>
 (async () => {
   // ---- UI initialization ----
@@ -442,22 +443,43 @@
     const n = selectedNuclide || resolveNuclide(hiddenSelect.value);
     if (!n) { alert('Select a valid nuclide first.'); return; }
 
+    if (n._icrp107) {
+      const confirmed = confirm(
+        'This nuclide is from ICRP 107 extended database. Photon emissions and dose constants have NOT been manually validated.\n\n' +
+        'For clinical or regulatory use, verify these values against primary sources (ICRP 107, 2008).\n\n' +
+        'Continue with calculation?'
+      );
+      if (!confirmed) return;
+    }
+
     const A0raw   = parseFloat(document.getElementById('A0').value);
+    if (!Number.isFinite(A0raw) || A0raw <= 0) {
+      alert('Activity must be a positive number.'); return;
+    }
     const A0unit  = document.getElementById('A0unit').value;
     const A0_GBq  = CALC.convertActivity(A0raw, A0unit, 'GBq');
 
     const distRaw  = parseFloat(document.getElementById('distance').value);
+    if (!Number.isFinite(distRaw) || distRaw <= 0) {
+      alert('Distance must be a positive number.'); return;
+    }
     const distUnit = document.getElementById('distUnit').value;
     const d_m      = distUnit === 'cm' ? distRaw / 100 : distRaw;
 
     const mat       = document.getElementById('shieldMaterial').value;
     const thickRaw  = parseFloat(document.getElementById('shieldThickness').value) || 0;
+    if (thickRaw < 0 || !Number.isFinite(thickRaw)) {
+      alert('Shielding thickness must be a non-negative number.'); return;
+    }
     const thickUnit = document.getElementById('shieldUnit').value;
     const thick     = thickUnit === 'mm' ? thickRaw / 10 : thickRaw;
     const E_MeV   = n.representative_energy_keV / 1000;
     const ap      = getArcherParams(n, mat);  // Archer params or null
 
     const expRaw  = parseFloat(document.getElementById('expTime').value);
+    if (!Number.isFinite(expRaw) || expRaw <= 0) {
+      alert('Exposure time must be a positive number.'); return;
+    }
     const expUnit = document.getElementById('expUnit').value;
     const expMul  = { h: 1, min: 1/60, d: 24 };
     const t_h     = expRaw * (expMul[expUnit] || 1);
@@ -696,7 +718,7 @@
       ? '<div class="alert alert-warning mt-1" style="font-size:0.9rem;">⚠️ Representative energy not defined; shielding calculations use narrow-beam approximation.</div>'
       : '';
     document.getElementById('nuclideInfo').innerHTML =
-      `<strong>${n.symbol} — ${n.name}</strong> ${sourceTag} &nbsp;|&nbsp; T&#189; = ${n.half_life_display} &nbsp;|&nbsp;
+      `<strong>${UTILS.escapeHtml(n.symbol)} — ${UTILS.escapeHtml(n.name)}</strong> ${sourceTag} &nbsp;|&nbsp; T&#189; = ${UTILS.escapeHtml(n.half_life_display)} &nbsp;|&nbsp;
        A&#8320; = ${A0raw} ${A0unit} (${A0_GBq.toPrecision(4)} GBq) &nbsp;|&nbsp;
        d = ${d_m} m &nbsp;|&nbsp; t = ${t_h.toFixed(2)} h/admin &nbsp;|&nbsp; n = ${nAdmin} admin/y &nbsp;|&nbsp; patient Tx = ${(patientTx*100).toFixed(1)}% &nbsp;|&nbsp;`
        + (n.representative_energy_keV ? `` : '') + energyWarning +
@@ -927,7 +949,7 @@
         <strong>Lens of eye (occupational, RD 1029/2022):</strong> ${CALC.formatDose(annualDoseWB).display}/y <em style="font-size:0.9em;">estimated with H*(10)</em>
         <br><em style="font-size:0.9em;">Both conditions must be satisfied:</em>
         &nbsp;— ${pct(annualDoseWB, 50)} of 50 mSv/y max annual
-        &nbsp;|&nbsp; ${pct(annualDoseWB, 100)} of 100 mSv over consecutive 5-year period (current regime since 22 Jun 2024)
+        &nbsp;|&nbsp; ${pct(annualDoseWB * 5, 100)} of 100 mSv over consecutive 5-year period (current regime since 22 Jun 2024)
         <br>
         <strong>Extremities H'(0.07):</strong> ${CALC.formatDose(annualDoseExt).display}/y
         &nbsp;— ${pct(annualDoseExt, 500)} of 500 mSv/y extremity limit

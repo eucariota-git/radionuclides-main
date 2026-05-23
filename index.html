@@ -127,6 +127,7 @@
 <script src="js/db.js"></script>
 <script src="js/ui.js"></script>
 <script src="js/icrp107-loader.js"></script>
+<script src="js/utils.js"></script>
 <script>
 (async () => {
   // ---- UI initialization ----
@@ -230,9 +231,9 @@
         // ICRP 107 extended database entry
         const icrpBadge = '<span class="tag tag-icrp107" style="font-size:0.85em;">ICRP 107</span>';
         return `<tr class="${sel}" data-id="${n.id}" style="opacity:0.85;">
-          <td class="sym">${n.symbol}</td>
-          <td>${n.half_life_display}</td>
-          <td class="text-sm">${decayStr}</td>
+          <td class="sym">${UTILS.escapeHtml(n.symbol)}</td>
+          <td>${UTILS.escapeHtml(n.half_life_display)}</td>
+          <td class="text-sm">${UTILS.escapeHtml(decayStr)}</td>
           <td>${icrpBadge}</td>
           <td class="num text-muted">—</td>
           <td class="num">${fmtGamma(n.gamma_H10)}</td>
@@ -248,9 +249,9 @@
         ? ` <span title="H'(0.07) from Cornejo et al. — applies for extremity dose" style="cursor:help;color:var(--warning)">&#9888;</span>`
         : '';
       return `<tr class="${sel}" data-id="${n.id}">
-        <td class="sym">${n.symbol}</td>
-        <td>${n.half_life_display}</td>
-        <td class="text-sm">${decayStr}</td>
+        <td class="sym">${UTILS.escapeHtml(n.symbol)}</td>
+        <td>${UTILS.escapeHtml(n.half_life_display)}</td>
+        <td class="text-sm">${UTILS.escapeHtml(decayStr)}</td>
         <td>${modalityTag(n)}</td>
         <td class="num">${fmtGamma(n.gamma_Kair)}</td>
         <td class="num">${fmtGamma(n.gamma_H10)}</td>

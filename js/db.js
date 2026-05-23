@@ -84,14 +84,17 @@ const DB = (() => {
 
     // 3. Merge custom nuclides from sessionStorage
     const customRaw = sessionStorage.getItem('custom_nuclides');
+    const curatedIds = new Set(_nuclides.map(n => n.id));
     if (customRaw) {
       try {
         const custom = JSON.parse(customRaw);
         for (const cn of custom) {
+          if (curatedIds.has(cn.id)) {
+            console.warn(`Cannot add custom nuclide "${cn.id}": conflicts with curated database entry. Use a different ID (e.g., "custom:${cn.id}").`);
+            continue;
+          }
           cn._custom = true;
-          const idx = _nuclides.findIndex(n => n.id === cn.id);
-          if (idx >= 0) _nuclides[idx] = cn;
-          else _nuclides.push(cn);
+          _nuclides.push(cn);
         }
       } catch (e) { /* ignore corrupt storage */ }
     }
@@ -142,6 +145,10 @@ const DB = (() => {
   // ---------------------------------------------------------------------------
 
   function addCustomNuclide(nuclide) {
+    const curatedIds = new Set(_nuclides.filter(n => !n._custom).map(n => n.id));
+    if (curatedIds.has(nuclide.id)) {
+      throw new Error(`Cannot add custom nuclide with ID "${nuclide.id}": this ID exists in the curated database. Use a different ID (e.g., "custom:${nuclide.id}").`);
+    }
     nuclide._custom = true;
     const existing = JSON.parse(sessionStorage.getItem('custom_nuclides') || '[]');
     const idx = existing.findIndex(n => n.id === nuclide.id);
@@ -149,7 +156,7 @@ const DB = (() => {
     else existing.push(nuclide);
     sessionStorage.setItem('custom_nuclides', JSON.stringify(existing));
 
-    const liveIdx = _nuclides.findIndex(n => n.id === nuclide.id);
+    const liveIdx = _nuclides.findIndex(n => n.id === nuclide.id && n._custom);
     if (liveIdx >= 0) _nuclides[liveIdx] = nuclide;
     else _nuclides.push(nuclide);
   }

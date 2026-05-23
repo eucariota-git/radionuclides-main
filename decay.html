@@ -170,6 +170,7 @@
 <script src="js/ui.js"></script>
 <script src="data/icrp107-data.js"></script>
 <script src="js/icrp107-loader.js"></script>
+<script src="js/utils.js"></script>
 <script>
 (async () => {
   // ---- UI initialization ----
@@ -188,7 +189,6 @@
     if (!icrpN) return null;
 
     const constants = ICRP107.calcConstants(id);
-    if (!constants) return null;
 
     return {
       id: icrpN.id,
@@ -196,9 +196,9 @@
       name: icrpN.id,
       half_life_s: icrpN.half_life_s,
       half_life_display: icrpN.half_life_display,
-      gamma_H10: constants.gammaH10,
-      gamma_H007: constants.gammaH007,
-      gamma_Kair: constants.gamma_Kair,
+      gamma_H10: constants ? constants.gammaH10 : null,
+      gamma_H007: constants ? constants.gammaH007 : null,
+      gamma_Kair: constants ? constants.gamma_Kair : null,
       _icrp107: true,
       source: 'ICRP 107 (calculated)',
     };
@@ -295,7 +295,19 @@
     const n = selectedNuclide || resolveNuclide(hiddenSelect.value);
     if (!n) { alert('Select a valid nuclide first.'); return; }
 
+    if (n._icrp107) {
+      const confirmed = confirm(
+        'This nuclide is from ICRP 107 extended database. Decay data and constants have NOT been manually validated.\n\n' +
+        'For clinical or regulatory use, verify these values against primary sources (ICRP 107, 2008).\n\n' +
+        'Continue with calculation?'
+      );
+      if (!confirmed) return;
+    }
+
     const A0raw    = parseFloat(document.getElementById('A0').value);
+    if (!Number.isFinite(A0raw) || A0raw <= 0) {
+      alert('Activity must be a positive number.'); return;
+    }
     const A0unit   = document.getElementById('A0unit').value;
     const A0_MBq   = CALC.convertActivity(A0raw, A0unit, 'MBq');
     const T_half_h = DB.halfLifeHours(n);
@@ -311,8 +323,12 @@
     const elapsedVal  = document.getElementById('elapsed').value.trim();
     const elapsedUnit = document.getElementById('elapsedUnit').value;
     if (elapsedVal !== '') {
+      const elapsedRaw = parseFloat(elapsedVal);
+      if (!Number.isFinite(elapsedRaw) || elapsedRaw < 0) {
+        alert('Elapsed time must be a non-negative number.'); return;
+      }
       const mul = { h: 1, min: 1 / 60, d: 24, s: 1 / 3600 };
-      t_h = parseFloat(elapsedVal) * (mul[elapsedUnit] || 1);
+      t_h = elapsedRaw * (mul[elapsedUnit] || 1);
     } else {
       const ref    = document.getElementById('refDateTime').value;
       const target = document.getElementById('targetDateTime').value;
@@ -322,7 +338,7 @@
         t_h = 0;
       }
     }
-    if (isNaN(t_h) || t_h < 0) t_h = 0;
+    if (!Number.isFinite(t_h)) t_h = 0;
 
     const At_MBq = CALC.activityAtTime(A0_MBq, T_half_h, t_h);
     const fraction = At_MBq / A0_MBq;
@@ -335,7 +351,7 @@
       ? `<span class="tag tag-icrp107" title="Decay data from ICRP 107">ICRP 107</span>`
       : '';
     document.getElementById('nuclideInfo').innerHTML =
-      `<strong>${n.symbol} — ${n.name}</strong> ${sourceTag} &nbsp;|&nbsp; T&#189; = ${n.half_life_display} &nbsp;|&nbsp;
+      `<strong>${UTILS.escapeHtml(n.symbol)} — ${UTILS.escapeHtml(n.name)}</strong> ${sourceTag} &nbsp;|&nbsp; T&#189; = ${UTILS.escapeHtml(n.half_life_display)} &nbsp;|&nbsp;
        &lambda; = ${CALC.lambda(T_half_h).toExponential(3)} h&#8315;&#185;`;
 
     document.getElementById('resultGrid').innerHTML = `
