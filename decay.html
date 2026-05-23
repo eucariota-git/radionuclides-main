@@ -339,6 +339,10 @@
       }
     }
     if (!Number.isFinite(t_h)) t_h = 0;
+    if (Number.isFinite(t_h) && t_h < 0) {
+      alert('Target date must be after reference date.');
+      return;
+    }
 
     const At_MBq = CALC.activityAtTime(A0_MBq, T_half_h, t_h);
     const fraction = At_MBq / A0_MBq;

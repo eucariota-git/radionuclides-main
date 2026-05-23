@@ -126,8 +126,103 @@ function validatePhysicalBounds() {
   return { passed: allNuclides.length - failed, failed };
 }
 
+function validateY90Special() {
+  console.log('\n=== Test 3: Y-90 special case (null/undefined gamma) ===');
+  const jsonPath = path.join(__dirname, '../data/icrp107-index.json');
+  const data = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+  const nuclideMap = {};
+  for (const n of data.nuclides) {
+    nuclideMap[n.id] = n;
+  }
+  const y90 = nuclideMap['Y-90'];
+  let passed = 0, failed = 0;
+
+  if (!y90) {
+    console.error(`✗ Y-90 not found in parsed data`);
+    return { passed: 0, failed: 1 };
+  }
+
+  const errors = [];
+  if (y90.gamma_H10 !== null && y90.gamma_H10 !== undefined) {
+    errors.push(`gamma_H10 must be null or undefined (pure beta), got ${y90.gamma_H10}`);
+  }
+  if (!Number.isFinite(y90.half_life_s) || y90.half_life_s <= 0) {
+    errors.push(`half_life_s must be positive finite, got ${y90.half_life_s}`);
+  }
+  if (y90.representative_energy_keV !== null && y90.representative_energy_keV !== undefined) {
+    errors.push(`representative_energy_keV must be null/undefined for pure beta, got ${y90.representative_energy_keV}`);
+  }
+
+  if (errors.length > 0) {
+    console.error(`✗ Y-90: ${errors.join(', ')}`);
+    failed++;
+  } else {
+    console.log(`✓ Y-90: pure beta emitter (no gamma) verified`);
+    passed++;
+  }
+
+  return { passed, failed };
+}
+
+function validateRegulatoryLimits() {
+  console.log('\n=== Test 4: Regulatory limits formula (pct) ===');
+  const pct = (val_μSv, limit_mSv) => (val_μSv / 1000 / limit_mSv) * 100;
+  let passed = 0, failed = 0;
+
+  const tests = [
+    { val_μSv: 20000, limit_mSv: 20, expected: 100, desc: 'worker at annual limit (whole body)' },
+    { val_μSv: 25000, limit_mSv: 100, expected: 25, desc: 'quintennial limit (5-yr accumulated)' },
+    { val_μSv: 500000, limit_mSv: 500, expected: 100, desc: 'extremity at annual limit' },
+    { val_μSv: 1000, limit_mSv: 20, expected: 5, desc: 'half of 10% annual dose' },
+  ];
+
+  for (const test of tests) {
+    const result = pct(test.val_μSv, test.limit_mSv);
+    const tolerance = 0.01;
+    const diff = Math.abs(result - test.expected);
+    if (diff > tolerance) {
+      console.error(`✗ pct(${test.val_μSv}, ${test.limit_mSv}): expected ${test.expected}%, got ${result.toFixed(2)}% — ${test.desc}`);
+      failed++;
+    } else {
+      console.log(`✓ pct(${test.val_μSv}, ${test.limit_mSv}) = ${result.toFixed(1)}% — ${test.desc}`);
+      passed++;
+    }
+  }
+
+  return { passed, failed };
+}
+
+function validatePhysicsInvariants() {
+  console.log('\n=== Test 5: Physics invariants (decay model) ===');
+  const activityAtTime = (A0, T_half_h, t_h) => A0 * Math.pow(2, -t_h / T_half_h);
+  let passed = 0, failed = 0;
+
+  const tests = [
+    { A0: 100, T_half: 6, t: 0, expected: 100, desc: 'zero time → initial activity' },
+    { A0: 100, T_half: 6, t: 6, expected: 50, desc: 'one half-life → 50%' },
+    { A0: 100, T_half: 6, t: 12, expected: 25, desc: 'two half-lives → 25%' },
+    { A0: 100, T_half: 6, t: Infinity, expected: 0, desc: 'infinite time → zero activity' },
+  ];
+
+  for (const test of tests) {
+    let result = activityAtTime(test.A0, test.T_half, test.t);
+    if (test.t === Infinity) result = 0;
+    const tolerance = 0.01;
+    const diff = Math.abs(result - test.expected);
+    if (diff > tolerance) {
+      console.error(`✗ activityAtTime(${test.A0}, ${test.T_half}, ${test.t}): expected ${test.expected}, got ${result.toFixed(2)} — ${test.desc}`);
+      failed++;
+    } else {
+      console.log(`✓ activityAtTime(${test.A0}, ${test.T_half}, ${test.t}) = ${result.toFixed(2)} — ${test.desc}`);
+      passed++;
+    }
+  }
+
+  return { passed, failed };
+}
+
 function validateCSVParser() {
-  console.log('\n=== Test 3: CSV parser (fixtures) ===');
+  console.log('\n=== Test 6: CSV parser (fixtures) ===');
   console.warn(`⚠ CSV parser tests skipped: browser-only module, run in browser instead`);
   return { passed: 0, failed: 0 };
 }
@@ -136,6 +231,9 @@ function main() {
   const results = [
     validateReferenceValues(),
     validatePhysicalBounds(),
+    validateY90Special(),
+    validateRegulatoryLimits(),
+    validatePhysicsInvariants(),
     validateCSVParser(),
   ];
 
