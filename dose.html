@@ -213,7 +213,7 @@
 </main>
 
 <footer class="site-footer">
-  NM Radionuclide Planner &mdash; Dose rate constants: Cornejo et al. (2006) &mdash;
+  NM Radionuclide Planner &mdash; Dose rate constants: Cornejo et al. (2015) &mdash;
 <a href="https://github.com/eucariota-git/radionuclides-main" target="_blank" rel="noopener">GitHub</a>
 </footer>
 
@@ -570,7 +570,8 @@
         const T_half_h = DB.halfLifeHours(n);
         const withDecay = document.getElementById('decayMode').value === 'with_decay';
 
-        // Y-90 bremsstrahlung containers from PHYSICS.Y90_CONTAINERS (Zanzonico et al. 1999)
+        // Y-90 bremsstrahlung container estimates from PHYSICS.Y90_CONTAINERS
+        // (methodology after Zanzonico et al. 1999; container values not tabulated in that publication)
         const containers = PHYSICS.Y90_CONTAINERS;
 
         // Ensure y90ContainerId element exists (before building HTML with radio buttons)
@@ -632,7 +633,7 @@
         document.getElementById('resultsBody').innerHTML = `
           <tr style="background:var(--warning-100);">
             <td colspan="6">
-              <strong>Y-90 Bremsstrahlung Dose (Zanzonico et al. 1999)</strong>
+              <strong>Y-90 Bremsstrahlung Dose</strong> <span class="text-sm text-muted">(container estimates; methodology after Zanzonico et al. 1999 — container values not tabulated in that publication)</span>
               ${containerHTML}
               ${pbWarning}
               <div style="margin-top:1rem;">
@@ -685,8 +686,8 @@
         <div class="alert alert-warning" style="margin:1rem 0;">
           <strong>${UTILS.escapeHtml(n.symbol)} is a pure &beta;&#8315; emitter.</strong><br>
           ${n.id === 'Y-90'
-            ? 'Dose shown above uses bremsstrahlung constants from Zanzonico et al. (J Nucl Med 40(6):906-915, 1999).'
-            : 'External dose estimation requires bremsstrahlung data specific to the container geometry. See Zanzonico et al. (J Nucl Med 40(6), 1999).'}
+            ? 'Dose shown above uses container-specific bremsstrahlung estimates following the methodology of Zanzonico et al. (J Nucl Med 40(6):906-915, 1999); container values are not tabulated in that publication — verify before regulatory use.'
+            : 'External dose estimation requires bremsstrahlung data specific to the container geometry. See Zanzonico et al. (J Nucl Med 40(6), 1999) for the methodology.'}
         </div>`;
 
       // Limit comparison for Y-90

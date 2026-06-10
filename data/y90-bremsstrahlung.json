@@ -1,7 +1,7 @@
 {
   "nuclide": "Y-90",
-  "reference": "Zanzonico et al. J Nucl Med 40(6):906-915, 1999. Bremsstrahlung dose rates for pure beta emitters.",
-  "notes": "Dose rate constants for bremsstrahlung from Y-90 beta particles in different container geometries. Values are μSv·h⁻¹·GBq⁻¹·m².",
+  "reference": "Methodology: Zanzonico et al. J Nucl Med 40(6):906-915, 1999 (bremsstrahlung exposure from pure beta emitters). NOTE: that publication tabulates specific bremsstrahlung constants for soft tissue (Z=7.9) and bone (Z=21) only — the container-specific values below (PMMA/Pb/W/none) are estimates following its formalism and are NOT tabulated in the publication.",
+  "notes": "Estimated dose rate constants for bremsstrahlung from Y-90 beta particles in different container geometries. Values are μSv·h⁻¹·GBq⁻¹·m². Pending verification against a primary source; do not use for regulatory submissions without independent verification.",
   "containers": [
     {
       "id": "none",
@@ -32,7 +32,7 @@
       "name": "Tungsten (W) container",
       "description": "High-Z alternative shielding (better than Pb for beta)",
       "gamma_H10": 0.016,
-      "gamma_H007": 0.020,
+      "gamma_H007": 0.02,
       "warning": null
     }
   ]

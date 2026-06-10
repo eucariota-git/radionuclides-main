@@ -159,7 +159,7 @@
 </main>
 
 <footer class="site-footer">
-  NM Radionuclide Planner &mdash; Dose rate constants: Cornejo et al. (2006) &mdash;
+  NM Radionuclide Planner &mdash; Dose rate constants: Cornejo et al. (2015) &mdash;
 <a href="https://github.com/eucariota-git/radionuclides-main" target="_blank" rel="noopener">GitHub</a>
 </footer>
 
@@ -311,9 +311,14 @@
 
     // Derive time unit from half_life_display (may be auto-scaled after tMax_h is known)
     const hlParts = n.half_life_display.split(' ');
-    let timeUnit = hlParts[hlParts.length - 1]; // 'min' | 'h' | 'd' | 'y'
-    const hToUnit = { min: 60, h: 1, d: 1/24, y: 1/8760 };
-    let unitFactor = hToUnit[timeUnit] ?? 1; // multiply hours by this to get display unit
+    let timeUnit = hlParts[hlParts.length - 1]; // 's' | 'min' | 'h' | 'd' | 'y'
+    const hToUnit = { s: 3600, min: 60, h: 1, d: 1/24, y: 1/8760 };
+    if (!(timeUnit in hToUnit)) {
+      // ICRP 107 / custom nuclides may use display units not mapped above (ms, ky, …):
+      // pick a sensible chart unit from the half-life magnitude instead
+      timeUnit = T_half_h < 1/60 ? 's' : T_half_h < 1 ? 'min' : T_half_h < 48 ? 'h' : T_half_h < 8760 ? 'd' : 'y';
+    }
+    let unitFactor = hToUnit[timeUnit]; // multiply hours by this to get display unit
 
     // Determine elapsed time
     let t_h;
@@ -431,7 +436,7 @@
       }
     }
     // Auto-scale time unit upward if tMax would produce values ≥ 1000
-    { const _unitOrder = ['min', 'h', 'd', 'y'];
+    { const _unitOrder = ['s', 'min', 'h', 'd', 'y'];
       while (tMax_h * unitFactor >= 1000) {
         const next = _unitOrder.indexOf(timeUnit) + 1;
         if (next >= _unitOrder.length) break;

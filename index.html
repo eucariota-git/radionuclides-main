@@ -55,7 +55,7 @@
             <th>T&#189;</th>
             <th>Decay</th>
             <th>Modality</th>
-            <th class="has-tooltip tooltip-up" data-tooltip="Air kerma rate constant. Photon field intensity at 1 m from 1 GBq. Units: μGy·h⁻¹·GBq⁻¹·m². Source: Cornejo (2006).">&#915;<sup>K-air</sup><span class="th-unit">μGy·h⁻¹·GBq⁻¹·m²</span></th>
+            <th class="has-tooltip tooltip-up" data-tooltip="Air kerma rate constant. Photon field intensity at 1 m from 1 GBq. Units: μGy·h⁻¹·GBq⁻¹·m². Source: Cornejo (2015).">&#915;<sup>K-air</sup><span class="th-unit">μGy·h⁻¹·GBq⁻¹·m²</span></th>
             <th class="has-tooltip tooltip-up" data-tooltip="Ambient dose equivalent rate constant. Whole-body dose at d ≥ 25 cm. Derived from ICRU 57 / ICRP 74. Units: μSv·h⁻¹·GBq⁻¹·m².">&#915;<sup>H*(10)</sup><span class="th-unit">μSv·h⁻¹·GBq⁻¹·m²</span></th>
             <th class="has-tooltip tooltip-up" data-tooltip="Directional dose equivalent (0.07 mm depth). Extremity dose at d < 25 cm. Units: μSv·h⁻¹·GBq⁻¹·m².">&#915;<sup>H'(0.07)</sup><span class="th-unit">μSv·h⁻¹·GBq⁻¹·m²</span></th>
             <th>Rep. energy<span class="th-unit">keV</span></th>
@@ -70,7 +70,7 @@
       </table>
     </div>
     <p class="text-sm text-muted mt-1">
-      Dose rate constants primarily from Cornejo et al. (2006); some values recalculated using ICRP 107 photon emissions and ICRU 57 conversion coefficients.
+      Dose rate constants primarily from Cornejo et al. (2015); some values recalculated using ICRP 107 photon emissions and ICRU 57 conversion coefficients.
       Energy threshold &#948; = 20 keV, yield &ge; 0.01%.
       Units: &#915;<sup>K-air</sup> in &#181;Gy&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;;
       &#915;<sup>H*(10)</sup> and &#915;<sup>H'(0.07)</sup> in &#181;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;.
@@ -103,8 +103,8 @@
   <div class="card mt-2">
     <div class="card-title">Reference & Data Notes</div>
     <ul class="text-sm ref-list" id="refList">
-      <li><strong>32 nuclides:</strong> primary source from Cornejo et al. (2006). Some values differ from published Cornejo due to more recent ICRP 107 nuclear decay data.</li>
-      <li><strong>2 nuclides:</strong> <strong>Ga-68</strong> and <strong>Y-90</strong> are additions beyond Cornejo et al. Ga-68 calculated using ICRU 57 / ICRP 74. Y-90 from Zanzonico et al. (J Nucl Med 40(6), 1999) — bremsstrahlung in PMMA container.</li>
+      <li><strong>32 nuclides:</strong> primary source from Cornejo et al. (2015). Some values differ from published Cornejo due to more recent ICRP 107 nuclear decay data.</li>
+      <li><strong>2 nuclides:</strong> <strong>Ga-68</strong> and <strong>Y-90</strong> are additions beyond Cornejo et al. Ga-68 calculated using ICRU 57 / ICRP 74. Y-90: container bremsstrahlung estimates following the methodology of Zanzonico et al. (J Nucl Med 40(6), 1999); container-specific values are not tabulated in that publication.</li>
       <li>&#915;<sup>H'(0.07)</sup> used for extremity dose (d &lt; 25 cm) only when H'(0.07) > H*(10) and all photon energies &lt; 300 keV; otherwise H*(10) is conservatively applied.</li>
       <li><strong>Published Cornejo values</strong> preserved in <code>cornejo_validation</code> field for audit trail. Differences from Cornejo indicate use of updated nuclear data.</li>
       <li><strong>Clearance levels</strong>: RD 1217/2024 Tabla A.1 (niveles de autorización para la exención de materiales radiactivos del control regulatorio).</li>
@@ -163,6 +163,16 @@
   function fmtGamma(val) {
     if (val === null || val === undefined) return '<span class="text-muted">—</span>';
     return `<span class="mono">${val}</span>`;
+  }
+
+  // Warning marker when the stored (ICRP 107-recalculated) Γ H*(10) deviates
+  // more than 5% from the published Cornejo et al. (2015) Tabla III value
+  function cornejoDeviationNote(n) {
+    const pub = n.cornejo_validation && n.cornejo_validation.gamma_H10_Cornejo;
+    if (pub == null || n.gamma_H10 == null) return '';
+    const dev = (n.gamma_H10 - pub) / pub * 100;
+    if (Math.abs(dev) <= 5) return '';
+    return ` <span title="Recalculated from ICRP 107 photon data; differs ${dev > 0 ? '+' : ''}${dev.toFixed(1)}% from the published Cornejo et al. (2015) value (${pub})" style="cursor:help;color:var(--warning)">&#9888;</span>`;
   }
 
   function fmtNumber(val) {
@@ -254,7 +264,7 @@
         <td class="text-sm">${UTILS.escapeHtml(decayStr)}</td>
         <td>${modalityTag(n)}</td>
         <td class="num">${fmtGamma(n.gamma_Kair)}</td>
-        <td class="num">${fmtGamma(n.gamma_H10)}</td>
+        <td class="num">${fmtGamma(n.gamma_H10)}${cornejoDeviationNote(n)}</td>
         <td class="num">${fmtGamma(n.gamma_H007)}${h007note}</td>
         <td class="num">${n.representative_energy_keV}</td>
         <td class="num">${fmtEffluentLimit(n)}</td>
@@ -262,8 +272,8 @@
         <td class="text-sm">${
           n._custom ? '<em>custom</em>'
           : !n.source ? '—'
-          : n.source.startsWith('Cornejo') ? 'Cornejo 2006'
-          : n.source.startsWith('Zanzonico') ? 'Zanzonico 1999'
+          : n.source.startsWith('Cornejo') ? 'Cornejo 2015'
+          : n.source.startsWith('Zanzonico') ? 'Zanzonico 1999 (est.)'
           : n.source.startsWith('ICRP 107') ? 'ICRP 107'
           : 'Calc.'
         }</td>
@@ -584,6 +594,14 @@
 
     if (n._icrp107) {
       notes.push('&#9888; This nuclide is from the ICRP 107 extended database. Photon emissions are available from ICRP Publication 107 (2008). Constants have NOT been manually validated. For clinical/regulatory use, verify against primary sources.');
+    }
+
+    const pubH10 = n.cornejo_validation && n.cornejo_validation.gamma_H10_Cornejo;
+    if (pubH10 != null && n.gamma_H10 != null) {
+      const dev = (n.gamma_H10 - pubH10) / pubH10 * 100;
+      if (Math.abs(dev) > 5) {
+        notes.push(`&#9888; &#915;<sup>H*(10)</sup> recalculated from ICRP 107 differs ${dev > 0 ? '+' : ''}${dev.toFixed(1)}% from the published Cornejo et al. (2015) value (${pubH10} &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;). Published values are preserved in <code>cornejo_validation</code>.`);
+      }
     }
 
     if (n.source && !n.source.startsWith('Cornejo') && !n._icrp107) {

@@ -255,7 +255,11 @@ const PHYSICS = (() => {
     };
   }
 
-  // Y-90 Bremsstrahlung containers (Zanzonico et al. 1999)
+  // Y-90 bremsstrahlung container ESTIMATES.
+  // Methodology after Zanzonico et al., J Nucl Med 40(6):906-915, 1999, which
+  // tabulates specific bremsstrahlung constants for soft tissue and bone only —
+  // NOT for these container geometries. Container values below are estimates
+  // pending verification against a primary source.
   const Y90_CONTAINERS = {
     none: { name: 'No container', gamma_H10: 0.001, gamma_H007: 0.001 },
     pmma: { name: 'PMMA (acrylic)', gamma_H10: 0.009, gamma_H007: 0.012 },

@@ -34,7 +34,7 @@
   </div>
 
   <div class="alert alert-info">
-    <strong>Methodology — Cornejo et al. (2006)</strong>
+    <strong>Methodology — Cornejo et al. (2015)</strong>
     <div class="methodology-text">
       &#915; = K &thinsp;&times;&thinsp; &sum;<sub><i>i</i></sub> ( <i>n</i><sub><i>i</i></sub> &thinsp;&middot;&thinsp; <i>h</i>(<i>E</i><sub><i>i</i></sub>) )
     </div>
@@ -369,9 +369,9 @@
       return;
     }
 
-    const result = PHYSICS.calcGammaConstants
-      ? calcGammaFromPhysics(checked)
-      : calcGammaFallback(checked);
+    // PHYSICS.calcGammaConstants (js/data.js) is the single implementation:
+    // it applies the Cornejo et al. criteria (E ≥ 20 keV, yield ≥ 0.01%, type G/X/AQ)
+    const result = PHYSICS.calcGammaConstants(checked);
 
     calcResult = result;
     showGammaResults(result, checked);
@@ -379,34 +379,6 @@
     document.getElementById('addedAlert').classList.add('hidden');
     document.getElementById('gammaCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   });
-
-  function calcGammaFromPhysics(emissions) {
-    // Use PHYSICS.calcGammaConstants from data.js
-    return PHYSICS.calcGammaConstants(emissions);
-  }
-
-  // Standalone fallback (same math, directly here)
-  function calcGammaFallback(emissions) {
-    const K = 28.648;
-    let sumH10 = 0, sumH007 = 0;
-    const contributions = [];
-    for (const em of emissions) {
-      const E = em.energy_keV / 1000;
-      const n = em.yield_percent / 100;
-      if (E < 0.020 || n < 0.0001) continue;
-      const h10  = PHYSICS.getH10  ? PHYSICS.getH10(E)  : PHYSICS.getH10(E);
-      const h007 = PHYSICS.getH007 ? PHYSICS.getH007(E) : PHYSICS.getH007(E);
-      const c10  = n * h10;
-      const c007 = n * h007;
-      sumH10  += c10;
-      sumH007 += c007;
-      contributions.push({ energy_keV: em.energy_keV, yield_percent: em.yield_percent,
-        type: em.type, decay_mode: em.decay_mode || null, decay_percent: em.decay_percent ?? null,
-        h10_pSvcm2: h10, h007_pSvcm2: h007,
-        contrib_H10: c10 * K, contrib_H007: c007 * K });
-    }
-    return { gammaH10: sumH10 * K, gammaH007: sumH007 * K, contributions };
-  }
 
   function showGammaResults(result, emissions) {
     const { gammaH10, gammaH007, contributions } = result;
@@ -580,38 +552,6 @@
       refreshCustomList();
     }
   };
-
-  // Wire up calcGammaConstants from data.js
-  PHYSICS.calcGammaConstants = PHYSICS.calcGammaConstants || function(em) {
-    return calcGammaFallback(em);
-  };
-
-  // Re-add the calcGammaConstants to PHYSICS if not already there
-  function calcGammaFallback(emissions) {
-    const K = 28.648;
-    let sumH10 = 0, sumH007 = 0;
-    const contributions = [];
-    for (const em of emissions) {
-      const E = em.energy_keV / 1000;
-      const n = em.yield_percent / 100;
-      if (E < 0.020 || n < 0.0001) continue;
-      if (!['G','X','AQ','g','x','aq'].includes(em.type)) continue;
-      const h10  = PHYSICS.getH10(E);
-      const h007 = PHYSICS.getH007(E);
-      const c10  = n * h10;
-      const c007 = n * h007;
-      sumH10  += c10;
-      sumH007 += c007;
-      contributions.push({ energy_keV: em.energy_keV, yield_percent: em.yield_percent,
-        type: em.type, decay_mode: em.decay_mode || null, decay_percent: em.decay_percent ?? null,
-        h10_pSvcm2: h10, h007_pSvcm2: h007,
-        contrib_H10: c10 * K, contrib_H007: c007 * K });
-    }
-    return { gammaH10: sumH10 * K, gammaH007: sumH007 * K, contributions };
-  }
-
-  // Replace PHYSICS.calcGammaConstants to include type filter
-  PHYSICS.calcGammaConstants = calcGammaFallback;
 
 })();
 </script>

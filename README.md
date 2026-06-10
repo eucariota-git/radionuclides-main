@@ -12,9 +12,9 @@ Target users: medical physicists and radiation protection specialists.
 
 ### Properties (`index.html`)
 - Database of 34 radionuclides used in nuclear medicine (PET, SPECT, therapy, brachytherapy)
-  - 32 nuclides: dose rate constants from Cornejo et al. (2006)
-  - 3 nuclides (Ga-67, Ga-68, Yb-169): additions with recalculated constants using ICRP 107 photon data and ICRU 57 conversion coefficients
-  - 1 nuclide (Y-90): pure β⁻ emitter with dose from bremsstrahlung radiation (Zanzonico et al. 1999)
+  - 32 nuclides: published in Cornejo et al. (2015); operational values recalculated from ICRP 107 photon data with ICRU 57 conversion coefficients
+  - 1 nuclide (Ga-68): addition beyond Cornejo, calculated from ICRP 107 photon data and ICRU 57 conversion coefficients
+  - 1 nuclide (Y-90): pure β⁻ emitter; external dose from bremsstrahlung — container estimates following the methodology of Zanzonico et al. (1999); container values are not tabulated in that publication
   - Note: Some values differ from Cornejo due to updated nuclear data in ICRP 107; published Cornejo values are preserved in `cornejo_validation` field
 - Controlled liquid effluent concentration limits calculated from IS-28 and ICRP 119 adult ingestion coefficients
 - Filterable by category and modality
@@ -28,7 +28,7 @@ Target users: medical physicists and radiation protection specialists.
 - **Dose rate at user-selected distance** (primary output) with 1 m reference column
 - **H\*(10)** ambient dose equivalent for whole body (d ≥ 25 cm)
 - **H'(0.07)** directional dose equivalent for extremities (d < 25 cm); used when available for low-energy emitters, otherwise H*(10) is conservatively applied
-- **Y-90 bremsstrahlung table** (Zanzonico et al. 1999) with interactive container selection (PMMA, Pb, W, none); applies H'(0.07) at d < 25 cm where applicable; Pb warning and dose consolidation via `PHYSICS.Y90_CONTAINERS`
+- **Y-90 bremsstrahlung container estimates** (methodology after Zanzonico et al. 1999; container values not tabulated in that publication) with interactive container selection (PMMA, Pb, W, none); applies H'(0.07) at d < 25 cm where applicable; Pb warning and dose consolidation via `PHYSICS.Y90_CONTAINERS`
 - Shielding: Lead and concrete (normal-weight and light-weight)
 - **Archer broad-beam method** (Monte Carlo, Oumano et al. 2025) for Tc-99m, F-18, I-131, Lu-177
 - Narrow-beam fallback (NIST XCOM) for all other nuclides
@@ -84,9 +84,9 @@ T(x) = e^(−μx)
 
 | Data | Source |
 |------|--------|
-| Γ^H\*(10), Γ^H'(0.07) constants (32 curated nuclides) | Cornejo et al., *Rev. Fis. Med.* 2006 |
+| Γ^H\*(10), Γ^H'(0.07) constants (32 curated nuclides) | Cornejo et al., *Radioprotección* Nº 83, 2015 |
 | Γ^H\*(10), Γ^H'(0.07) constants (Ga-68 + recalculations) | ICRP 107 photon data + ICRU 57 conversion coefficients |
-| Γ^H\*(10), Γ^H'(0.07) constants (Y-90) | Zanzonico et al. 1999 bremsstrahlung + ICRU 57 conversion coefficients |
+| Γ^H\*(10), Γ^H'(0.07) constants (Y-90) | Container bremsstrahlung estimates — methodology after Zanzonico et al. 1999 (container values not tabulated in the publication) |
 | Fluence-to-dose coefficients h\*(10), h'(0.07) | ICRP Publication 74 / ICRU 57 |
 | Adult ingestion dose coefficients and liquid effluent limits | ICRP Publication 119 Annex F / IS-28 Annex II |
 | Mass attenuation coefficients | NIST XCOM |
@@ -167,7 +167,7 @@ data/nuclides.json      Radionuclide database (directly editable, source of trut
 data/nuclides-data.js   Auto-generated from nuclides.json (for file:// compatibility)
 data/icrp107-index.json Extended database JSON (1252 nuclides with photon emissions)
 data/icrp107-data.js    Embedded ICRP 107 data (for file:// compatibility)
-data/y90-bremsstrahlung.json  Y-90 Zanzonico bremsstrahlung table (source; consolidated in PHYSICS.Y90_CONTAINERS)
+data/y90-bremsstrahlung.json  Y-90 container bremsstrahlung estimates (methodology after Zanzonico 1999; consolidated in PHYSICS.Y90_CONTAINERS)
 
 data/sources/icrp107/   ICRP Publication 107 source files (NDX, RAD, BET)
 
@@ -176,5 +176,5 @@ tools/recalc-gamma.js   Recalculates Γ from photons using ICRU 57 / ICRP 74
 tools/generate-data.js  Wraps nuclides.json as JS for offline compatibility
 tools/add-max-energy.js Adds max_photon_energy_keV to ICRP 107 nuclides
 
-references/             Source articles (Cornejo 2006, Oumano 2025, ICRP 107)
+references/             Source articles (Cornejo 2015, Oumano 2025, ICRP 107)
 ```

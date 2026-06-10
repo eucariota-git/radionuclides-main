@@ -7,7 +7,7 @@
  * using ICRU 57 conversion coefficients. It then OVERWRITES nuclides.json with the
  * calculated values and stores the PREVIOUS values in cornejo_validation.
  *
- * DANGER: If executed carelessly, this destroys the published Cornejo et al. 2006
+ * DANGER: If executed carelessly, this destroys the published Cornejo et al. 2015
  * reference values that are critical for data integrity and validation.
  *
  * DO NOT RUN ROUTINELY. Only use this script if:
@@ -166,11 +166,10 @@ function main() {
       nuclide.e_max_beta_MeV = icrpNuclide.e_max_beta_MeV;
     }
 
-    // Save Cornejo value for validation
-    nuclide.cornejo_validation = {
-      gamma_H10_Cornejo: oldH10,
-      gamma_H007_Cornejo: oldH007,
-    };
+    // IMPORTANT: do NOT touch cornejo_validation here. It holds the PUBLISHED
+    // values from Cornejo et al. (Radioprotección Nº 83, 2015, Tabla III), set by
+    // tools/restore-cornejo-published.js. Overwriting it with previous app values
+    // (which may already be recalculated) destroys the audit trail.
 
     // Update source
     const oldSource = nuclide.source;
@@ -191,7 +190,7 @@ function main() {
   if (y90) {
     y90.gamma_H10 = 0;  // Beta emitter, no significant photon dose
     y90.gamma_H007 = 0;
-    y90.source = 'Zanzonico et al. 1999 (bremsstrahlung in PMMA container)';
+    y90.source = 'Zanzonico et al. 1999 methodology — container bremsstrahlung estimate (PMMA); container values not tabulated in the publication';
     delete y90.cornejo_validation;
     console.log(`   Y-90: kept as special case (bremsstrahlung)`);
   }

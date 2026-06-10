@@ -37,7 +37,7 @@ The application has no installation or authentication. Simply open the link abov
 3. **Clinical use**: See modality and intended clinical applications
 4. **Export**: Download the table as CSV
 
-**Main database**: 34 radionuclides — 32 primarily from **Cornejo et al. (2006)** plus 2 additions (**Ga-68**, **Y-90**). Some operational values recalculated from ICRP 107 photon data; published Cornejo values preserved in `cornejo_validation`.
+**Main database**: 34 radionuclides — 32 primarily from **Cornejo et al. (2015)** plus 2 additions (**Ga-68**, **Y-90**). Some operational values recalculated from ICRP 107 photon data; published Cornejo values preserved in `cornejo_validation`.
 
 #### Extended Database — ICRP 107
 
@@ -137,7 +137,7 @@ The application includes an **extended database of 1,252 radionuclides** from IC
 
 7. **Special case — Y-90 (pure beta emitter)**:
    - Select container type: **PMMA** (standard), Lead, Tungsten, or None
-   - Dose calculated from **bremsstrahlung** using Zanzonico et al. (1999) constants
+   - Dose calculated from **bremsstrahlung** container estimates (methodology after Zanzonico et al. 1999; container values not tabulated in that publication)
    - ⚠️ **Warning**: Lead **increases bremsstrahlung 3–4×** compared to PMMA
    - Recommendation: Use PMMA or plastic for shielding Y-90; if using lead, accept higher external dose
 
@@ -242,8 +242,8 @@ Toggle dark/light mode using the **moon icon** (🌙) in the top-right corner. P
 ## Data Quality & Limitations
 
 ### Main Database (34 nuclides)
-- **Primary source**: Cornejo et al. (2006) for 32 nuclides (ΓKair matches published table)
-- **Additional nuclides**: Ga-68 (ICRU 57 / ICRP 74) and Y-90 (Zanzonico et al. 1999)
+- **Primary source**: Cornejo et al. (2015) for 32 nuclides (ΓKair matches published table)
+- **Additional nuclides**: Ga-68 (ICRU 57 / ICRP 74) and Y-90 (container bremsstrahlung estimates, methodology after Zanzonico et al. 1999)
 - **Note**: Operational Γ H*(10) / H'(0.07) values use ICRP 107 nuclear data; Cornejo published values stored in `cornejo_validation` for traceability
 - **Use case**: Radiation protection estimation; verify against primary sources for regulatory submissions
 
@@ -297,7 +297,7 @@ Toggle dark/light mode using the **moon icon** (🌙) in the top-right corner. P
 
 ## References
 
-- **Cornejo Díaz, N., et al.** (2006). "Determination of gamma-ray dose rate constants in terms of air kerma and ambient dose equivalent rate for 67 radionuclides." *Revista de Física Médica*, 7(2), 5–69.
+- **Cornejo Díaz N., Brosed Serreta A., Ruiz Manzano P.** (2015). "Constantes de tasa de kerma en aire y de tasa de equivalente de dosis ambiental de algunos radionucleidos utilizados en aplicaciones médicas." *Radioprotección* (SEPR), Nº 83, 39–42.
 - **ICRP Publication 74** (1996). "Conversion Coefficients for Use in Radiological Protection against External Radiation." International Commission on Radiological Protection.
 - **ICRP Publication 107** (2008). "Nuclear Decay Data for Dosimetric Calculations." Endo & Eckerman.
 - **ICRP Publication 119** (2012). "Compendium of Dose Coefficients based on ICRP Publication 60."

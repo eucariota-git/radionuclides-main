@@ -79,6 +79,6 @@ Dark mode is supported. When adding or modifying UI elements (tables, tooltips, 
 
 ## Key References
 
-- Cornejo 2006 — dose rate constant methodology
+- Cornejo 2015 — dose rate constant methodology
 - Oumano et al. 2025 — shielding validation
 - ICRU Report 57, ICRP Publication 74

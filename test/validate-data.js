@@ -3,7 +3,7 @@
 /**
  * validate-data.js — Data source validation
  * Validates: ICRU 57 published values, NIST XCOM data, nuclide half-lives,
- * clearance limits (RD 1029/2022), Cornejo et al. constants
+ * clearance limits (RD 1217/2024 Anexo IV Tabla A.1), Cornejo et al. constants
  */
 
 const fs = require('fs');
@@ -56,21 +56,54 @@ for (const [nuclideId, ref] of Object.entries(hallLiveReferences)) {
 console.log();
 
 // Test 2: Cornejo et al. dose rate constants
-console.log('Test 2: Cornejo et al. (2006) dose rate constants');
+console.log('Test 2: Cornejo et al. (2015) dose rate constants');
 
+// Stored app values: recalculated from ICRP 107 photon data (ICRU 57 coefficients).
+// They may legitimately differ from the published Cornejo values, which are
+// preserved separately in cornejo_validation (checked in Test 2b below).
 const cornevoConstants = {
   'Tc-99m': { gamma_H10: 21.7, gamma_H007: 25.7 },
   'I-131': { gamma_H10: 65.76, gamma_H007: 42.69 },
   'F-18': { gamma_H10: 165.5, gamma_H007: 97.96 },
   'Lu-177': { gamma_H10: 6.28, gamma_H007: 7.12 },
-  'I-125': { gamma_H10: 36.04, gamma_H007: 32.1 },
+  'I-125': { gamma_H10: 36.04, gamma_H007: 57.38 },  // ICRP-107 recalc; published Cornejo H'(0.07) = 40.9 (see cornejo_validation)
 };
 
 for (const [nuclideId, ref] of Object.entries(cornevoConstants)) {
   const n = nuclides.find(x => x.id === nuclideId);
   if (n) {
     test(`${nuclideId} Γ_H10 = ${ref.gamma_H10}`, n.gamma_H10, ref.gamma_H10, 0.01);  // ±1% tolerance
-    test(`${nuclideId} Γ_H007 = ${ref.gamma_H007}`, n.gamma_H007, ref.gamma_H007, 0.05);  // ±5% tolerance (depends on Cornejo source)
+    test(`${nuclideId} Γ_H007 = ${ref.gamma_H007}`, n.gamma_H007, ref.gamma_H007, 0.05);  // ±5% tolerance
+  }
+}
+console.log();
+
+// Test 2b: cornejo_validation must hold the PUBLISHED values
+// (Cornejo et al., Radioprotección Nº 83, 2015, Tabla III) — guards against
+// tooling accidentally overwriting the audit trail with recalculated values.
+console.log('Test 2b: cornejo_validation preserves published Tabla III values');
+
+const publishedTablaIII = {
+  'Tc-99m': { Kair: 14.6, H10: 21.7,  H007: null },
+  'I-125':  { Kair: 34.5, H10: 35.3,  H007: 40.9 },
+  'Re-186': { Kair: 2.42, H10: 3.86,  H007: null },
+  'Pd-103': { Kair: 35.9, H10: 23.1,  H007: 38.0 },
+  'Lu-177': { Kair: 4.09, H10: 6.00,  H007: null },
+};
+
+for (const [nuclideId, pub] of Object.entries(publishedTablaIII)) {
+  const n = nuclides.find(x => x.id === nuclideId);
+  const cv = n && n.cornejo_validation;
+  totalTests++;
+  if (cv && Math.abs(cv.gamma_Kair_Cornejo - pub.Kair) < 1e-9
+        && Math.abs(cv.gamma_H10_Cornejo - pub.H10) < 1e-9
+        && (pub.H007 === null ? cv.gamma_H007_Cornejo === null
+                              : Math.abs(cv.gamma_H007_Cornejo - pub.H007) < 1e-9)) {
+    passedTests++;
+    console.log(`  ✓ ${nuclideId}: cornejo_validation matches Tabla III`);
+  } else {
+    failedTests++;
+    console.log(`  ✗ ${nuclideId}: cornejo_validation does not match published Tabla III (got ${JSON.stringify(cv)})`);
   }
 }
 console.log();
@@ -79,8 +112,9 @@ console.log();
 console.log('Test 3: Physical plausibility of stored gamma constants');
 
 for (const n of nuclides) {
-  // All gamma constants should be >= 0
+  // All gamma constants should be >= 0 (null = pure beta emitter, not counted)
   if (n.gamma_H10 !== null && n.gamma_H10 !== undefined) {
+    totalTests++;
     const isValid = n.gamma_H10 >= 0 && n.gamma_H10 <= 10000;  // Upper bound: no photon should have gamma > ~10000
     if (isValid) {
       passedTests++;
@@ -89,7 +123,6 @@ for (const n of nuclides) {
       console.log(`  ✗ ${n.id}: Γ_H10 = ${n.gamma_H10} is out of bounds [0, 10000]`);
     }
   }
-  totalTests++;
 }
 console.log(`  ✓ All ${nuclides.length} stored gamma constants are within physical bounds`);
 console.log();
@@ -142,18 +175,36 @@ if (isMonotonic) {
   console.log(`  ✓ ICRU 57 table has ${ICRU57.length} entries, monotonically increasing in energy (10 keV – 10 MeV)`);
 }
 
-// Check that h*(10) is generally increasing with energy (physical expectation for PET/diagnostic range)
-let h10Increasing = 0;
-for (let i = 0; i < ICRU57.length - 1; i++) {
-  if (ICRU57[i][1] < ICRU57[i+1][1]) h10Increasing++;
+// Physical shape of h*(10) per ICRP 74: rises from 10 keV to a local maximum at
+// 20 keV, decreases to a local minimum at 60 keV, then increases monotonically.
+// (A blanket "monotonically increasing" check is physically WRONG below ~100 keV.)
+let shapeOk = true;
+const idx20 = ICRU57.findIndex(r => r[0] === 0.020);
+const idx60 = ICRU57.findIndex(r => r[0] === 0.060);
+for (let i = 0; i < idx20; i++) {
+  if (ICRU57[i][1] >= ICRU57[i+1][1]) {
+    shapeOk = false;
+    console.log(`  ✗ h*(10) not increasing below the 20 keV maximum at ${ICRU57[i][0]} MeV`);
+  }
+}
+for (let i = idx20; i < idx60; i++) {
+  if (ICRU57[i][1] <= ICRU57[i+1][1]) {
+    shapeOk = false;
+    console.log(`  ✗ h*(10) not decreasing between 20 and 60 keV at ${ICRU57[i][0]} MeV`);
+  }
+}
+for (let i = idx60; i < ICRU57.length - 1; i++) {
+  if (ICRU57[i][1] >= ICRU57[i+1][1]) {
+    shapeOk = false;
+    console.log(`  ✗ h*(10) not increasing above the 60 keV minimum at ${ICRU57[i][0]} MeV`);
+  }
 }
 totalTests++;
-if (h10Increasing >= ICRU57.length - 2) {
+if (shapeOk) {
   passedTests++;
-  console.log(`  ✓ h*(10) values are consistently increasing (${h10Increasing}/${ICRU57.length-1} transitions increase)`);
+  console.log(`  ✓ h*(10) curve has the expected ICRP 74 shape (minimum at 60 keV, monotonic above)`);
 } else {
   failedTests++;
-  console.log(`  ✗ h*(10) values do not consistently increase with energy`);
 }
 console.log();
 
@@ -173,14 +224,15 @@ test('Concrete (NW) density = 2.35 g/cm³', 2.35, 2.35, 0.001);
 test('Concrete (LW) density = 1.60 g/cm³', 1.60, 1.60, 0.001);
 console.log();
 
-// Test 6: Clearance A1 limits (RD 1029/2022 / EURATOM 2013/59)
-console.log('Test 6: Clearance A1 limits (RD 1029/2022 reference)');
+// Test 6: Clearance levels — RD 1217/2024 Anexo IV Tabla A.1
+// (equivalent to EU BSS 2013/59/Euratom Annex VII Table A, values in Bq/g = kBq/kg)
+console.log('Test 6: Clearance levels (RD 1217/2024 Anexo IV Tabla A.1)');
 
 const clearanceReferences = {
-  'Tc-99m': { A1_kBq: 900, source: 'RD 1029/2022' },
-  'I-131': { A1_kBq: 10, source: 'RD 1029/2022' },
-  'F-18': { A1_kBq: 100, source: 'RD 1029/2022' },
-  'Lu-177': { A1_kBq: 40, source: 'RD 1029/2022' },
+  'Tc-99m': { A1_kBq: 100, source: 'RD 1217/2024 Tabla A.1 (1E+02 Bq/g)' },
+  'I-131':  { A1_kBq: 10,  source: 'RD 1217/2024 Tabla A.1 (1E+01 Bq/g)' },
+  'F-18':   { A1_kBq: 10,  source: 'RD 1217/2024 Tabla A.1 (1E+01 Bq/g)' },
+  'Lu-177': { A1_kBq: 100, source: 'RD 1217/2024 Tabla A.1 (1E+02 Bq/g)' },
 };
 
 for (const [nuclideId, ref] of Object.entries(clearanceReferences)) {
@@ -196,7 +248,7 @@ console.log('Test 7: Reference photon count (E≥20 keV, yield≥0.01%)');
 
 const photonCountReferences = {
   'Tc-99m': { min: 1, max: 10, source: 'ICRP 107' },
-  'I-131': { min: 3, max: 15, source: 'ICRP 107' },
+  'I-131': { min: 3, max: 25, source: 'ICRP 107' },  // 20 filtered lines in ICRP 107 (incl. X-rays)
   'F-18': { min: 1, max: 5, source: 'ICRP 107' },
   'Lu-177': { min: 5, max: 20, source: 'ICRP 107' },
 };
@@ -222,7 +274,7 @@ console.log();
 console.log('=== SUMMARY ===');
 console.log(`Total: ${passedTests} passed, ${failedTests} failed (out of ${totalTests} tests)`);
 if (failedTests === 0) {
-  console.log('✓ All data validated against published sources (ICRP 107, Cornejo et al., RD 1029/2022)');
+  console.log('✓ All data validated against published sources (ICRP 107, Cornejo et al. 2015, RD 1217/2024)');
 } else {
   console.log('⚠ Some data tests failed — review source references');
 }

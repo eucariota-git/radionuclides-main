@@ -222,20 +222,23 @@ console.log('Test 6: HVL calculation (narrow-beam)');
 const muRho_Pb_141keV = interpLinear(ATTENUATION, 0.141, 0, 1);
 const mu_Pb_141keV = muRho_Pb_141keV * RHO_PB;
 const hvl_Pb_141keV = Math.LN2 / mu_Pb_141keV;
-test('HVL for Pb at 141 keV ≈ 0.23 mm', hvl_Pb_141keV * 10, 0.23 * 10, 0.15);  // ±15% tolerance for tabulated data
+// hvl_Pb_141keV is in cm; ×10 → mm. Narrow-beam HVL for Pb at 141 keV ≈ 0.23 mm.
+test('HVL for Pb at 141 keV ≈ 0.23 mm', hvl_Pb_141keV * 10, 0.23, 0.15);  // ±15% tolerance for tabulated data
 
-// At 141 keV in concrete
+// At 141 keV in concrete — narrow-beam value (broad-beam literature values are
+// larger, ~3-4 cm, because they include buildup; this app's narrow-beam fallback
+// is intentionally conservative).
 const muRho_concrete_141keV = interpLinear(ATTENUATION, 0.141, 0, 2);
 const mu_concrete_141keV = muRho_concrete_141keV * RHO_CONCRETE;
 const hvl_concrete_141keV = Math.LN2 / mu_concrete_141keV;
-test('HVL for concrete at 141 keV ≈ 3.6 cm', hvl_concrete_141keV, 3.6, 0.15);
+test('HVL for concrete at 141 keV ≈ 1.88 cm (narrow beam)', hvl_concrete_141keV, 1.88, 0.05);
 console.log();
 
 // Test 7: Transmission formula T = e^(-μ×x)
 console.log('Test 7: Narrow-beam transmission T = e^(-μ·x)');
-// 1 mm Pb at 141 keV
+// 1 mm Pb at 141 keV — μ ≈ 30 cm⁻¹ → 1 mm ≈ 4.3 HVLs → T ≈ e^(−3.0) ≈ 0.049
 const T_1mm_Pb = Math.exp(-mu_Pb_141keV * 0.1);  // 0.1 cm
-test('T(1 mm Pb) at 141 keV ≈ 0.755 (≈2.7 HVLs attenuate to ~0.157)', T_1mm_Pb, 0.755, 0.05);
+test('T(1 mm Pb) at 141 keV ≈ 0.049 (narrow beam, ≈4.3 HVLs)', T_1mm_Pb, 0.049, 0.05);
 
 // 1 cm concrete at 141 keV
 const T_1cm_concrete = Math.exp(-mu_concrete_141keV * 1.0);
@@ -271,9 +274,10 @@ const cumDose_1h = cumulativeDoseWithDecay(gamma_Tc, A0_GBq_tc, T_half_Tc, 1.0, 
 // At t = T½/5 ≈ 1.2 h, activity decays to ≈83% → average activity ≈ 91.5% → dose ≈ 19.8 μSv
 test('D(Tc-99m, 1000 MBq, 1m, 1h with decay) ≈ 19.8 μSv', cumDose_1h, 19.8, 0.05);
 
-// At t = 6h (one half-life), integral = (1-0.5) / λ = 0.5 * T_half / ln(2) = 8.664h
+// At t = T½ (≈6 h), integral = (1−0.5)/λ = 0.5 × T½/ln(2) = 4.333 h
+// → D = 21.7 × 4.333 ≈ 94.0 μSv (must be LESS than the no-decay value 21.7×6 = 130.2)
 const cumDose_6h = cumulativeDoseWithDecay(gamma_Tc, A0_GBq_tc, T_half_Tc, T_half_Tc, 1.0);
-test('D(Tc-99m, 1000 MBq, 1m, 6h with decay) ≈ 159 μSv', cumDose_6h, 159, 0.05);
+test('D(Tc-99m, 1000 MBq, 1m, 6h with decay) ≈ 94.0 μSv', cumDose_6h, 94.0, 0.05);
 console.log();
 
 // Test 10: Regulatory limits formula

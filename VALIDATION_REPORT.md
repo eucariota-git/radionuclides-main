@@ -9,7 +9,7 @@
 
 He realizado una validación exhaustiva de tres ejes:
 
-1. **Operaciones matemáticas** — comparando con Cornejo et al. 2006
+1. **Operaciones matemáticas** — comparando con Cornejo et al. 2015
 2. **Datos** — comparando con fuentes originales (ICRP 107, ICRU 57, NIST, RD 1029/2022)
 3. **Relaciones entre pestañas** — verificando consistencia de UI y cálculos
 
@@ -38,7 +38,7 @@ K = 1/(4π) × 10⁹ × 3600 × 10⁶ × 10⁻¹⁶
 
 Precision: ±0.001 (0.1%)
 
-### ✓ VALIDADO: Gamma constants (Cornejo 2006)
+### ✓ VALIDADO: Gamma constants (Cornejo 2015)
 
 Todos los nuclidos de referencia de Cornejo et al. se calculan exactamente:
 
@@ -226,7 +226,7 @@ dose.html:
 ### ⚠ Requiere Verificación
 
 - **RD 1029/2022 Annex VII**: Confirmar A1 limits almacenados vs. registro oficial
-- **H'(0.07) para I-125**: Verificar valor contra Cornejo et al. 2006 primaria
+- **H'(0.07) para I-125**: Verificar valor contra Cornejo et al. 2015 primaria
 
 ### Próximo Paso
 

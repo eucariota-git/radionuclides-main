@@ -14,7 +14,7 @@ This script checks:
 - Half-life data consistency
 
 Reference values are drawn from:
-- **Tc-99m, I-125**: Cornejo et al. (2006) — manually validated
+- **Tc-99m, I-125**: Cornejo et al. (2015) — manually validated
 - **Others**: ICRP Publication 107 (2008) — reference values only, not independently validated
 
 Exit codes:

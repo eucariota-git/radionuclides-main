@@ -43,7 +43,7 @@ The ICRP 107 data is used as an **extended database** for nuclides not included 
 
 ## Gamma Dose Constants
 
-ICRP 107 photons are fed into the **Cornejo et al. (2006)** calculation:
+ICRP 107 photons are fed into the **Cornejo et al. (2015)** calculation:
 
 $$\Gamma^{H*(10)} = K \sum_i n_i \cdot h(E_i)$$
 
@@ -56,7 +56,7 @@ Constants calculated from ICRP 107 are **informational only**. They are NOT manu
 
 ### Validation Against Published Values
 
-A validation tool (`validate-icrp107.html`) is included to compare constants calculated from ICRP 107 photons against published values from Cornejo et al. (2006) for key nuclides:
+A validation tool (`validate-icrp107.html`) is included to compare constants calculated from ICRP 107 photons against published values from Cornejo et al. (2015) for key nuclides:
 
 - **F-18** — Published: 166 μSv·h⁻¹·GBq⁻¹·m² (Good agreement expected)
 - **Tc-99m** — Published: 21.7 μSv·h⁻¹·GBq⁻¹·m² (Good agreement expected)
@@ -87,6 +87,6 @@ The parsed JSON files derived from ICRP 107 are provided as-is for reference. Do
 
 ## Related References
 
-- **Cornejo Díaz, N., et al.** (2006). "Determination of gamma-ray dose rate constants in terms of air kerma and ambient dose equivalent rate for 67 radionuclides." Revista de Física Médica, 7(2).
+- **Cornejo Díaz N., Brosed Serreta A., Ruiz Manzano P.** (2015). "Constantes de tasa de kerma en aire y de tasa de equivalente de dosis ambiental de algunos radionucleidos utilizados en aplicaciones médicas." *Radioprotección* (SEPR), Nº 83, 39–42.
 - **ICRU Report 57** (1998). "Dosimetry of External Electron Beams for Radiotherapy." International Commission on Radiation Units and Measurements.
 - **ICRP Publication 74** (1996). "Conversion Coefficients for Use in Radiological Protection against External Radiation." International Commission on Radiological Protection.
