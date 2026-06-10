@@ -10,33 +10,35 @@ const fs = require('fs');
 const path = require('path');
 
 // ICRU 57 / ICRP 74 Conversion coefficients [energy_MeV, h_H10_pSvcm2, h_H007_pSvcm2]
+// Must mirror PHYSICS.ICRU57 in js/data.js (h'(0.07,0°) column reconstructed
+// 2026-06; see provenance notes in js/data.js)
 const ICRU57 = [
-  [0.010,     0.061,    0.270],
-  [0.015,     0.830,    0.800],
-  [0.020,     1.050,    1.240],
-  [0.030,     0.810,    1.390],
-  [0.040,     0.640,    1.310],
-  [0.050,     0.550,    1.170],
-  [0.060,     0.510,    1.070],
-  [0.080,     0.530,    0.970],
-  [0.100,     0.610,    0.950],
-  [0.150,     0.890,    1.000],
-  [0.200,     1.200,    1.060],
-  [0.300,     1.800,    1.180],
-  [0.400,     2.380,    1.470],
-  [0.500,     2.930,    1.740],
-  [0.600,     3.440,    1.990],
-  [0.800,     4.380,    2.470],
-  [1.000,     5.200,    2.900],
-  [1.250,     6.110,    3.430],
-  [1.500,     6.910,    3.880],
-  [2.000,     8.330,    4.670],
-  [3.000,    10.600,    5.960],
-  [4.000,    12.500,    7.020],
-  [5.000,    14.100,    7.950],
-  [6.000,    15.600,    8.790],
-  [8.000,    18.200,   10.300],
-  [10.000,   20.400,   11.700],
+  [0.010,     0.061,    7.220],
+  [0.015,     0.830,    3.210],
+  [0.020,     1.050,    1.810],
+  [0.030,     0.810,    0.901],
+  [0.040,     0.640,    0.604],
+  [0.050,     0.550,    0.502],
+  [0.060,     0.510,    0.447],
+  [0.080,     0.530,    0.475],
+  [0.100,     0.610,    0.577],
+  [0.150,     0.890,    0.852],
+  [0.200,     1.200,    1.160],
+  [0.300,     1.800,    1.750],
+  [0.400,     2.380,    2.290],
+  [0.500,     2.930,    2.930],
+  [0.600,     3.440,    3.440],
+  [0.800,     4.380,    4.380],
+  [1.000,     5.200,    5.200],
+  [1.250,     6.110,    6.110],
+  [1.500,     6.910,    6.910],
+  [2.000,     8.330,    8.330],
+  [3.000,    10.600,   10.600],
+  [4.000,    12.500,   12.500],
+  [5.000,    14.100,   14.100],
+  [6.000,    15.600,   15.600],
+  [8.000,    18.200,   18.200],
+  [10.000,   20.400,   20.400],
 ];
 
 // NIST XCOM: mass attenuation coefficients μ/ρ [cm²/g]
@@ -131,7 +133,7 @@ test('h*(10) at 141 keV ≈ 0.840 pSv·cm² (interpolated between 0.1 & 0.15)', 
 const h10_511keV = interpLinear(ICRU57, 0.511, 0, 1);
 const h007_511keV = interpLinear(ICRU57, 0.511, 0, 2);
 test('h*(10) at 511 keV ≈ 2.986 pSv·cm² (interpolated between 0.5 & 0.6)', h10_511keV, 2.986, 0.02);
-test('h\'(0.07) at 511 keV ≈ 1.768 pSv·cm² (interpolated between 0.5 & 0.6)', h007_511keV, 1.768, 0.02);
+test('h\'(0.07) at 511 keV ≈ 2.986 pSv·cm² (= h*(10), kerma approximation above 500 keV)', h007_511keV, 2.986, 0.02);
 
 // 364 keV (I-131 representative) — between 0.3 and 0.4 MeV
 const h10_364keV = interpLinear(ICRU57, 0.364, 0, 1);
@@ -161,7 +163,7 @@ if (tcmNuclide && tcmNuclide.photons) {
   const gamma_H007_calculated = sumH007 * GAMMA_FACTOR;
 
   test('Tc-99m Γ_H10 ≈ 21.7 μSv·h⁻¹·GBq⁻¹·m²', gamma_H10_calculated, 21.7, 0.01);
-  test('Tc-99m Γ_H007 ≈ 25.7 μSv·h⁻¹·GBq⁻¹·m²', gamma_H007_calculated, 25.7, 0.02);
+  test('Tc-99m Γ_H007 ≈ 21.0 μSv·h⁻¹·GBq⁻¹·m²', gamma_H007_calculated, 21.0, 0.02);
 
   console.log(`  (Calculated from ${tcmNuclide.photons.length} photon lines, filtered to ${tcmNuclide.photons.filter(p => p.energy_keV >= 20 && p.yield_percent >= 0.01).length})`);
 }
@@ -170,9 +172,9 @@ console.log();
 // Test 4: Other reference nuclides from Cornejo
 console.log('Test 4: Other Cornejo reference nuclides');
 const cornevoNuclides = [
-  { id: 'I-131', gamma_H10_expected: 65.76, gamma_H007_expected: 42.69 },
-  { id: 'F-18', gamma_H10_expected: 165.5, gamma_H007_expected: 97.96 },
-  { id: 'Lu-177', gamma_H10_expected: 6.28, gamma_H007_expected: 7.12 },
+  { id: 'I-131', gamma_H10_expected: 65.76, gamma_H007_expected: 64.0 },
+  { id: 'F-18', gamma_H10_expected: 165.5, gamma_H007_expected: 165.5 },
+  { id: 'Lu-177', gamma_H10_expected: 6.28, gamma_H007_expected: 6.0 },
 ];
 
 for (const ref of cornevoNuclides) {

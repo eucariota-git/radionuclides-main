@@ -264,23 +264,39 @@ function parseRAD(radPath, nuclides) {
   let currentNuclideId = null;
   let photonsForNuclide = [];
   let totalPhotonCount = 0;
+  let declaredCount = null;
+  let countMismatches = 0;
+
+  function saveCurrent() {
+    if (!currentNuclideId) return;
+    if (declaredCount !== null && totalPhotonCount !== declaredCount) {
+      countMismatches++;
+      console.warn(`⚠ RAD count mismatch for ${currentNuclideId}: header declares ${declaredCount} emission rows, parsed ${totalPhotonCount}`);
+    }
+    if (currentNuclideId in nuclides) {
+      nuclides[currentNuclideId].photons = photonsForNuclide;
+      nuclides[currentNuclideId].photon_count_total = totalPhotonCount;
+      nuclides[currentNuclideId].photon_count_filtered = photonsForNuclide.length;
+    }
+  }
 
   for (const line of lines) {
     const trimmed = line.trim();
     if (!trimmed) continue;
 
-    // Check if this is a header line (nuclide_name half_life N)
-    const headerMatch = trimmed.match(/^([A-Za-z]+-?\d+[a-z]*)\s+([0-9.a-z]+)\s+(\d+)$/i);
+    // Check if this is a header line (nuclide_name half_life N).
+    // Half-life may be in scientific notation with an exponent sign (e.g. "2.00E+5y",
+    // "1.00E-4s") — the character class MUST include + and -, otherwise the block of
+    // that nuclide is silently absorbed into the previous one (historic bug that
+    // polluted 77 nuclides, e.g. Re-186 absorbing Re-186m).
+    const headerMatch = trimmed.match(/^([A-Za-z]+-?\d+[a-z]*)\s+([0-9.eE+\-a-z]+)\s+(\d+)$/i);
 
     if (headerMatch) {
       // Save previous nuclide
-      if (currentNuclideId && currentNuclideId in nuclides) {
-        nuclides[currentNuclideId].photons = photonsForNuclide;
-        nuclides[currentNuclideId].photon_count_total = totalPhotonCount;
-        nuclides[currentNuclideId].photon_count_filtered = photonsForNuclide.length;
-      }
+      saveCurrent();
 
       currentNuclideId = headerMatch[1];
+      declaredCount = parseInt(headerMatch[3], 10);
       photonsForNuclide = [];
       totalPhotonCount = 0;
       continue;
@@ -309,10 +325,12 @@ function parseRAD(radPath, nuclides) {
   }
 
   // Don't forget the last nuclide
-  if (currentNuclideId && currentNuclideId in nuclides) {
-    nuclides[currentNuclideId].photons = photonsForNuclide;
-    nuclides[currentNuclideId].photon_count_total = totalPhotonCount;
-    nuclides[currentNuclideId].photon_count_filtered = photonsForNuclide.length;
+  saveCurrent();
+
+  if (countMismatches > 0) {
+    console.warn(`⚠ ${countMismatches} nuclides with RAD count mismatches — review header regex / file integrity`);
+  } else {
+    console.log('✓ All RAD blocks match their declared emission counts');
   }
 }
 

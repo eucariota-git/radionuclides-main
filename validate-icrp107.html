@@ -29,7 +29,7 @@
 <main class="page-body" id="main-content">
   <div class="page-title">ICRP 107 Database Validation</div>
   <div class="page-subtitle">
-    Internal regulatory compliance check. Validates parser accuracy, Z extraction, and dose constants against ICRP-107 and Cornejo reference data. <strong>Phase 3 Validation: 20 radionuclides</strong> (7 original + 8 expanded Phase 2 + 5 Phase 3).
+    Internal regulatory compliance check. Validates parser accuracy, Z extraction, and dose constants against ICRP-107 and Cornejo reference data. <strong>Phase 4 Validation: 26 radionuclides</strong> (7 original + 8 Phase 2 + 5 Phase 3 + 6 therapy/imaging additions).
   </div>
 
   <div class="card mt-2">
@@ -96,7 +96,7 @@
     'Se-75':   { Z: 34, gammaH10: 65.76,  halfLife_h: 2874.39, photonCountMin: 4, source: 'ICRP 107 calculated' },
     'In-111':  { Z: 49, gammaH10: 89.15,  halfLife_h: 67.31,   photonCountMin: 2, source: 'ICRP 107 calculated' },
     'Sm-153':  { Z: 62, gammaH10: 17.54,  halfLife_h: 46.50,   photonCountMin: 1, source: 'ICRP 107 calculated' },
-    'Re-186':  { Z: 75, gammaH10: 7.77,   halfLife_h: 89.24,   photonCountMin: 3, source: 'ICRP 107 calculated' },
+    'Re-186':  { Z: 75, gammaH10: 3.86,   halfLife_h: 89.24,   photonCountMin: 3, source: 'Cornejo et al. 2015 (RAD parser fix 2026-06: Re-186m block no longer absorbed)' },
     'Ir-192':  { Z: 77, gammaH10: 138.83, halfLife_h: 1771.90, photonCountMin: 5, source: 'ICRP 107 calculated' },
     'Pd-103':  { Z: 46, gammaH10: 20.58,  halfLife_h: 407.78,  photonCountMin: 1, source: 'ICRP 107 calculated' },
     // Phase 3: 5 additional nuclides (up to 20 total) — elemental and modality expansion
@@ -105,6 +105,16 @@
     'Tm-170':  { Z: 69, gammaH10: 0.90,   halfLife_h: 3086.4,  photonCountMin: 1, source: 'ICRP 107 calculated' },
     'Au-198':  { Z: 79, gammaH10: 68.49,  halfLife_h: 64.66,   photonCountMin: 2, source: 'ICRP 107 calculated' },
     'Yb-169':  { Z: 70, gammaH10: 71.37,  halfLife_h: 768.43,  photonCountMin: 4, source: 'ICRP 107 calculated' },
+    // Phase 4: therapy/imaging additions 2026-06 (up to 26 total).
+    // NOTE: this page validates the PARENT-only spectrum from ICRP 107. For the
+    // chain entries (Ra-223, Ac-225) the curated database stores larger constants
+    // that include progeny in secular equilibrium (Ra-223: 52.86, Ac-225: 35.2).
+    'Zr-89':   { Z: 40, gammaH10: 178.29, halfLife_h: 78.41,   photonCountMin: 3, source: 'ICRP 107 calculated' },
+    'Cu-67':   { Z: 29, gammaH10: 19.85,  halfLife_h: 61.83,   photonCountMin: 3, source: 'ICRP 107 calculated' },
+    'Tb-161':  { Z: 65, gammaH10: 14.41,  halfLife_h: 165.74,  photonCountMin: 5, source: 'ICRP 107 calculated' },
+    'Ho-166':  { Z: 67, gammaH10: 5.15,   halfLife_h: 26.80,   photonCountMin: 5, source: 'ICRP 107 calculated (RAD parser fix: Ho-166m no longer absorbed)' },
+    'Ra-223':  { Z: 88, gammaH10: 24.02,  halfLife_h: 274.32,  photonCountMin: 20, source: 'ICRP 107 calculated (parent only; curated DB adds progeny → 52.86)' },
+    'Ac-225':  { Z: 89, gammaH10: 2.35,   halfLife_h: 240.00,  photonCountMin: 20, source: 'ICRP 107 calculated (parent only; curated DB adds progeny → 35.2)' },
   };
 
   async function validate() {

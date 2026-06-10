@@ -29,7 +29,7 @@ js/physics.js     CALC module — decay, dose, Archer/narrow-beam shielding algo
 js/db.js          DB module — nuclide database, search/filter, sessionStorage for custom nuclides
 js/csv-parser.js  CSV_PARSER module — IAEA LiveChart CSV parser
 
-data/nuclides.json        Main radionuclide database (34 entries — source of truth)
+data/nuclides.json        Main radionuclide database (40 entries — source of truth)
 data/nuclides-data.js     Auto-generated from nuclides.json for file:// compatibility
 ```
 

@@ -53,6 +53,12 @@ const DB = (() => {
     'Au-198':        'oro',
     'Tl-201':        'talio',
     'Y-90':          'itrio',
+    'Zr-89':         'circonio zirconio',
+    'Cu-67':         'cobre',
+    'Tb-161':        'terbio',
+    'Ho-166':        'holmio',
+    'Ra-223':        'radio xofigo',
+    'Ac-225':        'actinio',
   };
 
   // ---------------------------------------------------------------------------

@@ -24,56 +24,64 @@ const path = require('path');
 const crypto = require('crypto');
 
 // ICRU 57 / ICRP 74 conversion coefficients [energy_MeV, h_H10, h_H007]
+// MUST stay identical to PHYSICS.ICRU57 in js/data.js (see provenance notes there).
 const ICRU57 = [
-  [0.010,   0.061,   0.270],
-  [0.015,   0.830,   0.800],
-  [0.020,   1.050,   1.240],
-  [0.030,   0.810,   1.390],
-  [0.040,   0.640,   1.310],
-  [0.050,   0.550,   1.170],
-  [0.060,   0.510,   1.070],
-  [0.080,   0.530,   0.970],
-  [0.100,   0.610,   0.950],
-  [0.150,   0.890,   1.000],
-  [0.200,   1.200,   1.060],
-  [0.300,   1.800,   1.180],
-  [0.400,   2.380,   1.470],
-  [0.500,   2.930,   1.740],
-  [0.600,   3.440,   1.990],
-  [0.800,   4.380,   2.470],
-  [1.000,   5.200,   2.900],
-  [1.250,   6.110,   3.430],
-  [1.500,   6.910,   3.880],
-  [2.000,   8.330,   4.670],
-  [3.000,  10.600,   5.960],
-  [4.000,  12.500,   7.020],
-  [5.000,  14.100,   7.950],
-  [6.000,  15.600,   8.790],
-  [8.000,  18.200,  10.300],
-  [10.000, 20.400,  11.700],
+  [0.010,   0.061,   7.220],
+  [0.015,   0.830,   3.210],
+  [0.020,   1.050,   1.810],
+  [0.030,   0.810,   0.901],
+  [0.040,   0.640,   0.604],
+  [0.050,   0.550,   0.502],
+  [0.060,   0.510,   0.447],
+  [0.080,   0.530,   0.475],
+  [0.100,   0.610,   0.577],
+  [0.150,   0.890,   0.852],
+  [0.200,   1.200,   1.160],
+  [0.300,   1.800,   1.750],
+  [0.400,   2.380,   2.290],
+  [0.500,   2.930,   2.930],
+  [0.600,   3.440,   3.440],
+  [0.800,   4.380,   4.380],
+  [1.000,   5.200,   5.200],
+  [1.250,   6.110,   6.110],
+  [1.500,   6.910,   6.910],
+  [2.000,   8.330,   8.330],
+  [3.000,  10.600,  10.600],
+  [4.000,  12.500,  12.500],
+  [5.000,  14.100,  14.100],
+  [6.000,  15.600,  15.600],
+  [8.000,  18.200,  18.200],
+  [10.000, 20.400,  20.400],
 ];
 
 const GAMMA_FACTOR = 28.648;  // Cornejo conversion factor
 
-function interpLinear(table, x, colX, colY) {
+// Log-log interpolation — identical to PHYSICS.interpLogLog in js/data.js, so the
+// stored constants match exactly what the app computes from the same photon lists.
+function interpLogLog(table, x, colX, colY) {
   if (x <= table[0][colX]) return table[0][colY];
   if (x >= table[table.length - 1][colX]) return table[table.length - 1][colY];
   for (let i = 0; i < table.length - 1; i++) {
     const x0 = table[i][colX], x1 = table[i + 1][colX];
     if (x >= x0 && x <= x1) {
-      const t = (x - x0) / (x1 - x0);
-      return table[i][colY] + t * (table[i + 1][colY] - table[i][colY]);
+      const y0 = table[i][colY], y1 = table[i + 1][colY];
+      if (y0 <= 0 || y1 <= 0) {
+        const t = (x - x0) / (x1 - x0);
+        return y0 + t * (y1 - y0);
+      }
+      const t = Math.log(x / x0) / Math.log(x1 / x0);
+      return Math.exp(Math.log(y0) + t * (Math.log(y1) - Math.log(y0)));
     }
   }
   return table[table.length - 1][colY];
 }
 
 function getH10(EMeV) {
-  return interpLinear(ICRU57, EMeV, 0, 1);
+  return interpLogLog(ICRU57, EMeV, 0, 1);
 }
 
 function getH007(EMeV) {
-  return interpLinear(ICRU57, EMeV, 0, 2);
+  return interpLogLog(ICRU57, EMeV, 0, 2);
 }
 
 function calcGammaConstants(photons) {

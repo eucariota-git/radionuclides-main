@@ -9,9 +9,23 @@
  *   Expanded and aligned field (isotropic point source approximation)
  *   Reference: ICRP Publication 74, Table A.2 (equivalent to ICRU 57)
  *
- * H'(0.07) conversion coefficients h'(0.07) [pSv·cm²] for photons
- *   Normal incidence on ICRU sphere at 0.07 mm depth
- *   Reference: ICRP Publication 74, Table A.14
+ * H'(0.07) conversion coefficients h'(0.07,0°) [pSv·cm²] for photons
+ *   Normal incidence on ICRU sphere at 0.07 mm depth.
+ *   Constructed as h'(0.07)/Φ = (Ka/Φ) × hK'(0.07,0°;E), with:
+ *     Ka/Φ      — air kerma per fluence (Hubbell & Seltzer; identical to the kerma
+ *                 function tabulated in Cornejo et al. 2015, Tabla I)
+ *     hK'(0.07) — air-kerma-to-H'(0.07,0°) coefficients, ICRP 74 / ICRU 57
+ *                 (as reproduced in PTB-Dos-34, Ankerhold 2000, Table 3.4)
+ *   Provenance per energy range:
+ *     10–100 keV : exact ICRP 74 hK'(0.07,0°) values
+ *     150–400 keV: hK' interpolated through anchors derived from the published
+ *                  per-line contributions in Cornejo et al. (SEPR companion report):
+ *                  171 keV → 1.38, 245 keV → 1.32 Sv/Gy
+ *     ≥500 keV   : kerma approximation h'(0.07) ≈ h*(10) (difference ≲5%; H'(0.07)
+ *                  is never the selected operational quantity above 300 keV — see
+ *                  the Cornejo <300 keV criterion in dose.html)
+ *   Validation: reproduces the four published Γ^H'(0.07) values of Cornejo et al.
+ *   2015 Tabla III within 1.3% (Pd-103: 38.0, In-111: 96.1, I-125: 40.9, Xe-133: 16.8).
  *
  * Dose rate constant formula (per Cornejo et al. methodology):
  *   Γ [μSv·h⁻¹·GBq⁻¹·m²] = K × Σᵢ (nᵢ × h(Eᵢ))
@@ -45,33 +59,33 @@ const PHYSICS = (() => {
   // Format: [energy_MeV, h_H10_pSvcm2, h_H007_pSvcm2]
   // ---------------------------------------------------------------------------
   const ICRU57 = [
-    // E (MeV)   h*(10)   h'(0.07)
-    [0.010,     0.061,    0.270],
-    [0.015,     0.830,    0.800],
-    [0.020,     1.050,    1.240],
-    [0.030,     0.810,    1.390],
-    [0.040,     0.640,    1.310],
-    [0.050,     0.550,    1.170],
-    [0.060,     0.510,    1.070],
-    [0.080,     0.530,    0.970],
-    [0.100,     0.610,    0.950],
-    [0.150,     0.890,    1.000],
-    [0.200,     1.200,    1.060],
-    [0.300,     1.800,    1.180],
-    [0.400,     2.380,    1.470],
-    [0.500,     2.930,    1.740],
-    [0.600,     3.440,    1.990],
-    [0.800,     4.380,    2.470],
-    [1.000,     5.200,    2.900],
-    [1.250,     6.110,    3.430],
-    [1.500,     6.910,    3.880],
-    [2.000,     8.330,    4.670],
-    [3.000,    10.600,    5.960],
-    [4.000,    12.500,    7.020],
-    [5.000,    14.100,    7.950],
-    [6.000,    15.600,    8.790],
-    [8.000,    18.200,   10.300],
-    [10.000,   20.400,   11.700],
+    // E (MeV)   h*(10)   h'(0.07,0°)
+    [0.010,     0.061,    7.220],
+    [0.015,     0.830,    3.210],
+    [0.020,     1.050,    1.810],
+    [0.030,     0.810,    0.901],
+    [0.040,     0.640,    0.604],
+    [0.050,     0.550,    0.502],
+    [0.060,     0.510,    0.447],
+    [0.080,     0.530,    0.475],
+    [0.100,     0.610,    0.577],
+    [0.150,     0.890,    0.852],
+    [0.200,     1.200,    1.160],
+    [0.300,     1.800,    1.750],
+    [0.400,     2.380,    2.290],
+    [0.500,     2.930,    2.930],
+    [0.600,     3.440,    3.440],
+    [0.800,     4.380,    4.380],
+    [1.000,     5.200,    5.200],
+    [1.250,     6.110,    6.110],
+    [1.500,     6.910,    6.910],
+    [2.000,     8.330,    8.330],
+    [3.000,    10.600,   10.600],
+    [4.000,    12.500,   12.500],
+    [5.000,    14.100,   14.100],
+    [6.000,    15.600,   15.600],
+    [8.000,    18.200,   18.200],
+    [10.000,   20.400,   20.400],
   ];
 
   // ---------------------------------------------------------------------------
