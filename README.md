@@ -190,12 +190,12 @@ data/icrp107-index.json Extended database JSON (1252 nuclides with photon emissi
 data/icrp107-data.js    Embedded ICRP 107 data (for file:// compatibility)
 data/y90-bremsstrahlung.json  Y-90 container bremsstrahlung estimates (methodology after Zanzonico 1999; consolidated in PHYSICS.Y90_CONTAINERS)
 
-data/sources/icrp107/   ICRP Publication 107 source files (NDX, RAD, BET)
+data/sources/icrp107/   ICRP 107 raw files — LOCAL ONLY, gitignored (© ICRP; download free from icrp.org, verify SHA256 in icrp107-index.json)
 
 tools/parse-icrp107.js  NDX/RAD/BET parser (FORTRAN fixed-width, generates icrp107-index.json)
 tools/recalc-gamma.js   Recalculates Γ from photons using ICRU 57 / ICRP 74
 tools/generate-data.js  Wraps nuclides.json as JS for offline compatibility
 tools/add-max-energy.js Adds max_photon_energy_keV to ICRP 107 nuclides
 
-references/             Source articles (Cornejo 2015, Oumano 2025, ICRP 107)
+references/             Open-license sources only (BOE legal texts, CC BY Oumano 2025); copyrighted PDFs (Cornejo, Zanzonico, ICRP) kept locally, gitignored
 ```

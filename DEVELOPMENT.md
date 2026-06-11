@@ -75,7 +75,7 @@ Each module (PHYSICS, CALC, DB, ICRP107, UI) is an IIFE returning public API. No
 
 **Documentation data:**
 - `y90-bremsstrahlung.json` — provenance/notes for the Y-90 container estimates; the operational copy is `PHYSICS.Y90_CONTAINERS` in `js/data.js` — keep both in sync
-- `data/sources/icrp107/` — canonical ICRP 107 raw files (NDX/RAD/BET/ACK/NSF) used by the parser
+- `data/sources/icrp107/` — ICRP 107 raw files (NDX/RAD/BET/ACK/NSF) used by the parser — **local only, gitignored** (© ICRP); see `references/icrp107/README.md` for download/verification instructions
 
 ### Regenerating Data
 

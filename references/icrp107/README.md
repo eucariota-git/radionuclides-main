@@ -7,9 +7,11 @@ ICRP Publication 107: Nuclear Decay Data for Dosimetric Calculations
 - **Publication date**: June 2008
 - **Authors**: A. Endo, K.F. Eckerman
 
-## Files
+## Files (NOT in this repository — local only)
 
-The raw ICRP 107 distribution files live in **`data/sources/icrp107/`** (single canonical copy, used by `tools/parse-icrp107.js`; the byte-identical duplicate formerly kept in this folder was removed in 2026-06):
+The raw ICRP 107 distribution files are **© ICRP ("all rights reserved") and are
+not versioned in this public repository**. Maintainers keep them locally in
+`data/sources/icrp107/` (gitignored), where `tools/parse-icrp107.js` expects them:
 
 - `ICRP-07.NDX` — Nuclide index (1252 nuclides, 279 KB)
 - `ICRP-07.RAD` — Discrete radiation emissions (gammas, X-rays, internal conversion electrons, alphas, etc.) — 455K lines, 14 MB
@@ -17,7 +19,20 @@ The raw ICRP 107 distribution files live in **`data/sources/icrp107/`** (single 
 - `ICRP-07.ACK` — Acknowledgments and additional metadata
 - `ICRP-07.NSF` — Nuclear structure information
 
-This folder keeps the documentation: this README and `USERGUIDE.pdf` (the official ICRP 107 data user guide).
+**To obtain them:** download ICRP Publication 107 (free) from
+<https://www.icrp.org/publication.asp?id=ICRP%20Publication%20107> — the
+electronic data files accompany the publication. The official data user guide
+(`USERGUIDE.pdf`) is also kept locally only.
+
+**To verify your copy:** the SHA256 hashes of the NDX/RAD/BET files used to
+generate the shipped datasets are recorded in `data/icrp107-index.json`
+(`notes.source_files_hashes`). Compare with `sha256sum ICRP-07.NDX` etc. before
+regenerating.
+
+The parsed, derived datasets (`data/icrp107-index.json`, `data/icrp107-data.js`)
+**are** versioned — they are transformative extracts (filtered photon lines and
+computed properties) required by the application, distributed for
+research/educational use with attribution to ICRP 107.
 
 ## Usage in Radionuclide Planner
 

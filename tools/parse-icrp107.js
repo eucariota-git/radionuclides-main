@@ -4,6 +4,10 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
+// NOTE: the raw ICRP 107 files (NDX/RAD/BET) are © ICRP and NOT versioned in
+// this repository (data/sources/ is gitignored). Download them free from
+// icrp.org and verify their SHA256 against data/icrp107-index.json
+// (notes.source_files_hashes) — see references/icrp107/README.md.
 const ICRP107_DIR = path.join(__dirname, '../data/sources/icrp107');
 const OUTPUT_FILE = path.join(__dirname, '../data/icrp107-index.json');
 const OUTPUT_JS_FILE = path.join(__dirname, '../data/icrp107-data.js');
