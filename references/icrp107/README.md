@@ -9,15 +9,19 @@ ICRP Publication 107: Nuclear Decay Data for Dosimetric Calculations
 
 ## Files
 
+The raw ICRP 107 distribution files live in **`data/sources/icrp107/`** (single canonical copy, used by `tools/parse-icrp107.js`; the byte-identical duplicate formerly kept in this folder was removed in 2026-06):
+
 - `ICRP-07.NDX` — Nuclide index (1252 nuclides, 279 KB)
 - `ICRP-07.RAD` — Discrete radiation emissions (gammas, X-rays, internal conversion electrons, alphas, etc.) — 455K lines, 14 MB
 - `ICRP-07.BET` — Beta spectra (continuous emission distributions) — 111K lines, 2.1 MB
 - `ICRP-07.ACK` — Acknowledgments and additional metadata
 - `ICRP-07.NSF` — Nuclear structure information
 
+This folder keeps the documentation: this README and `USERGUIDE.pdf` (the official ICRP 107 data user guide).
+
 ## Usage in Radionuclide Planner
 
-The ICRP 107 data is used as an **extended database** for nuclides not included in the primary curated database (`data/nuclides.json`, ~34 nuclides from Cornejo et al.).
+The ICRP 107 data is used as an **extended database** for nuclides not included in the primary curated database (`data/nuclides.json`, 40 curated nuclides).
 
 ### Processing Pipeline
 
@@ -33,7 +37,7 @@ The ICRP 107 data is used as an **extended database** for nuclides not included 
    - Calculates gamma dose constants on-demand using `PHYSICS.calcGammaConstants()`
 
 3. **Properties Page** (`index.html`) — Extended search with on-demand dose calculation
-   - Main search first queries `data/nuclides.json` (34 curated nuclides)
+   - Main search first queries `data/nuclides.json` (40 curated nuclides)
    - If no match found, shows "Search in ICRP 107" button
    - When ICRP 107 result is selected:
      - Displays half-life, decay modes, photon spectrum (filtered)

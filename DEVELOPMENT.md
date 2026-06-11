@@ -36,12 +36,13 @@ Each module (PHYSICS, CALC, DB, ICRP107, UI) is an IIFE returning public API. No
 
 ### `CALC` (`js/physics.js`)
 - **Decay**: `activityAtTime(A0, T_half, t)`
-- **Dose**: `doseRate(gamma, A, d, thick, E, mat, archer_params)`
-- **Shielding**: `getTransmission(x, E, mat, archer_params)` — Archer or narrow-beam
+- **Dose**: `doseRate(gamma, A, d, thick, E, mat, archer_params, spectrum)`
+- **Shielding**: `getTransmission(x, E, mat, archer_params, spectrum)` — precedence: Archer (full-spectrum MC fit) → spectrum-weighted narrow beam (`shielding_spectrum`) → single-line narrow beam
 - **Cumulative**: `cumulativeDose(...)` — integrates decay
+- HVL/TVL and `thicknessForAttenuation` solve the spectral equation numerically (bisection)
 
 ### `DB` (`js/db.js`)
-- `getById(id)`, `getAll()`, `search(query)` — curated 34 nuclides
+- `getById(id)`, `getAll()`, `search(query)` — curated 40 nuclides
 - Manages sessionStorage for custom nuclides
 
 ### `ICRP107` (`js/icrp107-loader.js`)
@@ -52,11 +53,18 @@ Each module (PHYSICS, CALC, DB, ICRP107, UI) is an IIFE returning public API. No
 ### `UI` (`js/ui.js`)
 - Dark mode, print, keyboard shortcuts
 
+### `REPORT` (`js/report.js`)
+- `print(spec)` — builds a print-only calculation report (timestamp, DB version, inputs, results, method, sources, disclaimer, sign-off) and opens the print dialog
+
+### PWA (`manifest.json`, `sw.js`, `favicon.svg`, `icon-*.png`)
+- Cache-first service worker; registered on HTTP(S) only (`file://` unaffected)
+- **Bump `CACHE_VERSION` in `sw.js`** whenever data files or app logic change
+
 ---
 
 ## Data Files
 
-**`data/nuclides.json`** — source of truth (34 curated nuclides)
+**`data/nuclides.json`** — source of truth (40 curated nuclides, version field shown in reports)
 - Includes metadata: generation timestamp, SHA256 hash of source ICRP files
 - Stores Cornejo published values in `cornejo_validation` for traceability
 
@@ -64,7 +72,10 @@ Each module (PHYSICS, CALC, DB, ICRP107, UI) is an IIFE returning public API. No
 - `nuclides-data.js` — JavaScript wrapper for file:// compatibility
 - `icrp107-index.json` — 1252 nuclides with photon emissions
 - `icrp107-data.js` — Embedded for offline use
-- `y90-bremsstrahlung.json` — Zanzonico container table
+
+**Documentation data:**
+- `y90-bremsstrahlung.json` — provenance/notes for the Y-90 container estimates; the operational copy is `PHYSICS.Y90_CONTAINERS` in `js/data.js` — keep both in sync
+- `data/sources/icrp107/` — canonical ICRP 107 raw files (NDX/RAD/BET/ACK/NSF) used by the parser
 
 ### Regenerating Data
 
@@ -78,7 +89,13 @@ node tools/parse-icrp107.js
 # Recalculate gamma constants (CAUTION: overwrites data)
 # Backup nuclides.json first!
 node tools/recalc-gamma.js --force
+
+# Regenerate dose-weighted shielding spectra (after photon-data changes)
+node tools/add-shielding-spectra.js && node tools/generate-data.js
 ```
+
+One-shot migration tools kept for provenance (already applied, do not re-run blindly):
+`add-therapy-nuclides.js`, `add-ingestion-coeffs.js`, `add-max-energy.js`, `restore-cornejo-published.js`.
 
 ---
 
@@ -90,8 +107,9 @@ node tools/recalc-gamma.js --force
 where h(E) comes from ICRU 57 tables, and photons are filtered (E≥20keV, yield≥0.01%).
 
 ### Shielding Models
-- **Archer broad-beam** (Monte Carlo): Tc-99m, F-18, I-131, Lu-177
-- **Narrow-beam** (exponential): fallback for all others
+- **Archer broad-beam** (Monte Carlo): Tc-99m, F-18, I-131, Lu-177 — parameters fit the FULL spectrum; never combine with spectral weighting
+- **Spectrum-weighted narrow beam**: T(x) = Σ wᵢ·e^(−μ(Eᵢ)x) over dose-weighted ICRP 107 lines (`shielding_spectrum`, 39 nuclides) — captures beam hardening; no build-up factor
+- **Single-line narrow beam**: fallback for custom nuclides without a stored spectrum
 
 ### Dose with Decay
 D = ∫₀ᵗ Γ · A(τ) / r² dτ, where A(τ) = A₀ · e^(−λτ)
@@ -116,7 +134,8 @@ D = ∫₀ᵗ Γ · A(τ) / r² dτ, where A(τ) = A₀ · e^(−λτ)
 ## Testing Checklist
 
 ```
-□ validate-icrp107.html: all 20 nuclides show ✓ Pass
+□ node test/validate-math.js && node test/validate-data.js && node test/validate-constants.js — all green
+□ validate-icrp107.html: all 26 nuclides show ✓ Pass
 □ Dose at selected distance (not 1m hardcoded)
 □ Y-90 container selector + Pb warning
 □ Crystal lens: 50 mSv/y max annual + 100 mSv/5-year cycle
@@ -137,5 +156,7 @@ No build step. Push to repository; auto-deploys from root.
 
 ---
 
-**Version:** 2.0  
-**Last updated:** 2026-05-17
+See also `docs/ACCEPTANCE_TEST.md` (independent validation sheet) and `docs/archive/` (historical audit reports).
+
+**Version:** 2.1  
+**Last updated:** 2026-06-11

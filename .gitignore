@@ -1,0 +1,12 @@
+# Runtime artifacts (local dev server)
+server.log
+server.pid
+
+# Personal Claude Code settings (machine-specific permission grants)
+.claude/settings.local.json
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+__pycache__/
+*.pyc
