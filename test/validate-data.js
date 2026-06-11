@@ -228,13 +228,18 @@ console.log();
 
 // Test 6: Clearance levels — RD 1217/2024 Anexo IV Tabla A.1
 // (equivalent to EU BSS 2013/59/Euratom Annex VII Table A, values in Bq/g = kBq/kg)
+// Lu-177, Sm-153, Ho-166 and Tm-170 = 100 visually confirmed against the official
+// PDF (references/RD 1217 de 2024..., p. 96) on 2026-06-11.
 console.log('Test 6: Clearance levels (RD 1217/2024 Anexo IV Tabla A.1)');
 
 const clearanceReferences = {
   'Tc-99m': { A1_kBq: 100, source: 'RD 1217/2024 Tabla A.1 (1E+02 Bq/g)' },
   'I-131':  { A1_kBq: 10,  source: 'RD 1217/2024 Tabla A.1 (1E+01 Bq/g)' },
   'F-18':   { A1_kBq: 10,  source: 'RD 1217/2024 Tabla A.1 (1E+01 Bq/g)' },
-  'Lu-177': { A1_kBq: 100, source: 'RD 1217/2024 Tabla A.1 (1E+02 Bq/g)' },
+  'Lu-177': { A1_kBq: 100, source: 'RD 1217/2024 Tabla A.1 (1E+02 Bq/g, PDF p. 96)' },
+  'Sm-153': { A1_kBq: 100, source: 'RD 1217/2024 Tabla A.1 (1E+02 Bq/g, PDF p. 96)' },
+  'Ho-166': { A1_kBq: 100, source: 'RD 1217/2024 Tabla A.1 (1E+02 Bq/g, PDF p. 96)' },
+  'Tm-170': { A1_kBq: 100, source: 'RD 1217/2024 Tabla A.1 (1E+02 Bq/g, PDF p. 96)' },
 };
 
 for (const [nuclideId, ref] of Object.entries(clearanceReferences)) {

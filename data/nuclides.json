@@ -1,5 +1,5 @@
 {
-  "version": "1.0",
+  "version": "1.1",
   "reference": "Cornejo Díaz N., Brosed Serreta A., Ruiz Manzano P. Constantes de tasa de kerma en aire y de tasa de equivalente de dosis ambiental de algunos radionucleidos utilizados en aplicaciones médicas. Radioprotección (SEPR), Nº 83, pp. 39–42, octubre 2015.",
   "notes": {
     "delta_threshold_keV": 20,
@@ -59,7 +59,13 @@
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
       },
       "max_photon_energy_keV": 511,
-      "e_mean_electron_MeV": 0.38472
+      "e_mean_electron_MeV": 0.38472,
+      "shielding_spectrum": [
+        [
+          511,
+          1
+        ]
+      ]
     },
     {
       "id": "N-13",
@@ -97,7 +103,13 @@
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
       },
       "max_photon_energy_keV": 511,
-      "e_mean_electron_MeV": 0.49085
+      "e_mean_electron_MeV": 0.49085,
+      "shielding_spectrum": [
+        [
+          511,
+          1
+        ]
+      ]
     },
     {
       "id": "O-15",
@@ -135,7 +147,13 @@
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
       },
       "max_photon_energy_keV": 511,
-      "e_mean_electron_MeV": 0.73468
+      "e_mean_electron_MeV": 0.73468,
+      "shielding_spectrum": [
+        [
+          511,
+          1
+        ]
+      ]
     },
     {
       "id": "F-18",
@@ -193,7 +211,13 @@
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
       },
       "max_photon_energy_keV": 511,
-      "e_mean_electron_MeV": 0.2416
+      "e_mean_electron_MeV": 0.2416,
+      "shielding_spectrum": [
+        [
+          511,
+          1
+        ]
+      ]
     },
     {
       "id": "Na-24",
@@ -230,7 +254,17 @@
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
       },
       "max_photon_energy_keV": 3866.2,
-      "e_mean_electron_MeV": 0.55381
+      "e_mean_electron_MeV": 0.55381,
+      "shielding_spectrum": [
+        [
+          1368.6,
+          0.3921
+        ],
+        [
+          2754,
+          0.6079
+        ]
+      ]
     },
     {
       "id": "K-42",
@@ -267,7 +301,29 @@
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
       },
       "max_photon_energy_keV": 2424.3,
-      "e_mean_electron_MeV": 1.43034
+      "e_mean_electron_MeV": 1.43034,
+      "shielding_spectrum": [
+        [
+          312.6,
+          0.0049
+        ],
+        [
+          899.7,
+          0.0019
+        ],
+        [
+          1524.6,
+          0.9891
+        ],
+        [
+          1920.8,
+          0.0026
+        ],
+        [
+          2424.3,
+          0.0015
+        ]
+      ]
     },
     {
       "id": "Cr-51",
@@ -303,7 +359,13 @@
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
       },
       "max_photon_energy_keV": 320.1,
-      "e_mean_electron_MeV": 0.00382
+      "e_mean_electron_MeV": 0.00382,
+      "shielding_spectrum": [
+        [
+          320.1,
+          1
+        ]
+      ]
     },
     {
       "id": "Co-57",
@@ -339,7 +401,21 @@
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
       },
       "max_photon_energy_keV": 692.4,
-      "e_mean_electron_MeV": 0.01863
+      "e_mean_electron_MeV": 0.01863,
+      "shielding_spectrum": [
+        [
+          122.1,
+          0.8714
+        ],
+        [
+          136.5,
+          0.1206
+        ],
+        [
+          692.4,
+          0.008
+        ]
+      ]
     },
     {
       "id": "Co-58",
@@ -380,7 +456,25 @@
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
       },
       "max_photon_energy_keV": 1674.7,
-      "e_mean_electron_MeV": 0.03395
+      "e_mean_electron_MeV": 0.03395,
+      "shielding_spectrum": [
+        [
+          511,
+          0.166
+        ],
+        [
+          810.8,
+          0.8208
+        ],
+        [
+          864,
+          0.006
+        ],
+        [
+          1674.7,
+          0.0072
+        ]
+      ]
     },
     {
       "id": "Fe-59",
@@ -406,7 +500,7 @@
       "representative_energy_keV": 1099,
       "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 1,
-      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.8e-9,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.8e-09,
       "effluent_liquid_limit_Bq_per_L": 926,
       "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
       "e_max_beta_MeV": 1.5,
@@ -417,7 +511,25 @@
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
       },
       "max_photon_energy_keV": 1481.7,
-      "e_mean_electron_MeV": 0.11788
+      "e_mean_electron_MeV": 0.11788,
+      "shielding_spectrum": [
+        [
+          142.7,
+          0.0015
+        ],
+        [
+          192.3,
+          0.006
+        ],
+        [
+          1099.3,
+          0.5343
+        ],
+        [
+          1291.6,
+          0.4582
+        ]
+      ]
     },
     {
       "id": "Co-60",
@@ -443,7 +555,7 @@
       "representative_energy_keV": 1250,
       "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 0.1,
-      "ingestion_dose_coeff_adult_Sv_per_Bq": 3.4e-9,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 3.4e-09,
       "effluent_liquid_limit_Bq_per_L": 490,
       "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
       "e_max_beta_MeV": 1.4,
@@ -454,7 +566,17 @@
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
       },
       "max_photon_energy_keV": 1332.5,
-      "e_mean_electron_MeV": 0.09686
+      "e_mean_electron_MeV": 0.09686,
+      "shielding_spectrum": [
+        [
+          1173.2,
+          0.4774
+        ],
+        [
+          1332.5,
+          0.5226
+        ]
+      ]
     },
     {
       "id": "Cu-64",
@@ -499,7 +621,17 @@
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
       },
       "max_photon_energy_keV": 1345.8,
-      "e_mean_electron_MeV": 0.12475
+      "e_mean_electron_MeV": 0.12475,
+      "shielding_spectrum": [
+        [
+          511,
+          0.9716
+        ],
+        [
+          1345.8,
+          0.0284
+        ]
+      ]
     },
     {
       "id": "Ga-67",
@@ -535,7 +667,45 @@
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
       },
       "max_photon_energy_keV": 887.7,
-      "e_mean_electron_MeV": 0.03633
+      "e_mean_electron_MeV": 0.03633,
+      "shielding_spectrum": [
+        [
+          91.3,
+          0.0195
+        ],
+        [
+          93.3,
+          0.2448
+        ],
+        [
+          184.6,
+          0.2504
+        ],
+        [
+          209,
+          0.0322
+        ],
+        [
+          300.2,
+          0.3236
+        ],
+        [
+          393.5,
+          0.1173
+        ],
+        [
+          494.2,
+          0.0021
+        ],
+        [
+          794.4,
+          0.0025
+        ],
+        [
+          887.7,
+          0.0076
+        ]
+      ]
     },
     {
       "id": "Ga-68",
@@ -570,7 +740,25 @@
       "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
       "e_max_beta_MeV": 1.8,
       "max_photon_energy_keV": 1883.2,
-      "e_mean_electron_MeV": 0.73794
+      "e_mean_electron_MeV": 0.73794,
+      "shielding_spectrum": [
+        [
+          511,
+          0.9648
+        ],
+        [
+          1077.3,
+          0.0321
+        ],
+        [
+          1261.1,
+          0.0011
+        ],
+        [
+          1883.2,
+          0.002
+        ]
+      ]
     },
     {
       "id": "Se-75",
@@ -596,7 +784,7 @@
       "representative_energy_keV": 265,
       "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 1,
-      "ingestion_dose_coeff_adult_Sv_per_Bq": 2.6e-9,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 2.6e-09,
       "effluent_liquid_limit_Bq_per_L": 641,
       "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
       "cornejo_validation": {
@@ -606,7 +794,45 @@
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
       },
       "max_photon_energy_keV": 572.2,
-      "e_mean_electron_MeV": 0.01444
+      "e_mean_electron_MeV": 0.01444,
+      "shielding_spectrum": [
+        [
+          66.1,
+          0.0025
+        ],
+        [
+          96.7,
+          0.0089
+        ],
+        [
+          121.1,
+          0.0547
+        ],
+        [
+          136,
+          0.2063
+        ],
+        [
+          198.6,
+          0.0077
+        ],
+        [
+          264.7,
+          0.4075
+        ],
+        [
+          279.5,
+          0.1827
+        ],
+        [
+          303.9,
+          0.0105
+        ],
+        [
+          400.7,
+          0.1192
+        ]
+      ]
     },
     {
       "id": "Tc-99m",
@@ -660,7 +886,25 @@
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
       },
       "max_photon_energy_keV": 142.6,
-      "e_mean_electron_MeV": 0.01618
+      "e_mean_electron_MeV": 0.01618,
+      "shielding_spectrum": [
+        [
+          20.6,
+          0.0046
+        ],
+        [
+          20.6,
+          0.0089
+        ],
+        [
+          21,
+          0.0017
+        ],
+        [
+          140.5,
+          0.9848
+        ]
+      ]
     },
     {
       "id": "Mo-99+Tc-99m",
@@ -710,7 +954,65 @@
         "gamma_H10_Cornejo": 45,
         "gamma_H007_Cornejo": null,
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
-      }
+      },
+      "shielding_spectrum": [
+        [
+          20.6,
+          0.0011
+        ],
+        [
+          20.6,
+          0.0021
+        ],
+        [
+          20.6,
+          0.0021
+        ],
+        [
+          20.6,
+          0.0042
+        ],
+        [
+          40.6,
+          0.0043
+        ],
+        [
+          140.5,
+          0.0243
+        ],
+        [
+          140.5,
+          0.4608
+        ],
+        [
+          181.1,
+          0.0415
+        ],
+        [
+          366.4,
+          0.0167
+        ],
+        [
+          528.8,
+          0.0011
+        ],
+        [
+          739.5,
+          0.3183
+        ],
+        [
+          777.9,
+          0.1166
+        ],
+        [
+          823,
+          0.0038
+        ],
+        [
+          960.8,
+          0.0031
+        ]
+      ]
     },
     {
       "id": "Pd-103",
@@ -746,7 +1048,33 @@
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
       },
       "max_photon_energy_keV": 357.5,
-      "e_mean_electron_MeV": 0.00581
+      "e_mean_electron_MeV": 0.00581,
+      "shielding_spectrum": [
+        [
+          20,
+          0.2938
+        ],
+        [
+          20.2,
+          0.5526
+        ],
+        [
+          22.7,
+          0.0436
+        ],
+        [
+          22.7,
+          0.0848
+        ],
+        [
+          23.1,
+          0.0086
+        ],
+        [
+          23.1,
+          0.0166
+        ]
+      ]
     },
     {
       "id": "In-111",
@@ -782,7 +1110,41 @@
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
       },
       "max_photon_energy_keV": 245.4,
-      "e_mean_electron_MeV": 0.03481
+      "e_mean_electron_MeV": 0.03481,
+      "shielding_spectrum": [
+        [
+          23,
+          0.0743
+        ],
+        [
+          23.2,
+          0.1389
+        ],
+        [
+          26,
+          0.0114
+        ],
+        [
+          26.1,
+          0.0221
+        ],
+        [
+          26.6,
+          0.0023
+        ],
+        [
+          26.6,
+          0.0044
+        ],
+        [
+          171.3,
+          0.2991
+        ],
+        [
+          245.4,
+          0.4475
+        ]
+      ]
     },
     {
       "id": "I-123",
@@ -818,7 +1180,69 @@
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
       },
       "max_photon_energy_keV": 783.6,
-      "e_mean_electron_MeV": 0.02818
+      "e_mean_electron_MeV": 0.02818,
+      "shielding_spectrum": [
+        [
+          27.2,
+          0.1341
+        ],
+        [
+          27.5,
+          0.2478
+        ],
+        [
+          30.9,
+          0.0211
+        ],
+        [
+          31,
+          0.0407
+        ],
+        [
+          31.7,
+          0.0043
+        ],
+        [
+          31.7,
+          0.0084
+        ],
+        [
+          159,
+          0.4902
+        ],
+        [
+          346.3,
+          0.0016
+        ],
+        [
+          440,
+          0.0069
+        ],
+        [
+          505.3,
+          0.0058
+        ],
+        [
+          529,
+          0.0267
+        ],
+        [
+          538.5,
+          0.0074
+        ],
+        [
+          624.6,
+          0.0018
+        ],
+        [
+          735.8,
+          0.0016
+        ],
+        [
+          783.6,
+          0.0016
+        ]
+      ]
     },
     {
       "id": "I-125",
@@ -844,7 +1268,7 @@
       "representative_energy_keV": 28,
       "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 100,
-      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.5e-8,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.5e-08,
       "effluent_liquid_limit_Bq_per_L": 111,
       "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
       "cornejo_validation": {
@@ -854,7 +1278,37 @@
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
       },
       "max_photon_energy_keV": 35.5,
-      "e_mean_electron_MeV": 0.01923
+      "e_mean_electron_MeV": 0.01923,
+      "shielding_spectrum": [
+        [
+          27.2,
+          0.2826
+        ],
+        [
+          27.5,
+          0.5223
+        ],
+        [
+          30.9,
+          0.0444
+        ],
+        [
+          31,
+          0.0859
+        ],
+        [
+          31.7,
+          0.009
+        ],
+        [
+          31.7,
+          0.0177
+        ],
+        [
+          35.5,
+          0.0381
+        ]
+      ]
     },
     {
       "id": "I-131",
@@ -897,7 +1351,7 @@
         }
       },
       "clearance_a1_kBq_per_kg": 10,
-      "ingestion_dose_coeff_adult_Sv_per_Bq": 2.2e-8,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 2.2e-08,
       "effluent_liquid_limit_Bq_per_L": 75.8,
       "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
       "e_max_beta_MeV": 0.8,
@@ -908,7 +1362,57 @@
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
       },
       "max_photon_energy_keV": 722.9,
-      "e_mean_electron_MeV": 0.19184
+      "e_mean_electron_MeV": 0.19184,
+      "shielding_spectrum": [
+        [
+          29.5,
+          0.005
+        ],
+        [
+          29.8,
+          0.0092
+        ],
+        [
+          33.6,
+          0.0015
+        ],
+        [
+          80.2,
+          0.0061
+        ],
+        [
+          177.2,
+          0.0012
+        ],
+        [
+          284.3,
+          0.0457
+        ],
+        [
+          325.8,
+          0.0023
+        ],
+        [
+          364.5,
+          0.7763
+        ],
+        [
+          503,
+          0.0046
+        ],
+        [
+          637,
+          0.1134
+        ],
+        [
+          642.7,
+          0.0035
+        ],
+        [
+          722.9,
+          0.0312
+        ]
+      ]
     },
     {
       "id": "Xe-133",
@@ -947,7 +1451,49 @@
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
       },
       "max_photon_energy_keV": 160.6,
-      "e_mean_electron_MeV": 0.13791
+      "e_mean_electron_MeV": 0.13791,
+      "shielding_spectrum": [
+        [
+          30.6,
+          0.1931
+        ],
+        [
+          31,
+          0.3526
+        ],
+        [
+          34.9,
+          0.0303
+        ],
+        [
+          35,
+          0.0587
+        ],
+        [
+          35.8,
+          0.0063
+        ],
+        [
+          35.8,
+          0.0122
+        ],
+        [
+          36,
+          0.0015
+        ],
+        [
+          79.6,
+          0.0024
+        ],
+        [
+          81,
+          0.3418
+        ],
+        [
+          160.6,
+          0.0011
+        ]
+      ]
     },
     {
       "id": "Cs-137",
@@ -973,7 +1519,7 @@
       "representative_energy_keV": 662,
       "source": "Cornejo et al. — Values include ¹³⁷ᵐBa 661.7 keV gamma in secular equilibrium",
       "clearance_a1_kBq_per_kg": 0.1,
-      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.3e-8,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.3e-08,
       "effluent_liquid_limit_Bq_per_L": 128,
       "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
       "max_photon_energy_keV": null,
@@ -982,7 +1528,25 @@
         "gamma_H10_Cornejo": 93.1,
         "gamma_H007_Cornejo": null,
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
-      }
+      },
+      "shielding_spectrum": [
+        [
+          31.8,
+          0.0049
+        ],
+        [
+          32.2,
+          0.0089
+        ],
+        [
+          36.4,
+          0.0015
+        ],
+        [
+          661.7,
+          0.9847
+        ]
+      ]
     },
     {
       "id": "Sm-153",
@@ -1019,7 +1583,81 @@
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
       },
       "max_photon_energy_keV": 609.5,
-      "e_mean_electron_MeV": 0.26987
+      "e_mean_electron_MeV": 0.26987,
+      "shielding_spectrum": [
+        [
+          40.9,
+          0.1852
+        ],
+        [
+          41.6,
+          0.3301
+        ],
+        [
+          47,
+          0.0307
+        ],
+        [
+          47.1,
+          0.0593
+        ],
+        [
+          48.3,
+          0.0066
+        ],
+        [
+          48.3,
+          0.0127
+        ],
+        [
+          48.5,
+          0.0014
+        ],
+        [
+          48.5,
+          0.0028
+        ],
+        [
+          69.7,
+          0.0415
+        ],
+        [
+          75.4,
+          0.003
+        ],
+        [
+          83.4,
+          0.0017
+        ],
+        [
+          89.5,
+          0.0016
+        ],
+        [
+          97.4,
+          0.0083
+        ],
+        [
+          103.2,
+          0.3078
+        ],
+        [
+          172.9,
+          0.0014
+        ],
+        [
+          531.4,
+          0.0032
+        ],
+        [
+          533.2,
+          0.0016
+        ],
+        [
+          539.1,
+          0.0011
+        ]
+      ]
     },
     {
       "id": "Yb-169",
@@ -1055,7 +1693,101 @@
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
       },
       "max_photon_energy_keV": 307.7,
-      "e_mean_electron_MeV": 0.14713
+      "e_mean_electron_MeV": 0.14713,
+      "shielding_spectrum": [
+        [
+          49.9,
+          0.1321
+        ],
+        [
+          50.6,
+          0.0012
+        ],
+        [
+          50.9,
+          0.2316
+        ],
+        [
+          50.9,
+          0.0012
+        ],
+        [
+          57.4,
+          0.0231
+        ],
+        [
+          57.6,
+          0.0446
+        ],
+        [
+          59.1,
+          0.0051
+        ],
+        [
+          59.2,
+          0.0098
+        ],
+        [
+          59.5,
+          0.0011
+        ],
+        [
+          59.5,
+          0.0023
+        ],
+        [
+          63,
+          0.0044
+        ],
+        [
+          63.1,
+          0.0915
+        ],
+        [
+          93.6,
+          0.0061
+        ],
+        [
+          109.8,
+          0.0469
+        ],
+        [
+          118.2,
+          0.0054
+        ],
+        [
+          129.9,
+          0.0017
+        ],
+        [
+          130.5,
+          0.0356
+        ],
+        [
+          177.2,
+          0.0945
+        ],
+        [
+          198,
+          0.1713
+        ],
+        [
+          261.1,
+          0.0108
+        ],
+        [
+          306.8,
+          0.0013
+        ],
+        [
+          307.5,
+          0.0037
+        ],
+        [
+          307.7,
+          0.0747
+        ]
+      ]
     },
     {
       "id": "Tm-170",
@@ -1081,7 +1813,7 @@
       "representative_energy_keV": 84,
       "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 100,
-      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.3e-9,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.3e-09,
       "effluent_liquid_limit_Bq_per_L": 1280,
       "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
       "e_max_beta_MeV": 0.9,
@@ -1092,7 +1824,53 @@
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
       },
       "max_photon_energy_keV": 84.3,
-      "e_mean_electron_MeV": 0.32799
+      "e_mean_electron_MeV": 0.32799,
+      "shielding_spectrum": [
+        [
+          48.3,
+          0.0052
+        ],
+        [
+          49.2,
+          0.0092
+        ],
+        [
+          51.4,
+          0.1628
+        ],
+        [
+          52.5,
+          0.2844
+        ],
+        [
+          55.8,
+          0.0017
+        ],
+        [
+          59.3,
+          0.0285
+        ],
+        [
+          59.5,
+          0.055
+        ],
+        [
+          61.1,
+          0.0063
+        ],
+        [
+          61.1,
+          0.0122
+        ],
+        [
+          61.4,
+          0.003
+        ],
+        [
+          84.3,
+          0.4317
+        ]
+      ]
     },
     {
       "id": "Lu-177",
@@ -1146,7 +1924,57 @@
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
       },
       "max_photon_energy_keV": 321.3,
-      "e_mean_electron_MeV": 0.14792
+      "e_mean_electron_MeV": 0.14792,
+      "shielding_spectrum": [
+        [
+          54.7,
+          0.0395
+        ],
+        [
+          55.9,
+          0.0684
+        ],
+        [
+          63.1,
+          0.0071
+        ],
+        [
+          63.4,
+          0.0138
+        ],
+        [
+          65,
+          0.0016
+        ],
+        [
+          65.1,
+          0.0031
+        ],
+        [
+          71.6,
+          0.0037
+        ],
+        [
+          113,
+          0.1996
+        ],
+        [
+          136.7,
+          0.0018
+        ],
+        [
+          208.4,
+          0.6277
+        ],
+        [
+          249.7,
+          0.0145
+        ],
+        [
+          321.3,
+          0.0192
+        ]
+      ]
     },
     {
       "id": "Re-186",
@@ -1176,7 +2004,7 @@
       "representative_energy_keV": 137,
       "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 1000,
-      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.5e-9,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.5e-09,
       "effluent_liquid_limit_Bq_per_L": 1110,
       "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
       "e_max_beta_MeV": 1,
@@ -1187,7 +2015,77 @@
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
       },
       "max_photon_energy_keV": 767.5,
-      "e_mean_electron_MeV": 0.33624
+      "e_mean_electron_MeV": 0.33624,
+      "shielding_spectrum": [
+        [
+          58.1,
+          0.0665
+        ],
+        [
+          59.5,
+          0.1144
+        ],
+        [
+          61.6,
+          0.0432
+        ],
+        [
+          63.2,
+          0.0747
+        ],
+        [
+          67.1,
+          0.0124
+        ],
+        [
+          67.4,
+          0.0241
+        ],
+        [
+          69.2,
+          0.0028
+        ],
+        [
+          69.3,
+          0.0055
+        ],
+        [
+          69.6,
+          0.0013
+        ],
+        [
+          71.3,
+          0.0082
+        ],
+        [
+          71.6,
+          0.0159
+        ],
+        [
+          73.5,
+          0.0019
+        ],
+        [
+          73.6,
+          0.0037
+        ],
+        [
+          122.6,
+          0.0331
+        ],
+        [
+          137.2,
+          0.5742
+        ],
+        [
+          630.3,
+          0.0078
+        ],
+        [
+          767.5,
+          0.0103
+        ]
+      ]
     },
     {
       "id": "Re-188",
@@ -1213,7 +2111,7 @@
       "representative_energy_keV": 155,
       "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 100,
-      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.4e-9,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.4e-09,
       "effluent_liquid_limit_Bq_per_L": 1190,
       "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
       "e_max_beta_MeV": 2,
@@ -1224,7 +2122,125 @@
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
       },
       "max_photon_energy_keV": 1957,
-      "e_mean_electron_MeV": 0.77934
+      "e_mean_electron_MeV": 0.77934,
+      "shielding_spectrum": [
+        [
+          61.6,
+          0.021
+        ],
+        [
+          63.2,
+          0.0364
+        ],
+        [
+          71.3,
+          0.004
+        ],
+        [
+          71.6,
+          0.0078
+        ],
+        [
+          73.6,
+          0.0018
+        ],
+        [
+          155,
+          0.4163
+        ],
+        [
+          453.3,
+          0.0064
+        ],
+        [
+          478,
+          0.088
+        ],
+        [
+          486.1,
+          0.0071
+        ],
+        [
+          633,
+          0.1432
+        ],
+        [
+          635,
+          0.0168
+        ],
+        [
+          672.5,
+          0.0133
+        ],
+        [
+          825.2,
+          0.0025
+        ],
+        [
+          829.5,
+          0.0581
+        ],
+        [
+          931.3,
+          0.0852
+        ],
+        [
+          1017.7,
+          0.0025
+        ],
+        [
+          1132.3,
+          0.0151
+        ],
+        [
+          1149.7,
+          0.003
+        ],
+        [
+          1150.5,
+          0.003
+        ],
+        [
+          1174.6,
+          0.0033
+        ],
+        [
+          1191.8,
+          0.0026
+        ],
+        [
+          1308,
+          0.0131
+        ],
+        [
+          1322.9,
+          0.0026
+        ],
+        [
+          1457.5,
+          0.0041
+        ],
+        [
+          1610.4,
+          0.023
+        ],
+        [
+          1669.9,
+          0.0024
+        ],
+        [
+          1786,
+          0.0047
+        ],
+        [
+          1802,
+          0.009
+        ],
+        [
+          1957,
+          0.0037
+        ]
+      ]
     },
     {
       "id": "Ir-192",
@@ -1254,7 +2270,7 @@
       "representative_energy_keV": 370,
       "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 1,
-      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.4e-9,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.4e-09,
       "effluent_liquid_limit_Bq_per_L": 1190,
       "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
       "e_max_beta_MeV": 0.65,
@@ -1265,7 +2281,85 @@
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
       },
       "max_photon_energy_keV": 1061.5,
-      "e_mean_electron_MeV": 0.21769
+      "e_mean_electron_MeV": 0.21769,
+      "shielding_spectrum": [
+        [
+          61.6,
+          0.0013
+        ],
+        [
+          63.2,
+          0.0023
+        ],
+        [
+          65.3,
+          0.0029
+        ],
+        [
+          67,
+          0.0049
+        ],
+        [
+          76,
+          0.0011
+        ],
+        [
+          201.3,
+          0.0012
+        ],
+        [
+          205.8,
+          0.0085
+        ],
+        [
+          296,
+          0.1057
+        ],
+        [
+          308.5,
+          0.1138
+        ],
+        [
+          316.5,
+          0.325
+        ],
+        [
+          374.5,
+          0.0034
+        ],
+        [
+          416.5,
+          0.0034
+        ],
+        [
+          468.1,
+          0.273
+        ],
+        [
+          484.6,
+          0.0188
+        ],
+        [
+          489.1,
+          0.0026
+        ],
+        [
+          588.6,
+          0.0317
+        ],
+        [
+          604.4,
+          0.0588
+        ],
+        [
+          612.5,
+          0.0387
+        ],
+        [
+          884.5,
+          0.0029
+        ]
+      ]
     },
     {
       "id": "Au-198",
@@ -1291,7 +2385,7 @@
       "representative_energy_keV": 412,
       "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 10,
-      "ingestion_dose_coeff_adult_Sv_per_Bq": 1e-9,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1e-09,
       "effluent_liquid_limit_Bq_per_L": 1670,
       "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
       "e_max_beta_MeV": 1.3,
@@ -1302,7 +2396,29 @@
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
       },
       "max_photon_energy_keV": 1087.7,
-      "e_mean_electron_MeV": 0.3277
+      "e_mean_electron_MeV": 0.3277,
+      "shielding_spectrum": [
+        [
+          69.1,
+          0.0018
+        ],
+        [
+          71.1,
+          0.003
+        ],
+        [
+          411.8,
+          0.9787
+        ],
+        [
+          675.9,
+          0.0128
+        ],
+        [
+          1087.7,
+          0.0037
+        ]
+      ]
     },
     {
       "id": "Tl-201",
@@ -1338,7 +2454,69 @@
         "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
       },
       "max_photon_energy_keV": 167.4,
-      "e_mean_electron_MeV": 0.04469
+      "e_mean_electron_MeV": 0.04469,
+      "shielding_spectrum": [
+        [
+          30.6,
+          0.0033
+        ],
+        [
+          32.2,
+          0.0032
+        ],
+        [
+          69.1,
+          0.231
+        ],
+        [
+          71.1,
+          0.3932
+        ],
+        [
+          80.1,
+          0.0441
+        ],
+        [
+          80.5,
+          0.0857
+        ],
+        [
+          81,
+          0.0011
+        ],
+        [
+          81.1,
+          0.0014
+        ],
+        [
+          82.7,
+          0.0106
+        ],
+        [
+          82.8,
+          0.0208
+        ],
+        [
+          83.3,
+          0.0025
+        ],
+        [
+          83.3,
+          0.0048
+        ],
+        [
+          135.3,
+          0.0337
+        ],
+        [
+          165.9,
+          0.0025
+        ],
+        [
+          167.4,
+          0.1621
+        ]
+      ]
     },
     {
       "id": "Y-90",
@@ -1364,7 +2542,7 @@
       "representative_energy_keV": null,
       "source": "Zanzonico et al. 1999 methodology — container bremsstrahlung estimate (PMMA); container values not tabulated in the publication",
       "clearance_a1_kBq_per_kg": 1000,
-      "ingestion_dose_coeff_adult_Sv_per_Bq": 2.7e-9,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 2.7e-09,
       "effluent_liquid_limit_Bq_per_L": 617,
       "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
       "max_photon_energy_keV": null
@@ -1397,7 +2575,29 @@
       "effluent_liquid_limit_Bq_per_L": 2110,
       "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
       "e_max_beta_MeV": 0.9,
-      "max_photon_energy_keV": 1744.5
+      "max_photon_energy_keV": 1744.5,
+      "shielding_spectrum": [
+        [
+          511,
+          0.2185
+        ],
+        [
+          909.2,
+          0.7697
+        ],
+        [
+          1657.3,
+          0.0013
+        ],
+        [
+          1713,
+          0.009
+        ],
+        [
+          1744.5,
+          0.0015
+        ]
+      ]
     },
     {
       "id": "Cu-67",
@@ -1427,7 +2627,33 @@
       "effluent_liquid_limit_Bq_per_L": 4900,
       "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
       "e_max_beta_MeV": 0.55,
-      "max_photon_energy_keV": 393.5
+      "max_photon_energy_keV": 393.5,
+      "shielding_spectrum": [
+        [
+          91.3,
+          0.0582
+        ],
+        [
+          93.3,
+          0.1357
+        ],
+        [
+          184.6,
+          0.7759
+        ],
+        [
+          209,
+          0.0021
+        ],
+        [
+          300.2,
+          0.0207
+        ],
+        [
+          393.5,
+          0.0074
+        ]
+      ]
     },
     {
       "id": "Tb-161",
@@ -1457,7 +2683,73 @@
       "effluent_liquid_limit_Bq_per_L": 2310,
       "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
       "e_max_beta_MeV": 0.55,
-      "max_photon_energy_keV": 550.2
+      "max_photon_energy_keV": 550.2,
+      "shielding_spectrum": [
+        [
+          25.7,
+          0.4138
+        ],
+        [
+          45.3,
+          0.0773
+        ],
+        [
+          46.1,
+          0.1365
+        ],
+        [
+          48.9,
+          0.1901
+        ],
+        [
+          52,
+          0.0131
+        ],
+        [
+          52.2,
+          0.0253
+        ],
+        [
+          53.5,
+          0.0028
+        ],
+        [
+          53.6,
+          0.0055
+        ],
+        [
+          53.8,
+          0.0013
+        ],
+        [
+          57.2,
+          0.0186
+        ],
+        [
+          74.6,
+          0.107
+        ],
+        [
+          87.9,
+          0.0021
+        ],
+        [
+          103.1,
+          0.0013
+        ],
+        [
+          292.4,
+          0.002
+        ],
+        [
+          475.7,
+          0.001
+        ],
+        [
+          550.2,
+          0.0023
+        ]
+      ]
     },
     {
       "id": "Ho-166",
@@ -1483,11 +2775,73 @@
       "representative_energy_keV": 1379,
       "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 100,
-      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.4e-9,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.4e-09,
       "effluent_liquid_limit_Bq_per_L": 1190,
       "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
       "e_max_beta_MeV": 1.8,
-      "max_photon_energy_keV": 1749.9
+      "max_photon_energy_keV": 1749.9,
+      "shielding_spectrum": [
+        [
+          48.3,
+          0.0937
+        ],
+        [
+          49.2,
+          0.1642
+        ],
+        [
+          55.6,
+          0.0162
+        ],
+        [
+          55.8,
+          0.0313
+        ],
+        [
+          57.2,
+          0.0035
+        ],
+        [
+          57.3,
+          0.0069
+        ],
+        [
+          57.5,
+          0.0016
+        ],
+        [
+          80.6,
+          0.199
+        ],
+        [
+          674,
+          0.0041
+        ],
+        [
+          705.3,
+          0.0029
+        ],
+        [
+          785.9,
+          0.0029
+        ],
+        [
+          1379.4,
+          0.338
+        ],
+        [
+          1581.9,
+          0.0745
+        ],
+        [
+          1662.5,
+          0.0494
+        ],
+        [
+          1749.9,
+          0.0118
+        ]
+      ]
     },
     {
       "id": "Ra-223",
@@ -1514,11 +2868,11 @@
       "representative_energy_keV": 351,
       "source": "ICRP 107 (photon data, incl. progeny in secular equilibrium) / ICRU 57 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": null,
-      "ingestion_dose_coeff_adult_Sv_per_Bq": 1e-7,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1e-07,
       "effluent_liquid_limit_Bq_per_L": 16.7,
       "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
       "e_max_beta_MeV": 1.4,
-      "max_photon_energy_keV": 632,
+      "max_photon_energy_keV": 1196.3,
       "chain_members": [
         {
           "id": "Ra-223",
@@ -1548,6 +2902,168 @@
           "id": "Po-211",
           "equilibrium_activity_fraction": 0.0028
         }
+      ],
+      "shielding_spectrum": [
+        [
+          71.1,
+          0.0022
+        ],
+        [
+          73.1,
+          0.0037
+        ],
+        [
+          77.1,
+          0.0016
+        ],
+        [
+          77.4,
+          0.0012
+        ],
+        [
+          79.6,
+          0.0027
+        ],
+        [
+          81.4,
+          0.0468
+        ],
+        [
+          84.1,
+          0.0788
+        ],
+        [
+          94.6,
+          0.0096
+        ],
+        [
+          95.2,
+          0.0187
+        ],
+        [
+          97.8,
+          0.0024
+        ],
+        [
+          98,
+          0.0047
+        ],
+        [
+          98.6,
+          0.0011
+        ],
+        [
+          122.3,
+          0.0049
+        ],
+        [
+          144.2,
+          0.0156
+        ],
+        [
+          154.2,
+          0.029
+        ],
+        [
+          158.6,
+          0.0036
+        ],
+        [
+          269.5,
+          0.1249
+        ],
+        [
+          271.2,
+          0.0976
+        ],
+        [
+          288.2,
+          0.0015
+        ],
+        [
+          323.9,
+          0.043
+        ],
+        [
+          328.4,
+          0.0023
+        ],
+        [
+          334,
+          0.0011
+        ],
+        [
+          338.3,
+          0.0319
+        ],
+        [
+          342.9,
+          0.0025
+        ],
+        [
+          346.8,
+          0.0021
+        ],
+        [
+          351.1,
+          0.15
+        ],
+        [
+          371.7,
+          0.006
+        ],
+        [
+          401.8,
+          0.0875
+        ],
+        [
+          404.9,
+          0.0506
+        ],
+        [
+          427.1,
+          0.0247
+        ],
+        [
+          439.3,
+          0.0012
+        ],
+        [
+          445,
+          0.0189
+        ],
+        [
+          527.6,
+          0.0012
+        ],
+        [
+          598.7,
+          0.0018
+        ],
+        [
+          609.3,
+          0.0011
+        ],
+        [
+          704.6,
+          0.0101
+        ],
+        [
+          766.5,
+          0.0145
+        ],
+        [
+          832,
+          0.0884
+        ],
+        [
+          897.8,
+          0.0069
+        ],
+        [
+          1109.5,
+          0.0036
+        ]
       ]
     },
     {
@@ -1575,11 +3091,11 @@
       "representative_energy_keV": 441,
       "source": "ICRP 107 (photon data, incl. progeny in secular equilibrium) / ICRU 57 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": null,
-      "ingestion_dose_coeff_adult_Sv_per_Bq": 2.4e-8,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 2.4e-08,
       "effluent_liquid_limit_Bq_per_L": 69.4,
       "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
       "e_max_beta_MeV": 1.8,
-      "max_photon_energy_keV": 526.1,
+      "max_photon_energy_keV": 1567.1,
       "chain_members": [
         {
           "id": "Ac-225",
@@ -1609,6 +3125,172 @@
           "id": "Pb-209",
           "equilibrium_activity_fraction": 0.9999
         }
+      ],
+      "shielding_spectrum": [
+        [
+          63,
+          0.0019
+        ],
+        [
+          73.9,
+          0.0014
+        ],
+        [
+          77.1,
+          0.0053
+        ],
+        [
+          79.2,
+          0.0039
+        ],
+        [
+          79.6,
+          0.0089
+        ],
+        [
+          81.9,
+          0.0066
+        ],
+        [
+          83.5,
+          0.0051
+        ],
+        [
+          86.5,
+          0.0086
+        ],
+        [
+          87.4,
+          0.0012
+        ],
+        [
+          89.6,
+          0.0011
+        ],
+        [
+          90.1,
+          0.0021
+        ],
+        [
+          92.7,
+          0.0016
+        ],
+        [
+          97.2,
+          0.0011
+        ],
+        [
+          97.9,
+          0.0021
+        ],
+        [
+          99.6,
+          0.0031
+        ],
+        [
+          99.9,
+          0.0051
+        ],
+        [
+          108.4,
+          0.0014
+        ],
+        [
+          111.5,
+          0.0018
+        ],
+        [
+          117.2,
+          0.0103
+        ],
+        [
+          145.2,
+          0.001
+        ],
+        [
+          150,
+          0.0059
+        ],
+        [
+          153.9,
+          0.0014
+        ],
+        [
+          157.3,
+          0.0028
+        ],
+        [
+          188,
+          0.005
+        ],
+        [
+          195.8,
+          0.0016
+        ],
+        [
+          216.9,
+          0.0034
+        ],
+        [
+          218.2,
+          0.1258
+        ],
+        [
+          224.6,
+          0.0011
+        ],
+        [
+          253.5,
+          0.0016
+        ],
+        [
+          292.8,
+          0.0063
+        ],
+        [
+          323.8,
+          0.0026
+        ],
+        [
+          410.7,
+          0.0028
+        ],
+        [
+          440.5,
+          0.5639
+        ],
+        [
+          452.4,
+          0.0026
+        ],
+        [
+          465.1,
+          0.046
+        ],
+        [
+          659.8,
+          0.0012
+        ],
+        [
+          807.4,
+          0.0107
+        ],
+        [
+          1003.6,
+          0.0023
+        ],
+        [
+          1100.2,
+          0.0134
+        ],
+        [
+          1119.4,
+          0.0029
+        ],
+        [
+          1567.1,
+          0.1231
+        ]
       ]
     }
   ]

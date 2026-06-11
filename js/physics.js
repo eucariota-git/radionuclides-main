@@ -10,7 +10,15 @@
  *   Archer (broad beam, default when params available):
  *     T(x) = [(1 + β/α)·e^(αγx) − β/α]^(−1/γ)   x in mm
  *     Source: Oumano et al. J Appl Clin Med Phys 2025
- *   Narrow beam (fallback when Archer params unavailable):
+ *     (Archer parameters are Monte Carlo fits to the nuclide's FULL photon
+ *      spectrum, so no further spectral weighting applies.)
+ *   Narrow beam, spectrum-weighted (when nuclide.shielding_spectrum present):
+ *     T(x) = Σ wᵢ·e^(−μ(Eᵢ)·x)   x in cm
+ *     wᵢ = relative H*(10) dose contribution of each line (Σwᵢ = 1, from
+ *     ICRP 107 yields × ICRU 57; see tools/add-shielding-spectra.js). Accounts
+ *     for spectral hardening — a single-line exponential underestimates the
+ *     transmitted dose of multi-line emitters behind thick shields.
+ *   Narrow beam, single line (fallback):
  *     T(x) = e^(−μ(E)·x)   x in cm
  *
  * Cumulative dose with radioactive decay over time t [h]:
@@ -101,6 +109,45 @@ const CALC = (() => {
   }
 
   /**
+   * Spectrum-weighted narrow-beam transmission.
+   * T(x) = Σ wᵢ·e^(−μ(Eᵢ)·x), weights renormalized defensively.
+   * @param {number} x_cm     - shield thickness [cm]
+   * @param {Array<[number,number]>} spectrum - [[E_keV, w], ...] dose-weighted lines
+   * @param {string} material - 'Pb'|'concrete_NW'|'concrete_LW'
+   * @returns {number} T ∈ (0, 1]
+   */
+  function transmissionSpectrum(x_cm, spectrum, material) {
+    if (x_cm <= 0) return 1.0;
+    let sumW = 0, sumT = 0;
+    for (const [E_keV, w] of spectrum) {
+      const mu = PHYSICS.getMu(E_keV / 1000, material);
+      sumW += w;
+      sumT += w * Math.exp(-mu * x_cm);
+    }
+    return sumW > 0 ? sumT / sumW : 1.0;
+  }
+
+  /**
+   * Thickness [cm] for a target spectrum-weighted transmission (bisection;
+   * T(x) is strictly decreasing in x).
+   */
+  function _spectrumThickness_cm(T_target, spectrum, material) {
+    if (T_target >= 1) return 0;
+    if (T_target <= 0) return Infinity;
+    let lo = 0, hi = 1;
+    while (transmissionSpectrum(hi, spectrum, material) > T_target) {
+      hi *= 2;
+      if (hi > 1e4) return Infinity;
+    }
+    for (let i = 0; i < 60; i++) {
+      const mid = (lo + hi) / 2;
+      if (transmissionSpectrum(mid, spectrum, material) > T_target) lo = mid;
+      else hi = mid;
+    }
+    return (lo + hi) / 2;
+  }
+
+  /**
    * Archer broad-beam transmission.
    * T(x) = [(1 + β/α)·e^(αγx) − β/α]^(−1/γ)
    * @param {number} x_mm - shield thickness [mm]
@@ -127,15 +174,18 @@ const CALC = (() => {
   }
 
   /**
-   * Best available transmission: Archer if params given, else narrow beam.
+   * Best available transmission: Archer if params given (full-spectrum Monte
+   * Carlo fit), else spectrum-weighted narrow beam, else single-line narrow beam.
    * @param {number} x_cm
    * @param {number} E_MeV
    * @param {string} material
    * @param {object|null} archerParams - from nuclide.archer_params[material] or null
+   * @param {Array<[number,number]>|null} [spectrum] - nuclide.shielding_spectrum or null
    */
-  function getTransmission(x_cm, E_MeV, material, archerParams) {
+  function getTransmission(x_cm, E_MeV, material, archerParams, spectrum) {
     if (material === 'none' || x_cm <= 0) return 1.0;
     if (archerParams) return transmissionArcher(x_cm * 10, archerParams);
+    if (spectrum && spectrum.length > 0) return transmissionSpectrum(x_cm, spectrum, material);
     return transmission(x_cm, E_MeV, material);
   }
 
@@ -148,11 +198,12 @@ const CALC = (() => {
    * @param {number} E_MeV        - representative photon energy [MeV]
    * @param {string} material
    * @param {object|null} [archerParams] - optional Archer parameters
+   * @param {Array<[number,number]>|null} [spectrum] - optional dose-weighted line spectrum
    * @returns {number} dose rate [μSv/h]
    */
-  function doseRate(gamma, A_GBq, d_m, x_cm, E_MeV, material, archerParams) {
+  function doseRate(gamma, A_GBq, d_m, x_cm, E_MeV, material, archerParams, spectrum) {
     if (d_m <= 0) return Infinity;
-    const T = getTransmission(x_cm, E_MeV, material, archerParams || null);
+    const T = getTransmission(x_cm, E_MeV, material, archerParams || null, spectrum || null);
     return (gamma * A_GBq * T) / (d_m * d_m);
   }
 
@@ -168,11 +219,12 @@ const CALC = (() => {
    * @param {number} E_MeV        - representative energy [MeV]
    * @param {string} material
    * @param {object|null} [archerParams] - optional Archer parameters
+   * @param {Array<[number,number]>|null} [spectrum] - optional dose-weighted line spectrum
    * @returns {number} cumulative dose [μSv]
    */
-  function cumulativeDose(gamma, A0_GBq, d_m, t_h, T_half_h, x_cm, E_MeV, material, archerParams) {
+  function cumulativeDose(gamma, A0_GBq, d_m, t_h, T_half_h, x_cm, E_MeV, material, archerParams, spectrum) {
     if (d_m <= 0) return Infinity;
-    const T     = getTransmission(x_cm, E_MeV, material, archerParams || null);
+    const T     = getTransmission(x_cm, E_MeV, material, archerParams || null, spectrum || null);
     const lam   = lambda(T_half_h);
     const Hdot0 = (gamma * A0_GBq * T) / (d_m * d_m);
     if (T_half_h === Infinity || lam === 0) return Hdot0 * t_h;
@@ -180,13 +232,17 @@ const CALC = (() => {
   }
 
   /**
-   * HVL and TVL — uses Archer equation when params provided, else narrow beam.
+   * HVL and TVL — Archer when params provided, else spectrum-weighted narrow
+   * beam (numerical), else single-line narrow beam.
+   * Note: with a spectrum, successive HVLs grow with depth (beam hardening);
+   * the values returned are the FIRST HVL/TVL (from x = 0).
    * @param {number} E_MeV
    * @param {string} material
    * @param {object|null} [archerParams]
+   * @param {Array<[number,number]>|null} [spectrum]
    * @returns {{ hvl_cm, tvl_cm, mu_cm, method }}
    */
-  function hvlTvl(E_MeV, material, archerParams) {
+  function hvlTvl(E_MeV, material, archerParams, spectrum) {
     if (archerParams) {
       const hvl_mm = _archerThickness_mm(0.5, archerParams);
       const tvl_mm = _archerThickness_mm(0.1, archerParams);
@@ -195,6 +251,14 @@ const CALC = (() => {
         hvl_cm: hvl_mm / 10,
         tvl_cm: tvl_mm / 10,
         method: 'archer',
+      };
+    }
+    if (spectrum && spectrum.length > 1) {
+      return {
+        mu_cm:  null,
+        hvl_cm: _spectrumThickness_cm(0.5, spectrum, material),
+        tvl_cm: _spectrumThickness_cm(0.1, spectrum, material),
+        method: 'narrow_beam_spectrum',
       };
     }
     const mu = PHYSICS.getMu(E_MeV, material);
@@ -208,12 +272,14 @@ const CALC = (() => {
 
   /**
    * Thickness [cm] of material required to achieve a given transmission.
-   * Uses Archer when params given, else narrow beam.
+   * Archer when params given, else spectrum-weighted narrow beam, else
+   * single-line narrow beam.
    */
-  function thicknessForAttenuation(attenuation, E_MeV, material, archerParams) {
+  function thicknessForAttenuation(attenuation, E_MeV, material, archerParams, spectrum) {
     if (attenuation >= 1) return 0;
     if (attenuation <= 0) return Infinity;
     if (archerParams) return _archerThickness_mm(attenuation, archerParams) / 10;
+    if (spectrum && spectrum.length > 1) return _spectrumThickness_cm(attenuation, spectrum, material);
     const mu = PHYSICS.getMu(E_MeV, material);
     return -Math.log(attenuation) / mu;
   }
@@ -270,6 +336,7 @@ const CALC = (() => {
     decayCurve,
     transmission,
     transmissionArcher,
+    transmissionSpectrum,
     getTransmission,
     doseRate,
     cumulativeDose,

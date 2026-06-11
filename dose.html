@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NM Radionuclide Planner — Dose Estimator</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2d6a4f">
   <link rel="stylesheet" href="css/style.css">
   <script src="js/chart.umd.min.js"></script>
 </head>
@@ -156,7 +159,8 @@
     <div class="alert alert-warning mb-1">
       <strong>Note:</strong> Estimates for radiation protection using point-source geometry.
       Shielding uses the <strong>Archer broad-beam method</strong> (Monte Carlo, Oumano et al. 2025) for Tc-99m, F-18, I-131 and Lu-177 —
-      all other nuclides fall back to narrow-beam attenuation.
+      all other nuclides use <strong>spectrum-weighted narrow-beam</strong> attenuation (dose-weighted sum over the ICRP 107 photon lines,
+      which accounts for beam hardening of multi-line emitters; no build-up, so thick-shield doses may still be underestimated).
       Geometry, scatter, and source distribution effects are not modelled. Not suitable for dosimetric treatment planning.
     </div>
     <div id="nuclideInfo" class="alert alert-info mb-1"></div>
@@ -178,7 +182,7 @@
     </div>
 
     <div class="d-flex gap-2 mt-2 mb-1" data-no-print>
-      <button class="btn btn-secondary btn-sm" id="btnPrintDose" type="button" title="Print or save as PDF">🖨 Print / PDF</button>
+      <button class="btn btn-secondary btn-sm" id="btnPrintDose" type="button" title="Generate a printable calculation report with traceability (sources, method, disclaimer)">📄 Report / PDF</button>
       <button class="btn btn-secondary btn-sm" id="btnExportDoseCsv" type="button" title="Export results as CSV">⬇ Export CSV</button>
     </div>
 
@@ -225,6 +229,7 @@
 <script src="data/icrp107-data.js"></script>
 <script src="js/icrp107-loader.js"></script>
 <script src="js/utils.js"></script>
+<script src="js/report.js"></script>
 <script>
 (async () => {
   // ---- UI initialization ----
@@ -372,6 +377,12 @@
     return n.archer_params[mat] || null;
   }
 
+  // Helper: dose-weighted line spectrum for spectrum-weighted narrow beam (or null).
+  // Only used when Archer params are unavailable (Archer fits cover the full spectrum).
+  function getSpectrum(n) {
+    return (n && n.shielding_spectrum && n.shielding_spectrum.length) ? n.shielding_spectrum : null;
+  }
+
   // Material display name
   function matLabel(mat) {
     return { Pb: 'Lead (Pb)', concrete_NW: 'Concrete NW', concrete_LW: 'Concrete LW' }[mat] || mat;
@@ -387,19 +398,25 @@
     }
     const E           = n.representative_energy_keV / 1000;
     const ap          = getArcherParams(n, mat);
-    const { hvl_cm, tvl_cm, mu_cm, method } = CALC.hvlTvl(E, mat, ap);
+    const sp          = getSpectrum(n);
+    const { hvl_cm, tvl_cm, mu_cm, method } = CALC.hvlTvl(E, mat, ap, sp);
     const thickRaw    = parseFloat(document.getElementById('shieldThickness').value) || 0;
     const thickUnit   = document.getElementById('shieldUnit').value;
     const thickness   = thickUnit === 'mm' ? thickRaw / 10 : thickRaw;
-    const T           = CALC.getTransmission(thickness, E, mat, ap);
+    const T           = CALC.getTransmission(thickness, E, mat, ap, sp);
     const methodBadge = method === 'archer'
       ? '<span class="tag tag-pet" style="font-size:.72rem;vertical-align:middle;">Archer</span>'
+      : method === 'narrow_beam_spectrum'
+      ? `<span class="tag tag-other" style="font-size:.72rem;vertical-align:middle;">Narrow beam · ${sp.length}-line spectrum</span>`
       : '<span class="tag tag-other" style="font-size:.72rem;vertical-align:middle;">Narrow beam</span>';
+    const energyLabel = method === 'narrow_beam_spectrum'
+      ? `spectrum-weighted (rep. ${n.representative_energy_keV} keV)`
+      : `at ${n.representative_energy_keV} keV`;
 
     const el = document.getElementById('hvlInfo');
     el.classList.remove('hidden');
     el.innerHTML = `
-      <strong>${matLabel(mat)}</strong> at ${n.representative_energy_keV} keV ${methodBadge} —
+      <strong>${matLabel(mat)}</strong> ${energyLabel} ${methodBadge} —
       HVL = <strong>${UTILS.fmt(hvl_cm)} cm</strong> &nbsp;|&nbsp;
       TVL = <strong>${UTILS.fmt(tvl_cm)} cm</strong>
       ${mu_cm !== null ? `&nbsp;|&nbsp; &mu; = ${UTILS.fmt(mu_cm)} cm&#8315;&#185;` : ''}
@@ -437,7 +454,53 @@
   let distChart = null;
   let lastCalcResult = null;
 
-  document.getElementById('btnPrintDose').onclick = () => window.print();
+  document.getElementById('btnPrintDose').onclick = () => {
+    if (!lastCalcResult) { window.print(); return; }
+    const r = lastCalcResult;
+    const fd  = v => CALC.formatDose(v).display;
+    const fdr = v => CALC.formatDoseRate(v).display;
+    const methodText = {
+      unshielded: 'No shielding applied.',
+      archer: 'Archer broad-beam transmission (Monte Carlo full-spectrum fit, Oumano et al. 2025).',
+      narrow_beam_spectrum: `Spectrum-weighted narrow-beam transmission over ${r.spectrumLines} ICRP 107 photon lines (dose-weighted; accounts for beam hardening; no build-up).`,
+      narrow_beam: 'Single-line narrow-beam exponential attenuation (NIST XCOM); no build-up.',
+    }[r.method] || '';
+    const notes = [methodText];
+    if (r.isY90) notes.push('Y-90 bremsstrahlung container estimate (methodology after Zanzonico et al. 1999); container values are estimates, not tabulated in that publication.');
+    if (!r.useH007) notes.push("H'(0.07) not applicable for this nuclide/energy — H*(10) used as a conservative extremity estimate.");
+    if (r.n._icrp107) notes.push('ICRP 107 extended entry: constants computed automatically, NOT manually validated. Verify against primary sources before regulatory use.');
+    if (r.patientTx !== undefined && r.patientTx < 1) notes.push(`Patient attenuation applied: transmission ${UTILS.fmt(r.patientTx * 100)}%.`);
+
+    REPORT.print({
+      title: 'External Dose Estimate',
+      nuclide: r.n,
+      sections: [
+        { heading: 'Input parameters', rows: [
+          ['Activity A₀', `${r.A0raw} ${r.A0unit} (${UTILS.fmt(r.A0_GBq)} GBq)`],
+          ['Distance', `${r.d_m.toFixed(2)} m`],
+          ['Shielding', r.mat && r.mat !== 'none' ? `${r.mat}, ${r.thick} cm` : 'none'],
+          ['Exposure time per administration', `${UTILS.fmt(r.t_h)} h`],
+          ['Administrations per year', String(r.nAdmin)],
+          ['Decay during exposure', r.withDecay === undefined ? '—' : r.withDecay ? 'integrated A(t)' : 'no (constant activity, worst case)'],
+          ['Dose rate constants', `Γ(H*(10)) = ${r.gammaWB}; Γ(${r.useH007 ? "H'(0.07)" : 'H*(10) fallback'}) = ${r.gammaExt} μSv·h⁻¹·GBq⁻¹·m²`],
+        ]},
+        { heading: 'Results', rows: [
+          ['Dose rate H*(10) at d, t=0', fdr(r.Hdot_WB)],
+          ['Dose rate H*(10) at d, after decay over exposure', fdr(r.Hdot_WB_t)],
+          ['Dose rate H*(10) at 1 m (reference), t=0', fdr(r.Hdot_WB_1m)],
+          [`Dose rate ${r.useH007 ? "H'(0.07)" : "extremity (H*(10) cons.)"} at d, t=0`, fdr(r.Hdot_Ext)],
+          ['Annual dose, whole body H*(10)', fd(r.H_WB_cum * r.nAdmin) + '/y'],
+          [`Annual dose, extremities ${r.useH007 ? "H'(0.07)" : '(conservative)'}`, fd(r.H_Ext_cum * r.nAdmin) + '/y'],
+        ]},
+      ],
+      notes,
+      sources: [
+        'Oumano et al. (2025) J Appl Clin Med Phys — Archer broad-beam shielding parameters.',
+        'NIST XCOM — photon mass attenuation coefficients.',
+        'RD 1029/2022 — dose limits used in the regulatory comparison.',
+      ],
+    });
+  };
 
   document.getElementById('btnExportDoseCsv').onclick = () => {
     if (!lastCalcResult) { alert('Calculate dose first.'); return; }
@@ -505,6 +568,7 @@
     const thick     = thickUnit === 'mm' ? thickRaw / 10 : thickRaw;
     const E_MeV   = n.representative_energy_keV / 1000;
     const ap      = getArcherParams(n, mat);  // Archer params or null
+    const sp      = getSpectrum(n);           // dose-weighted line spectrum or null
 
     const expStr = document.getElementById('expTime').value.trim();
     if (!/^[0-9]*\.?[0-9]+([eE][+-]?[0-9]+)?$/.test(expStr)) {
@@ -756,30 +820,30 @@
        } &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;`;
 
     // Dose rate at t=0 (at selected distance)
-    const Hdot_WB  = CALC.doseRate(gammaWB,  A0_GBq, d_m, thick, E_MeV, mat, ap) * patientTx;
-    const Hdot_Ext = CALC.doseRate(gammaExt, A0_GBq, d_m, thick, E_MeV, mat, ap) * patientTx;
+    const Hdot_WB  = CALC.doseRate(gammaWB,  A0_GBq, d_m, thick, E_MeV, mat, ap, sp) * patientTx;
+    const Hdot_Ext = CALC.doseRate(gammaExt, A0_GBq, d_m, thick, E_MeV, mat, ap, sp) * patientTx;
 
     // Dose rate at t=0 (at 1 m reference)
-    const Hdot_WB_1m  = CALC.doseRate(gammaWB,  A0_GBq, 1, thick, E_MeV, mat, ap) * patientTx;
-    const Hdot_Ext_1m = CALC.doseRate(gammaExt, A0_GBq, 1, thick, E_MeV, mat, ap) * patientTx;
+    const Hdot_WB_1m  = CALC.doseRate(gammaWB,  A0_GBq, 1, thick, E_MeV, mat, ap, sp) * patientTx;
+    const Hdot_Ext_1m = CALC.doseRate(gammaExt, A0_GBq, 1, thick, E_MeV, mat, ap, sp) * patientTx;
 
     // Dose rate at t=time (after decay, at selected distance)
     const At_GBq   = CALC.activityAtTime(A0_GBq, T_half_h, t_h);
-    const Hdot_WB_t  = CALC.doseRate(gammaWB,  At_GBq, d_m, thick, E_MeV, mat, ap) * patientTx;
-    const Hdot_Ext_t = CALC.doseRate(gammaExt, At_GBq, d_m, thick, E_MeV, mat, ap) * patientTx;
+    const Hdot_WB_t  = CALC.doseRate(gammaWB,  At_GBq, d_m, thick, E_MeV, mat, ap, sp) * patientTx;
+    const Hdot_Ext_t = CALC.doseRate(gammaExt, At_GBq, d_m, thick, E_MeV, mat, ap, sp) * patientTx;
 
     // Dose rate at t=time (after decay, at 1 m reference)
-    const Hdot_WB_t_1m  = CALC.doseRate(gammaWB,  At_GBq, 1, thick, E_MeV, mat, ap) * patientTx;
-    const Hdot_Ext_t_1m = CALC.doseRate(gammaExt, At_GBq, 1, thick, E_MeV, mat, ap) * patientTx;
+    const Hdot_WB_t_1m  = CALC.doseRate(gammaWB,  At_GBq, 1, thick, E_MeV, mat, ap, sp) * patientTx;
+    const Hdot_Ext_t_1m = CALC.doseRate(gammaExt, At_GBq, 1, thick, E_MeV, mat, ap, sp) * patientTx;
 
     // Cumulative dose
     let H_WB_cum, H_Ext_cum;
     if (withDecay) {
-      H_WB_cum  = CALC.cumulativeDose(gammaWB,  A0_GBq, d_m, t_h, T_half_h, thick, E_MeV, mat, ap) * patientTx;
-      H_Ext_cum = CALC.cumulativeDose(gammaExt, A0_GBq, d_m, t_h, T_half_h, thick, E_MeV, mat, ap) * patientTx;
+      H_WB_cum  = CALC.cumulativeDose(gammaWB,  A0_GBq, d_m, t_h, T_half_h, thick, E_MeV, mat, ap, sp) * patientTx;
+      H_Ext_cum = CALC.cumulativeDose(gammaExt, A0_GBq, d_m, t_h, T_half_h, thick, E_MeV, mat, ap, sp) * patientTx;
     } else {
-      const Hdot_WB_d  = CALC.doseRate(gammaWB,  A0_GBq, d_m, thick, E_MeV, mat, ap) * patientTx;
-      const Hdot_Ext_d = CALC.doseRate(gammaExt, A0_GBq, d_m, thick, E_MeV, mat, ap) * patientTx;
+      const Hdot_WB_d  = CALC.doseRate(gammaWB,  A0_GBq, d_m, thick, E_MeV, mat, ap, sp) * patientTx;
+      const Hdot_Ext_d = CALC.doseRate(gammaExt, A0_GBq, d_m, thick, E_MeV, mat, ap, sp) * patientTx;
       H_WB_cum  = Hdot_WB_d  * t_h;
       H_Ext_cum = Hdot_Ext_d * t_h;
     }
@@ -827,16 +891,23 @@
     const shieldEl    = document.getElementById('shieldingInfo');
     const shieldProps = document.getElementById('shieldingProps');
     if (mat !== 'none') {
-      const { hvl_cm, tvl_cm, mu_cm, method } = CALC.hvlTvl(E_MeV, mat, ap);
-      const T = CALC.getTransmission(thick, E_MeV, mat, ap);
+      const { hvl_cm, tvl_cm, mu_cm, method } = CALC.hvlTvl(E_MeV, mat, ap, sp);
+      const T = CALC.getTransmission(thick, E_MeV, mat, ap, sp);
       const methodLabel = method === 'archer'
         ? '<span class="tag tag-pet" style="font-size:.72rem;">Archer broad-beam</span>'
+        : method === 'narrow_beam_spectrum'
+        ? `<span class="tag tag-other" style="font-size:.72rem;">Narrow beam · ${sp.length}-line spectrum</span>`
         : '<span class="tag tag-other" style="font-size:.72rem;">Narrow beam</span>';
+      const methodNote = method === 'archer'
+        ? 'Monte Carlo, Oumano et al. 2025'
+        : method === 'narrow_beam_spectrum'
+        ? 'Σ wᵢ·e⁻ᵘ⁽ᴱᵢ⁾ˣ dose-weighted (ICRP 107), NIST XCOM'
+        : 'e⁻ᵘˣ, NIST XCOM';
       shieldEl.classList.remove('hidden');
       shieldProps.innerHTML = `
         <div class="prop-item"><div class="prop-key">Material</div><div class="prop-val">${matLabel(mat)}</div></div>
         <div class="prop-item"><div class="prop-key">Method</div><div class="prop-val">${methodLabel}</div>
-          <div class="prop-note">${method === 'archer' ? 'Monte Carlo, Oumano et al. 2025' : 'e⁻ᵘˣ, NIST XCOM'}</div></div>
+          <div class="prop-note">${methodNote}</div></div>
         <div class="prop-item"><div class="prop-key">Thickness</div><div class="prop-val">${thick} cm</div><div class="prop-note">${UTILS.fmt(thick * 10)} mm</div></div>
         ${mu_cm !== null ? `<div class="prop-item"><div class="prop-key">&#956; (${UTILS.fmt(E_MeV * 1000)} keV)</div><div class="prop-val">${UTILS.fmt(mu_cm)} cm&#8315;&#185;</div></div>` : ''}
         <div class="prop-item"><div class="prop-key">HVL</div><div class="prop-val">${UTILS.fmt(hvl_cm)} cm</div><div class="prop-note">${UTILS.fmt(hvl_cm * 10)} mm</div></div>
@@ -852,13 +923,13 @@
     // ---- Dose vs distance chart ----
     document.getElementById('chartTitle').textContent =
       thick > 0 && mat !== 'none'
-        ? `Dose Rate vs Distance (${matLabel(mat)}, ${thick} cm${ap ? ' — Archer' : ' — narrow beam'})`
+        ? `Dose Rate vs Distance (${matLabel(mat)}, ${thick} cm${ap ? ' — Archer' : sp ? ' — narrow beam, spectrum-weighted' : ' — narrow beam'})`
         : 'Dose Rate vs Distance (unshielded)';
     const distances = [];
     for (let d = 0.10; d <= 5.0; d += 0.05) distances.push(+d.toFixed(2));
 
-    const doseWB  = distances.map(d => CALC.doseRate(gammaWB,  A0_GBq, d, thick, E_MeV, mat, ap) * patientTx);
-    const doseExt = distances.map(d => CALC.doseRate(gammaExt, A0_GBq, d, thick, E_MeV, mat, ap) * patientTx);
+    const doseWB  = distances.map(d => CALC.doseRate(gammaWB,  A0_GBq, d, thick, E_MeV, mat, ap, sp) * patientTx);
+    const doseExt = distances.map(d => CALC.doseRate(gammaExt, A0_GBq, d, thick, E_MeV, mat, ap, sp) * patientTx);
 
     // Find closest distance index for orange mark
     let closestDistIdx = -1;
@@ -975,7 +1046,10 @@
       </div>
     `;
 
-    lastCalcResult = { useH007, gammaExt, gammaWB, nAdmin, H_WB_cum, H_Ext_cum, Hdot_WB, Hdot_WB_t, Hdot_Ext, Hdot_Ext_t, Hdot_WB_1m, Hdot_WB_t_1m, Hdot_Ext_1m, Hdot_Ext_t_1m, n, A0raw, A0unit, A0_GBq, d_m, t_h };
+    lastCalcResult = { useH007, gammaExt, gammaWB, nAdmin, H_WB_cum, H_Ext_cum, Hdot_WB, Hdot_WB_t, Hdot_Ext, Hdot_Ext_t, Hdot_WB_1m, Hdot_WB_t_1m, Hdot_Ext_1m, Hdot_Ext_t_1m, n, A0raw, A0unit, A0_GBq, d_m, t_h,
+      mat, thick, patientTx, withDecay,
+      method: mat === 'none' || thick <= 0 ? 'unshielded' : ap ? 'archer' : sp ? 'narrow_beam_spectrum' : 'narrow_beam',
+      spectrumLines: sp ? sp.length : 0 };
 
     card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     updateHvlInfo();
@@ -985,6 +1059,12 @@
   if (urlId) setTimeout(() => document.getElementById('btnCalc').click(), 150);
 
 })();
+</script>
+<script>
+// Register the service worker for offline/PWA use (HTTP(S) only — file:// has no SW support)
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.protocol === 'http:')) {
+  navigator.serviceWorker.register('sw.js').catch(() => { /* offline-first is best-effort */ });
+}
 </script>
 </body>
 </html>

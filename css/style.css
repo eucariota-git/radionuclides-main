@@ -1178,6 +1178,94 @@ kbd {
   }
 }
 
+/* ---- Printable calculation report (js/report.js) ---- */
+#printReport {
+  display: none;
+}
+
+@media print {
+  /* When a formal report is active, print only the report */
+  body.print-report-mode > *:not(#printReport) {
+    display: none !important;
+  }
+
+  body.print-report-mode #printReport {
+    display: block;
+    color: black;
+    font-size: 10pt;
+    font-family: Georgia, 'Times New Roman', serif;
+    max-width: 100%;
+  }
+
+  body.print-report-mode .page-body::before {
+    content: none;
+  }
+
+  #printReport .rpt-title {
+    font-size: 14pt;
+    font-weight: 700;
+    border-bottom: 2pt solid #2d6a4f;
+    padding-bottom: 4pt;
+    margin-bottom: 8pt;
+  }
+
+  #printReport .rpt-meta,
+  #printReport .rpt-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 8pt;
+  }
+
+  #printReport .rpt-meta td,
+  #printReport .rpt-table td {
+    border: 0.5pt solid #999;
+    padding: 3pt 6pt;
+    vertical-align: top;
+  }
+
+  #printReport .rpt-meta td:first-child,
+  #printReport .rpt-table td:first-child {
+    width: 32%;
+    font-weight: 600;
+    background: #f0f0f0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  #printReport .rpt-heading {
+    font-size: 11pt;
+    font-weight: 700;
+    margin: 10pt 0 4pt;
+    border-bottom: 0.5pt solid #999;
+  }
+
+  #printReport .rpt-section {
+    break-inside: avoid;
+  }
+
+  #printReport .rpt-list {
+    margin: 2pt 0 6pt 14pt;
+    padding: 0;
+    font-size: 9pt;
+  }
+
+  #printReport .rpt-disclaimer {
+    margin-top: 10pt;
+    padding: 6pt;
+    border: 1pt solid #b00;
+    font-size: 8.5pt;
+    break-inside: avoid;
+  }
+
+  #printReport .rpt-sign {
+    margin-top: 16pt;
+    display: flex;
+    justify-content: space-between;
+    font-size: 9pt;
+    break-inside: avoid;
+  }
+}
+
 /* ---- Responsive ---- */
 @media (max-width: 900px) {
   .page-body {

@@ -25,12 +25,16 @@ custom.html       Custom nuclide CSV uploader (IAEA LiveChart format)
 css/style.css     Shared styles (CSS variables, responsive grid)
 
 js/data.js        PHYSICS module — ICRU 57/ICRP 74 conversion coefficients, attenuation tables
-js/physics.js     CALC module — decay, dose, Archer/narrow-beam shielding algorithms
+js/physics.js     CALC module — decay, dose, Archer/spectrum/narrow-beam shielding algorithms
 js/db.js          DB module — nuclide database, search/filter, sessionStorage for custom nuclides
 js/csv-parser.js  CSV_PARSER module — IAEA LiveChart CSV parser
+js/report.js      REPORT module — printable calculation reports with traceability
 
 data/nuclides.json        Main radionuclide database (40 entries — source of truth)
 data/nuclides-data.js     Auto-generated from nuclides.json for file:// compatibility
+
+manifest.json / sw.js / favicon.svg   PWA: install manifest, cache-first service worker, icon
+                  (bump CACHE_VERSION in sw.js when data or app logic changes)
 ```
 
 ## Running Locally
@@ -54,8 +58,8 @@ Or open directly via `file://` — the app handles both protocols.
 ## Physics Notes
 
 - Dose rate constant: Γ [μSv·h⁻¹·GBq⁻¹·m²] = K × Σ(nᵢ × h(Eᵢ)), K = 28.648
-- **Archer equation** (broad-beam, Monte Carlo) used for Tc-99m, F-18, I-131, Lu-177
-- **Narrow-beam** (exponential + NIST XCOM) used for all other nuclides
+- **Archer equation** (broad-beam, Monte Carlo) used for Tc-99m, F-18, I-131, Lu-177 — its parameters already fit the FULL photon spectrum, never combine with spectral weighting
+- **Spectrum-weighted narrow beam** T(x) = Σ wᵢ·e^(−μ(Eᵢ)x) for all other curated nuclides (`shielding_spectrum` field, regenerated with `tools/add-shielding-spectra.js`); single-line narrow beam only as fallback for custom nuclides
 - Photon filter: G/X rays only, E ≥ 20 keV, yield ≥ 0.01%
 - Half-lives stored in seconds internally; display format handled separately
 - Dose types: H*(10) for d ≥ 25 cm (whole body), H'(0.07) for d < 25 cm (extremities)

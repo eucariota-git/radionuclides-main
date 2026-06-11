@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NM Radionuclide Planner — Decay Calculator</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2d6a4f">
   <link rel="stylesheet" href="css/style.css">
   <script src="js/chart.umd.min.js"></script>
 </head>
@@ -142,7 +145,10 @@
     <div class="mt-2">
       <div class="d-flex align-center gap-2 mb-1 justify-between">
         <span class="text-sm text-muted" id="tableCaption">Activity at selected time points</span>
-        <button class="btn btn-secondary btn-sm" id="btnExportCsv">&#11123; Export CSV</button>
+        <span class="d-flex gap-1">
+          <button class="btn btn-secondary btn-sm" id="btnPrintDecay" type="button" title="Generate a printable calculation report with traceability (sources, method, disclaimer)">&#128196; Report / PDF</button>
+          <button class="btn btn-secondary btn-sm" id="btnExportCsv" type="button">&#11123; Export CSV</button>
+        </span>
       </div>
       <div class="overflow-x-auto max-height-260">
         <table class="data-table" id="decayTable">
@@ -171,6 +177,7 @@
 <script src="data/icrp107-data.js"></script>
 <script src="js/icrp107-loader.js"></script>
 <script src="js/utils.js"></script>
+<script src="js/report.js"></script>
 <script>
 (async () => {
   // ---- UI initialization ----
@@ -359,9 +366,12 @@
     const sourceTag = n._icrp107
       ? `<span class="tag tag-icrp107" title="Decay data from ICRP 107">ICRP 107</span>`
       : '';
+    const chainNote = n.chain_members
+      ? `<div class="text-sm" style="margin-top:.35rem;">&#9432; Chain entry (${n.chain_members.length} members): the curve follows the parent T&#189;, with progeny in secular equilibrium scaling proportionally. Valid once equilibrium is established (source aged &#8819; 10 daughter half-lives).</div>`
+      : '';
     document.getElementById('nuclideInfo').innerHTML =
       `<strong>${UTILS.escapeHtml(n.symbol)} — ${UTILS.escapeHtml(n.name)}</strong> ${sourceTag} &nbsp;|&nbsp; T&#189; = ${UTILS.escapeHtml(n.half_life_display)} &nbsp;|&nbsp;
-       &lambda; = ${UTILS.fmt(CALC.lambda(T_half_h))} h&#8315;&#185;`;
+       &lambda; = ${UTILS.fmt(CALC.lambda(T_half_h))} h&#8315;&#185;${chainNote}`;
 
     document.getElementById('resultGrid').innerHTML = `
       <div class="result-box">
@@ -768,13 +778,92 @@
       clearSec.classList.remove('hidden');
     }
 
+    // Snapshot for the printable report (derived values recomputed there)
+    lastDecayResult = {
+      n, A0raw, A0unit, A0_MBq, t_h, At_MBq, fraction, T_half_h,
+      AtgtRaw, AtgtUnit, vialWeightRaw, vialWeightUnit, weight_kg,
+      refDt: document.getElementById('refDateTime').value,
+      targetDt: document.getElementById('targetDateTime').value,
+    };
+
     card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
+
+  // ---- Printable report ----
+  let lastDecayResult = null;
+
+  document.getElementById('btnPrintDecay').onclick = () => {
+    if (!lastDecayResult) { alert('Calculate first.'); return; }
+    const r = lastDecayResult;
+    const lam = CALC.lambda(r.T_half_h);
+
+    const inputs = [
+      ['Initial activity A₀', `${r.A0raw} ${r.A0unit} (${UTILS.fmt(r.A0_MBq)} MBq)`],
+      ['Half-life T½', `${r.n.half_life_display} (λ = ${UTILS.fmt(lam)} h⁻¹)`],
+      ['Elapsed time t', `${UTILS.fmt(r.t_h)} h = ${UTILS.fmt(r.t_h / 24)} d = ${UTILS.fmt(r.t_h / r.T_half_h)} T½`],
+    ];
+    if (r.refDt)    inputs.push(['Reference date/time', r.refDt.replace('T', ' ')]);
+    if (r.targetDt) inputs.push(['Target date/time', r.targetDt.replace('T', ' ')]);
+
+    const results = [
+      ['Activity A(t)', `${UTILS.fmt(r.At_MBq)} MBq = ${UTILS.fmt(CALC.convertActivity(r.At_MBq, 'MBq', 'GBq'))} GBq = ${UTILS.fmt(CALC.convertActivity(r.At_MBq, 'MBq', 'mCi'))} mCi`],
+      ['Fraction remaining', `${UTILS.fmt(r.fraction * 100)}%`],
+      ['Activity lost', `${UTILS.fmt(r.A0_MBq - r.At_MBq)} MBq (${UTILS.fmt((1 - r.fraction) * 100)}%)`],
+    ];
+    if (!isNaN(r.AtgtRaw) && r.AtgtRaw > 0) {
+      const Atgt_MBq = CALC.convertActivity(r.AtgtRaw, r.AtgtUnit, 'MBq');
+      const tT = CALC.timeToActivity(r.A0_MBq, Atgt_MBq, r.T_half_h);
+      results.push([`Time to reach ${r.AtgtRaw} ${r.AtgtUnit}`,
+        isFinite(tT) ? `${UTILS.fmt(tT)} h = ${UTILS.fmt(tT / 24)} d = ${UTILS.fmt(tT / r.T_half_h)} T½` : 'target ≥ A₀ — no decay needed']);
+    }
+
+    const sections = [
+      { heading: 'Input parameters', rows: inputs },
+      { heading: 'Results', rows: results },
+    ];
+    const notes = [`Exponential decay A(t) = A₀·e^(−λt) with T½ from ${r.n._icrp107 || r.n._custom ? 'the selected data source' : 'ICRP 107'}.`];
+    const sources = [];
+
+    if (!isNaN(r.vialWeightRaw) && r.vialWeightRaw > 0 && r.weight_kg) {
+      const clearLevel = r.n.clearance_a1_kBq_per_kg ?? null;
+      const specA0 = CALC.convertActivity(r.A0_MBq, 'MBq', 'kBq') / r.weight_kg;
+      const specAt = CALC.convertActivity(r.At_MBq, 'MBq', 'kBq') / r.weight_kg;
+      const rows = [
+        ['Material weight', `${r.vialWeightRaw} ${r.vialWeightUnit} (${UTILS.fmt(r.weight_kg)} kg)`],
+        ['Specific activity at t = 0', `${UTILS.fmt(specA0)} kBq/kg`],
+        [`Specific activity at t = ${UTILS.fmt(r.t_h)} h`, `${UTILS.fmt(specAt)} kBq/kg`],
+      ];
+      if (clearLevel === null) {
+        rows.push(['Clearance level (Table A.1)', `${r.n.id} not listed in RD 1217/2024 Annex IV Table A.1`]);
+      } else {
+        rows.push(['Clearance level (Table A.1)', `${UTILS.fmt(clearLevel)} kBq/kg`]);
+        rows.push(['Status at t = 0', `${specA0 <= clearLevel ? 'BELOW' : 'ABOVE'} clearance (${UTILS.fmt(specA0 / clearLevel)} × level)`]);
+        rows.push([`Status at t = ${UTILS.fmt(r.t_h)} h`, `${specAt <= clearLevel ? 'BELOW' : 'ABOVE'} clearance (${UTILS.fmt(specAt / clearLevel)} × level)`]);
+        if (specA0 > clearLevel) {
+          const t_clear_h = (r.T_half_h / Math.LN2) * Math.log(specA0 / clearLevel);
+          rows.push(['Clearance level reached after', `≈ ${UTILS.fmt(t_clear_h)} h = ${UTILS.fmt(t_clear_h / 24)} d`]);
+        }
+      }
+      sections.push({ heading: 'Clearance assessment — RD 1217/2024 Annex IV Table A.1', rows });
+      notes.push('Clearance comparison addresses the activity-concentration criterion only; absolute activity limits and CSN consultation may also apply before disposal.');
+      sources.push('RD 1217/2024, Anexo IV Tabla A.1 (BOE-A-2024-25205) — clearance levels for solid materials.');
+    }
+    if (r.n._icrp107) notes.push('ICRP 107 extended entry: decay data not manually validated. Verify against primary sources before regulatory use.');
+    if (r.n.chain_members) notes.push('Chain entry: dose constants include progeny in secular equilibrium; the decay calculation follows the parent half-life (valid once equilibrium is established, i.e. aged ≳ 10 daughter half-lives).');
+
+    REPORT.print({ title: 'Decay Calculation', nuclide: r.n, sections, notes, sources });
+  };
 
   // Auto-calculate if nuclide pre-selected
   if (urlId) setTimeout(calculate, 100);
 
 })();
+</script>
+<script>
+// Register the service worker for offline/PWA use (HTTP(S) only — file:// has no SW support)
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.protocol === 'http:')) {
+  navigator.serviceWorker.register('sw.js').catch(() => { /* offline-first is best-effort */ });
+}
 </script>
 </body>
 </html>

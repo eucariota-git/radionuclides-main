@@ -294,6 +294,76 @@ test('500000 μSv / 500 mSv (extremity) = 100%', percentOfLimit(500000, 500), 10
 test('1000 μSv / 20 mSv = 5%', percentOfLimit(1000, 20), 5, 0.01);
 console.log();
 
+// Test 11: Spectrum-weighted narrow-beam transmission (CALC.transmissionSpectrum)
+console.log('Test 11: Spectrum-weighted transmission T(x) = Σ wᵢ·e^(−μ(Eᵢ)·x)');
+const vm = require('vm');
+const ctx = vm.createContext({ console });
+vm.runInContext(fs.readFileSync(path.join(__dirname, '../js/data.js'), 'utf8') + ';this.__P = PHYSICS;', ctx);
+vm.runInContext(fs.readFileSync(path.join(__dirname, '../js/physics.js'), 'utf8') + ';this.__C = CALC;', ctx);
+const PHYSICS_ = ctx.__P, CALC_ = ctx.__C;
+
+// 11a: single-line spectrum must equal the mono-energetic exponential
+test('single-line spectrum [511 keV] equals e^(−μx) at 1 cm Pb',
+  CALC_.transmissionSpectrum(1, [[511, 1]], 'Pb'),
+  CALC_.transmission(1, 0.511, 'Pb'), 1e-9);
+
+// 11b: two-line manual sum 0.7·e^(−μ(100keV)x) + 0.3·e^(−μ(500keV)x), x = 0.3 cm Pb
+{
+  const muA = PHYSICS_.getMu(0.100, 'Pb'), muB = PHYSICS_.getMu(0.500, 'Pb');
+  const expected = 0.7 * Math.exp(-muA * 0.3) + 0.3 * Math.exp(-muB * 0.3);
+  test('two-line spectrum manual sum at 0.3 cm Pb',
+    CALC_.transmissionSpectrum(0.3, [[100, 0.7], [500, 0.3]], 'Pb'), expected, 1e-9);
+}
+
+// 11c: spectrum transmission ≥ softest single line would suggest behind thick shields
+//      (beam hardening: hard lines dominate; Ga-67 rep 93 keV vs 185–394 keV lines)
+{
+  const ga67 = nuclides.find(n => n.id === 'Ga-67');
+  const Tmono = CALC_.transmission(0.5, ga67.representative_energy_keV / 1000, 'Pb');
+  const Tspec = CALC_.transmissionSpectrum(0.5, ga67.shielding_spectrum, 'Pb');
+  totalTests++;
+  if (Tspec > Tmono * 10) {
+    passedTests++;
+    console.log(`  ✓ Ga-67 0.5 cm Pb: spectrum T=${Tspec.toExponential(2)} ≫ mono T=${Tmono.toExponential(2)} (hardening captured)`);
+  } else {
+    failedTests++;
+    console.log(`  ✗ Ga-67 hardening not captured: spec ${Tspec} vs mono ${Tmono}`);
+  }
+}
+
+// 11d: inverse solver round-trip — thicknessForAttenuation(T) then forward T(x)
+{
+  const ra223 = nuclides.find(n => n.id === 'Ra-223');
+  const x = CALC_.thicknessForAttenuation(0.1, 0.351, 'Pb', null, ra223.shielding_spectrum);
+  test('Ra-223 spectrum TVL round-trip T(x(0.1)) = 0.1',
+    CALC_.transmissionSpectrum(x, ra223.shielding_spectrum, 'Pb'), 0.1, 1e-6);
+}
+
+// 11e: getTransmission precedence — Archer params override spectrum
+{
+  const tc = nuclides.find(n => n.id === 'Tc-99m');
+  const ap = tc.archer_params.Pb;
+  test('Tc-99m getTransmission uses Archer (not spectrum) when params given, 2 mm Pb',
+    CALC_.getTransmission(0.2, 0.141, 'Pb', ap, tc.shielding_spectrum),
+    CALC_.transmissionArcher(2, ap), 1e-12);
+}
+
+// 11f: all stored spectra are normalized and within physical energy bounds
+{
+  let ok = 0, bad = 0;
+  for (const n of nuclides) {
+    if (!n.shielding_spectrum) continue;
+    const sum = n.shielding_spectrum.reduce((s, l) => s + l[1], 0);
+    const eOk = n.shielding_spectrum.every(l => l[0] >= 20 && (!n.max_photon_energy_keV || l[0] <= n.max_photon_energy_keV + 0.5));
+    if (Math.abs(sum - 1) <= 0.005 && eOk) ok++;
+    else { bad++; console.log(`  ✗ ${n.id}: Σw=${sum.toFixed(4)}, energies in range: ${eOk}`); }
+  }
+  totalTests++;
+  if (bad === 0) { passedTests++; console.log(`  ✓ ${ok} stored spectra normalized (Σw=1±0.005) with E ∈ [20 keV, E_max]`); }
+  else failedTests++;
+}
+console.log();
+
 // Summary
 console.log('\n=== SUMMARY ===');
 console.log(`Total: ${passedTests} passed, ${failedTests} failed (out of ${totalTests} tests)`);

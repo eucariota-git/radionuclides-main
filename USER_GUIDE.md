@@ -13,6 +13,8 @@ The application has no installation or authentication. Simply open the link abov
 - **Desktop**: Firefox, Chrome, Safari, Edge (recommended)
 - **Mobile**: iOS Safari, Chrome mobile (with landscape mode for better experience)
 - **Offline**: Works entirely offline when opened from `file://` or after first load
+- **Install as app (PWA)**: when served over HTTP(S) (e.g. the GitHub Pages link), the browser offers "Install" / "Add to Home screen" — the app then runs standalone with its own icon and a service worker keeps all assets cached for fully offline use
+- **Reports**: the Decay and Dose calculators include a **📄 Report / PDF** button that generates a printable calculation report (timestamp, database version, inputs, results, method, data sources, disclaimer and sign-off line) — use the browser's "Save as PDF" destination to archive it
 
 ---
 
@@ -119,7 +121,8 @@ The application includes an **extended database of 1,252 radionuclides** from IC
    - Thickness: 0–300 mm
    - Transmission curve shows dose reduction
    - Uses **Archer broad-beam** (Monte Carlo) for Tc-99m, F-18, I-131, Lu-177
-   - Uses **narrow-beam** (NIST XCOM) for other nuclides
+   - Uses **spectrum-weighted narrow-beam** (dose-weighted sum over the nuclide's ICRP 107 photon lines, NIST XCOM) for other nuclides — accounts for beam hardening of multi-line emitters; no build-up factor
+   - Custom nuclides without a stored spectrum fall back to single-line narrow-beam
 
 5. **Cumulative dose**:
    - Enter **exposure time per administration** (hours/min): time the worker is near the source per patient
@@ -261,7 +264,7 @@ Toggle dark/light mode using the **moon icon** (🌙) in the top-right corner. P
 - **Ambient dose equivalent H\*(10)** assumes:
   - Photon field (gamma and X-rays)
   - Point source at specified distance
-  - No scattering (narrow-beam ideal)
+  - No scattering build-up (narrow-beam ideal; multi-line spectra are dose-weighted)
   - Calibration per ICRU 51
 
 - **Directional dose H'(0.07)** for extremities:

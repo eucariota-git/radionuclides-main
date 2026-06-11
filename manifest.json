@@ -1,0 +1,19 @@
+{
+  "name": "NM Radionuclide Planner",
+  "short_name": "NM Planner",
+  "description": "Nuclear medicine radionuclide reference: properties, decay, external dose and clearance calculators. Works fully offline.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f9f7",
+  "theme_color": "#2d6a4f",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
