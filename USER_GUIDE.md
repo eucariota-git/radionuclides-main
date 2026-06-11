@@ -121,8 +121,8 @@ The application includes an **extended database of 1,252 radionuclides** from IC
    - Thickness: 0–300 mm
    - Transmission curve shows dose reduction
    - Uses **Archer broad-beam** (Monte Carlo) for Tc-99m, F-18, I-131, Lu-177
-   - Uses **spectrum-weighted narrow-beam** (dose-weighted sum over the nuclide's ICRP 107 photon lines, NIST XCOM) for other nuclides — accounts for beam hardening of multi-line emitters; no build-up factor
-   - Custom nuclides without a stored spectrum fall back to single-line narrow-beam
+   - Uses **spectrum-weighted narrow-beam with build-up** (dose-weighted sum over the nuclide's ICRP 107 photon lines; NIST XCOM attenuation; ANSI/ANS-6.4.3 point-isotropic exposure buildup factors) for other nuclides — accounts for beam hardening AND scatter build-up
+   - Custom nuclides without a stored spectrum fall back to single-line narrow-beam (also with build-up)
 
 5. **Cumulative dose**:
    - Enter **exposure time per administration** (hours/min): time the worker is near the source per patient
@@ -264,7 +264,7 @@ Toggle dark/light mode using the **moon icon** (🌙) in the top-right corner. P
 - **Ambient dose equivalent H\*(10)** assumes:
   - Photon field (gamma and X-rays)
   - Point source at specified distance
-  - No scattering build-up (narrow-beam ideal; multi-line spectra are dose-weighted)
+  - Scatter build-up included via infinite-medium point-isotropic factors (ANSI/ANS-6.4.3) — slightly conservative for finite barriers; still not a substitute for structural shielding design calculations
   - Calibration per ICRU 51
 
 - **Directional dose H'(0.07)** for extremities:

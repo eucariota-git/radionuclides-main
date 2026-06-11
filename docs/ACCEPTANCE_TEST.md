@@ -1,6 +1,6 @@
 # Hoja de prueba de aceptación — NM Radionuclide Planner
 
-**Versión de la aplicación:** v1.1 (base de datos `nuclides.json` v1.1)
+**Versión de la aplicación:** v1.2 (base de datos `nuclides.json` v1.1; blindaje narrow-beam con build-up ANS-6.4.3)
 **Objeto:** validación independiente por un radiofísico / especialista en PR distinto del desarrollador, previa a la adopción de la herramienta en el servicio.
 **Instrucciones:** ejecute cada caso en la aplicación, anote el valor obtenido y contraste con su fuente independiente (Delacroix et al. 2002 *Radionuclide and Radiation Protection Data Handbook*, Smith & Stabin 2012, ficha técnica del radiofármaco, o cálculo propio). Marque ✓/✗ y firme al final.
 
@@ -19,7 +19,7 @@
 | A3 | **Decaimiento** (Decay) | F-18, A₀ = 1000 MBq, t = 2 h | A(t) = 468.7 MBq (46.87%) | | cálculo manual con T½ = 109.77 min | |
 | A4 | **Dosis sin blindaje** (Dose) | I-131, 1 GBq, d = 1 m | Ḣ\*(10) = 65.78 μSv/h | | Delacroix: ~66 μSv·h⁻¹·GBq⁻¹ a 1 m | |
 | A5 | **Blindaje Archer** (Dose) | Tc-99m, 1 GBq, d = 0.5 m, Pb 2 mm | T = 0.56%; Ḣ = 0.48 μSv/h; HVL(Pb) = 0.24 mm (badge "Archer") | | Oumano 2025 / HVL publicado ~0.25 mm | |
-| A6 | **Blindaje espectral multi-línea** (Dose) | Ga-67, 1 GBq, d = 0.30 m, Pb 5 mm | T = 7.58%; Ḣ = 22.6 μSv/h (badge "Narrow beam · 9-line spectrum") | | Delacroix curvas de transmisión Ga-67/Pb | |
+| A6 | **Blindaje espectral multi-línea + build-up** (Dose) | Ga-67, 1 GBq, d = 0.30 m, Pb 5 mm | T = 9.26%; Ḣ = 27.6 μSv/h (badge "Narrow beam · 9-line spectrum + build-up") | | Delacroix curvas de transmisión Ga-67/Pb (el valor de la app debe quedar EN o POR ENCIMA de la curva publicada: build-up de medio infinito = conservador) | |
 | A7 | **Extremidades H'(0.07)** (Dose) | I-125, 500 MBq, d = 10 cm | Ḣ'(0.07) = 2126 μSv/h ≈ 2.13 mSv/h (fila extremities ACTIVE) | | Cornejo Γ^H'(0.07) = 40.9 (±5%) | |
 | A8 | **Desclasificación** (Decay) | Lu-177, A₀ = 2 GBq, peso = 10 kg | 200 000 kBq/kg inicial; nivel 100 kBq/kg; alcanza desclasificación tras ≈ 72.8 d | | RD 1217/2024 Anexo IV Tabla A.1 (Lu-177 = 1E+02 Bq/g) | |
 | A9 | **Efluente líquido** (Properties) | I-131 | 75.8 Bq/L; e(g) = 2.2×10⁻⁸ Sv/Bq | | ICRP 119 Anexo F Tabla F.1 (adulto); IS-28 | |
@@ -45,7 +45,7 @@
 El validador confirma que conoce y acepta estas limitaciones documentadas:
 
 - [ ] Geometría de fuente puntual; sin dispersión ni distribución de fuente.
-- [ ] Narrow-beam espectral **sin factor de build-up** — no usar para diseño de blindajes estructurales (memorias ante el CSN requieren TVLs publicados o cálculo dedicado).
+- [ ] El narrow-beam espectral incluye **build-up de exposición** (ANSI/ANS-6.4.3, fuente puntual isótropa en medio infinito — ligeramente conservador para barreras finitas). Aun así, NO usar para diseño de blindajes estructurales (memorias ante el CSN requieren TVLs publicados o cálculo dedicado).
 - [ ] Valores de contenedor Y-90 son estimaciones (metodología Zanzonico 1999, no tabuladas en esa publicación).
 - [ ] Cristalino estimado con H\*(10).
 - [ ] Decaimiento entre administraciones no modelado (cada administración independiente).
@@ -65,4 +65,4 @@ El validador confirma que conoce y acepta estas limitaciones documentadas:
 
 **Validador (nombre y firma):** ______________________________
 **Fecha:** ____________
-**Versión validada:** v1.1 — commit: ____________
+**Versión validada:** v1.2 — commit: ____________

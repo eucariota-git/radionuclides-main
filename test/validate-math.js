@@ -219,7 +219,9 @@ test('A(3×T½) = 12.5% of A₀', activityAtTime(100, T_half_Tc, 3*T_half_Tc), 1
 console.log();
 
 // Test 6: HVL calculation HVL = ln(2) / μ
-console.log('Test 6: HVL calculation (narrow-beam)');
+// (uncollided-beam arithmetic from μ; the app's CALC.hvlTvl additionally
+// includes ANS-6.4.3 exposure buildup — covered by Tests 11–12)
+console.log('Test 6: HVL calculation (uncollided narrow-beam, from μ)');
 // At 141 keV in Lead
 const muRho_Pb_141keV = interpLinear(ATTENUATION, 0.141, 0, 1);
 const mu_Pb_141keV = muRho_Pb_141keV * RHO_PB;
@@ -237,7 +239,8 @@ test('HVL for concrete at 141 keV ≈ 1.88 cm (narrow beam)', hvl_concrete_141ke
 console.log();
 
 // Test 7: Transmission formula T = e^(-μ×x)
-console.log('Test 7: Narrow-beam transmission T = e^(-μ·x)');
+// (uncollided component only; CALC.transmission applies buildup on top — Tests 11–12)
+console.log('Test 7: Uncollided narrow-beam transmission T = e^(-μ·x)');
 // 1 mm Pb at 141 keV — μ ≈ 30 cm⁻¹ → 1 mm ≈ 4.3 HVLs → T ≈ e^(−3.0) ≈ 0.049
 const T_1mm_Pb = Math.exp(-mu_Pb_141keV * 0.1);  // 0.1 cm
 test('T(1 mm Pb) at 141 keV ≈ 0.049 (narrow beam, ≈4.3 HVLs)', T_1mm_Pb, 0.049, 0.05);
@@ -307,11 +310,13 @@ test('single-line spectrum [511 keV] equals e^(−μx) at 1 cm Pb',
   CALC_.transmissionSpectrum(1, [[511, 1]], 'Pb'),
   CALC_.transmission(1, 0.511, 'Pb'), 1e-9);
 
-// 11b: two-line manual sum 0.7·e^(−μ(100keV)x) + 0.3·e^(−μ(500keV)x), x = 0.3 cm Pb
+// 11b: two-line manual sum Σ wᵢ·min(1, B(Eᵢ)·e^(−μᵢx)), x = 0.3 cm Pb
 {
-  const muA = PHYSICS_.getMu(0.100, 'Pb'), muB = PHYSICS_.getMu(0.500, 'Pb');
-  const expected = 0.7 * Math.exp(-muA * 0.3) + 0.3 * Math.exp(-muB * 0.3);
-  test('two-line spectrum manual sum at 0.3 cm Pb',
+  const expected = [[0.100, 0.7], [0.500, 0.3]].reduce((s, [E, w]) => {
+    const mfp = PHYSICS_.getMu(E, 'Pb') * 0.3;
+    return s + w * Math.min(1, PHYSICS_.getBuildup(E, mfp, 'Pb') * Math.exp(-mfp));
+  }, 0);
+  test('two-line spectrum manual sum (with buildup) at 0.3 cm Pb',
     CALC_.transmissionSpectrum(0.3, [[100, 0.7], [500, 0.3]], 'Pb'), expected, 1e-9);
 }
 
@@ -361,6 +366,101 @@ test('single-line spectrum [511 keV] equals e^(−μx) at 1 cm Pb',
   totalTests++;
   if (bad === 0) { passedTests++; console.log(`  ✓ ${ok} stored spectra normalized (Σw=1±0.005) with E ∈ [20 keV, E_max]`); }
   else failedTests++;
+}
+console.log();
+
+// Test 12: Exposure buildup factors (ANSI/ANS-6.4.3 / NUREG/CR-5740 Table 3)
+console.log('Test 12: Exposure buildup B(E, mfp) and buildup-aware transmission');
+
+// 12a: grid-point reproduction — values transcribed from NUREG/CR-5740 Table 3
+//      (Lead p. II-40, Concrete p. II-44) and verified visually on the scan
+{
+  const gridChecks = [
+    ['Pb', 1.0, 10, 3.51], ['Pb', 0.089, 40, 2.36e12], ['Pb', 0.088, 0.5, 1.05],
+    ['Pb', 15, 40, 5.59e5], ['Pb', 0.2, 4, 1.27], ['Pb', 0.13, 40, 2.08e5],
+    ['concrete_NW', 0.1, 1, 2.78], ['concrete_NW', 1.0, 40, 164],
+    ['concrete_LW', 0.2, 20, 201], ['concrete_NW', 0.015, 40, 1.11],
+    ['concrete_NW', 0.04, 7, 2.35],
+  ];
+  for (const [mat, E, mfp, exp] of gridChecks) {
+    test(`B(${E} MeV, ${mfp} mfp, ${mat}) = ${exp}`, PHYSICS_.getBuildup(E, mfp, mat), exp, 1e-9);
+  }
+}
+
+// 12b: B(E, 0) = 1 and clamp beyond the 40-mfp validity limit
+test('B(0.5 MeV, 0 mfp, Pb) = 1', PHYSICS_.getBuildup(0.5, 0, 'Pb'), 1, 1e-12);
+test('B clamps beyond 40 mfp (concrete, 1 MeV)',
+  PHYSICS_.getBuildup(1, 80, 'concrete_NW'), PHYSICS_.getBuildup(1, 40, 'concrete_NW'), 1e-12);
+
+// 12c: Pb K-edge is not interpolated across (B jumps ~25× at 5 mfp)
+{
+  const sub = PHYSICS_.getBuildup(0.0879, 5, 'Pb');
+  const sup = PHYSICS_.getBuildup(0.0891, 5, 'Pb');
+  totalTests++;
+  if (sub < 1.2 && sup > 25) {
+    passedTests++;
+    console.log(`  ✓ Pb K-edge split: B(87.9 keV)=${sub.toFixed(2)} | B(89.1 keV)=${sup.toFixed(1)}`);
+  } else {
+    failedTests++;
+    console.log(`  ✗ Pb K-edge split broken: sub=${sub}, super=${sup}`);
+  }
+}
+
+// 12d: T(x) with buildup is monotonically non-increasing (min(1,·) clamp)
+{
+  let ok = true;
+  for (const [E, mat, xmax] of [[0.1, 'concrete_NW', 60], [0.662, 'concrete_NW', 80], [0.141, 'Pb', 3], [0.364, 'Pb', 8]]) {
+    let prev = 1 + 1e-12;
+    for (let x = 0; x <= xmax; x += xmax / 240) {
+      const T = CALC_.transmission(x, E, mat);
+      if (T > prev + 1e-12) { ok = false; console.log(`  ✗ T not monotone at ${E} MeV ${mat} x=${x}`); break; }
+      prev = T;
+    }
+  }
+  totalTests++;
+  if (ok) { passedTests++; console.log('  ✓ T(x) non-increasing for mono-line cases (Pb & concrete, low/high E)'); }
+  else failedTests++;
+}
+
+// 12e: cross-validation vs Archer broad-beam Monte Carlo fits (full-spectrum,
+//      buildup inherently included). Narrow+buildup must agree within a factor
+//      of ~3 where the pure exponential was off by orders of magnitude.
+{
+  const archerNuclides = ['Tc-99m', 'I-131'];
+  let ok = 0, bad = 0;
+  for (const id of archerNuclides) {
+    const n = nuclides.find(x => x.id === id);
+    for (const mat of ['Pb', 'concrete_NW']) {
+      const ap = n.archer_params[mat];
+      const hvl = CALC_.hvlTvl(0, mat, ap, null).hvl_cm;
+      for (const k of [2, 10]) {
+        const x = k * hvl;
+        const Ta = CALC_.transmissionArcher(x * 10, ap);
+        const Tn = CALC_.transmissionSpectrum(x, n.shielding_spectrum, mat);
+        const ratio = Tn / Ta;
+        if (ratio > 1 / 3 && ratio < 3) {
+          ok++;
+          console.log(`  ✓ ${id} ${mat} ${k}×HVL: narrow+B/Archer = ${ratio.toFixed(2)}`);
+        } else {
+          bad++;
+          console.log(`  ✗ ${id} ${mat} ${k}×HVL: ratio ${ratio.toFixed(2)} outside [0.33, 3]`);
+        }
+      }
+    }
+  }
+  totalTests++;
+  if (bad === 0) passedTests++; else failedTests++;
+}
+
+// 12f: thickness solver round-trips with buildup (mono and spectral)
+{
+  const ga67 = nuclides.find(n => n.id === 'Ga-67');
+  const xs = CALC_.thicknessForAttenuation(0.1, 0.093, 'Pb', null, ga67.shielding_spectrum);
+  test('Ga-67 spectral+buildup TVL round-trip',
+    CALC_.transmissionSpectrum(xs, ga67.shielding_spectrum, 'Pb'), 0.1, 1e-6);
+  const xm = CALC_.thicknessForAttenuation(0.05, 0.662, 'concrete_NW', null, null);
+  test('mono-line 662 keV concrete round-trip T(x(0.05)) = 0.05',
+    CALC_.transmission(xm, 0.662, 'concrete_NW'), 0.05, 1e-6);
 }
 console.log();
 

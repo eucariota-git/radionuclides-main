@@ -12,14 +12,18 @@
  *     Source: Oumano et al. J Appl Clin Med Phys 2025
  *     (Archer parameters are Monte Carlo fits to the nuclide's FULL photon
  *      spectrum, so no further spectral weighting applies.)
- *   Narrow beam, spectrum-weighted (when nuclide.shielding_spectrum present):
- *     T(x) = Σ wᵢ·e^(−μ(Eᵢ)·x)   x in cm
+ *   Narrow beam, spectrum-weighted with buildup (nuclide.shielding_spectrum):
+ *     T(x) = Σ wᵢ·min(1, B(Eᵢ, μᵢx)·e^(−μᵢx))   x in cm
  *     wᵢ = relative H*(10) dose contribution of each line (Σwᵢ = 1, from
  *     ICRP 107 yields × ICRU 57; see tools/add-shielding-spectra.js). Accounts
- *     for spectral hardening — a single-line exponential underestimates the
- *     transmitted dose of multi-line emitters behind thick shields.
- *   Narrow beam, single line (fallback):
- *     T(x) = e^(−μ(E)·x)   x in cm
+ *     for spectral hardening AND scatter buildup. B = exposure buildup factor
+ *     for a point isotropic source (ANSI/ANS-6.4.3 reference data, NUREG/CR-5740
+ *     Table 3 — see PHYSICS.getBuildup). The min(1, ·) clamp removes the
+ *     infinite-medium artifact T > 1 at low energies / thin shields (B assumes
+ *     scatter from surrounding medium) and keeps T monotonically decreasing,
+ *     which the thickness solvers rely on.
+ *   Narrow beam, single line (fallback for custom nuclides):
+ *     T(x) = min(1, B(E, μx)·e^(−μx))   x in cm
  *
  * Cumulative dose with radioactive decay over time t [h]:
  *   H [μSv] = Γ × A₀ × T / d² × (1 − e^(−λt)) / λ
@@ -96,7 +100,8 @@ const CALC = (() => {
   // ---------------------------------------------------------------------------
 
   /**
-   * Narrow-beam transmission factor.
+   * Narrow-beam transmission factor (single line, buildup included).
+   * T(x) = min(1, B(E, μx)·e^(−μx)) — see module header.
    * @param {number} x_cm    - shield thickness [cm]
    * @param {number} E_MeV   - representative photon energy [MeV]
    * @param {string} material - 'Pb'|'concrete'|'concrete_NW'|'concrete_LW'|'none'
@@ -104,13 +109,12 @@ const CALC = (() => {
    */
   function transmission(x_cm, E_MeV, material) {
     if (material === 'none' || x_cm <= 0) return 1.0;
-    const mu = PHYSICS.getMu(E_MeV, material);
-    return Math.exp(-mu * x_cm);
+    return transmissionSpectrum(x_cm, [[E_MeV * 1000, 1]], material);
   }
 
   /**
-   * Spectrum-weighted narrow-beam transmission.
-   * T(x) = Σ wᵢ·e^(−μ(Eᵢ)·x), weights renormalized defensively.
+   * Spectrum-weighted narrow-beam transmission with exposure buildup.
+   * T(x) = Σ wᵢ·min(1, B(Eᵢ, μᵢx)·e^(−μᵢx)), weights renormalized defensively.
    * @param {number} x_cm     - shield thickness [cm]
    * @param {Array<[number,number]>} spectrum - [[E_keV, w], ...] dose-weighted lines
    * @param {string} material - 'Pb'|'concrete_NW'|'concrete_LW'
@@ -120,9 +124,12 @@ const CALC = (() => {
     if (x_cm <= 0) return 1.0;
     let sumW = 0, sumT = 0;
     for (const [E_keV, w] of spectrum) {
-      const mu = PHYSICS.getMu(E_keV / 1000, material);
+      const E_MeV = E_keV / 1000;
+      const mu  = PHYSICS.getMu(E_MeV, material);
+      const mfp = mu * x_cm;
+      const B   = PHYSICS.getBuildup(E_MeV, mfp, material);
       sumW += w;
-      sumT += w * Math.exp(-mu * x_cm);
+      sumT += w * Math.min(1, B * Math.exp(-mfp));
     }
     return sumW > 0 ? sumT / sumW : 1.0;
   }
@@ -233,8 +240,9 @@ const CALC = (() => {
 
   /**
    * HVL and TVL — Archer when params provided, else spectrum-weighted narrow
-   * beam (numerical), else single-line narrow beam.
-   * Note: with a spectrum, successive HVLs grow with depth (beam hardening);
+   * beam, else single-line narrow beam (both narrow-beam branches include
+   * buildup, so they are solved numerically).
+   * Note: with buildup and/or a spectrum, successive HVLs grow with depth;
    * the values returned are the FIRST HVL/TVL (from x = 0).
    * @param {number} E_MeV
    * @param {string} material
@@ -261,27 +269,26 @@ const CALC = (() => {
         method: 'narrow_beam_spectrum',
       };
     }
-    const mu = PHYSICS.getMu(E_MeV, material);
+    const mono = [[E_MeV * 1000, 1]];
     return {
-      mu_cm:  mu,
-      hvl_cm: mu > 0 ? LN2 / mu : Infinity,
-      tvl_cm: mu > 0 ? Math.log(10) / mu : Infinity,
+      mu_cm:  PHYSICS.getMu(E_MeV, material),  // informational (μ of the line)
+      hvl_cm: _spectrumThickness_cm(0.5, mono, material),
+      tvl_cm: _spectrumThickness_cm(0.1, mono, material),
       method: 'narrow_beam',
     };
   }
 
   /**
    * Thickness [cm] of material required to achieve a given transmission.
-   * Archer when params given, else spectrum-weighted narrow beam, else
-   * single-line narrow beam.
+   * Archer when params given, else (spectrum or single-line) narrow beam with
+   * buildup, solved numerically.
    */
   function thicknessForAttenuation(attenuation, E_MeV, material, archerParams, spectrum) {
     if (attenuation >= 1) return 0;
     if (attenuation <= 0) return Infinity;
     if (archerParams) return _archerThickness_mm(attenuation, archerParams) / 10;
     if (spectrum && spectrum.length > 1) return _spectrumThickness_cm(attenuation, spectrum, material);
-    const mu = PHYSICS.getMu(E_MeV, material);
-    return -Math.log(attenuation) / mu;
+    return _spectrumThickness_cm(attenuation, [[E_MeV * 1000, 1]], material);
   }
 
   /**

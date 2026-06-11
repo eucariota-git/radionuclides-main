@@ -127,6 +127,94 @@ const PHYSICS = (() => {
   const RHO_CONCRETE_LW =  1.60;  // g/cm³  (light-weight, Oumano et al. 2025)
 
   // ---------------------------------------------------------------------------
+  // Exposure buildup factors B(E, mfp) — point isotropic source, infinite medium
+  //
+  // Source: Trubey, D.K., "New Gamma-Ray Buildup Factor Data for Point Kernel
+  // Calculations: ANS-6.4.3 Standard Reference Data", NUREG/CR-5740 /
+  // ORNL/RSIC-49/R1 (Aug 1991), Table 3 "Exposure Buildup Factors" — Lead
+  // (p. II-40) and Concrete (p. II-44). US-government report (public domain);
+  // full PDF: https://www.osti.gov/servlets/purl/5441669
+  // Values transcribed programmatically from the report scan and verified
+  // visually against the page images (16 spot checks + mfp monotonicity).
+  //
+  // EXPOSURE response (absorption in air) is the appropriate one for dose
+  // behind a shield — NOT the report's "energy absorption" tables, whose
+  // response is energy deposited in the shield medium itself (report §2,
+  // Definitions). The report provides G-P coefficients only for the latter,
+  // so the exposure VALUES are interpolated directly (log-B, linear in mfp,
+  // log-log in E) — more faithful than refitting.
+  //
+  // Row format: [E_MeV, B@0.5, B@1, B@2, B@3, B@4, B@5, B@6, B@7, B@8,
+  //              B@10, B@15, B@20, B@25, B@30, B@35, B@40 mfp]
+  // Pb rows 0.088/0.089 MeV straddle the K-edge (interpolation must not
+  // cross it — see getBuildup). Validity: 0–40 mfp (clamped beyond, which
+  // underestimates B but >40 mfp means transmission < 1e-17 — irrelevant).
+  // ---------------------------------------------------------------------------
+  const BUILDUP_MFP = [0.5, 1, 2, 3, 4, 5, 6, 7, 8, 10, 15, 20, 25, 30, 35, 40];
+
+  const BUILDUP_PB = [
+    [0.03,  1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.02, 1.02, 1.02, 1.02, 1.02, 1.02, 1.02, 1.02],
+    [0.04,  1.01, 1.01, 1.02, 1.02, 1.02, 1.03, 1.03, 1.03, 1.03, 1.03, 1.04, 1.04, 1.04, 1.05, 1.05, 1.05],
+    [0.05,  1.02, 1.02, 1.03, 1.04, 1.04, 1.04, 1.04, 1.05, 1.05, 1.05, 1.06, 1.06, 1.07, 1.07, 1.07, 1.08],
+    [0.06,  1.02, 1.03, 1.05, 1.05, 1.06, 1.06, 1.07, 1.07, 1.07, 1.08, 1.09, 1.1, 1.11, 1.11, 1.12, 1.12],
+    [0.08,  1.04, 1.06, 1.08, 1.1, 1.11, 1.12, 1.12, 1.13, 1.14, 1.15, 1.17, 1.19, 1.21, 1.22, 1.23, 1.24],
+    [0.088,  1.05, 1.07, 1.1, 1.11, 1.13, 1.14, 1.15, 1.16, 1.17, 1.18, 1.21, 1.23, 1.25, 1.27, 1.28, 1.29],
+    [0.089,  1.59, 2.24, 4.12, 7.66, 14.9, 30, 61.1, 119, 229, 875, 27300, 951000, 3.57e+07, 1.4e+09, 5.7e+10, 2.36e+12],
+    [0.09,  1.58, 2.22, 4.05, 7.44, 14.3, 28.5, 57.5, 111, 212, 794, 23800, 801000, 2.91e+07, 1.11e+09, 4.34e+10, 1.74e+12],
+    [0.1,  1.51, 2.04, 3.39, 5.6, 9.59, 17, 30.6, 54.9, 94.7, 294, 5800, 133000, 3.34e+06, 8.77e+07, 2.36e+09, 6.43e+10],
+    [0.11,  1.44, 1.86, 2.81, 4.16, 6.3, 9.83, 15.6, 25.1, 39.7, 99.9, 1240, 18600, 305000, 5.17e+06, 8.94e+07, 1.56e+09],
+    [0.12,  1.38, 1.7, 2.36, 3.13, 4.19, 5.71, 7.9, 11.2, 15.8, 32.1, 235, 2140, 21100, 215000, 2.22e+06, 2.33e+07],
+    [0.13,  1.33, 1.58, 2.02, 2.44, 2.93, 3.52, 4.27, 5.26, 6.6, 10.3, 40.1, 198, 1080, 6110, 35400, 208000],
+    [0.14,  1.28, 1.48, 1.77, 1.98, 2.19, 2.4, 2.62, 2.87, 3.18, 3.99, 7.47, 17.1, 45, 128, 380, 1160],
+    [0.15,  1.25, 1.4, 1.59, 1.69, 1.77, 1.84, 1.9, 1.95, 2.01, 2.13, 2.47, 2.87, 3.34, 4.02, 5.06, 6.65],
+    [0.16,  1.22, 1.34, 1.45, 1.51, 1.54, 1.56, 1.58, 1.59, 1.6, 1.61, 1.64, 1.65, 1.65, 1.66, 1.66, 1.67],
+    [0.2,  1.15, 1.2, 1.24, 1.26, 1.27, 1.29, 1.3, 1.31, 1.32, 1.35, 1.39, 1.42, 1.44, 1.47, 1.49, 1.5],
+    [0.3,  1.1, 1.15, 1.21, 1.26, 1.3, 1.33, 1.36, 1.38, 1.4, 1.44, 1.52, 1.59, 1.64, 1.68, 1.72, 1.75],
+    [0.4,  1.12, 1.19, 1.3, 1.39, 1.45, 1.51, 1.57, 1.62, 1.67, 1.75, 1.93, 2.08, 2.19, 2.29, 2.38, 2.45],
+    [0.5,  1.14, 1.24, 1.39, 1.52, 1.62, 1.71, 1.8, 1.88, 1.95, 2.1, 2.39, 2.64, 2.85, 3.02, 3.18, 3.31],
+    [0.6,  1.15, 1.28, 1.46, 1.62, 1.76, 1.88, 1.99, 2.1, 2.2, 2.39, 2.79, 3.11, 3.38, 3.61, 3.82, 4.02],
+    [0.8,  1.18, 1.34, 1.59, 1.82, 2.01, 2.19, 2.37, 2.53, 2.69, 2.99, 3.65, 4.2, 4.67, 5.1, 5.49, 5.84],
+    [1,  1.2, 1.38, 1.68, 1.95, 2.19, 2.43, 2.66, 2.89, 3.1, 3.51, 4.45, 5.27, 5.98, 6.64, 7.23, 7.79],
+    [1.5,  1.19, 1.38, 1.73, 2.07, 2.4, 2.74, 3.08, 3.42, 3.77, 4.47, 6.26, 8.11, 9.94, 11.7, 13.4, 15],
+    [2,  1.21, 1.4, 1.76, 2.14, 2.52, 2.91, 3.32, 3.74, 4.17, 5.07, 7.44, 9.98, 12.6, 15.4, 18.2, 21],
+    [3,  1.23, 1.4, 1.73, 2.1, 2.5, 2.93, 3.4, 3.89, 4.41, 5.56, 8.91, 12.9, 17.5, 22.5, 28.1, 34],
+    [4,  1.21, 1.36, 1.67, 2.02, 2.4, 2.82, 3.28, 3.79, 4.35, 5.61, 9.73, 15.4, 23, 32.6, 44.6, 59.2],
+    [5,  1.25, 1.41, 1.71, 2.05, 2.44, 2.88, 3.38, 3.93, 4.56, 6.03, 11.4, 19.9, 32.9, 52.2, 79.9, 119],
+    [6,  1.26, 1.42, 1.73, 2.08, 2.49, 2.96, 3.51, 4.13, 4.84, 6.61, 13.7, 26.6, 49.6, 88.9, 155, 262],
+    [8,  1.3, 1.51, 1.9, 2.36, 2.91, 3.59, 4.41, 5.39, 6.58, 9.73, 25.1, 62, 148, 344, 779, 1720],
+    [10,  1.28, 1.51, 2.01, 2.63, 3.42, 4.45, 5.73, 7.37, 9.44, 15.4, 50.8, 161, 495, 1470, 4280, 12200],
+    [15,  1.31, 1.63, 2.34, 3.34, 4.78, 6.83, 9.7, 13.7, 19.4, 38.7, 208, 1070, 5330, 25700, 121000, 559000],
+  ];
+
+  const BUILDUP_CONCRETE = [
+    [0.015,  1.02, 1.03, 1.04, 1.05, 1.05, 1.06, 1.06, 1.07, 1.07, 1.08, 1.09, 1.1, 1.1, 1.11, 1.11, 1.11],
+    [0.02,  1.05, 1.07, 1.09, 1.11, 1.13, 1.14, 1.15, 1.16, 1.17, 1.18, 1.21, 1.22, 1.24, 1.25, 1.26, 1.27],
+    [0.03,  1.15, 1.21, 1.3, 1.37, 1.43, 1.47, 1.51, 1.54, 1.57, 1.63, 1.74, 1.82, 1.89, 1.94, 1.99, 2.02],
+    [0.04,  1.3, 1.46, 1.69, 1.87, 2.01, 2.14, 2.25, 2.35, 2.45, 2.62, 2.98, 3.27, 3.51, 3.73, 3.91, 4.03],
+    [0.05,  1.42, 1.74, 2.26, 2.63, 2.95, 3.25, 3.53, 3.79, 4.04, 4.51, 5.57, 6.52, 7.38, 8.18, 8.87, 9.44],
+    [0.06,  1.68, 2.15, 2.89, 3.54, 4.17, 4.77, 5.34, 5.9, 6.44, 7.52, 10.2, 12.7, 15.2, 18.2, 21.9, 26.5],
+    [0.08,  1.84, 2.58, 3.96, 5.31, 6.69, 8.09, 9.52, 11, 12.5, 15.7, 24.3, 33.8, 44.3, 55.4, 66.8, 78.1],
+    [0.1,  1.89, 2.78, 4.63, 6.63, 8.8, 11.1, 13.6, 16.3, 19.2, 25.6, 44.9, 69.1, 97.9, 131, 170, 214],
+    [0.15,  1.84, 2.82, 5.13, 7.92, 11.2, 15, 19.3, 24.2, 29.7, 42.7, 87.6, 153, 240, 353, 494, 664],
+    [0.2,  1.78, 2.72, 5.05, 8, 11.6, 15.9, 20.9, 26.7, 33.4, 49.6, 109, 201, 331, 507, 734, 1020],
+    [0.3,  1.68, 2.52, 4.66, 7.42, 10.8, 15, 19.9, 25.6, 32.2, 48.2, 107, 198, 326, 497, 716, 985],
+    [0.4,  1.61, 2.37, 4.31, 6.8, 9.85, 13.5, 17.8, 22.8, 28.5, 42.1, 90.7, 162, 259, 383, 536, 719],
+    [0.5,  1.57, 2.27, 4.03, 6.26, 8.97, 12.2, 15.9, 20.2, 25, 36.4, 75.6, 131, 203, 292, 399, 523],
+    [0.6,  1.53, 2.18, 3.8, 5.82, 8.25, 11.1, 14.3, 18, 22.2, 31.8, 63.6, 107, 161, 226, 302, 389],
+    [0.8,  1.48, 2.06, 3.47, 5.18, 7.18, 9.47, 12, 14.9, 18.1, 25.1, 47.4, 75.7, 110, 149, 193, 242],
+    [1,  1.45, 1.98, 3.24, 4.72, 6.42, 8.33, 10.4, 12.7, 15.2, 20.7, 37.2, 57.1, 80.1, 106, 134, 164],
+    [1.5,  1.39, 1.85, 2.86, 4, 5.25, 6.6, 8.05, 9.58, 11.2, 14.6, 24.2, 35, 46.9, 59.6, 73, 87.1],
+    [2,  1.37, 1.77, 2.65, 3.6, 4.61, 5.68, 6.8, 7.97, 9.18, 11.7, 18.6, 26, 33.9, 42.2, 50.9, 59.8],
+    [3,  1.33, 1.67, 2.38, 3.09, 3.84, 4.61, 5.4, 6.2, 7.03, 8.71, 13.1, 17.7, 22.5, 27.4, 32.4, 37.4],
+    [4,  1.31, 1.61, 2.18, 2.77, 3.37, 3.98, 4.6, 5.23, 5.86, 7.15, 10.5, 13.9, 17.4, 20.9, 24.6, 28.4],
+    [5,  1.27, 1.53, 2.04, 2.53, 3.03, 3.54, 4.05, 4.57, 5.09, 6.15, 8.85, 11.6, 14.4, 17.3, 20.5, 24.8],
+    [6,  1.26, 1.49, 1.93, 2.37, 2.8, 3.25, 3.69, 4.14, 4.6, 5.52, 7.86, 10.2, 12.7, 15.2, 17.8, 20.5],
+    [8,  1.22, 1.41, 1.76, 2.11, 2.45, 2.81, 3.16, 3.51, 3.87, 4.59, 6.43, 8.31, 10.2, 12.2, 14.1, 16.2],
+    [10,  1.19, 1.35, 1.64, 1.93, 2.22, 2.51, 2.8, 3.1, 3.4, 4.01, 5.57, 7.19, 8.86, 10.6, 12.3, 14.5],
+    [15,  1.15, 1.26, 1.46, 1.66, 1.86, 2.07, 2.28, 2.5, 2.71, 3.16, 4.34, 5.59, 6.91, 8.27, 9.63, 10.9],
+  ];
+
+  // ---------------------------------------------------------------------------
   // Linear interpolation helper (log-log for attenuation, log-linear for ICRU)
   // ---------------------------------------------------------------------------
   function interpLinear(table, x, colX, colY) {
@@ -203,6 +291,66 @@ const PHYSICS = (() => {
     if (material === 'concrete_NW' || material === 'concrete') return muRho * RHO_CONCRETE;
 
     // Unknown material: throw error instead of silently defaulting
+    throw new Error(`Unknown material "${material}". Expected: 'Pb', 'concrete', 'concrete_NW', or 'concrete_LW'.`);
+  }
+
+  /**
+   * Interpolate B(E, mfp) on an exposure-buildup table.
+   * mfp axis: log(B) linear in mfp; below 0.5 mfp interpolates from B(0) = 1.
+   * E axis: log(B) linear in log(E), clamped to the tabulated range.
+   */
+  function _buildupInterp(rows, E_MeV, mfp) {
+    function atEnergy(row) {
+      // row = [E, B@0.5, B@1, ..., B@40] aligned with BUILDUP_MFP
+      if (mfp <= BUILDUP_MFP[0]) {
+        // between (0, B=1) and (0.5, B₀.₅): log-linear from 1
+        return Math.exp(Math.log(row[1]) * (mfp / BUILDUP_MFP[0]));
+      }
+      const last = BUILDUP_MFP.length - 1;
+      if (mfp >= BUILDUP_MFP[last]) return row[last + 1];  // clamp at 40 mfp
+      for (let k = 0; k < last; k++) {
+        if (mfp >= BUILDUP_MFP[k] && mfp <= BUILDUP_MFP[k + 1]) {
+          const t = (mfp - BUILDUP_MFP[k]) / (BUILDUP_MFP[k + 1] - BUILDUP_MFP[k]);
+          return Math.exp(Math.log(row[k + 1]) + t * (Math.log(row[k + 2]) - Math.log(row[k + 1])));
+        }
+      }
+      return row[last + 1];
+    }
+    if (E_MeV <= rows[0][0]) return atEnergy(rows[0]);
+    if (E_MeV >= rows[rows.length - 1][0]) return atEnergy(rows[rows.length - 1]);
+    for (let i = 0; i < rows.length - 1; i++) {
+      if (E_MeV >= rows[i][0] && E_MeV <= rows[i + 1][0]) {
+        const B0 = atEnergy(rows[i]), B1 = atEnergy(rows[i + 1]);
+        const t = Math.log(E_MeV / rows[i][0]) / Math.log(rows[i + 1][0] / rows[i][0]);
+        return Math.exp(Math.log(B0) + t * (Math.log(B1) - Math.log(B0)));
+      }
+    }
+    return atEnergy(rows[rows.length - 1]);
+  }
+
+  /**
+   * Exposure buildup factor B(E, mfp) for a point isotropic source.
+   * Source: ANSI/ANS-6.4.3 reference data (NUREG/CR-5740 Table 3) — see the
+   * BUILDUP_* table header above for provenance and interpolation notes.
+   * @param {number} E_MeV    - photon energy [MeV]
+   * @param {number} mfp      - shield thickness in mean free paths (μ·x)
+   * @param {string} material - 'Pb'|'concrete'|'concrete_NW'|'concrete_LW'|'none'
+   * @returns {number} B ≥ 1
+   */
+  function getBuildup(E_MeV, mfp, material) {
+    if (!(mfp > 0) || material === 'none') return 1.0;
+    if (material === 'Pb') {
+      // do not interpolate across the K-edge (B jumps ~3 orders of magnitude)
+      const PB_KEDGE = 0.0885;
+      const rows = E_MeV < PB_KEDGE
+        ? BUILDUP_PB.filter(r => r[0] <= 0.088)
+        : BUILDUP_PB.filter(r => r[0] >= 0.089);
+      return _buildupInterp(rows, E_MeV, mfp);
+    }
+    if (material === 'concrete' || material === 'concrete_NW' || material === 'concrete_LW') {
+      // both concrete variants share μ/ρ — B depends on mfp count, not density
+      return _buildupInterp(BUILDUP_CONCRETE, E_MeV, mfp);
+    }
     throw new Error(`Unknown material "${material}". Expected: 'Pb', 'concrete', 'concrete_NW', or 'concrete_LW'.`);
   }
 
@@ -292,6 +440,7 @@ const PHYSICS = (() => {
     getH10,
     getH007,
     getMu,
+    getBuildup,
     hvl,
     calcGammaConstants,
   };

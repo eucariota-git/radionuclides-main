@@ -107,9 +107,10 @@ One-shot migration tools kept for provenance (already applied, do not re-run bli
 where h(E) comes from ICRU 57 tables, and photons are filtered (E≥20keV, yield≥0.01%).
 
 ### Shielding Models
-- **Archer broad-beam** (Monte Carlo): Tc-99m, F-18, I-131, Lu-177 — parameters fit the FULL spectrum; never combine with spectral weighting
-- **Spectrum-weighted narrow beam**: T(x) = Σ wᵢ·e^(−μ(Eᵢ)x) over dose-weighted ICRP 107 lines (`shielding_spectrum`, 39 nuclides) — captures beam hardening; no build-up factor
-- **Single-line narrow beam**: fallback for custom nuclides without a stored spectrum
+- **Archer broad-beam** (Monte Carlo): Tc-99m, F-18, I-131, Lu-177 — parameters fit the FULL spectrum (buildup inherently included); never combine with spectral weighting or `getBuildup`
+- **Spectrum-weighted narrow beam + build-up**: T(x) = Σ wᵢ·min(1, B(Eᵢ, μᵢx)·e^(−μᵢx)) over dose-weighted ICRP 107 lines (`shielding_spectrum`, 39 nuclides) — beam hardening + scatter build-up
+- **Single-line narrow beam + build-up**: fallback for custom nuclides without a stored spectrum
+- **`PHYSICS.getBuildup(E_MeV, mfp, material)`**: ANS-6.4.3 exposure buildup (NUREG/CR-5740 Table 3; Pb with K-edge split, one concrete table for both densities; 0–40 mfp, clamped). HVL/TVL/thickness solved numerically by bisection (`_spectrumThickness_cm`)
 
 ### Dose with Decay
 D = ∫₀ᵗ Γ · A(τ) / r² dτ, where A(τ) = A₀ · e^(−λτ)
@@ -158,5 +159,5 @@ No build step. Push to repository; auto-deploys from root.
 
 See also `docs/ACCEPTANCE_TEST.md` (independent validation sheet) and `docs/archive/` (historical audit reports).
 
-**Version:** 2.1  
+**Version:** 2.2  
 **Last updated:** 2026-06-11
