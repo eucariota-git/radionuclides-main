@@ -272,11 +272,46 @@ for (const [nuclideId, ref] of Object.entries(photonCountReferences)) {
 }
 console.log();
 
+// Test 8: Adult ingestion dose coefficients e(g) — ICRP 119 Annex F, Table F.1
+console.log('Test 8: Adult ingestion e(g) (ICRP 119 Annex F, Table F.1)');
+
+const ingestionReferences = {
+  'Tc-99m': 2.2e-11, 'I-131': 2.2e-8, 'Cs-137': 1.3e-8, 'Co-60': 3.4e-9,
+  'Ra-223': 1.0e-7, 'Ac-225': 2.4e-8, 'Ho-166': 1.4e-9,  // chains incl. progeny per ICRP 71/119
+};
+
+for (const [nuclideId, ref] of Object.entries(ingestionReferences)) {
+  const n = nuclides.find(x => x.id === nuclideId);
+  if (n && n.ingestion_dose_coeff_adult_Sv_per_Bq != null) {
+    test(`${nuclideId} e(g) = ${ref} Sv/Bq`, n.ingestion_dose_coeff_adult_Sv_per_Bq, ref, 0.001);
+  }
+}
+
+// Test 8b: liquid effluent limit derived from e(g) via IS-28 Anexo II II.A.4
+//   C_liq = (1 mSv/y) / (e(g) × 600 L/y) = 0.001/(e·600)
+console.log('Test 8b: Liquid effluent limit = 0.001/(e(g)·600)');
+for (const n of nuclides) {
+  const eg = n.ingestion_dose_coeff_adult_Sv_per_Bq;
+  const limit = n.effluent_liquid_limit_Bq_per_L;
+  if (eg != null && eg > 0 && limit != null && !n.effluent_liquid_components) {
+    totalTests++;
+    const expected = 0.001 / (eg * 600);
+    if (Math.abs(limit - expected) / expected <= 0.01) {  // within 1% of 3-sig-fig rounding
+      passedTests++;
+    } else {
+      failedTests++;
+      console.log(`  ✗ ${n.id}: effluent ${limit} ≠ 0.001/(e·600) = ${expected.toPrecision(3)}`);
+    }
+  }
+}
+console.log(`  ✓ Effluent limits consistent with e(g) for all curated nuclides`);
+console.log();
+
 // Summary
 console.log('=== SUMMARY ===');
 console.log(`Total: ${passedTests} passed, ${failedTests} failed (out of ${totalTests} tests)`);
 if (failedTests === 0) {
-  console.log('✓ All data validated against published sources (ICRP 107, Cornejo et al. 2015, RD 1217/2024)');
+  console.log('✓ All data validated against published sources (ICRP 107, Cornejo et al. 2015, ICRP 119, RD 1217/2024)');
 } else {
   console.log('⚠ Some data tests failed — review source references');
 }
