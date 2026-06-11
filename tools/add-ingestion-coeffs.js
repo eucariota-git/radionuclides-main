@@ -5,7 +5,10 @@
  *
  * Source: ICRP Publication 119 (2012), Annex F, Table F.1 — committed effective
  * dose per ingestion intake for ADULT members of the public, e(g) in Sv/Bq.
- * (references/ICRP 119 - Coeficientes de dosis.pdf)
+ * (The PDF is copyrighted by ICRP and is NOT versioned in this repository;
+ * maintainers keep a local copy at references/ICRP 119 - Coeficientes de
+ * dosis.pdf, which .gitignore excludes. ICRP 119 is freely downloadable from
+ * https://www.icrp.org/publication.asp?id=ICRP%20Publication%20119)
  *
  * Adds e(g) and the controlled liquid effluent concentration limit for the 6
  * therapy/imaging nuclides added in this round. The effluent limit uses the

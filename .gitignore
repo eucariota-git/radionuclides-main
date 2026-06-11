@@ -10,3 +10,6 @@ server.pid
 Thumbs.db
 __pycache__/
 *.pyc
+
+# Copyrighted reference kept locally only (ICRP publication, not redistributable)
+references/ICRP 119*.pdf
