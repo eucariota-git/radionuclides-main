@@ -12,7 +12,7 @@
 
 'use strict';
 
-const CACHE_VERSION = 'nm-planner-v1';
+const CACHE_VERSION = 'nm-planner-v2';
 
 const ASSETS = [
   './',
@@ -22,6 +22,9 @@ const ASSETS = [
   './custom.html',
   './validate-icrp107.html',
   './favicon.svg',
+  './icon-180.png',
+  './icon-192.png',
+  './icon-512.png',
   './manifest.json',
   './css/style.css',
   './js/chart.umd.min.js',
