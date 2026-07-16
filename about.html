@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NM Radionuclide Planner — About, Guide &amp; Licences</title>
+  <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+  <link rel="apple-touch-icon" href="assets/icons/icon-180.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2d6a4f">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<header class="site-header">
+  <div class="inner">
+    <div class="site-logo">&#9762; <span>NM</span> Radionuclide Planner</div>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="index.html">Properties</a>
+      <a href="decay.html">Decay</a>
+      <a href="dose.html">Dose</a>
+    </nav>
+    <button id="darkToggle" type="button" class="btn-icon" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
+      <span id="darkIcon">🌙</span>
+    </button>
+  </div>
+</header>
+
+<main class="page-body about-page" id="main-content">
+  <h1 class="page-title">About, Guide &amp; Licences</h1>
+  <p class="page-subtitle">User guidance, licence terms and third-party attributions available directly in the app.</p>
+
+  <!-- docs/USER_GUIDE.md is the canonical source for this synchronized HTML copy. -->
+  <article class="card about-content" id="user-guide">
+    <h2>NM Radionuclide Planner — User Guide</h2>
+    <p>A web application for nuclear medicine radionuclide properties, decay calculations, and external dose estimation.</p>
+    <p><strong>Local distribution:</strong> Keep the supplied folder intact and open <code>index.html</code> in a modern web browser.</p>
+
+    <hr>
+    <h3>Quick Start</h3>
+    <p>The application has no installation or authentication. It can be used in either of these local modes:</p>
+    <ul>
+      <li><strong>Direct from disk</strong>: open <code>index.html</code>; the address will start with <code>file://</code>.</li>
+      <li><strong>Local web server (optional)</strong>: serve the application folder with any static server and open its <code>localhost</code> address, for example <code>http://localhost:8000/</code>.</li>
+    </ul>
+    <ul>
+      <li><strong>Desktop</strong>: Firefox, Chrome, Safari, Edge (recommended)</li>
+      <li><strong>Mobile</strong>: iOS Safari, Chrome mobile (with landscape mode for better experience)</li>
+      <li><strong>Offline</strong>: Works entirely offline when opened from <code>file://</code>; a copy first loaded over HTTP(S) can also work offline from its local cache</li>
+      <li><strong>Install as app (PWA)</strong>: when served through <code>localhost</code> or HTTPS, a compatible browser can offer “Install” / “Add to Home screen” — the app then runs standalone with its own icon and a service worker keeps all assets cached for fully offline use</li>
+      <li><strong>Reports</strong>: the Decay and Dose calculators include a <strong>📄 Report / PDF</strong> button that generates a printable calculation report (timestamp, database version, inputs, results, method, data sources, disclaimer and sign-off line) — use the browser's “Save as PDF” destination to archive it</li>
+    </ul>
+
+    <hr>
+    <h3>Main Pages</h3>
+    <h4>1. Properties (<code>index.html</code>)</h4>
+    <p><strong>Purpose</strong>: Look up radionuclide properties, half-lives, decay modes, and dose rate constants.</p>
+    <p><strong>How to use</strong>:</p>
+    <ol>
+      <li><strong>Search</strong> for a nuclide by name or symbol:
+        <ul>
+          <li>Type “Tc-99m”, “technetium”, “99m”, or “tecnecio” (Spanish)</li>
+          <li>Filter by modality (PET, SPECT, Therapy, Brachytherapy) using buttons</li>
+        </ul>
+      </li>
+      <li><strong>View properties</strong>:
+        <ul>
+          <li>Half-life in human-readable format</li>
+          <li>Decay modes (α, β⁻, β⁺, EC, IT, etc.)</li>
+          <li>Dose rate constants:
+            <ul>
+              <li><strong>Γ<sup>H*(10)</sup></strong>: Ambient dose equivalent rate constant (area monitoring; effective-dose estimator) — μSv·h⁻¹·GBq⁻¹·m²</li>
+              <li><strong>Γ<sup>H'(0.07)</sup></strong>: Directional dose equivalent rate constant (area monitoring; skin/extremity indicator) — μSv·h⁻¹·GBq⁻¹·m²</li>
+            </ul>
+          </li>
+          <li>Representative photon energy</li>
+          <li>Liquid effluent individual concentration level (one of the IS-28 II.A.4 conditions for controlled sewer discharge; a complete assessment must also verify the mixture sum Σ(Cᵢ/Lᵢ) ≤ 1 and the annual activity limits — 10 GBq H-3, 1 GBq C-14 and &lt; 1 GBq the rest combined — which this application does not evaluate)</li>
+          <li>RD 1217/2024 Table A.1 activity-concentration value for exemption of practices or clearance of materials; the Decay calculator applies it specifically to single-nuclide clearance</li>
+        </ul>
+      </li>
+      <li><strong>Clinical use</strong>: See modality and intended clinical applications</li>
+      <li><strong>Export</strong>: Download the table as CSV</li>
+    </ol>
+    <p><strong>Main database</strong>: 40 radionuclides — 32 with published comparison values in <strong>Cornejo et al. (2015)</strong>, <strong>Ga-68</strong>, the pure-β⁻ special case <strong>Y-90</strong>, and 6 therapy/imaging additions (<strong>Zr-89, Cu-67, Tb-161, Ho-166, Ra-223+daughters, Ac-225+daughters</strong>). Operational values use ICRP 107 photon data and ICRU 57 conversion coefficients where indicated; material differences from published comparison values are shown contextually.</p>
+
+    <h5>Extended Database — ICRP 107</h5>
+    <p>The application includes an <strong>extended database of 1,252 radionuclides</strong> from ICRP Publication 107 (2008). If you search for a nuclide not in the main database:</p>
+    <ol>
+      <li>Search bar will show “No results in main database”</li>
+      <li>Click <strong>“Search in ICRP 107”</strong> button</li>
+      <li>Results appear with:
+        <ul>
+          <li><strong>Nuclide ID</strong> (e.g. “Am-241”)</li>
+          <li><strong>Half-life</strong> (auto-calculated from ICRP 107)</li>
+          <li><strong>Decay mode</strong> (extracted from nuclear data)</li>
+          <li><strong>Photon emissions</strong> — filtered table showing:
+            <ul>
+              <li>Energy [keV]</li>
+              <li>Yield [% per decay]</li>
+              <li>Type (G = gamma, X = X-ray, AQ = annihilation quantum)</li>
+            </ul>
+          </li>
+          <li><strong>Calculated dose constants</strong>:
+            <ul>
+              <li>Γ<sup>H*(10)</sup> — <strong>automatically calculated</strong> from photon emissions using Cornejo et al. methodology</li>
+              <li>Γ<sup>H'(0.07)</sup> — extremity dose constant</li>
+            </ul>
+          </li>
+          <li><strong>Warning banner</strong>: “⚠ Constants calculated from ICRP 107 emissions — not manually validated. For clinical/regulatory use, verify against primary sources.”</li>
+        </ul>
+      </li>
+    </ol>
+    <p><strong>Use ICRP 107 for</strong>:</p>
+    <ul>
+      <li>Quick reference on any radionuclide (half-life, decay modes, spectrum)</li>
+      <li>Estimating dose constants for nuclides not in the curated database</li>
+      <li>Exploring photon spectra for shielding calculations</li>
+      <li>Educational purposes</li>
+    </ul>
+    <p><strong>Do NOT use ICRP 107 for</strong>:</p>
+    <ul>
+      <li>Clinical or regulatory submissions without independent verification</li>
+      <li>High-precision dosimetry — use published, peer-reviewed constants</li>
+      <li>Safety decisions without expert review</li>
+    </ul>
+    <p><strong>Example</strong>: Search for “Am-241” (Americium-241):</p>
+    <ul>
+      <li>ICRP 107 shows: T₁/₂ = 432.2 years, α decay, ~50 X-ray photons filtered</li>
+      <li>Calculated Γ<sup>H*(10)</sup> ≈ 0.48 μSv·h⁻¹·GBq⁻¹·m² (informational only)</li>
+    </ul>
+
+    <hr>
+    <h4>2. Decay Calculator (<code>decay.html</code>)</h4>
+    <p><strong>Purpose</strong>: Calculate how much activity remains after a time period, or time needed to reach a target activity.</p>
+    <p><strong>How to use</strong>:</p>
+    <ol>
+      <li>Select a nuclide from dropdown (or paste an ID)</li>
+      <li>Enter <strong>Initial Activity</strong>:
+        <ul>
+          <li>Input value and unit (MBq, GBq, mCi, Ci)</li>
+          <li>Converts to seconds for calculation</li>
+        </ul>
+      </li>
+      <li>Choose calculation mode:
+        <ul>
+          <li><strong>Time → Activity</strong>: Enter time, get remaining activity</li>
+          <li><strong>Activity → Time</strong>: Enter target activity, get required decay time</li>
+        </ul>
+      </li>
+      <li>Adjust <strong>Time</strong>:
+        <ul>
+          <li>Use slider or input field</li>
+          <li>Units: seconds, minutes, hours, days, years</li>
+        </ul>
+      </li>
+      <li>View <strong>Decay Curve</strong>: Interactive chart shows A(t) = A₀ · e<sup>−λt</sup></li>
+    </ol>
+    <p><strong>Example</strong>:</p>
+    <ul>
+      <li>Initial: 1000 MBq Tc-99m</li>
+      <li>After 6 hours: ~501 MBq (50% of initial, approximately one half-life)</li>
+      <li>Time to reach 100 MBq: 20.6 hours</li>
+    </ul>
+
+    <hr>
+    <h4>3. Dose Estimator (<code>dose.html</code>)</h4>
+    <p><strong>Purpose</strong>: Calculate external dose rates and cumulative dose for a worker handling radioactivity.</p>
+    <p><strong>How to use</strong>:</p>
+    <ol>
+      <li><strong>Select nuclide</strong> and <strong>activity</strong> (MBq, GBq, mCi, Ci)</li>
+      <li><strong>Distance</strong>: Enter distance from source (m or cm)
+        <ul>
+          <li><strong>Dose rate is calculated at YOUR selected distance</strong> (primary output)</li>
+          <li>Both quantities are always shown: <strong>H*(10)</strong> (ambient dose equivalent, effective-dose estimator) and <strong>H'(0.07)</strong> (directional dose equivalent, skin/extremity indicator — falls back to the H*(10) value when no Γ<sup>H'(0.07)</sup> constant exists)</li>
+          <li>These are <strong>area-monitoring</strong> quantities; compliance with dose limits is assessed with personal dosimetry (Hp(10), Hp(0.07), Hp(3))</li>
+          <li>Reference dose rate @ 1 m shown for comparison</li>
+        </ul>
+      </li>
+      <li><strong>Dose rate</strong> is calculated instantly:
+        <ul>
+          <li>Ḣ = Γ × A / r²</li>
+          <li>Units: μSv/h at distance you specify</li>
+        </ul>
+      </li>
+      <li><strong>Optional: Shielding</strong>
+        <ul>
+          <li>Material: Lead, elemental Iron, or Concrete (normal or lightweight). Iron is modelled as Fe at ρ = 7.874 g/cm³, not as a generic steel alloy</li>
+          <li>Thickness: 0–300 mm</li>
+          <li>Transmission curve shows dose reduction</li>
+          <li>Uses <strong>Archer broad-beam</strong> (Monte Carlo) for Tc-99m, F-18, I-131, Lu-177</li>
+          <li>Uses <strong>spectrum-weighted narrow-beam with build-up</strong> (dose-weighted sum over the nuclide's ICRP 107 photon lines; NIST XCOM attenuation; ANSI/ANS-6.4.3 point-isotropic exposure buildup factors) for other nuclides — accounts for beam hardening AND scatter build-up (ICRP 107 extended entries build the spectrum dynamically at selection time)</li>
+        </ul>
+      </li>
+      <li><strong>Cumulative dose</strong>:
+        <ul>
+          <li>Enter <strong>exposure time per administration</strong> (hours/min): time the worker is near the source per patient</li>
+          <li>Enter <strong>number of administrations per year</strong></li>
+          <li>Models radioactive decay <em>during</em> each exposure (with decay mode enabled)</li>
+          <li>Annual total = single-administration dose × number of administrations</li>
+          <li><strong>Note</strong>: inter-administration decay is not modelled; each administration is treated independently</li>
+        </ul>
+      </li>
+      <li><strong>Annual dose limit check</strong>:
+        <ul>
+          <li>Compares to EU RD 1029/2022 limits:
+            <ul>
+              <li><strong>Whole body</strong>: 20 mSv/year (worker)</li>
+              <li><strong>Extremities</strong> (hands/feet): 500 mSv/year</li>
+              <li><strong>Lens of eye</strong>: <em>Both conditions must be satisfied:</em> 50 mSv/year max annual AND 100 mSv over any consecutive 5-year period (current regime since 2024-06-22)</li>
+            </ul>
+          </li>
+          <li>Shows <strong>status</strong>: ✓ Safe | ⚠ Caution | ✗ Exceeds limit</li>
+        </ul>
+      </li>
+      <li><strong>Special case — Y-90 (pure beta emitter)</strong>:
+        <ul>
+          <li>Photon dose-rate constants are not applicable in Properties; Dose provides a separate experimental bremsstrahlung scenario</li>
+          <li>Select an assumed container geometry: PMMA, Lead, Tungsten, or None</li>
+          <li>The displayed container-dependent values are estimates inspired by the Zanzonico et al. (1999) formalism; that publication does <strong>not</strong> tabulate these container constants</li>
+          <li>The scenario reports no regulatory verdict. Do not use it for shielding design or regulatory submissions without a primary source or measurements for the actual geometry</li>
+        </ul>
+      </li>
+    </ol>
+    <p><strong>Example</strong>:</p>
+    <ul>
+      <li>100 MBq Tc-99m at 50 cm: ~8.7 μSv/h (Γ = 21.7 μSv·h⁻¹·GBq⁻¹·m²)</li>
+      <li>With 5 mm lead shielding: ~0.9 μSv/h (~90% reduction)</li>
+      <li>200 administrations/year with 5mm lead: ~1.6 mSv/year (Safe)</li>
+      <li>Y-90 scenarios are clearly marked experimental and are excluded from regulatory conclusions</li>
+    </ul>
+
+    <hr>
+    <h4>4. ICRP 107 data integrity</h4>
+    <p>Constants for the extended ICRP 107 nuclides are computed from the parsed photon emissions and cross-checked against the published Cornejo (2015) values by the automated test suite (<code>node test/validate-constants.js</code>), not by an in-browser page. Data integrity is backed by:</p>
+    <ul>
+      <li>SHA256 hashes of source files (NDX, RAD) stored in JSON metadata</li>
+      <li>Timestamps showing when data was last regenerated</li>
+      <li>Parser version (2.0 fixed-width columns) documented</li>
+    </ul>
+
+    <hr>
+    <h3>Dark Mode</h3>
+    <p>Toggle dark/light mode using the <strong>moon icon</strong> (🌙) in the top-right corner. Preference is saved in browser.</p>
+
+    <hr>
+    <h3>Keyboard Shortcuts</h3>
+    <div class="overflow-x-auto">
+      <table class="about-table">
+        <thead><tr><th>Key</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td><code>/</code></td><td>Focus the search bar (Properties page)</td></tr>
+          <tr><td><code>Escape</code></td><td>Clear the search / close the detail panel</td></tr>
+          <tr><td><code>Alt+D</code></td><td>Toggle dark mode</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr>
+    <h3>Data Quality &amp; Limitations</h3>
+    <h4>Main Database (40 nuclides)</h4>
+    <ul>
+      <li><strong>Published comparison</strong>: Cornejo et al. (2015) for 32 nuclides (ΓKair matches the published table)</li>
+      <li><strong>Additional nuclides</strong>: Ga-68 (ICRP 107 / ICRU 57) and Y-90 (pure β⁻ emitter; no applicable photon dose-rate constants in Properties)</li>
+      <li><strong>Note</strong>: Operational Γ H*(10) / H'(0.07) values use ICRP 107 nuclear data; material differences from published Cornejo values are reported with the affected nuclide and in calculation reports</li>
+      <li><strong>Use case</strong>: Radiation protection estimation; verify against primary sources for regulatory submissions</li>
+    </ul>
+    <h4>Extended Database (1,252 nuclides from ICRP 107)</h4>
+    <ul>
+      <li><strong>Source</strong>: ICRP Publication 107 (2008) — official decay data compilation</li>
+      <li><strong>Calculation</strong>: Γ constants derived from photon spectrum using ICRU 57 / ICRP 74 conversion coefficients</li>
+      <li><strong>Validation</strong>: ±5% agreement with published values for F-18, Tc-99m, I-131, Lu-177, Ga-68</li>
+      <li><strong>Use case</strong>: Reference and estimation only — NOT validated for clinical use</li>
+      <li><strong>Limitations</strong>:
+        <ul>
+          <li>Includes positron annihilation only when present in ICRP 107 as <code>AQ</code></li>
+          <li>Excludes continuous beta spectrum contribution</li>
+          <li>Derived constants not peer-reviewed</li>
+        </ul>
+      </li>
+    </ul>
+    <h4>Dose Calculations</h4>
+    <ul>
+      <li><strong>Ambient dose equivalent H*(10)</strong> assumes:
+        <ul>
+          <li>Photon field (gamma and X-rays)</li>
+          <li>Point source at specified distance</li>
+          <li>Scatter build-up included via infinite-medium point-isotropic factors (ANSI/ANS-6.4.3) — slightly conservative for finite barriers; still not a substitute for structural shielding design calculations</li>
+          <li>Calibration per ICRU 51</li>
+        </ul>
+      </li>
+      <li><strong>Directional dose H'(0.07)</strong> for extremities:
+        <ul>
+          <li>0.07 mm depth (70 μm)</li>
+          <li>Used for hands, feet, forearms</li>
+          <li>ICRP 74 conversion coefficients</li>
+        </ul>
+      </li>
+    </ul>
+
+    <hr>
+    <h3>Troubleshooting</h3>
+    <p><strong>Q: Search returns no results</strong></p>
+    <ul>
+      <li>A: Check spelling (e.g. “Tc-99m” not “Tc99m”)</li>
+      <li>A: Click “Search in ICRP 107” for extended database</li>
+      <li>A: Try searching by atomic number or clinical use</li>
+    </ul>
+    <p><strong>Q: ICRP 107 data doesn't load</strong></p>
+    <ul>
+      <li>A: The ICRP 107 database is bundled locally; an internet connection is not required</li>
+      <li>A: Check the browser console (F12) for a missing or blocked <code>data/icrp107-data.js</code> file</li>
+      <li>A: For an installed PWA, clear this app's site data or unregister its service worker, then reload while online once; a normal browser-cache clear may leave the installed service worker active</li>
+      <li>A: For <code>file://</code>, keep the complete folder structure together and reopen <code>index.html</code></li>
+    </ul>
+    <p><strong>Q: Calculated dose seems too high/low</strong></p>
+    <ul>
+      <li>A: Verify activity units (MBq vs GBq)</li>
+      <li>A: Check distance in correct units (cm, not m)</li>
+      <li>A: For ICRP 107 extended nuclides, verify the constants are computed, not manually validated</li>
+    </ul>
+    <p><strong>Q: Can I use ICRP 107 for regulatory submissions?</strong></p>
+    <ul>
+      <li>A: No. ICRP 107 calculated constants are informational only.</li>
+      <li>A: Use published peer-reviewed values (like Cornejo et al. when available)</li>
+      <li>A: If no published value exists, verify ICRP 107 calculation independently before regulatory use</li>
+    </ul>
+
+    <hr>
+    <h3>References</h3>
+    <ul>
+      <li><strong>Cornejo Díaz N., Brosed Serreta A., Ruiz Manzano P.</strong> (2015). “Constantes de tasa de kerma en aire y de tasa de equivalente de dosis ambiental de algunos radionucleidos utilizados en aplicaciones médicas.” <em>Radioprotección</em> (SEPR), Nº 83, 39–42.</li>
+      <li><strong>ICRP Publication 74</strong> (1996). “Conversion Coefficients for Use in Radiological Protection against External Radiation.” International Commission on Radiological Protection.</li>
+      <li><strong>ICRP Publication 107</strong> (2008). “Nuclear Decay Data for Dosimetric Calculations.” Endo &amp; Eckerman.</li>
+      <li><strong>ICRP Publication 119</strong> (2012). “Compendium of Dose Coefficients based on ICRP Publication 60.”</li>
+      <li><strong>ICRU Report 57</strong> (1998). “Conversion Coefficients for use in Radiological Protection against External Radiation.”</li>
+      <li><strong>Instrucción IS-28</strong> (CSN, 22 September 2010). “Especificaciones técnicas de funcionamiento que deben cumplir las instalaciones radiactivas de segunda y tercera categoría.” BOE nº 246, 11 October 2010 (BOE-A-2010-15594).</li>
+      <li><strong><a href="https://www.boe.es/buscar/act.php?id=BOE-A-2022-21682">Real Decreto 1029/2022</a></strong>, de 20 de diciembre, por el que se aprueba el Reglamento sobre protección de la salud contra los riesgos derivados de la exposición a las radiaciones ionizantes. BOE-A-2022-21682.</li>
+      <li><strong><a href="https://www.boe.es/buscar/act.php?id=BOE-A-2024-25205">Real Decreto 1217/2024</a></strong>, de 3 de diciembre, por el que se aprueba el Reglamento sobre instalaciones nucleares y radiactivas, y otras actividades relacionadas con la exposición a las radiaciones ionizantes. BOE-A-2024-25205.</li>
+      <li><strong>Zanzonico P.B. et al.</strong> (1999). “Bremsstrahlung radiation exposure from pure beta-ray emitters.” <em>J Nucl Med</em> 40(6):1024–1028. Methodological background only; the application's container constants are not tabulated in the article.</li>
+      <li><strong>NIST XCOM / XAAMDI</strong>. Photon mass attenuation coefficients for lead, elemental iron and ordinary concrete.</li>
+      <li><strong>Trubey D.K.</strong> (1991). <em>New Gamma-Ray Buildup Factor Data for Point Kernel Calculations: ANS-6.4.3 Standard Reference Data</em>. NUREG/CR-5740 / ORNL/RSIC-49/R1, Table 3 (exposure buildup factors for lead, iron and concrete).</li>
+      <li><strong>Oumano M. et al.</strong> (2025). “Shielding resources for four common radiopharmaceuticals utilized for imaging and therapy: Tc-99m, F-18, I-131, and Lu-177.” <em>J Appl Clin Med Phys</em> 26(5):e70084. DOI 10.1002/acm2.70084 (CC BY 4.0).</li>
+    </ul>
+
+    <hr>
+    <h3>Support &amp; Feedback</h3>
+    <p>For issues, questions, or feature requests, contact the person or organisation that supplied your copy of the application.</p>
+
+    <h3>Development tooling</h3>
+    <p>This application was developed with the assistance of AI coding tools &mdash; Anthropic
+    <strong>Claude Code</strong> and OpenAI <strong>Codex</strong> &mdash; operated, reviewed and
+    directed by the author, who remains the sole author and licensor of the original code.
+    These tools hold no authorship, copyright or licence interest in the application; this
+    statement is a voluntary transparency notice, not a licence obligation.</p>
+    <p>Correctness does not rest on how the code was written: all numerical data are
+    transcribed from the cited primary sources (ICRP, ICRU, NIST, NUREG/ANS, BOE), the
+    calculation paths are checked by the automated test suites against external anchors,
+    and adoption for professional use requires the independent human validation described
+    in the acceptance sheet.</p>
+
+    <hr>
+    <h3>License</h3>
+    <p>The original application code is licensed under the <strong>European Union Public Licence, version 1.2 only (EUPL-1.2)</strong>. It may be used in educational, research, regulatory, commercial and healthcare settings, subject to the licence terms, including its copyleft and source-availability requirements.</p>
+    <p>This application is supplied directly in machine-readable source-code form. The corresponding HTML, CSS and JavaScript files, together with the licence and attribution files, accompany each local copy; no external source-code service is required.</p>
+    <p>Bundled third-party software and data are not relicensed by the EUPL. In particular, the ICRP-07 decay data retains the educational, research and not-for-profit terms in <code>LICENSE.TXT</code>; other sources retain the terms stated in the third-party notices below. This page provides the complete texts and scope map.</p>
+    <p>For regulatory use, verify against primary sources and consult local radiation protection authorities.</p>
+  </article>
+
+  <section class="card about-content" id="licences">
+    <h2>Licences</h2>
+    <p>This is a mixed-licence application. EUPL-1.2 covers the original project material only; third-party software and data retain their own terms. Neither licence replaces another.</p>
+
+    <!-- LICENSING.md is the canonical source for this synchronized scope summary. -->
+    <h3>Licence scope</h3>
+    <ul>
+      <li><strong>EUPL-1.2 only:</strong> original application code, maintenance tools, tests and original project documentation, to the extent copyright is held by the project licensor.</li>
+      <li><strong>Upstream MIT:</strong> Chart.js v4.4.0 and @kurkle/color v0.3.2 in <code>js/chart.umd.min.js</code>.</li>
+      <li><strong>Separate data terms:</strong> ICRP-07 and other third-party datasets and publication-derived material identified below.</li>
+      <li>In mixed files, EUPL covers the original structure and code, not the underlying third-party data. Generated or transformed data does not acquire the EUPL merely because project code produced it.</li>
+    </ul>
+    <p>The licence change does not purport to withdraw permissions already granted for copies obtained under the project's former MIT licence.</p>
+
+    <h3>Source-code availability</h3>
+    <p>The application is distributed directly in machine-readable source-code form. Its original HTML, CSS and JavaScript, maintenance files, documentation and licence notices accompany the local copy. No external source-code service is required to study, modify or redistribute the application.</p>
+    <p>Version-control metadata, including a hidden <code>.git</code> directory, is development infrastructure rather than part of the application and must be excluded from copies supplied to end users.</p>
+
+    <h3 id="license-code">Original project material — EUPL-1.2 only</h3>
+    <pre class="legal-text">Copyright (c) 2026 Ramon Sendon
+Licensed under the EUPL, version 1.2 only (EUPL-1.2).
+
+The scope of this licence within this mixed-licence distribution is defined in
+LICENSING.md. Third-party software and data are excluded and retain their own
+terms; see LICENSE.TXT and THIRD_PARTY_NOTICES.md.
+
+                      EUROPEAN UNION PUBLIC LICENCE v. 1.2
+                      EUPL © the European Union 2007, 2016
+
+This European Union Public Licence (the ‘EUPL’) applies to the Work (as defined
+below) which is provided under the terms of this Licence. Any use of the Work,
+other than as authorised under this Licence is prohibited (to the extent such
+use is covered by a right of the copyright holder of the Work).
+
+The Work is provided under the terms of this Licence when the Licensor (as
+defined below) has placed the following notice immediately following the
+copyright notice for the Work:
+
+        Licensed under the EUPL
+
+or has expressed by any other means his willingness to license under the EUPL.
+
+1. Definitions
+
+In this Licence, the following terms have the following meaning:
+
+- ‘The Licence’: this Licence.
+
+- ‘The Original Work’: the work or software distributed or communicated by the
+  Licensor under this Licence, available as Source Code and also as Executable
+  Code as the case may be.
+
+- ‘Derivative Works’: the works or software that could be created by the
+  Licensee, based upon the Original Work or modifications thereof. This Licence
+  does not define the extent of modification or dependence on the Original Work
+  required in order to classify a work as a Derivative Work; this extent is
+  determined by copyright law applicable in the country mentioned in Article 15.
+
+- ‘The Work’: the Original Work or its Derivative Works.
+
+- ‘The Source Code’: the human-readable form of the Work which is the most
+  convenient for people to study and modify.
+
+- ‘The Executable Code’: any code which has generally been compiled and which is
+  meant to be interpreted by a computer as a program.
+
+- ‘The Licensor’: the natural or legal person that distributes or communicates
+  the Work under the Licence.
+
+- ‘Contributor(s)’: any natural or legal person who modifies the Work under the
+  Licence, or otherwise contributes to the creation of a Derivative Work.
+
+- ‘The Licensee’ or ‘You’: any natural or legal person who makes any usage of
+  the Work under the terms of the Licence.
+
+- ‘Distribution’ or ‘Communication’: any act of selling, giving, lending,
+  renting, distributing, communicating, transmitting, or otherwise making
+  available, online or offline, copies of the Work or providing access to its
+  essential functionalities at the disposal of any other natural or legal
+  person.
+
+2. Scope of the rights granted by the Licence
+
+The Licensor hereby grants You a worldwide, royalty-free, non-exclusive,
+sublicensable licence to do the following, for the duration of copyright vested
+in the Original Work:
+
+- use the Work in any circumstance and for all usage,
+- reproduce the Work,
+- modify the Work, and make Derivative Works based upon the Work,
+- communicate to the public, including the right to make available or display
+  the Work or copies thereof to the public and perform publicly, as the case may
+  be, the Work,
+- distribute the Work or copies thereof,
+- lend and rent the Work or copies thereof,
+- sublicense rights in the Work or copies thereof.
+
+Those rights can be exercised on any media, supports and formats, whether now
+known or later invented, as far as the applicable law permits so.
+
+In the countries where moral rights apply, the Licensor waives his right to
+exercise his moral right to the extent allowed by law in order to make effective
+the licence of the economic rights here above listed.
+
+The Licensor grants to the Licensee royalty-free, non-exclusive usage rights to
+any patents held by the Licensor, to the extent necessary to make use of the
+rights granted on the Work under this Licence.
+
+3. Communication of the Source Code
+
+The Licensor may provide the Work either in its Source Code form, or as
+Executable Code. If the Work is provided as Executable Code, the Licensor
+provides in addition a machine-readable copy of the Source Code of the Work
+along with each copy of the Work that the Licensor distributes or indicates, in
+a notice following the copyright notice attached to the Work, a repository where
+the Source Code is easily and freely accessible for as long as the Licensor
+continues to distribute or communicate the Work.
+
+4. Limitations on copyright
+
+Nothing in this Licence is intended to deprive the Licensee of the benefits from
+any exception or limitation to the exclusive rights of the rights owners in the
+Work, of the exhaustion of those rights or of other applicable limitations
+thereto.
+
+5. Obligations of the Licensee
+
+The grant of the rights mentioned above is subject to some restrictions and
+obligations imposed on the Licensee. Those obligations are the following:
+
+Attribution right: The Licensee shall keep intact all copyright, patent or
+trademarks notices and all notices that refer to the Licence and to the
+disclaimer of warranties. The Licensee must include a copy of such notices and a
+copy of the Licence with every copy of the Work he/she distributes or
+communicates. The Licensee must cause any Derivative Work to carry prominent
+notices stating that the Work has been modified and the date of modification.
+
+Copyleft clause: If the Licensee distributes or communicates copies of the
+Original Works or Derivative Works, this Distribution or Communication will be
+done under the terms of this Licence or of a later version of this Licence
+unless the Original Work is expressly distributed only under this version of the
+Licence — for example by communicating ‘EUPL v. 1.2 only’. The Licensee
+(becoming Licensor) cannot offer or impose any additional terms or conditions on
+the Work or Derivative Work that alter or restrict the terms of the Licence.
+
+Compatibility clause: If the Licensee Distributes or Communicates Derivative
+Works or copies thereof based upon both the Work and another work licensed under
+a Compatible Licence, this Distribution or Communication can be done under the
+terms of this Compatible Licence. For the sake of this clause, ‘Compatible
+Licence’ refers to the licences listed in the appendix attached to this Licence.
+Should the Licensee's obligations under the Compatible Licence conflict with
+his/her obligations under this Licence, the obligations of the Compatible
+Licence shall prevail.
+
+Provision of Source Code: When distributing or communicating copies of the Work,
+the Licensee will provide a machine-readable copy of the Source Code or indicate
+a repository where this Source will be easily and freely available for as long
+as the Licensee continues to distribute or communicate the Work.
+
+Legal Protection: This Licence does not grant permission to use the trade names,
+trademarks, service marks, or names of the Licensor, except as required for
+reasonable and customary use in describing the origin of the Work and
+reproducing the content of the copyright notice.
+
+6. Chain of Authorship
+
+The original Licensor warrants that the copyright in the Original Work granted
+hereunder is owned by him/her or licensed to him/her and that he/she has the
+power and authority to grant the Licence.
+
+Each Contributor warrants that the copyright in the modifications he/she brings
+to the Work are owned by him/her or licensed to him/her and that he/she has the
+power and authority to grant the Licence.
+
+Each time You accept the Licence, the original Licensor and subsequent
+Contributors grant You a licence to their contributions to the Work, under the
+terms of this Licence.
+
+7. Disclaimer of Warranty
+
+The Work is a work in progress, which is continuously improved by numerous
+Contributors. It is not a finished work and may therefore contain defects or
+‘bugs’ inherent to this type of development.
+
+For the above reason, the Work is provided under the Licence on an ‘as is’ basis
+and without warranties of any kind concerning the Work, including without
+limitation merchantability, fitness for a particular purpose, absence of defects
+or errors, accuracy, non-infringement of intellectual property rights other than
+copyright as stated in Article 6 of this Licence.
+
+This disclaimer of warranty is an essential part of the Licence and a condition
+for the grant of any rights to the Work.
+
+8. Disclaimer of Liability
+
+Except in the cases of wilful misconduct or damages directly caused to natural
+persons, the Licensor will in no event be liable for any direct or indirect,
+material or moral, damages of any kind, arising out of the Licence or of the use
+of the Work, including without limitation, damages for loss of goodwill, work
+stoppage, computer failure or malfunction, loss of data or any commercial
+damage, even if the Licensor has been advised of the possibility of such damage.
+However, the Licensor will be liable under statutory product liability laws as
+far such laws apply to the Work.
+
+9. Additional agreements
+
+While distributing the Work, You may choose to conclude an additional agreement,
+defining obligations or services consistent with this Licence. However, if
+accepting obligations, You may act only on your own behalf and on your sole
+responsibility, not on behalf of the original Licensor or any other Contributor,
+and only if You agree to indemnify, defend, and hold each Contributor harmless
+for any liability incurred by, or claims asserted against such Contributor by
+the fact You have accepted any warranty or additional liability.
+
+10. Acceptance of the Licence
+
+The provisions of this Licence can be accepted by clicking on an icon ‘I agree’
+placed under the bottom of a window displaying the text of this Licence or by
+affirming consent in any other similar way, in accordance with the rules of
+applicable law. Clicking on that icon indicates your clear and irrevocable
+acceptance of this Licence and all of its terms and conditions.
+
+Similarly, you irrevocably accept this Licence and all of its terms and
+conditions by exercising any rights granted to You by Article 2 of this Licence,
+such as the use of the Work, the creation by You of a Derivative Work or the
+Distribution or Communication by You of the Work or copies thereof.
+
+11. Information to the public
+
+In case of any Distribution or Communication of the Work by means of electronic
+communication by You (for example, by offering to download the Work from a
+remote location) the distribution channel or media (for example, a website) must
+at least provide to the public the information requested by the applicable law
+regarding the Licensor, the Licence and the way it may be accessible, concluded,
+stored and reproduced by the Licensee.
+
+12. Termination of the Licence
+
+The Licence and the rights granted hereunder will terminate automatically upon
+any breach by the Licensee of the terms of the Licence.
+
+Such a termination will not terminate the licences of any person who has
+received the Work from the Licensee under the Licence, provided such persons
+remain in full compliance with the Licence.
+
+13. Miscellaneous
+
+Without prejudice of Article 9 above, the Licence represents the complete
+agreement between the Parties as to the Work.
+
+If any provision of the Licence is invalid or unenforceable under applicable
+law, this will not affect the validity or enforceability of the Licence as a
+whole. Such provision will be construed or reformed so as necessary to make it
+valid and enforceable.
+
+The European Commission may publish other linguistic versions or new versions of
+this Licence or updated versions of the Appendix, so far this is required and
+reasonable, without reducing the scope of the rights granted by the Licence. New
+versions of the Licence will be published with a unique version number.
+
+All linguistic versions of this Licence, approved by the European Commission,
+have identical value. Parties can take advantage of the linguistic version of
+their choice.
+
+14. Jurisdiction
+
+Without prejudice to specific agreement between parties,
+
+- any litigation resulting from the interpretation of this License, arising
+  between the European Union institutions, bodies, offices or agencies, as a
+  Licensor, and any Licensee, will be subject to the jurisdiction of the Court
+  of Justice of the European Union, as laid down in article 272 of the Treaty on
+  the Functioning of the European Union,
+
+- any litigation arising between other parties and resulting from the
+  interpretation of this License, will be subject to the exclusive jurisdiction
+  of the competent court where the Licensor resides or conducts its primary
+  business.
+
+15. Applicable Law
+
+Without prejudice to specific agreement between parties,
+
+- this Licence shall be governed by the law of the European Union Member State
+  where the Licensor has his seat, resides or has his registered office,
+
+- this licence shall be governed by Belgian law if the Licensor has no seat,
+  residence or registered office inside a European Union Member State.
+
+Appendix
+
+‘Compatible Licences’ according to Article 5 EUPL are:
+
+- GNU General Public License (GPL) v. 2, v. 3
+- GNU Affero General Public License (AGPL) v. 3
+- Open Software License (OSL) v. 2.1, v. 3.0
+- Eclipse Public License (EPL) v. 1.0
+- CeCILL v. 2.0, v. 2.1
+- Mozilla Public Licence (MPL) v. 2
+- GNU Lesser General Public Licence (LGPL) v. 2.1, v. 3
+- Creative Commons Attribution-ShareAlike v. 3.0 Unported (CC BY-SA 3.0) for
+  works other than software
+- European Union Public Licence (EUPL) v. 1.1, v. 1.2
+- Québec Free and Open-Source Licence — Reciprocity (LiLiQ-R) or Strong
+  Reciprocity (LiLiQ-R+).
+
+The European Commission may update this Appendix to later versions of the above
+licences without producing a new version of the EUPL, as long as they provide
+the rights granted in Article 2 of this Licence and protect the covered Source
+Code from exclusive appropriation.
+
+All other changes or additions to this Appendix require the production of a new
+EUPL version.</pre>
+
+    <h3 id="license-data">ICRP-07 decay data</h3>
+    <pre class="legal-text">This notice covers the ICRP-07 (ICRP Publication 107) nuclear decay data and
+the parsed derivatives distributed in this repository: data/icrp107-index.json,
+data/icrp107-data.js, and the photon-derived values in data/nuclides.json and
+its auto-generated copy data/nuclides-data.js.
+
+ICRP-07 reference: ICRP, 2008. Nuclear Decay Data for Dosimetric Calculations.
+ICRP Publication 107. Ann. ICRP 38 (3).
+http://journals.sagepub.com/doi/pdf/10.1177/ANIB_38_3
+
+ICRP-07 Copyright Notice:
+
+Copyright (c) 2008 A. Endo and K.F. Eckerman, Authors.  All Rights Reserved.
+
+Permission is hereby granted to any person obtaining a copy of the DECDATA
+software, the ICRP-07 data files and associated documentation to use, copy,
+and distribute these materials and the documentation for educational, research,
+and not-for-profit purposes, without fee and without a signed licensing
+agreement provided that the file LICENSE.TXT containing the above copyright
+notices, this paragraph and the following three paragraphs appears in all
+copies, modifications, and distributions.
+
+IN NO EVENT SHALL THE AUTHORS BE LIABLE TO ANY PARTY FOR DIRECT, INDIRECT,
+SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, INCLUDING LOST PROFITS, ARISING
+OUT OF THE USE OF THE SOFTWARE, ITS DATA FILES, AND THE DOCUMENTATION.
+
+PERFECT SYNC, INC. SPECIFICALLY DISCLAIMS ALL OTHER WARRANTIES, EXPRESSED OR
+IMPLIED, INCLUDING, BUT NOT LIMITED TO, ANY IMPLIED WARRANTY OF MERCHANTABILITY
+OR FITNESS FOR A PARTICULAR PURPOSE.
+
+THE AUTHORS SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+THE SOFTWARE, DATA FILES AND ACCOMPANYING DOCUMENTATION PROVIDED HEREUNDER IS
+PROVIDED "AS IS". THE AUTHORS HAVE NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT,
+FUTURE UPDATES, ENHANCEMENTS, OR MODIFICATIONS TO THE SOFTWARE.</pre>
+  </section>
+
+  <!-- THIRD_PARTY_NOTICES.md is the authoritative source for this synchronized HTML copy. -->
+  <section class="card about-content" id="third-party-notices">
+    <h2>Third-party notices</h2>
+    <p>This is the authoritative notice file for all third-party material bundled or redistributed in this application — both <strong>software</strong> (MIT, texts reproduced in full below) and <strong>data</strong> (see the Data sources section).</p>
+    <p>The original application <strong>code</strong> is licensed under EUPL-1.2 only (see <a href="#license-code">LICENSE</a> and the scope map above). The EUPL does not relicense the bundled third-party software or data. Those items retain the terms below and in <a href="#license-data">LICENSE.TXT</a>; some commercial uses of the data require separate permission from the respective rights holders.</p>
+
+    <h3>⚠️ <code>LICENSE</code> and <code>LICENSE.TXT</code> are two different licences</h3>
+    <p>They are <strong>not</strong> variants of the same file, and neither supersedes the other:</p>
+    <div class="overflow-x-auto">
+      <table class="about-table">
+        <thead><tr><th>File</th><th>Covers</th><th>Terms</th></tr></thead>
+        <tbody>
+          <tr><td><a href="#license-code"><code>LICENSE</code></a></td><td>the original application <strong>code</strong></td><td>EUPL-1.2 only — © 2026 Ramon Sendon</td></tr>
+          <tr><td><a href="#license-data"><code>LICENSE.TXT</code></a></td><td>the <strong>ICRP-07 decay data</strong> and its derivatives (<code>data/icrp107-index.json</code>, <code>data/icrp107-data.js</code>, the photon-derived values in <code>data/nuclides.json</code> and <code>data/nuclides-data.js</code>)</td><td>ICRP-07 — educational / research / not-for-profit only</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>The <code>LICENSE.TXT</code> filename is mandated, not a stylistic choice.</strong> The ICRP-07 grant is conditional on “the file LICENSE.TXT containing the above copyright notices […] appear[ing] in all copies, modifications, and distributions”, so it cannot be renamed, moved into a <code>LICENSES/</code> directory, or folded into this file without breaking the licence under which the data is redistributed.</p>
+    <p>The two names differing only by extension is a known hazard: on case-insensitive filesystems and in some licence detectors and packagers one may shadow or be mistaken for the other, which would make the distribution look single-licensed. If you redistribute this project, ship <strong>both</strong> files, <code>LICENSING.md</code> and this notice. Neither the code licence nor the data licence covers what the other one does.</p>
+
+    <hr>
+    <h3>Software</h3>
+    <h4>Chart.js v4.4.0</h4>
+    <p>Bundled as <code>js/chart.umd.min.js</code>. <a href="https://www.chartjs.org">https://www.chartjs.org</a></p>
+    <p>Verbatim license text supplied for the v4.4.0 release:</p>
+    <pre class="legal-text">The MIT License (MIT)
+
+Copyright (c) 2014-2022 Chart.js Contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</pre>
+
+    <h4>@kurkle/color v0.3.2</h4>
+    <p>Bundled inside <code>js/chart.umd.min.js</code> (Chart.js dependency); version and copyright match the distributed bundle banner.</p>
+    <p>MIT notice for the bundled dependency:</p>
+    <pre class="legal-text">The MIT License (MIT)
+
+Copyright (c) 2023 Jukka Kurkela
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</pre>
+
+    <hr>
+    <h3>Data sources</h3>
+    <p>Physical and regulatory data used by the app. Numeric physical constants are facts, but their compiled tables and the publications they come from may carry copyright and/or database rights; each source is listed with what is used, its origin and its terms. These terms apply independently of the EUPL licence for the original code. ICRP-107 is covered by its own notice (<code>LICENSE.TXT</code>), and commercial use requires clearing the items marked below first.</p>
+
+    <h4>ICRP Publication 107 — nuclear decay data</h4>
+    <p>Files: <code>data/icrp107-index.json</code>, <code>data/icrp107-data.js</code>, and the photon-derived values in <code>data/nuclides.json</code> / <code>data/nuclides-data.js</code>. © 2008 A. Endo and K.F. Eckerman (ICRP-07 / DECDATA). Redistributed for educational, research and not-for-profit purposes under the ICRP-07 copyright notice — see <a href="#license-data">LICENSE.TXT</a>, whose terms require that file to accompany all copies. <strong>Commercial use requires permission from the copyright holders</strong> (<a href="https://www.icrp.org/">https://www.icrp.org/</a>).</p>
+
+    <h4>ICRU Report 57 / ICRP Publication 74 — conversion coefficients</h4>
+    <p>The <code>ICRU57</code> table in <code>js/data.js</code> (ambient dose equivalent h*(10) and directional dose equivalent h'(0.07) per unit fluence). The h*(10) column uses tabulated ICRU 57 / ICRP 74 values with attribution. The h'(0.07) column is a <strong>reconstruction</strong>, not a verbatim ICRP/ICRU table: PTB-Dos-34 / ICRP 74 kerma coefficients ≤100 keV, anchors derived from Cornejo et al. (2015) per-line contributions at 150–400 keV, and the kerma approximation h'(0.07)≈h*(10) ≥500 keV (full provenance in the header of <code>js/data.js</code>). Reproduction of substantial ICRU/ICRP tabular material requires permission; relevant only if use becomes commercial.</p>
+
+    <h4>NIST XCOM / XAAMDI — photon mass attenuation coefficients</h4>
+    <p>The <code>ATTENUATION</code> table in <code>js/data.js</code> contains mass attenuation values for lead, elemental iron and ordinary concrete. Reference values from NIST (X-Ray Attenuation and Absorption for Materials of Dosimetric Interest, and the XCOM database, NIST Standard Reference Database 8), used with attribution to NIST. SRD products may be subject to the <a href="https://www.nist.gov/open/copyright-fair-use-and-licensing-statements-srd-data-software-and-technical-series-publications">NIST SRD terms</a>.</p>
+
+    <h4>NUREG/CR-5740 · ANSI/ANS-6.4.3 — exposure buildup factors</h4>
+    <p>The <code>BUILDUP_*</code> tables in <code>js/data.js</code> (Table 3 point-isotropic exposure buildup factors for lead, elemental iron and concrete). Numeric values transcribed from Trubey, D.K., NUREG/CR-5740 / ORNL/RSIC-49/R1 (1991), an NRC/ORNL report released for unlimited distribution. The underlying ANSI/ANS-6.4.3 standard is © American Nuclear Society and is <strong>not</strong> redistributed here (only the numeric Table 3 values are used).</p>
+
+    <h4>BOE — Spanish legal texts</h4>
+    <p><code>references/RD 1029 de 2022 …</code>, <code>references/RD 1217 de 2024 …</code>. Legal and regulatory provisions are excluded from intellectual property under art. 13 of the Spanish Intellectual Property Law (LPI); redistributable.</p>
+
+    <h4>Oumano et al. (2025) — Archer broad-beam shielding parameters</h4>
+    <p><code>references/J Applied Clin Med Phys - 2025 - Oumano …pdf</code>; the Archer α/β/γ parameters and the light-weight concrete density in <code>js/data.js</code> are transcribed from it.</p>
+    <blockquote>
+      <p>Oumano, M., et al. (2025). “Shielding resources for four common radiopharmaceuticals utilized for imaging and therapy: Tc-99m, F-18, I-131, and Lu-177.” <em>Journal of Applied Clinical Medical Physics</em> 26(5):e70084. DOI: 10.1002/acm2.70084.</p>
+    </blockquote>
+    <p>Licensed <strong>CC BY 4.0</strong> (<a href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a>). Changes: numeric parameter values transcribed into the application; the article itself is redistributed unmodified in <code>references/</code>.</p>
+
+    <h4>Status / permissions</h4>
+    <ul>
+      <li>ICRP-107 may be redistributed for the educational, research and not-for-profit purposes stated in <code>LICENSE.TXT</code>; the ICRU/NIST/NUREG numeric tables are used with attribution; Oumano is CC BY 4.0; the BOE texts carry no IP.</li>
+      <li>For <strong>commercial use of the affected data</strong>, first obtain permission from ICRP (ICRP-107 data and any substantial ICRU/ICRP-74 material) and written confirmation of the applicable terms from NIST (XCOM SRD 8) and NRC/ORNL or ANS (ANS-6.4.3 buildup).</li>
+      <li>Public hosting, copying or forking does not expand the permissions granted by any data source; each deployment and redistribution must assess those terms.</li>
+    </ul>
+  </section>
+</main>
+
+<footer class="site-footer">
+  NM Radionuclide Planner &mdash; For radiation protection estimation purposes.
+  Verify against primary sources for regulatory submissions.
+  <br>Original application and code: &copy; 2026 Ramon Sendon &middot; EUPL-1.2 &middot; Third-party data: separate terms &mdash;
+  About, guide &amp; licences
+</footer>
+
+<script src="js/ui.js"></script>
+<script>
+UI.initDarkMode();
+UI.initPrint();
+UI.initKeyboard();
+
+// Register the service worker for offline/PWA use (HTTP(S) only — file:// has no SW support)
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.protocol === 'http:')) {
+  navigator.serviceWorker.register('sw.js').catch(() => { /* offline-first is best-effort */ });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NM Radionuclide Planner — Dose Estimator</title>
+  <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+  <link rel="apple-touch-icon" href="assets/icons/icon-180.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2d6a4f">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/chart.umd.min.js"></script>
+</head>
+<body>
+
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<header class="site-header">
+  <div class="inner">
+    <div class="site-logo">&#9762; <span>NM</span> Radionuclide Planner</div>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="index.html">Properties</a>
+      <a href="decay.html">Decay</a>
+      <a href="dose.html" class="active">Dose</a>
+    </nav>
+    <button id="darkToggle" type="button" class="btn-icon" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
+      <span id="darkIcon">🌙</span>
+    </button>
+  </div>
+</header>
+
+<main class="page-body" id="main-content">
+  <h1 class="page-title">External Dose Estimator</h1>
+  <div class="page-subtitle">
+    Point source geometry. Area-monitoring operational quantities:
+    <strong>H*(10)</strong> (ambient dose equivalent, estimator of effective dose) &nbsp;|&nbsp;
+    <strong>H'(0.07)</strong> (directional dose equivalent at 0.07 mm, skin/extremity-relevant for low-energy emitters).
+    <br>Compliance with dose limits is assessed with personal dosimetry — Hp(10), Hp(0.07), Hp(3) — not with these area quantities.
+  </div>
+
+  <!-- Parameters -->
+  <div class="card">
+    <h2 class="card-title">&#9881; Source Parameters</h2>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label" for="nuclideSearch" id="nuclideSearchLabel">Radionuclide</label>
+        <div class="nuclide-combobox" id="nuclideCombobox">
+             <input type="search" class="form-input" id="nuclideSearch"
+                 placeholder="Search nuclide (e.g. Lu-177, F-18, Zr-89)…"
+                 autocomplete="off" spellcheck="false" title="Search nuclide" aria-labelledby="nuclideSearchLabel"
+                 role="combobox" aria-expanded="false" aria-controls="nuclideDropdown"
+                 aria-autocomplete="list" aria-haspopup="listbox">
+             <ul class="nuclide-dropdown hidden" id="nuclideDropdown" role="listbox" aria-labelledby="nuclideSearchLabel" title="Suggested nuclides"></ul>
+          <input type="hidden" id="nuclideSelect" value="">
+          <div id="nuclideStatus" class="sr-only" role="status" aria-live="polite"></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="A0">Activity A&#8320;</label>
+        <div class="d-flex gap-1">
+          <input type="number" class="form-input" id="A0" value="1000" min="0" step="any" title="Activity">
+          <select class="form-select form-select-narrow" id="A0unit" title="Unit" aria-label="Activity unit">
+            <option value="MBq" selected>MBq</option>
+            <option value="GBq">GBq</option>
+            <option value="mCi">mCi</option>
+            <option value="Ci">Ci</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="distance">Distance d</label>
+        <div class="d-flex gap-1">
+          <input type="number" class="form-input" id="distance" value="0.30" min="0.01" step="0.01" title="Distance">
+          <select class="form-select form-select-medium" id="distUnit" title="Unit" aria-label="Distance unit">
+            <option value="m" selected>m</option>
+            <option value="cm">cm</option>
+          </select>
+        </div>
+        <div class="form-hint" id="distHint">Point-source approximation (1/d&#178;)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shielding -->
+  <div class="card mt-2">
+    <h2 class="card-title">&#127959; Shielding</h2>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label" for="shieldMaterial">Material</label>
+        <select class="form-select" id="shieldMaterial" title="Shield material">
+          <option value="none">None</option>
+          <option value="Pb">Lead (Pb) — &#961; = 11.35 g/cm&#179;</option>
+          <option value="Fe">Iron (Fe) — &#961; = 7.874 g/cm&#179;</option>
+          <option value="concrete_NW">Concrete, normal-weight — &#961; = 2.30 g/cm&#179;</option>
+          <option value="concrete_LW">Concrete, light-weight — &#961; = 1.60 g/cm&#179;</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="shieldThickness">Thickness</label>
+        <div class="d-flex gap-1">
+          <input type="number" class="form-input" id="shieldThickness" value="0" min="0" step="0.1" title="Thickness">
+          <select class="form-select form-select-medium" id="shieldUnit" title="Unit" aria-label="Thickness unit">
+            <option value="cm" selected>cm</option>
+            <option value="mm">mm</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="patientAtten">Patient attenuation</label>
+        <select class="form-select" id="patientAtten" title="Patient attenuation">
+          <option value="no" selected>No</option>
+          <option value="yes">Yes</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="patientTx">Patient transmission</label>
+        <div class="d-flex gap-1">
+          <input type="number" class="form-input" id="patientTx" value="100" min="0" max="100" step="0.1" title="Transmission" disabled>
+          <span class="percent-symbol">%</span>
+        </div>
+        <div class="form-hint" id="patientTxHint">No patient attenuation</div>
+      </div>
+    </div>
+    <div id="hvlInfo" class="alert alert-info mt-2 hidden"></div>
+    <div id="y90ShieldNote" class="alert alert-warning alert-lg mt-2 hidden">
+      ⚠️ For <strong>Y-90</strong> the external dose is a bremsstrahlung estimate and shielding is modelled
+      <strong>only</strong> through the container selector below the results (PMMA / Pb / W). The general
+      slab material and thickness above do not apply and are disabled while Y-90 is selected.
+    </div>
+  </div>
+
+  <!-- Exposure -->
+  <div class="card mt-2">
+    <h2 class="card-title">&#8987; Exposure Time</h2>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label" for="expTime">Exposure time per administration</label>
+        <div class="d-flex gap-1">
+          <input type="number" class="form-input" id="expTime" value="1" min="0" step="any" title="Exposure time">
+          <select class="form-select form-select-narrow" id="expUnit" title="Unit" aria-label="Exposure time unit">
+            <option value="h" selected>h</option>
+            <option value="min">min</option>
+            <option value="d">d</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="nAdmin">Number of administrations per year</label>
+        <input type="number" class="form-input" id="nAdmin" value="1" min="1" step="1" title="Number of administrations">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="decayMode">Include radioactive decay?</label>
+        <select class="form-select" id="decayMode" title="Decay mode">
+          <option value="with_decay" selected>Yes — integrate A(t) over time</option>
+          <option value="no_decay">No — constant activity (worst case)</option>
+        </select>
+        <div class="form-hint">Recommended: include decay for cumulative dose</div>
+      </div>
+    </div>
+    <div class="mt-2">
+      <button class="btn btn-primary" id="btnCalc">Calculate Dose</button>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="card mt-2 hidden" id="resultsCard">
+    <h2 class="card-title">&#128202; Results</h2>
+    <div class="alert alert-warning mb-1">
+      <strong>Note:</strong> Estimates for radiation protection using point-source geometry.
+      Shielding uses the <strong>Archer broad-beam method</strong> (Monte Carlo, Oumano et al. 2025) for Tc-99m, F-18, I-131 and Lu-177 —
+      all other nuclides use <strong>spectrum-weighted narrow-beam attenuation with build-up</strong> (dose-weighted sum over the ICRP 107
+      photon lines with point-isotropic exposure buildup factors, ANSI/ANS-6.4.3 reference data — accounts for beam hardening and scatter
+      buildup; infinite-medium buildup values are used — NUREG/CR-5740 discusses finite-slab and interface corrections that can move the result in either direction).
+      Geometry, scatter, and source distribution effects are not modelled. Not suitable for dosimetric treatment planning.
+    </div>
+    <div id="nuclideInfo" class="alert alert-info mb-1"></div>
+
+    <div class="overflow-x-auto">
+      <table class="data-table" id="resultsTable">
+        <thead>
+          <tr>
+            <th class="has-tooltip" tabindex="0" aria-label="Quantity. H star 10 ambient dose equivalent and H prime 0.07 directional dose equivalent are both shown." data-tooltip="Area-monitoring operational quantities: H*(10) ambient dose equivalent (effective-dose estimator) and H'(0.07) directional dose equivalent (skin/extremity indicator). Both are always shown.">Quantity</th>
+            <th id="doseRate0Header">D'(0)</th>
+            <th id="doseRateAtTimeHeader">D'(t)</th>
+            <th class="has-tooltip" tabindex="0" aria-label="Reference dose rate at 1 metre." data-tooltip="Dose rate at 1 m (reference)">Ref @ 1 m</th>
+            <th>D(annual)</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="resultsBody"></tbody>
+      </table>
+    </div>
+
+    <div class="d-flex gap-2 mt-2 mb-1" data-no-print>
+      <button class="btn btn-secondary btn-sm" id="btnPrintDose" type="button" title="Generate a printable calculation report with traceability (sources, method, disclaimer)">📄 Report / PDF</button>
+      <button class="btn btn-secondary btn-sm" id="btnExportDoseCsv" type="button" title="Export results as CSV">⬇ Export CSV</button>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Shielding summary -->
+    <div id="shieldingInfo" class="hidden">
+      <h3 class="card-title">Shielding details</h3>
+      <div class="prop-grid" id="shieldingProps"></div>
+      <div id="shieldRangeWarn"></div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Dose vs distance chart -->
+    <h3 class="card-title" id="chartTitle">Dose Rate vs Distance (unshielded)</h3>
+    <div class="chart-wrap" id="distChartContainer">
+      <canvas id="distChart"></canvas>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Dose limit comparison -->
+    <h3 class="card-title">Annual dose limit comparison</h3>
+    <div id="limitComparison"></div>
+    <div class="alert alert-warning mt-1">
+      Annual limits (RD 1029/2022 / EURATOM 2013/59): workers 20 mSv/y effective dose, 500 mSv/y extremities; public 1 mSv/y.
+      <strong>Lens of eye (current regime, since 22 Jun 2024):</strong> <em>Both conditions must be satisfied:</em> 50 mSv/y max annual AND 100 mSv over any consecutive 5-year period.
+      These are regulatory limits, not design targets.
+    </div>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  NM Radionuclide Planner &mdash; For radiation protection estimation purposes.
+  Verify against primary sources for regulatory submissions.
+  <br>Original application and code: &copy; 2026 Ramon Sendon &middot; EUPL-1.2 &middot; Third-party data: separate terms &mdash;
+  <a href="about.html">About, guide &amp; licences</a>
+</footer>
+
+<script src="data/nuclides-data.js"></script>
+<script src="js/data.js"></script>
+<script src="js/physics.js"></script>
+<script src="js/nuclide-id.js"></script>
+<script src="js/db.js"></script>
+<script src="js/ui.js"></script>
+<script src="data/icrp107-data.js"></script>
+<script src="js/icrp107-loader.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/report.js"></script>
+<script>
+(async () => {
+  // ---- UI initialization ----
+  UI.initDarkMode();
+  UI.initPrint();
+  UI.initKeyboard();
+  try {
+    await DB.load();
+  } catch (err) {
+    console.error('Failed to initialize dose calculator:', err);
+    UI.showFatalError(`Error loading nuclide database: ${err.message}`);
+    return;
+  }
+  await ICRP107._ensureLoaded().catch(err => console.warn('ICRP107 not available:', err));
+
+  // ---- Nuclide resolution function ----
+  function resolveNuclide(id) {
+    const dbNuclide = DB.getById(id);
+    if (dbNuclide) return dbNuclide;
+
+    const icrpN = ICRP107.get(id);
+    if (!icrpN) return null;
+
+    const constants = ICRP107.calcConstants(id);
+    if (!constants) {
+      // No photon passes the filter (89 ICRP 107 entries, e.g. C-14, Ca-45).
+      // These are searchable and clickable, so returning null here meant the
+      // click did nothing at all: no message, no selection, dropdown left open,
+      // and Calculate then said "Select a valid nuclide first" — which was false,
+      // the nuclide was valid, it simply has no photon dose component. Return a
+      // zero-gamma record instead so the pure-β⁻ result card below (which already
+      // exists and says exactly that) handles it (audit 2026-07-15).
+      return {
+        id: icrpN.id,
+        symbol: icrpN.id,
+        name: icrpN.id,
+        half_life_s: icrpN.half_life_s,
+        half_life_display: icrpN.half_life_display,
+        gamma_H10: 0,
+        gamma_H007: null,
+        gamma_Kair: 0,
+        max_photon_energy_keV: null,
+        representative_energy_keV: null,
+        shielding_spectrum: null,
+        shielding_spectrum_h007: null,
+        archer_params: null,
+        _icrp107: true,
+        _noPhotons: true,
+        source: 'ICRP 107 (no photon emission above the 20 keV / 0.01% filter)',
+      };
+    }
+
+    const repPhoton = icrpN.photons.reduce((best, p) => {
+      const score = p.yield_percent * p.energy_keV;
+      const bestScore = best.yield_percent * best.energy_keV;
+      return score > bestScore ? p : best;
+    }, icrpN.photons[0] || { energy_keV: 100, yield_percent: 0 });
+
+    return {
+      id: icrpN.id,
+      symbol: icrpN.id,
+      name: icrpN.id,
+      half_life_s: icrpN.half_life_s,
+      half_life_display: icrpN.half_life_display,
+      gamma_H10: constants.gammaH10,
+      gamma_H007: constants.gammaH007,
+      gamma_Kair: constants.gamma_Kair,
+      max_photon_energy_keV: constants.max_photon_energy_keV,
+      representative_energy_keV: repPhoton.energy_keV,
+      shielding_spectrum:      PHYSICS.buildShieldingSpectrum(icrpN.photons, 'H10'),
+      shielding_spectrum_h007: PHYSICS.buildShieldingSpectrum(icrpN.photons, 'H007'),
+      archer_params: null,
+      _icrp107: true,
+      source: 'ICRP 107 (calculated)',
+    };
+  }
+
+  // ---- Combobox initialization ----
+  const searchInput  = document.getElementById('nuclideSearch');
+  const hiddenSelect = document.getElementById('nuclideSelect');
+  const dropdown     = document.getElementById('nuclideDropdown');
+  const dbNuclides   = DB.getAll();
+  let selectedNuclide = null;
+  let comboboxInitialized = false;
+
+  // Combobox keyboard model: aria-activedescendant — focus stays on the <input>
+  // and activeIndex tracks the highlighted option. See the equivalent block in
+  // decay.html: calling .focus() on the <li> moved focus out of the input, and
+  // because the <ul> is a sibling rather than a descendant, every later keydown
+  // missed the listener — the keyboard died after the first arrow.
+  const statusEl = document.getElementById('nuclideStatus');
+  let activeIndex = -1;
+
+  function options() { return [...dropdown.querySelectorAll('[data-id]')]; }
+
+  function setActive(i) {
+    const items = options();
+    activeIndex = i;
+    items.forEach((li, k) => {
+      const on = k === i;
+      li.classList.toggle('is-active', on);
+      li.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    if (i >= 0 && items[i]) {
+      searchInput.setAttribute('aria-activedescendant', items[i].id);
+      items[i].scrollIntoView({ block: 'nearest' });
+    } else {
+      searchInput.removeAttribute('aria-activedescendant');
+    }
+  }
+
+  function setExpanded(open) {
+    dropdown.classList.toggle('hidden', !open);
+    searchInput.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (!open) setActive(-1);
+  }
+
+  function showDropdown(results) {
+    dropdown.innerHTML = results.map((n, i) =>
+      `<li class="nuclide-option" role="option" aria-selected="false"
+           id="nuclideOpt-${i}" data-id="${UTILS.escapeHtml(n.id)}">
+         <span class="nuclide-opt-id">${UTILS.escapeHtml(n.id)}</span>
+         <span class="nuclide-opt-meta">T½ ${UTILS.escapeHtml(n.half_life_display)}${n._icrp107 ? ' · ICRP 107' : ''}</span>
+       </li>`
+    ).join('');
+    setExpanded(results.length > 0);
+    statusEl.textContent = results.length
+      ? `${results.length} nuclide${results.length === 1 ? '' : 's'} available. Use arrow keys to review, Enter to select.`
+      : 'No matching nuclide.';
+  }
+
+  // Y-90 is a pure-β emitter shielded only via the bremsstrahlung container
+  // model; the general slab material/thickness are ignored in its calculation
+  // branch. Disable and reset those controls for Y-90 so the UI cannot imply a
+  // slab shield that is never applied (audit 2026-07-13, finding 3).
+  function updateShieldingAvailability(n) {
+    const isY90 = n && n.id === 'Y-90';
+    const matEl   = document.getElementById('shieldMaterial');
+    const thickEl = document.getElementById('shieldThickness');
+    const unitEl  = document.getElementById('shieldUnit');
+    if (isY90) matEl.value = 'none';
+    matEl.disabled = thickEl.disabled = unitEl.disabled = isY90;
+    document.getElementById('y90ShieldNote').classList.toggle('hidden', !isY90);
+  }
+
+  function selectNuclide(id) {
+    const n = resolveNuclide(id);
+    if (!n) return;
+    selectedNuclide = n;
+    hiddenSelect.value = id;
+    searchInput.value = id;
+    setExpanded(false);
+    updateShieldingAvailability(n);
+    updateHvlInfo();
+  }
+
+  // Named event handlers for proper cleanup capability
+  const onSearchFocus = () => {
+    const q = searchInput.value.trim();
+    if (!q) showDropdown(dbNuclides.map(n => ({...n, _icrp107: false})));
+  };
+
+  const onSearchInput = () => {
+    const q = searchInput.value.trim();
+    hiddenSelect.value = '';
+    selectedNuclide = null;
+    if (!q) { showDropdown(dbNuclides.map(n => ({...n, _icrp107: false}))); return; }
+
+    const dbResults   = DB.search(q).map(n => ({...n, _icrp107: false}));
+    const icrpResults = ICRP107.isReady()
+      ? ICRP107.search(q).filter(n => !DB.getById(n.id)).map(n => ({...n, _icrp107: true}))
+      : [];
+    showDropdown([...dbResults, ...icrpResults].slice(0, 20));
+  };
+
+  const onDropdownClick = (e) => {
+    const li = e.target.closest('[data-id]');
+    if (li) selectNuclide(li.dataset.id);
+  };
+
+  const onDocumentClick = (e) => {
+    if (!document.getElementById('nuclideCombobox').contains(e.target)) {
+      setExpanded(false);
+    }
+  };
+
+  // Keyboard cursor must follow the pointer, or Enter would pick an option other
+  // than the one highlighted under the mouse.
+  const onDropdownMousemove = (e) => {
+    const li = e.target.closest('[data-id]');
+    if (li) setActive(options().indexOf(li));
+  };
+
+  const onSearchKeydown = (e) => {
+    const items = options();
+    const open  = !dropdown.classList.contains('hidden');
+
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!open) { searchInput.dispatchEvent(new Event('input', { bubbles: true })); return; }
+      if (!items.length) return;
+      const delta = e.key === 'ArrowDown' ? 1 : -1;
+      const next  = activeIndex < 0
+        ? (delta > 0 ? 0 : items.length - 1)
+        : (activeIndex + delta + items.length) % items.length;
+      setActive(next);
+      return;
+    }
+    if (e.key === 'Home' && open && items.length) { e.preventDefault(); setActive(0); return; }
+    if (e.key === 'End'  && open && items.length) { e.preventDefault(); setActive(items.length - 1); return; }
+    if (e.key === 'Escape') { e.preventDefault(); setExpanded(false); return; }
+    if (e.key === 'Enter') {
+      if (open && activeIndex >= 0 && items[activeIndex]) {
+        e.preventDefault();
+        selectNuclide(items[activeIndex].dataset.id);
+      }
+      return;
+    }
+    if (e.key === 'Tab' && open) setExpanded(false);
+  };
+
+  // Initialize combobox only once (prevent duplicate listeners)
+  if (!comboboxInitialized) {
+    searchInput.addEventListener('focus', onSearchFocus);
+    searchInput.addEventListener('input', onSearchInput);
+    dropdown.addEventListener('click', onDropdownClick);
+    dropdown.addEventListener('mousemove', onDropdownMousemove);
+    document.addEventListener('click', onDocumentClick);
+    searchInput.addEventListener('keydown', onSearchKeydown);
+    comboboxInitialized = true;
+  }
+
+  const urlId = new URLSearchParams(location.search).get('id');
+  if (urlId) selectNuclide(urlId);
+  else selectNuclide(dbNuclides[0]?.id);
+
+  // Distance hint
+  function updateDistHint() {
+    const distRaw  = parseFloat(document.getElementById('distance').value) || 0;
+    const distUnit = document.getElementById('distUnit').value;
+    const d_m = distUnit === 'cm' ? distRaw / 100 : distRaw;
+    const hint = document.getElementById('distHint');
+    if (d_m > 0 && d_m < 0.25) {
+      hint.textContent = 'Short distance: check the point-source approximation (real source/shield size matters at a few cm)';
+      hint.style.color = 'var(--warning)';
+    } else {
+      hint.textContent = 'Point-source approximation (1/d²)';
+      hint.style.color = '';
+    }
+  }
+  document.getElementById('distance').addEventListener('input', updateDistHint);
+  document.getElementById('distUnit').addEventListener('change', updateDistHint);
+
+  // Helper: get Archer params for current nuclide + material (or null)
+  function getArcherParams(n, mat) {
+    if (!n || !n.archer_params || mat === 'none') return null;
+    return n.archer_params[mat] || null;
+  }
+
+  // Helper: dose-weighted line spectrum for spectrum-weighted narrow beam (or null).
+  // Only used when Archer params are unavailable (Archer fits cover the full spectrum).
+  // The weighting quantity matters, and the difference has no fixed sign: the
+  // h'(0.07)/h*(10) response ratio peaks at 20 keV, dips at 60 keV and flattens
+  // above 500 keV, so T differs by −42% for Pd-103 and +8% for Re-186 at 5 mm Pb
+  // (audit 2026-07-15, finding 4). Each operational quantity uses its own spectrum.
+  function getSpectrum(n, quantity) {
+    if (!n) return null;
+    const sp = quantity === 'H007' ? n.shielding_spectrum_h007 : n.shielding_spectrum;
+    return (sp && sp.length) ? sp : null;
+  }
+
+  // Material display name
+  function matLabel(mat) {
+    return { Pb: 'Lead (Pb)', Fe: 'Iron (Fe)', concrete_NW: 'Concrete NW', concrete_LW: 'Concrete LW' }[mat] || mat;
+  }
+
+  // Shielding HVL info
+  function updateHvlInfo() {
+    const mat = document.getElementById('shieldMaterial').value;
+    const n   = selectedNuclide || resolveNuclide(hiddenSelect.value);
+    // No representative energy => no photon model (pure β⁻ emitters, and the 89
+    // ICRP 107 entries with no line passing the filter). Attenuation is
+    // meaningless for them: E would be 0 and getMu would silently clamp to the
+    // bottom of the table, printing a confident, wrong HVL.
+    if (!n || mat === 'none' || !n.representative_energy_keV) {
+      document.getElementById('hvlInfo').classList.add('hidden');
+      return;
+    }
+    const E           = n.representative_energy_keV / 1000;
+    const ap          = getArcherParams(n, mat);
+    const sp          = getSpectrum(n, 'H10');
+    const sp007       = getSpectrum(n, 'H007') || sp;
+    const { hvl_cm, tvl_cm, mu_cm, method } = CALC.hvlTvl(E, mat, ap, sp);
+    const thickRaw    = parseFloat(document.getElementById('shieldThickness').value);
+    if (!Number.isFinite(thickRaw) || thickRaw < 0) {
+      document.getElementById('hvlInfo').classList.add('hidden');
+      return;
+    }
+    const thickUnit   = document.getElementById('shieldUnit').value;
+    const thickness   = thickUnit === 'mm' ? thickRaw / 10 : thickRaw;
+    // Both quantities: one unlabelled transmission is ambiguous now that the two
+    // spectra are weighted separately (see the results card).
+    const T           = CALC.getTransmission(thickness, E, mat, ap, sp);
+    const T007        = CALC.getTransmission(thickness, E, mat, ap, sp007);
+    const splitT      = n.gamma_H007 != null && !ap && Math.abs(T007 - T) > T * 1e-6;
+    const methodBadge = method === 'archer'
+      ? '<span class="tag tag-pet" style="font-size:.72rem;vertical-align:middle;">Archer</span>'
+      : method === 'narrow_beam_spectrum'
+      ? `<span class="tag tag-other" style="font-size:.72rem;vertical-align:middle;">Narrow beam · ${sp.length}-line spectrum + build-up</span>`
+      : '<span class="tag tag-other" style="font-size:.72rem;vertical-align:middle;">Narrow beam + build-up</span>';
+    const energyLabel = method === 'narrow_beam_spectrum'
+      ? `spectrum-weighted (rep. ${n.representative_energy_keV} keV)`
+      : `at ${n.representative_energy_keV} keV`;
+
+    const el = document.getElementById('hvlInfo');
+    el.classList.remove('hidden');
+    el.innerHTML = `
+      <strong>${matLabel(mat)}</strong> ${energyLabel} ${methodBadge} —
+      HVL = <strong>${UTILS.fmt(hvl_cm)} cm</strong> &nbsp;|&nbsp;
+      TVL = <strong>${UTILS.fmt(tvl_cm)} cm</strong>
+      ${mu_cm !== null ? `&nbsp;|&nbsp; &mu; = ${UTILS.fmt(mu_cm)} cm&#8315;&#185;` : ''}
+      ${thickRaw > 0 ? `&nbsp;|&nbsp; Transmission = <strong>${UTILS.fmt(T * 100)}%</strong>${splitT ? ` <span class="text-muted">H*(10)</span> / <strong>${UTILS.fmt(T007 * 100)}%</strong> <span class="text-muted">H&#39;(0.07)</span>` : ''} (${thickRaw} ${thickUnit})` : ''}
+    `;
+  }
+
+  document.getElementById('shieldMaterial').addEventListener('change', updateHvlInfo);
+  document.getElementById('shieldThickness').addEventListener('input', updateHvlInfo);
+  document.getElementById('shieldUnit').addEventListener('change', updateHvlInfo);
+  updateHvlInfo();
+
+  // Event delegation for Y-90 container radio button changes (prevents listener accumulation)
+  document.addEventListener('change', (e) => {
+    if (e.target.name === 'y90Container') {
+      document.getElementById('y90ContainerId').value = e.target.value;
+      document.getElementById('btnCalc').click();
+    }
+  });
+
+  // Patient attenuation toggle.
+  //
+  // There is deliberately NO default value here. Patient transmission depends on
+  // photon energy, anatomy, body habitus and source-to-surface geometry; no
+  // single scalar is universal. The field used to auto-fill 63%, a number with no
+  // cited source, energy dependence or defined geometry, presented as "Default"
+  // — which reads as a recommended reference value (audit 2026-07-15). It is the
+  // user's assumption to state and justify, and the report records it as such.
+  document.getElementById('patientAtten').addEventListener('change', function () {
+    const txInput = document.getElementById('patientTx');
+    const hint    = document.getElementById('patientTxHint');
+    if (this.value === 'yes') {
+      txInput.disabled = false;
+      txInput.value = '';
+      txInput.focus();
+      hint.textContent = 'Enter the transmission factor for your geometry — no default is offered: patient attenuation depends on photon energy, anatomy and orientation, so no single value is universal. Derive it from measurement or a published study for your specific case.';
+    } else {
+      txInput.disabled = true;
+      txInput.value = 100;
+      hint.textContent = 'No patient attenuation';
+    }
+  });
+
+  // ---- Calculate ----
+  let distChart = null;
+  let lastCalcResult = null;
+
+  function applyDistChartTheme() {
+    if (!distChart) return;
+    const theme = UI.getChartTheme();
+    const [wholeBody, extremity, marker] = distChart.data.datasets;
+    if (wholeBody) {
+      wholeBody.borderColor = theme.green;
+      wholeBody.backgroundColor = theme.greenFill;
+    }
+    if (extremity) {
+      extremity.borderColor = theme.orange;
+      extremity.backgroundColor = theme.orangeFill;
+    }
+    if (marker) marker.borderColor = marker.backgroundColor = theme.orange;
+    distChart.options.color = theme.text;
+    for (const scale of Object.values(distChart.options.scales)) {
+      scale.ticks.color = theme.text;
+      scale.title.color = theme.text;
+      scale.grid.color = theme.grid;
+    }
+    distChart.update('none');
+  }
+
+  document.addEventListener('nm-theme-change', applyDistChartTheme);
+
+  document.getElementById('btnPrintDose').onclick = () => {
+    if (!lastCalcResult) { window.print(); return; }
+    const r = lastCalcResult;
+    const fd  = v => CALC.formatDose(v).display;
+    const fdr = v => CALC.formatDoseRate(v).display;
+    const methodText = {
+      unshielded: 'No shielding applied.',
+      archer: 'Archer broad-beam transmission (Monte Carlo full-spectrum fit, Oumano et al. 2025).',
+      narrow_beam_spectrum: `Spectrum-weighted narrow-beam transmission over ${r.spectrumLines} ICRP 107 photon lines with point-isotropic exposure build-up (ANSI/ANS-6.4.3 reference data); accounts for beam hardening and scatter build-up; infinite-medium build-up is conservative for finite barriers.`,
+      narrow_beam: 'Single-line narrow-beam attenuation with point-isotropic exposure build-up (ANSI/ANS-6.4.3 reference data; NIST XCOM attenuation).',
+    }[r.method] || '';
+    const notes = [methodText];
+    if (r.isY90) notes.push('Y-90 bremsstrahlung container estimate (methodology after Zanzonico et al. 1999); container values are estimates, not tabulated in that publication.');
+    if (!r.useH007) notes.push("No H'(0.07) constant for this nuclide/energy — the H'(0.07) row shows the H*(10) value instead (may underestimate the skin dose of low-energy emitters).");
+    notes.push('H*(10) and H\'(0.07) are area-monitoring quantities; compliance with dose limits is assessed with personal dosimetry (Hp(10), Hp(0.07), Hp(3)). The limit screening in this report is indicative only.');
+    if (r.n._icrp107) notes.push('ICRP 107 extended entry: constants computed automatically, NOT manually validated. Verify against primary sources before regulatory use.');
+    if (r.patientTx !== undefined && r.patientTx < 1) notes.push(`Patient attenuation applied: transmission ${UTILS.fmt(r.patientTx * 100)}%.`);
+
+    REPORT.print({
+      title: 'External Dose Estimate',
+      nuclide: r.n,
+      sections: [
+        { heading: 'Input parameters', rows: [
+          ['Activity A₀', `${r.A0raw} ${r.A0unit} (${UTILS.fmt(r.A0_GBq)} GBq)`],
+          ['Distance', `${r.d_m.toFixed(2)} m`],
+          ['Shielding', r.mat && r.mat !== 'none' ? `${r.mat}, ${r.thick} cm` : 'none'],
+          ['Exposure time per administration', `${UTILS.fmt(r.t_h)} h`],
+          ['Administrations per year', String(r.nAdmin)],
+          ['Decay during exposure', r.withDecay === undefined ? '—' : r.withDecay ? 'integrated A(t)' : 'no (constant activity, worst case)'],
+          ['Dose rate constants', `Γ(H*(10)) = ${r.gammaWB}; Γ(${r.useH007 ? "H'(0.07)" : 'H*(10) fallback'}) = ${r.gammaExt} μSv·h⁻¹·GBq⁻¹·m²`],
+        ]},
+        { heading: 'Results', rows: [
+          ['Dose rate H*(10) at d, t=0', fdr(r.Hdot_WB)],
+          ['Dose rate H*(10) at d, after decay over exposure', fdr(r.Hdot_WB_t)],
+          ['Dose rate H*(10) at 1 m (reference), t=0', fdr(r.Hdot_WB_1m)],
+          [`Dose rate ${r.useH007 ? "H'(0.07)" : "H'(0.07) row (H*(10) value)"} at d, t=0`, fdr(r.Hdot_Ext)],
+          ['Annual dose, H*(10)', fd(r.H_WB_cum * r.nAdmin) + '/y'],
+          [`Annual dose, ${r.useH007 ? "H'(0.07)" : "H'(0.07) row (H*(10) value)"}`, fd(r.H_Ext_cum * r.nAdmin) + '/y'],
+        ]},
+      ],
+      notes,
+      sources: [
+        'Oumano et al. (2025) J Appl Clin Med Phys — Archer broad-beam shielding parameters.',
+        'NIST XCOM — photon mass attenuation coefficients.',
+        'Trubey D.K. (1991) NUREG/CR-5740 / ORNL/RSIC-49/R1 — ANSI/ANS-6.4.3 exposure buildup factors (Table 3).',
+        'RD 1029/2022 — dose limits used in the regulatory comparison.',
+      ],
+    });
+  };
+
+  document.getElementById('btnExportDoseCsv').onclick = () => {
+    if (!lastCalcResult) { alert('Calculate dose first.'); return; }
+    const { useH007, gammaExt, gammaWB, nAdmin, H_WB_cum, H_Ext_cum, Hdot_WB, Hdot_WB_t, Hdot_Ext, Hdot_Ext_t, Hdot_WB_1m, Hdot_WB_t_1m, Hdot_Ext_1m, Hdot_Ext_t_1m, n, A0raw, A0unit, d_m, isY90 } = lastCalcResult;
+    const date = new Date().toISOString().slice(0, 10);
+    const extLabel = useH007 ? "H'(0.07) skin/extremity indicator" : "H'(0.07) row (H*(10) value — no H'(0.07) constant)";
+    const rows = [
+      ['Quantity', `Dose_rate_t0_at_${d_m.toFixed(2)}m_μSv/h`, `Dose_rate_at_${d_m.toFixed(2)}m_after_decay_μSv/h`, 'Dose_rate_t0_at_1m_reference_μSv/h', 'Dose_rate_at_1m_after_decay_μSv/h', 'Annual_dose_per_year_μSv', 'Notes'],
+      [isY90 ? 'Y-90 H*(10) whole body' : 'H*(10) whole body', Hdot_WB.toPrecision(5), Hdot_WB_t.toPrecision(5), Hdot_WB_1m.toPrecision(5), Hdot_WB_t_1m.toPrecision(5), (H_WB_cum * nAdmin).toPrecision(5),
+       `γ=${gammaWB} μSv·h⁻¹·GBq⁻¹·m²`],
+      [isY90 ? `Y-90 ${extLabel}` : extLabel, Hdot_Ext.toPrecision(5), Hdot_Ext_t.toPrecision(5), Hdot_Ext_1m.toPrecision(5), Hdot_Ext_t_1m.toPrecision(5), (H_Ext_cum * nAdmin).toPrecision(5),
+       `γ=${gammaExt} μSv·h⁻¹·GBq⁻¹·m²${useH007 ? '' : ' (H*(10) value — no H\'(0.07) constant)'}`],
+    ];
+    const csv = rows.map(r => r.map(v => {
+      const str = String(v);
+      const safe = /^[=+\-@\t\r]/.test(str) ? "'" + str : str;
+      return `"${safe.replace(/"/g, '""')}"`;
+    }).join(',')).join('\r\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    a.href = url;
+    a.download = `dose_${UTILS.safeFilename(n.id)}_${A0raw}${A0unit}_${d_m.toFixed(2)}m_${date}.csv`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 0);
+  };
+
+  document.getElementById('btnCalc').addEventListener('click', () => {
+    const n = selectedNuclide || resolveNuclide(hiddenSelect.value);
+    if (!n) { alert('Select a valid nuclide first.'); return; }
+
+    if (n._icrp107) {
+      const confirmed = confirm(
+        'This nuclide is from ICRP 107 extended database. Photon emissions and dose constants have NOT been manually validated.\n\n' +
+        'For clinical or regulatory use, verify these values against primary sources (ICRP 107, 2008).\n\n' +
+        'Continue with calculation?'
+      );
+      if (!confirmed) return;
+    }
+
+    const A0raw   = parseFloat(document.getElementById('A0').value);
+    if (!Number.isFinite(A0raw) || A0raw <= 0) {
+      alert('Activity must be a positive number.'); return;
+    }
+    const A0unit  = document.getElementById('A0unit').value;
+    const A0_GBq  = CALC.convertActivity(A0raw, A0unit, 'GBq');
+
+    const distStr = document.getElementById('distance').value.trim();
+    if (!/^[0-9]*\.?[0-9]+([eE][+-]?[0-9]+)?$/.test(distStr)) {
+      alert('Distance must be a valid number.'); return;
+    }
+    const distRaw  = parseFloat(distStr);
+    if (!Number.isFinite(distRaw) || distRaw <= 0) {
+      alert('Distance must be a positive number.'); return;
+    }
+    const distUnit = document.getElementById('distUnit').value;
+    const d_m      = distUnit === 'cm' ? distRaw / 100 : distRaw;
+
+    const mat          = document.getElementById('shieldMaterial').value;
+    const parsedThick  = parseFloat(document.getElementById('shieldThickness').value);
+    if (mat !== 'none' && (!Number.isFinite(parsedThick) || parsedThick < 0)) {
+      alert('Shielding thickness must be a non-negative number.'); return;
+    }
+    const thickRaw  = mat === 'none' ? 0 : parsedThick;
+    const thickUnit = document.getElementById('shieldUnit').value;
+    const thick     = thickUnit === 'mm' ? thickRaw / 10 : thickRaw;
+    const E_MeV   = n.representative_energy_keV / 1000;
+    const ap      = getArcherParams(n, mat);  // Archer params or null
+    // One spectrum per operational quantity — they are not interchangeable.
+    // Archer params, when present, take precedence for BOTH: they are broad-beam
+    // Monte Carlo fits to H*(10) and no H'(0.07) equivalent is published, so the
+    // H'(0.07) row of an Archer nuclide inherits the H*(10) transmission (stated
+    // in the method note below; the gap is ~1% for Tc-99m).
+    const sp      = getSpectrum(n, 'H10');    // dose-weighted line spectrum or null
+    const sp007   = getSpectrum(n, 'H007') || sp;
+
+    const expStr = document.getElementById('expTime').value.trim();
+    if (!/^[0-9]*\.?[0-9]+([eE][+-]?[0-9]+)?$/.test(expStr)) {
+      alert('Exposure time must be a valid number.'); return;
+    }
+    const expRaw  = parseFloat(expStr);
+    if (!Number.isFinite(expRaw) || expRaw <= 0) {
+      alert('Exposure time must be a positive number.'); return;
+    }
+    const expUnit = document.getElementById('expUnit').value;
+    const expMul  = { h: 1, min: 1/60, d: 24 };
+    const t_h     = expRaw * (expMul[expUnit] || 1);
+    const nAdminRaw = parseFloat(document.getElementById('nAdmin').value);
+    if (!Number.isInteger(nAdminRaw) || nAdminRaw < 1) {
+      alert('Number of administrations per year must be a positive whole number.'); return;
+    }
+    const nAdmin  = nAdminRaw;
+    // Patient transmission is a user-supplied assumption with no default (see the
+    // patientAtten handler). If attenuation is requested the value must be given
+    // explicitly — falling back to 100% would silently drop the assumption the
+    // user just asked for.
+    const patientAttenEnabled = document.getElementById('patientAtten').value === 'yes';
+    const parsed = parseFloat(document.getElementById('patientTx').value);
+    if (patientAttenEnabled &&
+        (!Number.isFinite(parsed) || parsed <= 0 || parsed > 100)) {
+      alert('Enter a patient transmission factor between 0 and 100%.\n\nThere is no default: patient attenuation depends on photon energy, anatomy and orientation. Derive it from measurement or a published study for your geometry.');
+      document.getElementById('patientTx').focus();
+      return;
+    }
+    const patientTx = patientAttenEnabled ? parsed / 100 : 1;
+
+    const T_half_h = DB.halfLifeHours(n);
+    const withDecay = document.getElementById('decayMode').value === 'with_decay';
+
+    function fmtR(v) {
+      const f = CALC.formatDoseRate(v);
+      return `<strong>${f.display}</strong>`;
+    }
+    function fmt(v) {
+      const f = CALC.formatDose(v);
+      return `<strong>${f.display}</strong>`;
+    }
+
+    // Both area-monitoring quantities are always computed and shown side by
+    // side: H*(10) (effective-dose estimator) and H'(0.07) (skin/extremity
+    // indicator). No automatic distance-based selection — the former 25 cm
+    // "extremities" rule had no normative basis (audit 2026-07-13, finding 2).
+    // The H'(0.07) row always shows the real Γ^H'(0.07) constant when it exists
+    // (all curated photon emitters and ICRP 107 entries have one); the previous
+    // gate suppressed it for 36/39 nuclides, wrongly showing H*(10) instead
+    // (audit 2026-07-15, finding 2 — e.g. Pd-103 was −40% low).
+    const gammaWB  = n.gamma_H10;
+    const useH007  = n.gamma_H007 != null;
+    const gammaExt = useH007 ? n.gamma_H007 : n.gamma_H10;
+
+    // Early exit for pure beta emitters
+    if (!gammaWB || gammaWB === 0) {
+      const card = document.getElementById('resultsCard');
+      card.classList.remove('hidden');
+      document.getElementById('nuclideInfo').innerHTML =
+        `<strong>${UTILS.escapeHtml(n.symbol)} — ${UTILS.escapeHtml(n.name)}</strong> &nbsp;|&nbsp; T&#189; = ${UTILS.escapeHtml(n.half_life_display)}`;
+
+      // Special handling for Y-90 with Zanzonico table
+      if (n.id === 'Y-90') {
+        // A0raw/A0unit/A0_GBq/d_m/t_h/nAdmin/patientTx/T_half_h/withDecay are
+        // already parsed AND validated by the main path above (regex, finiteness
+        // and Number.isInteger checks that return early on bad input). This
+        // branch used to shadow them by re-reading the DOM with weaker rules — a
+        // duplicated validation contract that would silently diverge. Reuse them.
+
+        // Experimental Y-90 bremsstrahlung container scenario from
+        // PHYSICS.Y90_CONTAINERS. Zanzonico et al. (1999) supplies the general
+        // formalism, not constants for these container geometries.
+        const containers = PHYSICS.Y90_CONTAINERS;
+
+        // Ensure y90ContainerId element exists (before building HTML with radio buttons)
+        if (!document.getElementById('y90ContainerId')) {
+          const el = document.createElement('input');
+          el.id = 'y90ContainerId';
+          el.type = 'hidden';
+          el.value = 'pmma';
+          document.getElementById('resultsCard').appendChild(el);
+        }
+
+        const selectedContainer_init = document.querySelector('input[name="y90Container"]:checked')?.value || 'pmma';
+        const container_init = containers[selectedContainer_init];
+        let containerHTML = '<div style="margin:1rem 0;"><strong>Y-90 Bremsstrahlung Container:</strong><br>';
+        containerHTML += '<div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; margin-top:0.5rem;">';
+        for (const [key, container] of Object.entries(containers)) {
+          const isSelected = selectedContainer_init === key;
+          containerHTML += `<label style="padding:0.5rem; border:1px solid var(--border); border-radius:4px; cursor:pointer; ${isSelected ? 'background:var(--green-100);' : ''}">
+            <input type="radio" name="y90Container" value="${key}" ${isSelected ? 'checked' : ''} style="margin-right:0.5rem;">
+            ${container.name}
+          </label>`;
+        }
+        containerHTML += '</div>';
+        containerHTML += '</div>';
+
+        const selectedContainer = document.querySelector('input[name="y90Container"]:checked')?.value || 'pmma';
+        const container = containers[selectedContainer];
+        // Same rule as the main path (gamma_H007 != null). The old condition
+        // `gamma_H007 > gamma_H10` was false for "No container" (0.001 vs 0.001),
+        // which silently dropped the entire skin/extremity row — on the nuclide
+        // whose hazard is almost entirely skin dose (audit 2026-07-15).
+        const useH007 = container.gamma_H007 != null;
+        const gammaWB = container.gamma_H10;
+        const gammaExt = useH007 ? container.gamma_H007 : container.gamma_H10;
+        const primaryLabel = useH007 ? "H'(0.07) (skin/extremity indicator)" : "H*(10)";
+        // High-Z walls RAISE bremsstrahlung output — tungsten included (1.8×),
+        // not just lead. The text now comes from the data so it cannot drift.
+        const pbWarning = container.warning
+          ? `<div class="alert alert-danger" style="margin-top:0.5rem;">⚠️  <strong>${UTILS.escapeHtml(container.warning)} in this experimental scenario.</strong> Confirm the actual container geometry with measurements or a primary source.</div>`
+          : '';
+
+        // Calculate dose with selected container
+        const Hdot_WB = CALC.doseRate(gammaWB, A0_GBq, d_m, 0, 0.1, 'none', null) * patientTx;
+        const Hdot_Ext = CALC.doseRate(gammaExt, A0_GBq, d_m, 0, 0.1, 'none', null) * patientTx;
+        const At_GBq = CALC.activityAtTime(A0_GBq, T_half_h, t_h);
+        const Hdot_WB_t = CALC.doseRate(gammaWB, At_GBq, d_m, 0, 0.1, 'none', null) * patientTx;
+        const Hdot_Ext_t = CALC.doseRate(gammaExt, At_GBq, d_m, 0, 0.1, 'none', null) * patientTx;
+
+        let H_WB_cum;
+        let H_Ext_cum;
+        if (withDecay) {
+          H_WB_cum = CALC.cumulativeDose(gammaWB, A0_GBq, d_m, t_h, T_half_h, 0, 0.1, 'none', null) * patientTx;
+          H_Ext_cum = CALC.cumulativeDose(gammaExt, A0_GBq, d_m, t_h, T_half_h, 0, 0.1, 'none', null) * patientTx;
+        } else {
+          H_WB_cum = Hdot_WB * t_h;
+          H_Ext_cum = Hdot_Ext * t_h;
+        }
+        const Hdot_primary = useH007 ? Hdot_Ext : Hdot_WB;
+        const Hdot_primary_t = useH007 ? Hdot_Ext_t : Hdot_WB_t;
+        const H_primary_cum = useH007 ? H_Ext_cum : H_WB_cum;
+
+        document.getElementById('resultsBody').innerHTML = `
+          <tr style="background:var(--warning-100);">
+            <td colspan="6">
+              <strong>Y-90 experimental bremsstrahlung scenario</strong>
+              <span class="text-sm text-muted">(container-dependent estimates; Zanzonico et al. 1999 provides the formalism, not these constants)</span>
+              ${containerHTML}
+              ${pbWarning}
+              <div style="margin-top:1rem;">
+                <strong>Dose rate at ${UTILS.fmt(d_m)} m (${primaryLabel}):</strong> ${fmtR(Hdot_primary)} (t=0) | ${fmtR(Hdot_primary_t)} (after ${UTILS.fmt(t_h)}h decay)
+                <br><strong>Annual dose (${primaryLabel}):</strong> ${fmt(H_primary_cum * nAdmin)}
+                ${useH007 ? `<br><span class="text-sm">H*(10): ${fmt(H_WB_cum * nAdmin)}/y</span>` : ''}
+              </div>
+            </td>
+          </tr>`;
+
+
+        // Populate lastCalcResult for Y-90 (enables export CSV and limit comparison)
+        lastCalcResult = {
+          useH007: useH007,
+          gammaExt: gammaExt,
+          gammaWB: gammaWB,
+          nAdmin: nAdmin,
+          H_WB_cum: H_WB_cum,
+          H_Ext_cum: H_Ext_cum,
+          Hdot_WB: Hdot_WB,
+          Hdot_WB_t: Hdot_WB_t,
+          Hdot_Ext: Hdot_Ext,
+          Hdot_Ext_t: Hdot_Ext_t,
+          Hdot_WB_1m: CALC.doseRate(gammaWB, A0_GBq, 1, 0, 0.1, 'none', null) * patientTx,
+          Hdot_WB_t_1m: CALC.doseRate(gammaWB, At_GBq, 1, 0, 0.1, 'none', null) * patientTx,
+          Hdot_Ext_1m: CALC.doseRate(gammaExt, A0_GBq, 1, 0, 0.1, 'none', null) * patientTx,
+          Hdot_Ext_t_1m: CALC.doseRate(gammaExt, At_GBq, 1, 0, 0.1, 'none', null) * patientTx,
+          n: n,
+          A0raw: A0raw,
+          A0unit: A0unit,
+          A0_GBq: A0_GBq,
+          d_m: d_m,
+          t_h: t_h,
+          isY90: true
+        };
+      } else {
+        // No photon dose component (not Y-90). Two distinct cases, worth telling
+        // apart: a curated pure β⁻ emitter, and one of the 89 ICRP 107 entries
+        // whose lines all fall below the 20 keV / 0.01% filter.
+        lastCalcResult = null;
+        document.getElementById('resultsBody').innerHTML = `
+          <tr><td colspan="5" style="padding:1rem;">
+            <strong>No photon dose component</strong> (&#915;<sup>H*(10)</sup> = 0).
+            ${n._noPhotons
+              ? `${UTILS.escapeHtml(n.symbol)} is an ICRP 107 entry with no photon emission passing the
+                 selection filter (&#8805; 20 keV, yield &#8805; 0.01%), so no external photon dose can be
+                 estimated. Any external hazard would come from bremsstrahlung, which depends on the
+                 container geometry and is not modelled here.`
+              : `<strong>Pure &beta;&#8315; emitter</strong> — external dose requires bremsstrahlung data
+                 specific to container geometry.`}
+          </td></tr>`;
+      }
+
+      document.getElementById('shieldingInfo').classList.add('hidden');
+      document.getElementById('chartTitle').textContent = '';
+      if (distChart) { distChart.destroy(); distChart = null; }
+      document.getElementById('distChartContainer').innerHTML = `
+        <div class="alert alert-warning" style="margin:1rem 0;">
+          <strong>${UTILS.escapeHtml(n.symbol)} is a pure &beta;&#8315; emitter.</strong><br>
+          ${n.id === 'Y-90'
+            ? 'Dose shown above is an experimental container-dependent scenario inspired by the Zanzonico et al. formalism (J Nucl Med 40(6):1024–1028, 1999). That publication does not tabulate these container constants; do not use them for design or regulatory conclusions without geometry-specific evidence.'
+            : 'External dose estimation requires bremsstrahlung data specific to the container geometry. See Zanzonico et al. (J Nucl Med 40(6), 1999) for the methodology.'}
+        </div>`;
+
+      // Y-90 gets NO regulatory verdict (audit 2026-07-15, finding 5).
+      //
+      // The container constants are estimates that do not come from the cited
+      // source: Zanzonico et al. tabulate bremsstrahlung constants for soft
+      // tissue and bone, not for PMMA/Pb/W container geometries. Rendering a
+      // "% of the 20 mSv/y limit" from an untraceable constant dresses a guess
+      // as a compliance screening, so the annual dose is shown as a scenario and
+      // the limit comparison is withheld until measured or primary-sourced
+      // constants exist.
+      if (n.id === 'Y-90' && lastCalcResult) {
+        // Read the doses from lastCalcResult, NOT from H_WB_cum/H_Ext_cum: those
+        // identifiers resolve to the `let H_WB_cum, H_Ext_cum` of the main path
+        // further down this handler, so touching them here hits the temporal dead
+        // zone and throws "Cannot access 'H_WB_cum' before initialization". That
+        // threw on every Y-90 calculation and silently swallowed this whole
+        // block — the Y-90 limit comparison never rendered once. Pre-existing
+        // bug, found by driving the page (not covered by any test).
+        const { H_WB_cum: y90_WB, H_Ext_cum: y90_Ext, useH007: y90_useH007 } = lastCalcResult;
+        const annualLine = t_h > 0
+          ? `<br><br>Scenario result — annual dose from ${nAdmin} administration${nAdmin !== 1 ? 's' : ''}/y &times; ${UTILS.fmt(t_h)} h/admin:
+             <br><strong>H*(10):</strong> ${CALC.formatDose(y90_WB * nAdmin).display}/y
+             ${y90_useH007 ? `&nbsp;|&nbsp; <strong>H'(0.07):</strong> ${CALC.formatDose(y90_Ext * nAdmin).display}/y` : ''}`
+          : '<br><br>Enter an exposure time &gt; 0 to see the annual scenario dose.';
+
+        document.getElementById('limitComparison').innerHTML = `
+          <div class="alert alert-warning text-sm">
+            <strong>Experimental scenario — no regulatory screening for Y-90.</strong>
+            The container bremsstrahlung constants are estimates with no primary source:
+            Zanzonico et al. (1999) tabulate constants for soft tissue and bone, not for
+            PMMA / Pb / W container geometries. They are shown to compare containers
+            against each other, and must not be read as a dose assessment or compared
+            with RD 1029/2022 limits. Obtain measured or primary-sourced constants
+            before any regulatory or design use.
+            ${annualLine}
+          </div>
+        `;
+      } else if (n.id !== 'Y-90') {
+        document.getElementById('limitComparison').innerHTML = '';
+      }
+
+      return;
+    }
+
+    const shieldMethod = (mat !== 'none' && thick > 0)
+      ? (ap ? 'Archer (broad beam, Oumano et al. 2025)' : 'Narrow beam (fallback)')
+      : null;
+
+    const card = document.getElementById('resultsCard');
+    card.classList.remove('hidden');
+
+    // Info header
+    const sourceTag = n._icrp107
+      ? `<span class="tag tag-icrp107" title="Dose constants calculated from ICRP 107 photon spectrum using ICRU 57 / Cornejo methodology">ICRP 107</span>`
+      : '';
+    const energyWarning = !n.representative_energy_keV
+      ? '<div class="alert alert-warning alert-lg mt-1">⚠️ Representative energy not defined; shielding calculations use narrow-beam approximation.</div>'
+      : '';
+    document.getElementById('nuclideInfo').innerHTML =
+      `<strong>${UTILS.escapeHtml(n.symbol)} — ${UTILS.escapeHtml(n.name)}</strong> ${sourceTag} &nbsp;|&nbsp; T&#189; = ${UTILS.escapeHtml(n.half_life_display)} &nbsp;|&nbsp;
+       A&#8320; = ${A0raw} ${A0unit} (${UTILS.fmt(A0_GBq)} GBq) &nbsp;|&nbsp;
+       d = ${d_m} m &nbsp;|&nbsp; t = ${UTILS.fmt(t_h)} h/admin &nbsp;|&nbsp; n = ${nAdmin} admin/y &nbsp;|&nbsp; patient Tx = ${UTILS.fmt(patientTx*100)}% &nbsp;|&nbsp;`
+       + (n.representative_energy_keV ? `` : '') + energyWarning +
+       `&#915;<sup>H*(10)</sup> = ${gammaWB} &nbsp;|&nbsp; ${useH007
+         ? `&#915;<sup>H'(0.07)</sup> = ${gammaExt}`
+         : `&#915;<sup>H'(0.07)</sup> = ${n.gamma_H007 ?? '—'} <span style="color:var(--text-muted)">(no H'(0.07) constant — H*(10) value used in that row)</span>`
+       } &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;`;
+
+    // Dose rate at t=0 (at selected distance)
+    const Hdot_WB  = CALC.doseRate(gammaWB,  A0_GBq, d_m, thick, E_MeV, mat, ap, sp)    * patientTx;
+    const Hdot_Ext = CALC.doseRate(gammaExt, A0_GBq, d_m, thick, E_MeV, mat, ap, sp007) * patientTx;
+
+    // Dose rate at t=0 (at 1 m reference)
+    const Hdot_WB_1m  = CALC.doseRate(gammaWB,  A0_GBq, 1, thick, E_MeV, mat, ap, sp)    * patientTx;
+    const Hdot_Ext_1m = CALC.doseRate(gammaExt, A0_GBq, 1, thick, E_MeV, mat, ap, sp007) * patientTx;
+
+    // Dose rate at t=time (after decay, at selected distance)
+    const At_GBq   = CALC.activityAtTime(A0_GBq, T_half_h, t_h);
+    const Hdot_WB_t  = CALC.doseRate(gammaWB,  At_GBq, d_m, thick, E_MeV, mat, ap, sp)    * patientTx;
+    const Hdot_Ext_t = CALC.doseRate(gammaExt, At_GBq, d_m, thick, E_MeV, mat, ap, sp007) * patientTx;
+
+    // Dose rate at t=time (after decay, at 1 m reference)
+    const Hdot_WB_t_1m  = CALC.doseRate(gammaWB,  At_GBq, 1, thick, E_MeV, mat, ap, sp)    * patientTx;
+    const Hdot_Ext_t_1m = CALC.doseRate(gammaExt, At_GBq, 1, thick, E_MeV, mat, ap, sp007) * patientTx;
+
+    // Cumulative dose
+    let H_WB_cum, H_Ext_cum;
+    if (withDecay) {
+      H_WB_cum  = CALC.cumulativeDose(gammaWB,  A0_GBq, d_m, t_h, T_half_h, thick, E_MeV, mat, ap, sp)    * patientTx;
+      H_Ext_cum = CALC.cumulativeDose(gammaExt, A0_GBq, d_m, t_h, T_half_h, thick, E_MeV, mat, ap, sp007) * patientTx;
+    } else {
+      const Hdot_WB_d  = CALC.doseRate(gammaWB,  A0_GBq, d_m, thick, E_MeV, mat, ap, sp)    * patientTx;
+      const Hdot_Ext_d = CALC.doseRate(gammaExt, A0_GBq, d_m, thick, E_MeV, mat, ap, sp007) * patientTx;
+      H_WB_cum  = Hdot_WB_d  * t_h;
+      H_Ext_cum = Hdot_Ext_d * t_h;
+    }
+
+    // Update column headers to show distance
+    document.getElementById('doseRate0Header').textContent = `D'(0) at ${d_m.toFixed(2)} m`;
+    document.getElementById('doseRateAtTimeHeader').textContent = `D'(t) at ${d_m.toFixed(2)} m`;
+
+    document.getElementById('resultsBody').innerHTML = `
+      <tr>
+        <td>
+          <strong>H*(10)</strong>
+          <div class="text-sm text-muted">ambient dose equivalent (area monitoring) — effective-dose estimator</div>
+        </td>
+        <td class="num">${fmtR(Hdot_WB)}</td>
+        <td class="num">${fmtR(Hdot_WB_t)}</td>
+        <td class="num text-muted">${fmtR(Hdot_WB_1m)}</td>
+        <td class="num">${fmt(H_WB_cum * nAdmin)}</td>
+        <td class="text-sm text-muted">&#915;<sup>H*(10)</sup> = ${gammaWB} &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>H'(0.07)</strong>
+          <div class="text-sm text-muted">directional dose equivalent at 0.07 mm (area monitoring) — skin/extremity indicator</div>
+        </td>
+        <td class="num">${fmtR(Hdot_Ext)}</td>
+        <td class="num">${fmtR(Hdot_Ext_t)}</td>
+        <td class="num text-muted">${fmtR(Hdot_Ext_1m)}</td>
+        <td class="num">${fmt(H_Ext_cum * nAdmin)}</td>
+        <td class="text-sm text-muted">
+          &#915;${useH007
+            ? `<sup>H'(0.07)</sup> = ${gammaExt}`
+            : `<sup>H*(10)</sup> = ${gammaExt} <span class="text-muted">(no H'(0.07) constant — H*(10) value shown; may underestimate the skin dose of low-energy emitters)</span>`
+          } &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;
+          ${n.H007_from_cornejo ? '<br><span style="color:var(--warning-text);">&#9888; H\'(0.07) from Cornejo et al.</span>' : ''}
+        </td>
+      </tr>
+    `;
+
+    // Shielding info
+    const shieldEl    = document.getElementById('shieldingInfo');
+    const shieldProps = document.getElementById('shieldingProps');
+    if (mat !== 'none') {
+      const { hvl_cm, tvl_cm, mu_cm, method } = CALC.hvlTvl(E_MeV, mat, ap, sp);
+      // One transmission PER QUANTITY. A single "Transmission" figure was
+      // ambiguous once the two spectra were separated: it was the H*(10) one,
+      // unlabelled, while the H'(0.07) row of the table above had been computed
+      // with a different value — 0.051% vs 0.029% for Pd-103 at 1 mm Pb, a 74%
+      // gap, precisely in the nuclides where the distinction matters most.
+      const T     = CALC.getTransmission(thick, E_MeV, mat, ap, sp);
+      const T007  = CALC.getTransmission(thick, E_MeV, mat, ap, sp007);
+      // Archer nuclides share one broad-beam H*(10) fit for both rows, so a
+      // second figure there would be the same number twice.
+      const splitT = useH007 && !ap && Math.abs(T007 - T) > T * 1e-6;
+      const methodLabel = method === 'archer'
+        ? '<span class="tag tag-pet" style="font-size:.72rem;">Archer broad-beam</span>'
+        : method === 'narrow_beam_spectrum'
+        ? `<span class="tag tag-other" style="font-size:.72rem;">Narrow beam · ${sp.length}-line spectrum + build-up</span>`
+        : '<span class="tag tag-other" style="font-size:.72rem;">Narrow beam + build-up</span>';
+      const methodNote = method === 'archer'
+        ? 'Monte Carlo, Oumano et al. 2025 — fitted to H*(10); the H\'(0.07) row inherits this transmission (no published H\'(0.07) Archer fit)'
+        : method === 'narrow_beam_spectrum'
+        ? 'Σ wᵢ·B(Eᵢ)·e⁻ᵘ⁽ᴱᵢ⁾ˣ dose-weighted (ICRP 107) + ANS-6.4.3 build-up, NIST XCOM — weighted separately for H*(10) and H\'(0.07)'
+        : 'B(E)·e⁻ᵘˣ + ANS-6.4.3 build-up, NIST XCOM';
+      shieldEl.classList.remove('hidden');
+      shieldProps.innerHTML = `
+        <div class="prop-item"><div class="prop-key">Material</div><div class="prop-val">${matLabel(mat)}</div></div>
+        <div class="prop-item"><div class="prop-key">Method</div><div class="prop-val">${methodLabel}</div>
+          <div class="prop-note">${methodNote}</div></div>
+        <div class="prop-item"><div class="prop-key">Thickness</div><div class="prop-val">${thick} cm</div><div class="prop-note">${UTILS.fmt(thick * 10)} mm</div></div>
+        ${mu_cm !== null ? `<div class="prop-item"><div class="prop-key">&#956; (${UTILS.fmt(E_MeV * 1000)} keV)</div><div class="prop-val">${UTILS.fmt(mu_cm)} cm&#8315;&#185;</div></div>` : ''}
+        <div class="prop-item"><div class="prop-key">HVL</div><div class="prop-val">${UTILS.fmt(hvl_cm)} cm</div><div class="prop-note">${UTILS.fmt(hvl_cm * 10)} mm</div></div>
+        <div class="prop-item"><div class="prop-key">TVL</div><div class="prop-val">${UTILS.fmt(tvl_cm)} cm</div><div class="prop-note">${UTILS.fmt(tvl_cm * 10)} mm</div></div>
+        <div class="prop-item">
+          <div class="prop-key">Transmission${splitT ? '' : ''}</div>
+          <div class="prop-val">${UTILS.fmt(T * 100)}%${splitT ? ' <span class="text-sm text-muted">H*(10)</span>' : ''}</div>
+          <div class="prop-note">Attenuation factor: ${UTILS.fmt(1/T)}</div>
+          ${splitT ? `<div class="prop-val mt-1">${UTILS.fmt(T007 * 100)}% <span class="text-sm text-muted">H&#39;(0.07)</span></div>
+                      <div class="prop-note">Attenuation factor: ${UTILS.fmt(1/T007)}</div>` : ''}
+        </div>
+        <div class="prop-item"><div class="prop-key">n HVLs</div><div class="prop-val">${UTILS.fmt(thick / hvl_cm)}</div></div>
+        <div class="prop-item"><div class="prop-key">Patient transmission</div><div class="prop-val">${UTILS.fmt(patientTx * 100)}%</div><div class="prop-note">${patientTx < 1 ? 'Patient attenuation applied' : 'No patient attenuation'}</div></div>
+      `;
+
+      // Out-of-range warning for the narrow-beam models (Archer has its own
+      // validated range). The NIST attenuation table ends at 10 MeV, the
+      // ANS-6.4.3 build-up is tabulated from 30 keV (Pb) / 15 keV (Fe/concrete) to
+      // 40 mfp, and getMu/getBuildup clamp silently outside those bounds.
+      //
+      // This MUST be evaluated over the whole spectrum, not the representative
+      // line: soft lines have a far larger μ and blow past 40 mfp long before
+      // the representative one does. Checking only the representative line left
+      // Pd-103 at 1 mm Pb with 99.9% of its dose weight out of range and no
+      // warning at all (audit 2026-07-15).
+      const warnEl = document.getElementById('shieldRangeWarn');
+      warnEl.innerHTML = '';
+      if (method !== 'archer') {
+        const range = PHYSICS.getShieldingRange(mat);
+        const lines = sp || [[E_MeV * 1000, 1]];
+        let wOverMfp = 0, wUnderE = 0, wOverE = 0, mfpMax = 0;
+        for (const [E_keV, w] of lines) {
+          const E = E_keV / 1000;
+          const mfp = PHYSICS.getMu(E, mat) * thick;
+          if (mfp > mfpMax) mfpMax = mfp;
+          if (mfp > range.buildup_mfp_max)   wOverMfp += w;
+          if (E   < range.buildup_E_min_MeV) wUnderE  += w;
+          if (E   > range.atten_E_max_MeV)   wOverE   += w;
+        }
+        const pct  = (w) => UTILS.fmt(w * 100);
+        const msgs = [];
+        if (wOverE > 0)
+          msgs.push(`${pct(wOverE)}% of the dose weight sits above the tabulated attenuation range (${range.atten_E_max_MeV} MeV); μ is held at the ${range.atten_E_max_MeV} MeV value`);
+        if (wOverMfp > 0)
+          msgs.push(`${pct(wOverMfp)}% of the dose weight exceeds ${range.buildup_mfp_max} mean free paths (deepest line: ${UTILS.fmt(mfpMax)} mfp); the build-up factor is clamped and <strong>underestimates</strong> the transmitted dose`);
+        if (wUnderE > 0)
+          msgs.push(`${pct(wUnderE)}% of the dose weight lies below ${UTILS.fmt(range.buildup_E_min_MeV * 1000)} keV, where the ${matLabel(mat)} build-up table starts; B is held at its lowest tabulated energy`);
+        if (msgs.length)
+          warnEl.innerHTML = `<div class="alert alert-warning alert-lg mt-1">⚠️ Out of validated range: ${msgs.join('; ')}. Treat the shielding result as an extrapolation.</div>`;
+      }
+    } else {
+      shieldEl.classList.add('hidden');
+    }
+
+    // ---- Dose vs distance chart ----
+    document.getElementById('chartTitle').textContent =
+      thick > 0 && mat !== 'none'
+        ? `Dose Rate vs Distance (${matLabel(mat)}, ${thick} cm${ap ? ' — Archer' : sp ? ' — narrow beam, spectrum + build-up' : ' — narrow beam + build-up'})`
+        : 'Dose Rate vs Distance (unshielded)';
+    const distances = [];
+    for (let d = 0.10; d <= 5.0; d += 0.05) distances.push(+d.toFixed(2));
+
+    const doseWB  = distances.map(d => CALC.doseRate(gammaWB,  A0_GBq, d, thick, E_MeV, mat, ap, sp) * patientTx);
+    const doseExt = distances.map(d => CALC.doseRate(gammaExt, A0_GBq, d, thick, E_MeV, mat, ap, sp007) * patientTx);
+
+    // Find closest distance index for orange mark
+    let closestDistIdx = -1;
+    let minDistDiff = Infinity;
+    distances.forEach((dist, i) => {
+      const diff = Math.abs(dist - d_m);
+      if (diff < minDistDiff) {
+        minDistDiff = diff;
+        closestDistIdx = i;
+      }
+    });
+
+    // Create data for orange mark at current distance
+    const orangeMarkWB = distances.map((dist, i) => i === closestDistIdx ? doseWB[i] : null);
+
+    if (distChart) distChart.destroy();
+    let chartEl = document.getElementById('distChart');
+    if (!chartEl || !chartEl.getContext) {
+      const container = document.getElementById('distChartContainer');
+      container.innerHTML = '<canvas id="distChart"></canvas>';
+      chartEl = document.getElementById('distChart');
+    }
+    const ctx = chartEl.getContext('2d');
+    const chartTheme = UI.getChartTheme();
+    distChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: distances.map(d => d.toFixed(2)),
+        datasets: [
+          {
+            label: 'H*(10) whole body',
+            data: doseWB,
+            borderColor: chartTheme.green,
+            backgroundColor: chartTheme.greenFill,
+            borderWidth: 2, pointRadius: 0, pointStyle: 'line', fill: true, tension: 0.1,
+          },
+          {
+            label: "H'(0.07) skin/extremity",
+            data: doseExt,
+            borderColor: chartTheme.orange,
+            backgroundColor: chartTheme.orangeFill,
+            borderWidth: 2, pointRadius: 0, pointStyle: 'line', fill: false, tension: 0.1, borderDash: [5,3],
+          },
+          {
+            label: `d = ${d_m.toFixed(2)} m`,
+            data: orangeMarkWB,
+            borderColor: chartTheme.orange,
+            backgroundColor: chartTheme.orange,
+            borderWidth: 2,
+            pointRadius: 6,
+            pointStyle: 'circle',
+            showLine: false,
+          },
+        ]
+      },
+      options: {
+        color: chartTheme.text,
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top', labels: { usePointStyle: true, pointStyleWidth: 24 } },
+          tooltip: { callbacks: {
+            label: ctx => `${ctx.dataset.label}: ${CALC.formatDoseRate(ctx.raw).display}`
+          }}
+        },
+        scales: {
+          x: {
+            title: { display: true, text: 'Distance (m)', color: chartTheme.text },
+            ticks: { maxTicksLimit: 12, color: chartTheme.text },
+            grid: { color: chartTheme.grid },
+          },
+          y: {
+            title: { display: true, text: 'Dose rate (μSv/h)', color: chartTheme.text },
+            type: 'logarithmic',
+            ticks: { callback: v => CALC.formatDoseRate(v).display, color: chartTheme.text },
+            grid: { color: chartTheme.grid },
+            afterBuildTicks: (axis) => {
+              // Keep only decade ticks (powers of 10) for equal visual spacing
+              axis.ticks = axis.ticks.filter(t => {
+                const log = Math.log10(t.value);
+                return Math.abs(log - Math.round(log)) < 1e-9;
+              });
+            }
+          }
+        }
+      }
+    });
+
+    // ---- Limit comparison ----
+    if (t_h <= 0) {
+      document.getElementById('limitComparison').innerHTML =
+        '<div class="alert alert-info text-sm">Enter an exposure time &gt; 0 to see the annual limit comparison.</div>';
+      card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      updateHvlInfo();
+      return;
+    }
+    const annualDoseWB  = H_WB_cum  * nAdmin;
+    const annualDoseExt = H_Ext_cum * nAdmin;
+
+    function pct(val, limit_mSv) {
+      const pctVal = (val / 1000 / limit_mSv * 100);
+      const cls = pctVal > 100 ? 'danger' : pctVal > 50 ? 'warning' : 'success';
+      // fmtRatio, not fmt: the colour flips at 100% but fmt() rounds 99.99 and
+      // 100.04 both to "100.0", so the number could contradict the verdict it
+      // sits next to (audit 2026-07-15, finding 7).
+      return `<span style="color:var(--${cls === 'success' ? 'green-700' : cls === 'warning' ? 'warning' : 'danger'});font-weight:700;">${UTILS.fmtRatio(pctVal, 100)}%</span>`;
+    }
+
+    document.getElementById('limitComparison').innerHTML = `
+      <div class="alert alert-info text-sm">
+        <strong>Indicative screening only</strong> — area-monitoring estimates compared with RD 1029/2022 annual limits.
+        Compliance is demonstrated with personal dosimetry (Hp(10), Hp(0.07), Hp(3)), not with H*/H'.
+        <br>Annual dose from ${nAdmin} administration${nAdmin !== 1 ? 's' : ''}/y &times; ${UTILS.fmt(t_h)} h/admin:
+        <br><br>
+        <strong>Effective dose</strong> (screened with H*(10)): ${CALC.formatDose(annualDoseWB).display}/y
+        &nbsp;— ${pct(annualDoseWB, 20)} of 20 mSv/y worker limit
+        &nbsp;|&nbsp; ${pct(annualDoseWB, 1)} of 1 mSv/y public limit
+        <br>
+        <strong>Lens of eye</strong> (screened with H*(10) — the actual assessment requires Hp(3) and the dosimetric history):
+        <br><em style="font-size:0.9em;">Both RD 1029/2022 conditions must be satisfied:</em>
+        &nbsp;— ${pct(annualDoseWB, 50)} of 50 mSv/y max annual
+        &nbsp;|&nbsp; ${pct(annualDoseWB * 5, 100)} of 100 mSv per consecutive 5-year period, <em style="font-size:0.9em;">projected assuming this same annual dose during 5 years</em>
+        <br>
+        <strong>Skin / extremities</strong> (screened with ${useH007 ? "H'(0.07)" : "H*(10) — no &#915;<sup>H'(0.07)</sup> constant for this nuclide; may underestimate the skin dose of low-energy emitters"}): ${CALC.formatDose(annualDoseExt).display}/y
+        &nbsp;— ${pct(annualDoseExt, 500)} of 500 mSv/y limit
+      </div>
+    `;
+
+    lastCalcResult = { useH007, gammaExt, gammaWB, nAdmin, H_WB_cum, H_Ext_cum, Hdot_WB, Hdot_WB_t, Hdot_Ext, Hdot_Ext_t, Hdot_WB_1m, Hdot_WB_t_1m, Hdot_Ext_1m, Hdot_Ext_t_1m, n, A0raw, A0unit, A0_GBq, d_m, t_h,
+      mat, thick, patientTx, withDecay,
+      method: mat === 'none' || thick <= 0 ? 'unshielded' : ap ? 'archer' : sp ? 'narrow_beam_spectrum' : 'narrow_beam',
+      spectrumLines: sp ? sp.length : 0 };
+
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    updateHvlInfo();
+
+  });
+
+  if (urlId) setTimeout(() => document.getElementById('btnCalc').click(), 150);
+
+})();
+</script>
+<script>
+// Register the service worker for offline/PWA use (HTTP(S) only — file:// has no SW support)
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.protocol === 'http:')) {
+  navigator.serviceWorker.register('sw.js').catch(() => { /* offline-first is best-effort */ });
+}
+</script>
+</body>
+</html>

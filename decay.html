@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NM Radionuclide Planner — Decay Calculator</title>
+  <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+  <link rel="apple-touch-icon" href="assets/icons/icon-180.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2d6a4f">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/chart.umd.min.js"></script>
+</head>
+<body>
+
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<header class="site-header">
+  <div class="inner">
+    <div class="site-logo">&#9762; <span>NM</span> Radionuclide Planner</div>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="index.html">Properties</a>
+      <a href="decay.html" class="active">Decay</a>
+      <a href="dose.html">Dose</a>
+    </nav>
+    <button id="darkToggle" type="button" class="btn-icon" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
+      <span id="darkIcon">🌙</span>
+    </button>
+  </div>
+</header>
+
+<main class="page-body" id="main-content">
+  <h1 class="page-title">Decay Calculator</h1>
+  <div class="page-subtitle">A(t) = A&#8320; &middot; e<sup>&minus;&lambda;t</sup> &nbsp;|&nbsp; &lambda; = ln(2) / T&#189;</div>
+
+  <!-- Inputs -->
+  <div class="card">
+    <h2 class="card-title">&#9881; Parameters</h2>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label" for="nuclideSearch" id="nuclideSearchLabel">Radionuclide</label>
+        <div class="nuclide-combobox" id="nuclideCombobox">
+          <input type="search" class="form-input" id="nuclideSearch"
+                 placeholder="Search nuclide (e.g. Lu-177, F-18, Zr-89)…"
+                 autocomplete="off" spellcheck="false" title="Search nuclide" aria-labelledby="nuclideSearchLabel"
+                 role="combobox" aria-expanded="false" aria-controls="nuclideDropdown"
+                 aria-autocomplete="list" aria-haspopup="listbox">
+          <ul class="nuclide-dropdown hidden" id="nuclideDropdown" role="listbox" aria-labelledby="nuclideSearchLabel" title="Suggested nuclides"></ul>
+          <input type="hidden" id="nuclideSelect" value="">
+          <!-- Announces the result count to screen readers; the listbox appearing
+               is otherwise silent for a user who cannot see it. -->
+          <div id="nuclideStatus" class="sr-only" role="status" aria-live="polite"></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="A0">Initial Activity A&#8320;</label>
+        <div class="d-flex gap-1">
+          <input type="number" class="form-input" id="A0" value="1000" min="0" step="any" title="Initial Activity">
+          <select class="form-select form-select-narrow" id="A0unit" title="Unit" aria-label="Initial activity unit">
+            <option value="MBq" selected>MBq</option>
+            <option value="GBq">GBq</option>
+            <option value="mCi">mCi</option>
+            <option value="Ci">Ci</option>
+            <option value="kBq">kBq</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="refDateTime">Reference date &amp; time</label>
+        <input type="datetime-local" class="form-input" id="refDateTime" title="Reference date and time">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="targetDateTime">Target date &amp; time <span class="text-muted">(optional)</span></label>
+        <input type="datetime-local" class="form-input" id="targetDateTime" title="Target date and time">
+      </div>
+    </div>
+
+    <!-- Manual elapsed time override -->
+    <div class="form-grid mt-2">
+      <div class="form-group">
+        <label class="form-label" for="elapsed">— or — Elapsed time</label>
+        <div class="d-flex gap-1">
+          <input type="number" class="form-input" id="elapsed" min="0" step="any" placeholder="e.g. 24 (hours)" title="Elapsed time">
+          <select class="form-select form-select-narrow" id="elapsedUnit" title="Unit" aria-label="Elapsed time unit">
+            <option value="h" selected>h</option>
+            <option value="min">min</option>
+            <option value="d">d</option>
+            <option value="s">s</option>
+          </select>
+        </div>
+        <div class="form-hint">Overrides date/time fields when filled</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="Atarget">Target Activity A<sub>target</sub> <span class="text-muted">(optional)</span></label>
+        <div class="d-flex gap-1">
+          <input type="number" class="form-input" id="Atarget" min="0" step="any" placeholder="e.g. 100 (MBq)" title="Target Activity">
+          <select class="form-select form-select-narrow" id="AtargetUnit" title="Unit" aria-label="Target activity unit">
+            <option value="MBq" selected>MBq</option>
+            <option value="GBq">GBq</option>
+            <option value="mCi">mCi</option>
+            <option value="kBq">kBq</option>
+          </select>
+        </div>
+        <div class="form-hint">Calculates time to reach this activity</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="vialWeight">Vial / container weight <span class="text-muted">(optional)</span></label>
+        <div class="d-flex gap-1">
+          <input type="number" class="form-input" id="vialWeight" min="0" step="any" placeholder="e.g. 10" title="Vial/container weight">
+          <select class="form-select form-select-medium" id="vialWeightUnit" title="Unit" aria-label="Vial weight unit">
+            <option value="g" selected>g</option>
+            <option value="kg">kg</option>
+          </select>
+        </div>
+        <div class="form-hint">For clearance check (RD&nbsp;1217/2024 Annex IV Table A.1)</div>
+      </div>
+    </div>
+
+    <div class="mt-2">
+      <button class="btn btn-primary" id="btnCalc">Calculate</button>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="card mt-2 hidden" id="resultsCard">
+    <h2 class="card-title">&#128202; Results</h2>
+    <div id="nuclideInfo" class="alert alert-info mb-1"></div>
+    <div class="result-grid" id="resultGrid"></div>
+
+    <hr class="divider">
+
+    <!-- Inverse: time to target -->
+    <div id="inverseResult" class="hidden"></div>
+
+    <!-- Clearance assessment -->
+    <div id="clearanceSection" class="hidden">
+      <hr class="divider">
+      <h3 class="card-title">&#9855; Clearance assessment &mdash; RD 1217/2024, Annex IV Table A.1</h3>
+      <div id="clearanceContent"></div>
+    </div>
+
+    <!-- Decay curve chart -->
+    <h3 class="card-title mt-2">Decay Curve</h3>
+    <div class="chart-wrap">
+      <canvas id="decayChart"></canvas>
+    </div>
+
+    <!-- Table of values -->
+    <div class="mt-2">
+      <div class="d-flex align-center gap-2 mb-1 justify-between">
+        <span class="text-sm text-muted" id="tableCaption">Activity at selected time points</span>
+        <span class="d-flex gap-1">
+          <button class="btn btn-secondary btn-sm" id="btnPrintDecay" type="button" title="Generate a printable calculation report with traceability (sources, method, disclaimer)">&#128196; Report / PDF</button>
+          <button class="btn btn-secondary btn-sm" id="btnExportCsv" type="button">&#11123; Export CSV</button>
+        </span>
+      </div>
+      <div class="overflow-x-auto max-height-260">
+        <table class="data-table" id="decayTable">
+          <thead><tr id="tableHeaderRow">
+            <th>Time</th><th>Elapsed (h)</th>
+            <th>Activity (MBq)</th><th>Activity (mCi)</th><th>Fraction remaining</th>
+          </tr></thead>
+          <tbody id="decayTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  NM Radionuclide Planner &mdash; For radiation protection estimation purposes.
+  Verify against primary sources for regulatory submissions.
+  <br>Original application and code: &copy; 2026 Ramon Sendon &middot; EUPL-1.2 &middot; Third-party data: separate terms &mdash;
+  <a href="about.html">About, guide &amp; licences</a>
+</footer>
+
+<script src="data/nuclides-data.js"></script>
+<script src="js/data.js"></script>
+<script src="js/physics.js"></script>
+<script src="js/nuclide-id.js"></script>
+<script src="js/db.js"></script>
+<script src="js/ui.js"></script>
+<script src="data/icrp107-data.js"></script>
+<script src="js/icrp107-loader.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/report.js"></script>
+<script>
+(async () => {
+  // ---- UI initialization ----
+  UI.initDarkMode();
+  UI.initPrint();
+  UI.initKeyboard();
+  try {
+    await DB.load();
+  } catch (err) {
+    console.error('Failed to initialize decay calculator:', err);
+    UI.showFatalError(`Error loading nuclide database: ${err.message}`);
+    return;
+  }
+  await ICRP107._ensureLoaded().catch(err => console.warn('ICRP107 not available:', err));
+
+  // ---- Nuclide resolution function ----
+  function resolveNuclide(id) {
+    const dbNuclide = DB.getById(id);
+    if (dbNuclide) return dbNuclide;
+
+    const icrpN = ICRP107.get(id);
+    if (!icrpN) return null;
+
+    const constants = ICRP107.calcConstants(id);
+
+    return {
+      id: icrpN.id,
+      symbol: icrpN.id,
+      name: icrpN.id,
+      half_life_s: icrpN.half_life_s,
+      half_life_display: icrpN.half_life_display,
+      gamma_H10: constants ? constants.gammaH10 : null,
+      gamma_H007: constants ? constants.gammaH007 : null,
+      gamma_Kair: constants ? constants.gamma_Kair : null,
+      _icrp107: true,
+      source: 'ICRP 107 (calculated)',
+    };
+  }
+
+  // ---- Combobox initialization ----
+  const searchInput  = document.getElementById('nuclideSearch');
+  const hiddenSelect = document.getElementById('nuclideSelect');
+  const dropdown     = document.getElementById('nuclideDropdown');
+  const dbNuclides   = DB.getAll();
+  let selectedNuclide = null;
+
+  // Combobox keyboard model: aria-activedescendant.
+  //
+  // Focus STAYS on the <input> and `activeIndex` tracks the highlighted option.
+  // The previous version called .focus() on the <li>, which moved focus out of
+  // the input — and since the <ul> is a SIBLING of the input, not a descendant,
+  // later keydowns no longer reached the listener bound to the input. The result
+  // was that after the first ArrowDown the keyboard went dead: no further arrows,
+  // no Enter, no Escape. Enter never worked from the input either, because
+  // indexOf(activeElement) was -1 there (audit 2026-07-15).
+  const statusEl = document.getElementById('nuclideStatus');
+  let activeIndex = -1;
+
+  function options() { return [...dropdown.querySelectorAll('[data-id]')]; }
+
+  function setActive(i) {
+    const items = options();
+    activeIndex = i;
+    items.forEach((li, k) => {
+      const on = k === i;
+      li.classList.toggle('is-active', on);
+      li.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    if (i >= 0 && items[i]) {
+      searchInput.setAttribute('aria-activedescendant', items[i].id);
+      items[i].scrollIntoView({ block: 'nearest' });
+    } else {
+      searchInput.removeAttribute('aria-activedescendant');
+    }
+  }
+
+  function setExpanded(open) {
+    dropdown.classList.toggle('hidden', !open);
+    searchInput.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (!open) setActive(-1);
+  }
+
+  function showDropdown(results) {
+    dropdown.innerHTML = results.map((n, i) =>
+      `<li class="nuclide-option" role="option" aria-selected="false"
+           id="nuclideOpt-${i}" data-id="${UTILS.escapeHtml(n.id)}">
+         <span class="nuclide-opt-id">${UTILS.escapeHtml(n.id)}</span>
+         <span class="nuclide-opt-meta">T½ ${UTILS.escapeHtml(n.half_life_display)}${n._icrp107 ? ' · ICRP 107' : ''}</span>
+       </li>`
+    ).join('');
+    setExpanded(results.length > 0);
+    statusEl.textContent = results.length
+      ? `${results.length} nuclide${results.length === 1 ? '' : 's'} available. Use arrow keys to review, Enter to select.`
+      : 'No matching nuclide.';
+  }
+
+  function selectNuclide(id) {
+    const n = resolveNuclide(id);
+    if (!n) return;
+    selectedNuclide = n;
+    hiddenSelect.value = id;
+    searchInput.value = id;
+    setExpanded(false);
+  }
+
+  searchInput.addEventListener('focus', () => {
+    const q = searchInput.value.trim();
+    if (!q) showDropdown(dbNuclides.map(n => ({...n, _icrp107: false})));
+  });
+
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.trim();
+    hiddenSelect.value = '';
+    selectedNuclide = null;
+    if (!q) { showDropdown(dbNuclides.map(n => ({...n, _icrp107: false}))); return; }
+
+    const dbResults   = DB.search(q).map(n => ({...n, _icrp107: false}));
+    const icrpResults = ICRP107.isReady()
+      ? ICRP107.search(q).filter(n => !DB.getById(n.id)).map(n => ({...n, _icrp107: true}))
+      : [];
+    showDropdown([...dbResults, ...icrpResults].slice(0, 20));
+  });
+
+  dropdown.addEventListener('click', e => {
+    const li = e.target.closest('[data-id]');
+    if (li) selectNuclide(li.dataset.id);
+  });
+
+  // Mouse hover and keyboard cursor must agree, or Enter would select an option
+  // other than the one highlighted under the pointer.
+  dropdown.addEventListener('mousemove', e => {
+    const li = e.target.closest('[data-id]');
+    if (li) setActive(options().indexOf(li));
+  });
+
+  document.addEventListener('click', e => {
+    if (!document.getElementById('nuclideCombobox').contains(e.target)) {
+      setExpanded(false);
+    }
+  });
+
+  searchInput.addEventListener('keydown', e => {
+    const items = options();
+    const open  = !dropdown.classList.contains('hidden');
+
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!open) { searchInput.dispatchEvent(new Event('input', { bubbles: true })); return; }
+      if (!items.length) return;
+      const delta = e.key === 'ArrowDown' ? 1 : -1;
+      const next  = activeIndex < 0
+        ? (delta > 0 ? 0 : items.length - 1)
+        : (activeIndex + delta + items.length) % items.length;
+      setActive(next);
+      return;
+    }
+    if (e.key === 'Home' && open && items.length) { e.preventDefault(); setActive(0); return; }
+    if (e.key === 'End'  && open && items.length) { e.preventDefault(); setActive(items.length - 1); return; }
+    if (e.key === 'Escape') { e.preventDefault(); setExpanded(false); return; }
+    if (e.key === 'Enter') {
+      // Only swallow Enter when it actually selects something; otherwise let it
+      // through so the form behaves normally.
+      if (open && activeIndex >= 0 && items[activeIndex]) {
+        e.preventDefault();
+        selectNuclide(items[activeIndex].dataset.id);
+      }
+      return;
+    }
+    if (e.key === 'Tab' && open) setExpanded(false);
+  });
+
+  const urlId = new URLSearchParams(location.search).get('id');
+  if (urlId) selectNuclide(urlId);
+  else selectNuclide(dbNuclides[0]?.id);
+
+  // Set default datetime to now
+  const now = new Date();
+  const toLocal = d => new Date(d - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+  document.getElementById('refDateTime').value = toLocal(now);
+
+  let chart = null;
+
+  function applyDecayChartTheme() {
+    if (!chart) return;
+    const theme = UI.getChartTheme();
+    for (const dataset of chart.data.datasets) {
+      if (dataset._themeRole === 'primary') {
+        dataset.borderColor = theme.green;
+        dataset.backgroundColor = theme.greenFill;
+      } else if (dataset._themeRole === 'accent') {
+        dataset.borderColor = dataset.backgroundColor = theme.orange;
+      } else if (dataset._themeRole === 'danger') {
+        dataset.borderColor = theme.danger;
+      } else if (dataset._themeRole === 'success') {
+        dataset.borderColor = dataset.backgroundColor = theme.green;
+      }
+    }
+    chart.options.color = theme.text;
+    for (const scale of Object.values(chart.options.scales)) {
+      scale.ticks.color = theme.text;
+      scale.title.color = theme.text;
+      scale.grid.color = theme.grid;
+    }
+    chart.update('none');
+  }
+
+  document.addEventListener('nm-theme-change', applyDecayChartTheme);
+
+  // ---- Calculate ----
+  document.getElementById('btnCalc').addEventListener('click', calculate);
+
+  function fmtVal(v) {
+    if (!isFinite(v)) return '—';
+    if (v === 0) return '0';
+    return UTILS.fmt(v);
+  }
+
+  function calculate() {
+    const n = selectedNuclide || resolveNuclide(hiddenSelect.value);
+    if (!n) { alert('Select a valid nuclide first.'); return; }
+
+    if (n._icrp107) {
+      const confirmed = confirm(
+        'This nuclide is from ICRP 107 extended database. Decay data and constants have NOT been manually validated.\n\n' +
+        'For clinical or regulatory use, verify these values against primary sources (ICRP 107, 2008).\n\n' +
+        'Continue with calculation?'
+      );
+      if (!confirmed) return;
+    }
+
+    const A0raw    = parseFloat(document.getElementById('A0').value);
+    if (!Number.isFinite(A0raw) || A0raw <= 0) {
+      alert('Activity must be a positive number.'); return;
+    }
+    const A0unit   = document.getElementById('A0unit').value;
+    const A0_MBq   = CALC.convertActivity(A0raw, A0unit, 'MBq');
+    const T_half_h = DB.halfLifeHours(n);
+
+    // Derive time unit from half_life_display (may be auto-scaled after tMax_h is known)
+    const hlParts = n.half_life_display.split(' ');
+    let timeUnit = hlParts[hlParts.length - 1]; // 's' | 'min' | 'h' | 'd' | 'y'
+    const hToUnit = { s: 3600, min: 60, h: 1, d: 1/24, y: 1/8760 };
+    if (!(timeUnit in hToUnit)) {
+      // ICRP 107 nuclides may use display units not mapped above (ms, ky, …):
+      // pick a sensible chart unit from the half-life magnitude instead
+      timeUnit = T_half_h < 1/60 ? 's' : T_half_h < 1 ? 'min' : T_half_h < 48 ? 'h' : T_half_h < 8760 ? 'd' : 'y';
+    }
+    let unitFactor = hToUnit[timeUnit]; // multiply hours by this to get display unit
+
+    // Determine elapsed time
+    let t_h;
+    const elapsedVal  = document.getElementById('elapsed').value.trim();
+    const elapsedUnit = document.getElementById('elapsedUnit').value;
+    if (elapsedVal !== '') {
+      if (!/^[0-9]*\.?[0-9]+([eE][+-]?[0-9]+)?$/.test(elapsedVal)) {
+        alert('Elapsed time must be a valid number (e.g., 1, 1.5, 1e2).'); return;
+      }
+      const elapsedRaw = parseFloat(elapsedVal);
+      if (!Number.isFinite(elapsedRaw) || elapsedRaw < 0) {
+        alert('Elapsed time must be a non-negative number.'); return;
+      }
+      const mul = { h: 1, min: 1 / 60, d: 24, s: 1 / 3600 };
+      t_h = elapsedRaw * (mul[elapsedUnit] || 1);
+    } else {
+      const ref    = document.getElementById('refDateTime').value;
+      const target = document.getElementById('targetDateTime').value;
+      if (target && !ref) {
+        alert('Enter a reference date and time before using a target date.');
+        document.getElementById('refDateTime').focus();
+        return;
+      }
+      if (ref && target) {
+        t_h = (new Date(target) - new Date(ref)) / 3.6e6;
+      } else {
+        t_h = 0;
+      }
+    }
+    if (!Number.isFinite(t_h)) {
+      alert('Reference and target dates must be valid.');
+      return;
+    }
+    if (Number.isFinite(t_h) && t_h < 0) {
+      alert('Target date must be after reference date.');
+      return;
+    }
+
+    const At_MBq = CALC.activityAtTime(A0_MBq, T_half_h, t_h);
+    const fraction = At_MBq / A0_MBq;
+
+    // Show results card
+    const card = document.getElementById('resultsCard');
+    card.classList.remove('hidden');
+
+    const sourceTag = n._icrp107
+      ? `<span class="tag tag-icrp107" title="Decay data from ICRP 107">ICRP 107</span>`
+      : '';
+    const chainNote = n.chain_members
+      ? `<div class="text-sm" style="margin-top:.35rem;">&#9432; Chain entry (${n.chain_members.length} members): the curve follows the parent T&#189;, with progeny in secular equilibrium scaling proportionally. Valid once equilibrium is established (source aged &#8819; 10 daughter half-lives).</div>`
+      : '';
+    document.getElementById('nuclideInfo').innerHTML =
+      `<strong>${UTILS.escapeHtml(n.symbol)} — ${UTILS.escapeHtml(n.name)}</strong> ${sourceTag} &nbsp;|&nbsp; T&#189; = ${UTILS.escapeHtml(n.half_life_display)} &nbsp;|&nbsp;
+       &lambda; = ${UTILS.fmt(CALC.lambda(T_half_h))} h&#8315;&#185;${chainNote}`;
+
+    document.getElementById('resultGrid').innerHTML = `
+      <div class="result-box">
+        <div class="result-label">A(t)</div>
+        <div class="result-value">${fmtVal(At_MBq)}</div>
+        <div class="result-unit">MBq = ${fmtVal(CALC.convertActivity(At_MBq,'MBq','GBq'))} GBq
+          = ${fmtVal(CALC.convertActivity(At_MBq,'MBq','mCi'))} mCi</div>
+      </div>
+      <div class="result-box">
+        <div class="result-label">Fraction remaining</div>
+        <div class="result-value">${UTILS.fmt(fraction * 100)}%</div>
+        <div class="result-unit">at t = ${UTILS.fmt(t_h)} h</div>
+      </div>
+      <div class="result-box">
+        <div class="result-label">Elapsed</div>
+        <div class="result-value">${UTILS.fmt(t_h)} h</div>
+        <div class="result-unit">${UTILS.fmt(t_h / 24)} d &nbsp;|&nbsp; ${UTILS.fmt(t_h / T_half_h)} T&#189;</div>
+      </div>
+      <div class="result-box">
+        <div class="result-label">Activity lost</div>
+        <div class="result-value">${fmtVal(A0_MBq - At_MBq)}</div>
+        <div class="result-unit">MBq (${UTILS.fmt((1 - fraction) * 100)}%)</div>
+      </div>
+    `;
+
+    // Inverse: time to target
+    const AtgtRaw  = parseFloat(document.getElementById('Atarget').value);
+    const AtgtUnit = document.getElementById('AtargetUnit').value;
+    const inv = document.getElementById('inverseResult');
+    if (!isNaN(AtgtRaw) && AtgtRaw > 0) {
+      const Atgt_MBq = CALC.convertActivity(AtgtRaw, AtgtUnit, 'MBq');
+      const tTarget_h = CALC.timeToActivity(A0_MBq, Atgt_MBq, T_half_h);
+      inv.classList.remove('hidden');
+      if (Atgt_MBq >= A0_MBq) {
+        // Decay only lowers activity, so a target at or above A₀ is not reached
+        // by waiting (timeToActivity returns 0 here — do not show a green "0 h").
+        inv.innerHTML = `<div class="alert alert-warning">Target activity &ge; initial activity (${UTILS.fmt(A0_MBq)} MBq) — cannot be reached by decay.</div>`;
+      } else if (isFinite(tTarget_h)) {
+        const refDt = document.getElementById('refDateTime').value;
+        inv.innerHTML = `
+          <div class="alert alert-success">
+            <strong>Time to reach ${AtgtRaw} ${AtgtUnit}:</strong>
+            ${UTILS.fmt(tTarget_h)} h = ${UTILS.fmt(tTarget_h / 24)} d
+            = ${UTILS.fmt(tTarget_h / T_half_h)} T&#189;</div>`;
+        if (refDt) {
+          const d = new Date(new Date(refDt).getTime() + tTarget_h * 3.6e6);
+          const dateEl = document.createElement('span');
+          dateEl.textContent = ' → ' + d.toLocaleString();
+          inv.querySelector('.alert-success').appendChild(dateEl);
+        }
+      } else {
+        inv.innerHTML = `<div class="alert alert-warning">Target activity must be a positive value below A&#8320;.</div>`;
+      }
+    } else {
+      inv.classList.add('hidden');
+    }
+
+    // ---- Chart ----
+    const vialWeightInput = document.getElementById('vialWeight');
+    const vialWeightText  = vialWeightInput.value.trim();
+    const vialWeightRaw   = vialWeightText === '' ? NaN : Number(vialWeightText);
+    if (vialWeightText !== '' && (!Number.isFinite(vialWeightRaw) || vialWeightRaw <= 0)) {
+      alert('Vial / container weight must be a positive number.');
+      vialWeightInput.focus();
+      return;
+    }
+    const vialWeightUnit  = document.getElementById('vialWeightUnit').value;
+    const weight_kg       = vialWeightText === '' ? null : (vialWeightUnit === 'g' ? vialWeightRaw / 1000 : vialWeightRaw);
+
+    const showConcentration = weight_kg !== null;
+    let tMax_h = Math.max(t_h * 2, T_half_h * 5);
+    if (showConcentration) {
+      const clearLevel = n.clearance_a1_kBq_per_kg ?? null;
+      if (clearLevel !== null) {
+        const specA0_kBq = CALC.convertActivity(A0_MBq, 'MBq', 'kBq') / weight_kg;
+        if (specA0_kBq > clearLevel) {
+          const t_clear_h = (T_half_h / Math.LN2) * Math.log(specA0_kBq / clearLevel);
+          if (isFinite(t_clear_h) && t_clear_h > 0) {
+            tMax_h = Math.max(tMax_h, t_clear_h * 1.15); // extend 15% past intersection
+          }
+        }
+      }
+    }
+    // Auto-scale time unit upward if tMax would produce values ≥ 1000
+    { const _unitOrder = ['s', 'min', 'h', 'd', 'y'];
+      while (tMax_h * unitFactor >= 1000) {
+        const next = _unitOrder.indexOf(timeUnit) + 1;
+        if (next >= _unitOrder.length) break;
+        timeUnit = _unitOrder[next];
+        unitFactor = hToUnit[timeUnit];
+      }
+    }
+    // Generate decay curve points that extend to tMax_h
+    const pts = [];
+    const nPoints = 150;
+    for (let i = 0; i < nPoints; i++) {
+      const t_h_point = (i / (nPoints - 1)) * tMax_h;
+      const A = CALC.activityAtTime(A0_MBq, T_half_h, t_h_point);
+      pts.push({ t_h: t_h_point, A: A });
+    }
+    const labels = pts.map(p => (p.t_h * unitFactor).toFixed(timeUnit === 'y' ? 3 : 2));
+
+    // Prepare data: activity or concentration
+    let vals, yAxisLabel, yAxisUnit, tooltipFormat;
+    if (showConcentration) {
+      // Convert to kBq/kg for display
+      vals = pts.map(p => {
+        const A_kBq = CALC.convertActivity(p.A, 'MBq', 'kBq');
+        return A_kBq / weight_kg;
+      });
+      yAxisLabel = 'Activity concentration (kBq/kg)';
+      tooltipFormat = (val) => `${val.toExponential(4)} kBq/kg`;
+    } else {
+      vals = pts.map(p => p.A);
+      yAxisLabel = 'Activity (MBq)';
+      tooltipFormat = (val) => `${val.toExponential(4)} MBq`;
+    }
+
+    // Find closest point to t_h for the orange mark
+    let closestIdx = -1;
+    let minDiff = Infinity;
+    pts.forEach((p, i) => {
+      const diff = Math.abs(p.t_h - t_h);
+      if (diff < minDiff) {
+        minDiff = diff;
+        closestIdx = i;
+      }
+    });
+
+    // Create data for vertical line (orange mark)
+    const orangeLineData = pts.map((p, i) => i === closestIdx ? vals[i] : null);
+
+    // Prepare datasets
+    const chartTheme = UI.getChartTheme();
+    const datasets = [{
+      _themeRole: 'primary',
+      label: showConcentration ? `${n.symbol} decay curve (kBq/kg)` : `${n.symbol} decay curve (MBq)`,
+      data: vals,
+      borderColor: chartTheme.green,
+      backgroundColor: chartTheme.greenFill,
+      borderWidth: 2,
+      pointRadius: 0,
+      pointStyle: 'line',
+      fill: true,
+      tension: 0.3,
+    }, {
+      _themeRole: 'accent',
+      // Vertical line at elapsed time
+      label: `Elapsed time: ${(t_h * unitFactor).toFixed(2)} ${timeUnit}`,
+      data: orangeLineData,
+      borderColor: chartTheme.orange,
+      backgroundColor: chartTheme.orange,
+      borderWidth: 2,
+      pointRadius: 6,
+      pointStyle: 'circle',
+      showLine: false,
+    }];
+
+    // Add clearance level line + intersection marker if showing concentration
+    if (showConcentration) {
+      const clearLevel = n.clearance_a1_kBq_per_kg ?? null;
+      if (clearLevel !== null) {
+        datasets.push({
+          _themeRole: 'danger',
+          label: `RD 1217/2024 clearance level: ${clearLevel} kBq/kg`,
+          data: pts.map(() => clearLevel),
+          borderColor: chartTheme.danger,
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          borderDash: [5, 5],
+          pointRadius: 0,
+          pointStyle: 'line',
+          fill: false,
+          tension: 0.3,
+        });
+        // Green circle at the decay curve / clearance line intersection
+        const specA0_kBq = CALC.convertActivity(A0_MBq, 'MBq', 'kBq') / weight_kg;
+        if (specA0_kBq > clearLevel) {
+          const t_cross_h = (T_half_h / Math.LN2) * Math.log(specA0_kBq / clearLevel);
+          if (isFinite(t_cross_h) && t_cross_h > 0 && t_cross_h <= tMax_h) {
+            let crossIdx = 0, crossMinDiff = Infinity;
+            pts.forEach((p, i) => {
+              const diff = Math.abs(p.t_h - t_cross_h);
+              if (diff < crossMinDiff) { crossMinDiff = diff; crossIdx = i; }
+            });
+            datasets.push({
+              _themeRole: 'success',
+              label: `Clearance reached: ${(t_cross_h * unitFactor).toFixed(2)} ${timeUnit}`,
+              data: pts.map((_, i) => i === crossIdx ? clearLevel : null),
+              borderColor: chartTheme.green,
+              backgroundColor: chartTheme.green,
+              borderWidth: 2,
+              pointRadius: 7,
+              pointStyle: 'circle',
+              showLine: false,
+            });
+          }
+        }
+      }
+    }
+
+    if (chart) chart.destroy();
+    const ctx = document.getElementById('decayChart').getContext('2d');
+    chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: datasets
+      },
+      options: {
+        color: chartTheme.text,
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top', labels: { font: { size: 11 }, usePointStyle: true, pointStyleWidth: 24 } },
+          tooltip: { callbacks: {
+            label: ctx => `${ctx.dataset.label}: ${tooltipFormat(parseFloat(ctx.raw))}`
+          }}
+        },
+        scales: {
+          x: {
+            title: { display: true, text: `Time (${timeUnit})`, color: chartTheme.text },
+            ticks: { maxTicksLimit: 10, color: chartTheme.text },
+            grid: { color: chartTheme.grid },
+            max: tMax_h * unitFactor
+          },
+          y: {
+            title: { display: true, text: yAxisLabel, color: chartTheme.text },
+            ticks: { callback: v => showConcentration ? v.toFixed(2) : v.toExponential(2), color: chartTheme.text },
+            grid: { color: chartTheme.grid },
+          }
+        }
+      }
+    });
+
+    // ---- Decay table ----
+    const steps = [0, 0.5, 1, 2, 4, 6, 12, 24, 48, 72, 120, 168, 240, 336, 504, 720].filter(s => s <= T_half_h * 10);
+    if (!steps.includes(t_h)) steps.push(t_h);
+    steps.sort((a, b) => a - b);
+
+    // Update table caption and headers based on display mode
+    const tableCaption = document.getElementById('tableCaption');
+    const tableHeaderRow = document.getElementById('tableHeaderRow');
+    if (showConcentration) {
+      tableCaption.textContent = 'Activity concentration at selected time points';
+      tableHeaderRow.innerHTML = '<th>Time</th><th>Elapsed (h)</th><th>Concentration (kBq/kg)</th><th>Fraction remaining</th>';
+    } else {
+      tableCaption.textContent = 'Activity at selected time points';
+      tableHeaderRow.innerHTML = '<th>Time</th><th>Elapsed (h)</th><th>Activity (MBq)</th><th>Activity (mCi)</th><th>Fraction remaining</th>';
+    }
+
+    const refDt2 = document.getElementById('refDateTime').value;
+    const tbody = steps.map(s => {
+      const A = CALC.activityAtTime(A0_MBq, T_half_h, s);
+      const highlight = Math.abs(s - t_h) < 0.001 ? 'style="font-weight:700;background:var(--green-100)"' : '';
+      let timeLabel = UTILS.fmt(s) + ' h';
+      if (refDt2) {
+        const d = new Date(new Date(refDt2).getTime() + s * 3.6e6);
+        timeLabel = UTILS.formatDate(d);
+      }
+      if (showConcentration) {
+        const A_kBq = CALC.convertActivity(A, 'MBq', 'kBq');
+        const conc = A_kBq / weight_kg;
+        return `<tr ${highlight}>
+          <td>${timeLabel}</td>
+          <td class="num">${UTILS.fmt(s)}</td>
+          <td class="num">${fmtVal(conc)}</td>
+          <td class="num">${UTILS.fmt(A / A0_MBq * 100)}%</td>
+        </tr>`;
+      } else {
+        return `<tr ${highlight}>
+          <td>${timeLabel}</td>
+          <td class="num">${UTILS.fmt(s)}</td>
+          <td class="num">${fmtVal(A)}</td>
+          <td class="num">${fmtVal(CALC.convertActivity(A,'MBq','mCi'))}</td>
+          <td class="num">${UTILS.fmt(A / A0_MBq * 100)}%</td>
+        </tr>`;
+      }
+    }).join('');
+    document.getElementById('decayTableBody').innerHTML = tbody;
+
+    // ---- Export CSV ----
+    document.getElementById('btnExportCsv').onclick = () => {
+      let header, rows;
+      if (showConcentration) {
+        header = 'Time_h,Concentration_kBqPerKg,Fraction\n';
+        rows = steps.map(s => {
+          const A = CALC.activityAtTime(A0_MBq, T_half_h, s);
+          const A_kBq = CALC.convertActivity(A, 'MBq', 'kBq');
+          const conc = A_kBq / weight_kg;
+          const vals = [s.toFixed(4), conc.toPrecision(6), (A/A0_MBq).toPrecision(5)];
+          return vals.map(v => {
+            const str = String(v);
+            const safe = /^[=+\-@\t\r]/.test(str) ? "'" + str : str;
+            return safe;
+          }).join(',');
+        }).join('\n');
+      } else {
+        header = 'Time_h,Activity_MBq,Activity_mCi,Activity_GBq,Fraction\n';
+        rows = steps.map(s => {
+          const A = CALC.activityAtTime(A0_MBq, T_half_h, s);
+          const vals = [s.toFixed(4), A.toPrecision(6), CALC.convertActivity(A,'MBq','mCi').toPrecision(5), CALC.convertActivity(A,'MBq','GBq').toPrecision(5), (A/A0_MBq).toPrecision(5)];
+          return vals.map(v => {
+            const str = String(v);
+            const safe = /^[=+\-@\t\r]/.test(str) ? "'" + str : str;
+            return safe;
+          }).join(',');
+        }).join('\n');
+      }
+      const blob = new Blob([header + rows], { type: 'text/csv' });
+      const a = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      a.href = url;
+      a.download = `decay_${UTILS.safeFilename(n.id)}_${A0raw}${A0unit}.csv`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 0);
+    };
+
+    // ---- Clearance assessment (RD 1217/2024 Annex IV Table A.1) ----
+    const clearSec       = document.getElementById('clearanceSection');
+    const clearContent   = document.getElementById('clearanceContent');
+
+    if (!showConcentration) {
+      clearSec.classList.add('hidden');
+    } else {
+      const A0_kBq     = CALC.convertActivity(A0_MBq, 'MBq', 'kBq');
+      const At_kBq     = CALC.convertActivity(At_MBq, 'MBq', 'kBq');
+      const clearLevel = n.clearance_a1_kBq_per_kg ?? null;
+      const specA0     = A0_kBq / weight_kg;  // kBq/kg at t=0
+      const specAt     = At_kBq / weight_kg;  // kBq/kg at t=t_h
+
+      function fmtSpec(v) {
+        if (v >= 1e6) return `${UTILS.fmt(v/1e6)} GBq/kg`;
+        if (v >= 1e3) return `${UTILS.fmt(v/1e3)} MBq/kg`;
+        if (v >= 1)   return `${UTILS.fmt(v)} kBq/kg`;
+        return `${UTILS.fmt(v*1000)} Bq/kg`;
+      }
+
+      let clearHtml = `
+        <div class="prop-grid">
+          <div class="prop-item">
+            <div class="prop-key">Weight</div>
+            <div class="prop-val">${vialWeightRaw} ${vialWeightUnit}</div>
+            <div class="prop-note">${UTILS.fmt(weight_kg)} kg</div>
+          </div>
+          <div class="prop-item">
+            <div class="prop-key">A&#8320; / weight (t = 0)</div>
+            <div class="prop-val">${fmtSpec(specA0)}</div>
+          </div>
+          <div class="prop-item">
+            <div class="prop-key">A(t) / weight (t = ${UTILS.fmt(t_h)} h)</div>
+            <div class="prop-val">${fmtSpec(specAt)}</div>
+          </div>`;
+
+      if (clearLevel === null) {
+        clearHtml += `
+          <div class="prop-item">
+            <div class="prop-key">Table A.1 clearance level</div>
+            <div class="prop-val" style="color:var(--warning-text);">Not listed</div>
+            <div class="prop-note">${n.symbol} not in RD 1217/2024 Table A.1</div>
+          </div>`;
+      } else {
+        const ratio0 = specA0 / clearLevel;
+        const ratioT = specAt / clearLevel;
+        const below0 = ratio0 <= 1;
+        const belowT = ratioT <= 1;
+
+        let tClearItemHtml = '';
+        if (!below0 && T_half_h > 0 && isFinite(T_half_h)) {
+          const t_clear_h = (T_half_h / Math.LN2) * Math.log(specA0 / clearLevel);
+          if (t_clear_h > 0) {
+            let tDisp;
+            if (t_clear_h >= 8760) tDisp = `${UTILS.fmt(t_clear_h/8760)} y`;
+            else if (t_clear_h >= 24) tDisp = `${UTILS.fmt(t_clear_h/24)} d`;
+            else if (t_clear_h >= 1) tDisp = `${UTILS.fmt(t_clear_h)} h`;
+            else tDisp = `${UTILS.fmt(t_clear_h*60)} min`;
+            const refDtClear = document.getElementById('refDateTime').value;
+            tClearItemHtml = `
+          <div class="prop-item">
+            <div class="prop-key">Clearance reached after</div>
+            <div class="prop-val" style="color:var(--green-700);">&#126; ${tDisp}</div>
+            <div class="prop-note" id="dateNoteClear"></div>
+          </div>`;
+            if (refDtClear) {
+              const d = new Date(new Date(refDtClear).getTime() + t_clear_h * 3.6e6);
+              setTimeout(() => {
+                const el = document.getElementById('dateNoteClear');
+                if (el) el.textContent = UTILS.formatDate(d);
+              }, 0);
+            }
+          }
+        }
+
+        const cls0 = below0 ? 'var(--green-700)' : 'var(--danger)';
+        const clsT = belowT ? 'var(--green-700)' : 'var(--danger)';
+
+        clearHtml += `
+          <div class="prop-item">
+            <div class="prop-key">Table A.1 clearance level (RD 1217/2024)</div>
+            <div class="prop-val">${fmtSpec(clearLevel)}</div>
+            <div class="prop-note">${n.symbol} solid material threshold; source: Annex IV Table A.1</div>
+          </div>
+          <div class="prop-item">
+            <div class="prop-key">Status at t = 0</div>
+            <div class="prop-val" style="color:${cls0};">${below0 ? '&#10003; Below clearance' : '&#9888; Above clearance'}</div>
+            <div class="prop-note">${UTILS.fmtRatio(ratio0)} &times; clearance level</div>
+          </div>
+          <div class="prop-item">
+            <div class="prop-key">Status at t = ${UTILS.fmt(t_h)} h</div>
+            <div class="prop-val" style="color:${clsT};">${belowT ? '&#10003; Below clearance' : '&#9888; Above clearance'}</div>
+            <div class="prop-note">${UTILS.fmtRatio(ratioT)} &times; clearance level</div>
+          </div>
+          ${tClearItemHtml}`;
+      }
+
+      clearHtml += `</div>
+        <div class="alert alert-warning mt-1" style="font-size:.82rem;">
+          Table A.1 (RD 1217/2024 Annex IV): activity concentration thresholds for clearance from regulatory control of solid materials
+          (any quantity, any solid material type). Values in kBq/kg. Compliance requires both this criterion and any applicable
+          absolute activity limits. Consult the CSN before disposal.
+        </div>`;
+
+      clearContent.innerHTML = clearHtml;
+      clearSec.classList.remove('hidden');
+    }
+
+    // Snapshot for the printable report (derived values recomputed there)
+    lastDecayResult = {
+      n, A0raw, A0unit, A0_MBq, t_h, At_MBq, fraction, T_half_h,
+      AtgtRaw, AtgtUnit, vialWeightRaw, vialWeightUnit, weight_kg,
+      refDt: document.getElementById('refDateTime').value,
+      targetDt: document.getElementById('targetDateTime').value,
+    };
+
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  // ---- Printable report ----
+  let lastDecayResult = null;
+
+  document.getElementById('btnPrintDecay').onclick = () => {
+    if (!lastDecayResult) { alert('Calculate first.'); return; }
+    const r = lastDecayResult;
+    const lam = CALC.lambda(r.T_half_h);
+
+    const inputs = [
+      ['Initial activity A₀', `${r.A0raw} ${r.A0unit} (${UTILS.fmt(r.A0_MBq)} MBq)`],
+      ['Half-life T½', `${r.n.half_life_display} (λ = ${UTILS.fmt(lam)} h⁻¹)`],
+      ['Elapsed time t', `${UTILS.fmt(r.t_h)} h = ${UTILS.fmt(r.t_h / 24)} d = ${UTILS.fmt(r.t_h / r.T_half_h)} T½`],
+    ];
+    if (r.refDt)    inputs.push(['Reference date/time', r.refDt.replace('T', ' ')]);
+    if (r.targetDt) inputs.push(['Target date/time', r.targetDt.replace('T', ' ')]);
+
+    const results = [
+      ['Activity A(t)', `${UTILS.fmt(r.At_MBq)} MBq = ${UTILS.fmt(CALC.convertActivity(r.At_MBq, 'MBq', 'GBq'))} GBq = ${UTILS.fmt(CALC.convertActivity(r.At_MBq, 'MBq', 'mCi'))} mCi`],
+      ['Fraction remaining', `${UTILS.fmt(r.fraction * 100)}%`],
+      ['Activity lost', `${UTILS.fmt(r.A0_MBq - r.At_MBq)} MBq (${UTILS.fmt((1 - r.fraction) * 100)}%)`],
+    ];
+    if (!isNaN(r.AtgtRaw) && r.AtgtRaw > 0) {
+      const Atgt_MBq = CALC.convertActivity(r.AtgtRaw, r.AtgtUnit, 'MBq');
+      const tT = CALC.timeToActivity(r.A0_MBq, Atgt_MBq, r.T_half_h);
+      results.push([`Time to reach ${r.AtgtRaw} ${r.AtgtUnit}`,
+        isFinite(tT) ? `${UTILS.fmt(tT)} h = ${UTILS.fmt(tT / 24)} d = ${UTILS.fmt(tT / r.T_half_h)} T½` : 'target ≥ A₀ — no decay needed']);
+    }
+
+    const sections = [
+      { heading: 'Input parameters', rows: inputs },
+      { heading: 'Results', rows: results },
+    ];
+    const notes = [`Exponential decay A(t) = A₀·e^(−λt) with T½ from ${r.n._icrp107 ? 'the selected data source' : 'ICRP 107'}.`];
+    const sources = [];
+
+    if (!isNaN(r.vialWeightRaw) && r.vialWeightRaw > 0 && r.weight_kg) {
+      const clearLevel = r.n.clearance_a1_kBq_per_kg ?? null;
+      const specA0 = CALC.convertActivity(r.A0_MBq, 'MBq', 'kBq') / r.weight_kg;
+      const specAt = CALC.convertActivity(r.At_MBq, 'MBq', 'kBq') / r.weight_kg;
+      const rows = [
+        ['Material weight', `${r.vialWeightRaw} ${r.vialWeightUnit} (${UTILS.fmt(r.weight_kg)} kg)`],
+        ['Specific activity at t = 0', `${UTILS.fmt(specA0)} kBq/kg`],
+        [`Specific activity at t = ${UTILS.fmt(r.t_h)} h`, `${UTILS.fmt(specAt)} kBq/kg`],
+      ];
+      if (clearLevel === null) {
+        rows.push(['Clearance level (Table A.1)', `${r.n.id} not listed in RD 1217/2024 Annex IV Table A.1`]);
+      } else {
+        rows.push(['Clearance level (Table A.1)', `${UTILS.fmt(clearLevel)} kBq/kg`]);
+        rows.push(['Status at t = 0', `${specA0 <= clearLevel ? 'BELOW' : 'ABOVE'} clearance (${UTILS.fmtRatio(specA0 / clearLevel)} × level)`]);
+        rows.push([`Status at t = ${UTILS.fmt(r.t_h)} h`, `${specAt <= clearLevel ? 'BELOW' : 'ABOVE'} clearance (${UTILS.fmtRatio(specAt / clearLevel)} × level)`]);
+        if (specA0 > clearLevel) {
+          const t_clear_h = (r.T_half_h / Math.LN2) * Math.log(specA0 / clearLevel);
+          rows.push(['Clearance level reached after', `≈ ${UTILS.fmt(t_clear_h)} h = ${UTILS.fmt(t_clear_h / 24)} d`]);
+        }
+      }
+      sections.push({ heading: 'Clearance assessment — RD 1217/2024 Annex IV Table A.1', rows });
+      notes.push('Clearance comparison addresses the activity-concentration criterion only; absolute activity limits and CSN consultation may also apply before disposal.');
+      sources.push('RD 1217/2024, Anexo IV Tabla A.1 (BOE-A-2024-25205) — clearance levels for solid materials.');
+    }
+    if (r.n._icrp107) notes.push('ICRP 107 extended entry: decay data not manually validated. Verify against primary sources before regulatory use.');
+    if (r.n.chain_members) notes.push('Chain entry: dose constants include progeny in secular equilibrium; the decay calculation follows the parent half-life (valid once equilibrium is established, i.e. aged ≳ 10 daughter half-lives).');
+
+    REPORT.print({ title: 'Decay Calculation', nuclide: r.n, sections, notes, sources });
+  };
+
+  // Auto-calculate if nuclide pre-selected
+  if (urlId) setTimeout(calculate, 100);
+
+})();
+</script>
+<script>
+// Register the service worker for offline/PWA use (HTTP(S) only — file:// has no SW support)
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.protocol === 'http:')) {
+  navigator.serviceWorker.register('sw.js').catch(() => { /* offline-first is best-effort */ });
+}
+</script>
+</body>
+</html>

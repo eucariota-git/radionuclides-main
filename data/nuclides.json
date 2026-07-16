@@ -1,0 +1,7166 @@
+{
+  "version": "1.2",
+  "reference": "Cornejo Díaz N., Brosed Serreta A., Ruiz Manzano P. Constantes de tasa de kerma en aire y de tasa de equivalente de dosis ambiental de algunos radionucleidos utilizados en aplicaciones médicas. Radioprotección (SEPR), Nº 83, pp. 39–42, octubre 2015.",
+  "notes": {
+    "delta_threshold_keV": 20,
+    "yield_threshold_percent": 0.01,
+    "gamma_Kair_units": "μGy·h⁻¹·GBq⁻¹·m²",
+    "gamma_H10_units": "μSv·h⁻¹·GBq⁻¹·m²",
+    "gamma_H007_units": "μSv·h⁻¹·GBq⁻¹·m²",
+    "H007_note": "H'(0.07) directional dose equivalent rate constant, computed for every photon emitter from the full ICRP 107 spectrum with the ICRU 57 h'(0.07) coefficients. Both H*(10) and H'(0.07) are AREA-monitoring quantities and are always reported side by side; neither bounds the other (H*(10) is not always the larger — Pd-103 is ~40% lower). The former gate that stored H'(0.07) only when all energies were < 300 keV and H'(0.07) > H*(10), substituting H*(10) otherwise as 'conservative', was removed in 2026-07: it had no normative basis and was wrong for 36 of 39 nuclides.",
+    "Y90_note": "Y-90 is a pure β⁻ emitter with negligible photon emissions (no gamma rays or X-rays ≥20 keV). Dose constants gamma_Kair, gamma_H10, gamma_H007 are null (not measured/not applicable). External dose from Y-90 sources comes from bremsstrahlung radiation in container material. PHYSICS.Y90_CONTAINERS holds container-specific estimates following the bremsstrahlung formalism of Zanzonico et al. 1999; that publication tabulates soft-tissue/bone constants, not container values — verify against a primary source before regulatory use.",
+    "clearance_a1_kBq_per_kg_note": "Activity-concentration value for exemption of practices or clearance of materials containing artificial radionuclides under RD 1217/2024 Annex IV Table A.1. Units: kBq/kg (= Bq/g). null means the radionuclide is not listed in Table A.1; another table, a complementary value or a specific authorization may still apply.",
+    "half_life_s_units": "seconds",
+    "ingestion_dose_coeff_adult_units": "Sv/Bq",
+    "effluent_liquid_limit_units": "Bq/L",
+    "effluent_liquid_limit_note": "Calculated as (1 mSv / adult ingestion dose coefficient) / 600 L, using IS-28 Annex II II.A.4 and ICRP 119 Annex F Table F.1 adult ingestion coefficients.",
+    "generated_at": "2026-06-10T19:31:59.145Z",
+    "generated_by_script": "tools/recalc-gamma.js",
+    "generated_at_note": "generated_at/generated_by_script record when the gamma constants themselves were last recomputed. The file is NOT the product of a single script: other tools and hand edits touch it afterwards, so last_modified_at below is the one to read for freshness.",
+    "icrp107_index_sha256": "3845347ee2fb71e18b84a844905e44dab9d2d8a12939173575040b7b9b6707f2",
+    "clearance_note": "clearance_a1_kBq_per_kg values verified 2026-06 against RD 1217/2024 Anexo IV Tabla A.1 (BOE-A-2024-25205, consolidated HTML). Nuclides not listed in Tabla A.1 carry null (e.g. Ga-67, Yb-169, Ra-223 — the latter appears only in Tabla B for moderate quantities ≤1000 kg).",
+    "last_modified_at": "2026-07-15T13:35:24.406Z",
+    "last_modified_by_script": "tools/add-shielding-spectra.js"
+  },
+  "nuclides": [
+    {
+      "id": "C-11",
+      "symbol": "¹¹C",
+      "Z": 6,
+      "A": 11,
+      "name": "Carbon-11",
+      "half_life_s": 1221.8,
+      "half_life_display": "20.36 min",
+      "decay_modes": [
+        {
+          "mode": "β+",
+          "fraction": 0.998
+        },
+        {
+          "mode": "EC",
+          "fraction": 0.002
+        }
+      ],
+      "clinical_use": "PET: [¹¹C]-choline, [¹¹C]-methionine, neurological tracers",
+      "category": "diagnostic",
+      "modality": "PET",
+      "gamma_Kair": 139,
+      "gamma_H10": 170.72,
+      "gamma_H007": 170.72,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 511,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": null,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 2.4e-11,
+      "effluent_liquid_limit_Bq_per_L": 69400,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "e_max_beta_MeV": 0.9,
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 139,
+        "gamma_H10_Cornejo": 171,
+        "gamma_H007_Cornejo": null,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "max_photon_energy_keV": 511,
+      "e_mean_electron_MeV": 0.38472,
+      "shielding_spectrum": [
+        [
+          511,
+          1
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          511,
+          1
+        ]
+      ]
+    },
+    {
+      "id": "N-13",
+      "symbol": "¹³N",
+      "Z": 7,
+      "A": 13,
+      "name": "Nitrogen-13",
+      "half_life_s": 597.9,
+      "half_life_display": "9.97 min",
+      "decay_modes": [
+        {
+          "mode": "β+",
+          "fraction": 0.998
+        }
+      ],
+      "clinical_use": "PET: [¹³N]-ammonia cardiac perfusion",
+      "category": "diagnostic",
+      "modality": "PET",
+      "gamma_Kair": 140,
+      "gamma_H10": 170.79,
+      "gamma_H007": 170.79,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 511,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": null,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": null,
+      "effluent_liquid_limit_Bq_per_L": null,
+      "effluent_liquid_limit_source": null,
+      "effluent_liquid_note": "No adult liquid-ingestion coefficient found in ICRP 119 Annex F; gaseous/inert-gas pathways should be assessed separately.",
+      "e_max_beta_MeV": 1.1,
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 140,
+        "gamma_H10_Cornejo": 171,
+        "gamma_H007_Cornejo": null,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "max_photon_energy_keV": 511,
+      "e_mean_electron_MeV": 0.49085,
+      "shielding_spectrum": [
+        [
+          511,
+          1
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          511,
+          1
+        ]
+      ]
+    },
+    {
+      "id": "O-15",
+      "symbol": "¹⁵O",
+      "Z": 8,
+      "A": 15,
+      "name": "Oxygen-15",
+      "half_life_s": 122.2,
+      "half_life_display": "2.04 min",
+      "decay_modes": [
+        {
+          "mode": "β+",
+          "fraction": 0.999
+        }
+      ],
+      "clinical_use": "PET: [¹⁵O]-water cerebral blood flow",
+      "category": "diagnostic",
+      "modality": "PET",
+      "gamma_Kair": 140,
+      "gamma_H10": 170.95,
+      "gamma_H007": 170.95,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 511,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": null,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": null,
+      "effluent_liquid_limit_Bq_per_L": null,
+      "effluent_liquid_limit_source": null,
+      "effluent_liquid_note": "No adult liquid-ingestion coefficient found in ICRP 119 Annex F; gaseous/inert-gas pathways should be assessed separately.",
+      "e_max_beta_MeV": 1.6,
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 140,
+        "gamma_H10_Cornejo": 171,
+        "gamma_H007_Cornejo": null,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "max_photon_energy_keV": 511,
+      "e_mean_electron_MeV": 0.73468,
+      "shielding_spectrum": [
+        [
+          511,
+          1
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          511,
+          1
+        ]
+      ]
+    },
+    {
+      "id": "F-18",
+      "symbol": "¹⁸F",
+      "Z": 9,
+      "A": 18,
+      "name": "Fluorine-18",
+      "half_life_s": 6586.2,
+      "half_life_display": "109.77 min",
+      "decay_modes": [
+        {
+          "mode": "β+",
+          "fraction": 0.967
+        },
+        {
+          "mode": "EC",
+          "fraction": 0.033
+        }
+      ],
+      "clinical_use": "PET: [¹⁸F]-FDG (oncology, neurology, cardiology); [¹⁸F]-NaF bone; [¹⁸F]-PSMA",
+      "category": "diagnostic",
+      "modality": "PET",
+      "gamma_Kair": 135,
+      "gamma_H10": 165.53,
+      "gamma_H007": 165.53,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 511,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "archer_params": {
+        "Pb": {
+          "alpha": 0.166,
+          "beta": -0.02184,
+          "gamma": 0.2436
+        },
+        "concrete_NW": {
+          "alpha": 0.01558,
+          "beta": -0.008775,
+          "gamma": 0.86
+        },
+        "concrete_LW": {
+          "alpha": 0.01126,
+          "beta": -0.006463,
+          "gamma": 0.7475
+        }
+      },
+      "clearance_a1_kBq_per_kg": 10,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 4.9e-11,
+      "effluent_liquid_limit_Bq_per_L": 34000,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "e_max_beta_MeV": 0.6,
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 135,
+        "gamma_H10_Cornejo": 166,
+        "gamma_H007_Cornejo": null,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "max_photon_energy_keV": 511,
+      "e_mean_electron_MeV": 0.2416,
+      "shielding_spectrum": [
+        [
+          511,
+          1
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          511,
+          1
+        ]
+      ]
+    },
+    {
+      "id": "Na-24",
+      "symbol": "²⁴Na",
+      "Z": 11,
+      "A": 24,
+      "name": "Sodium-24",
+      "half_life_s": 53848.8,
+      "half_life_display": "14.96 h",
+      "decay_modes": [
+        {
+          "mode": "β-",
+          "fraction": 1
+        }
+      ],
+      "clinical_use": "Research; rare diagnostic use (electrolyte studies)",
+      "category": "diagnostic",
+      "modality": "other",
+      "gamma_Kair": 435,
+      "gamma_H10": 474.72,
+      "gamma_H007": 474.72,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 1369,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": 1,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 4.3e-10,
+      "effluent_liquid_limit_Bq_per_L": 3880,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "e_max_beta_MeV": 4,
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 435,
+        "gamma_H10_Cornejo": 496,
+        "gamma_H007_Cornejo": null,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "max_photon_energy_keV": 3866.2,
+      "e_mean_electron_MeV": 0.55381,
+      "shielding_spectrum": [
+        [
+          1368.6,
+          0.391985
+        ],
+        [
+          2754,
+          0.60763
+        ],
+        [
+          3866.2,
+          0.000385
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          1368.6,
+          0.391985
+        ],
+        [
+          2754,
+          0.60763
+        ],
+        [
+          3866.2,
+          0.000385
+        ]
+      ]
+    },
+    {
+      "id": "K-42",
+      "symbol": "⁴²K",
+      "Z": 19,
+      "A": 42,
+      "name": "Potassium-42",
+      "half_life_s": 44478,
+      "half_life_display": "12.36 h",
+      "decay_modes": [
+        {
+          "mode": "β-",
+          "fraction": 1
+        }
+      ],
+      "clinical_use": "Research applications",
+      "category": "diagnostic",
+      "modality": "other",
+      "gamma_Kair": 32.4,
+      "gamma_H10": 36.6,
+      "gamma_H007": 36.6,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 1525,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": 100,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 4.3e-10,
+      "effluent_liquid_limit_Bq_per_L": 3880,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "e_max_beta_MeV": 3.2,
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 32.4,
+        "gamma_H10_Cornejo": 37.2,
+        "gamma_H007_Cornejo": null,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "max_photon_energy_keV": 2424.3,
+      "e_mean_electron_MeV": 1.43034,
+      "shielding_spectrum": [
+        [
+          312.6,
+          0.004931
+        ],
+        [
+          899.7,
+          0.001932
+        ],
+        [
+          1021.2,
+          0.000831
+        ],
+        [
+          1524.6,
+          0.988234
+        ],
+        [
+          1920.8,
+          0.002617
+        ],
+        [
+          2424.3,
+          0.001455
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          312.6,
+          0.004788
+        ],
+        [
+          899.7,
+          0.001933
+        ],
+        [
+          1021.2,
+          0.000831
+        ],
+        [
+          1524.6,
+          0.988376
+        ],
+        [
+          1920.8,
+          0.002617
+        ],
+        [
+          2424.3,
+          0.001455
+        ]
+      ]
+    },
+    {
+      "id": "Cr-51",
+      "symbol": "⁵¹Cr",
+      "Z": 24,
+      "A": 51,
+      "name": "Chromium-51",
+      "half_life_s": 2393496,
+      "half_life_display": "27.70 d",
+      "decay_modes": [
+        {
+          "mode": "EC",
+          "fraction": 1
+        }
+      ],
+      "clinical_use": "SPECT: red cell labelling (GFR, blood volume); ⁵¹Cr-EDTA GFR",
+      "category": "diagnostic",
+      "modality": "SPECT",
+      "gamma_Kair": 4.19,
+      "gamma_H10": 5.45,
+      "gamma_H007": 5.29,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 320,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": 100,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 3.8e-11,
+      "effluent_liquid_limit_Bq_per_L": 43900,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 4.19,
+        "gamma_H10_Cornejo": 5.44,
+        "gamma_H007_Cornejo": null,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "max_photon_energy_keV": 320.1,
+      "e_mean_electron_MeV": 0.00382,
+      "shielding_spectrum": [
+        [
+          320.1,
+          1
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          320.1,
+          1
+        ]
+      ]
+    },
+    {
+      "id": "Co-57",
+      "symbol": "⁵⁷Co",
+      "Z": 27,
+      "A": 57,
+      "name": "Cobalt-57",
+      "half_life_s": 23478336,
+      "half_life_display": "271.74 d",
+      "decay_modes": [
+        {
+          "mode": "EC",
+          "fraction": 1
+        }
+      ],
+      "clinical_use": "Flood source / calibration phantom for gamma cameras",
+      "category": "diagnostic",
+      "modality": "other",
+      "gamma_Kair": 13.2,
+      "gamma_H10": 20.69,
+      "gamma_H007": 19.7,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 122,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": 1,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 2.1e-10,
+      "effluent_liquid_limit_Bq_per_L": 7940,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 13.2,
+        "gamma_H10_Cornejo": 20.7,
+        "gamma_H007_Cornejo": null,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "max_photon_energy_keV": 692.4,
+      "e_mean_electron_MeV": 0.01863,
+      "shielding_spectrum": [
+        [
+          122.1,
+          0.870747
+        ],
+        [
+          136.5,
+          0.120531
+        ],
+        [
+          570.1,
+          0.000719
+        ],
+        [
+          692.4,
+          0.008003
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          122.1,
+          0.870014
+        ],
+        [
+          136.5,
+          0.120827
+        ],
+        [
+          570.1,
+          0.000755
+        ],
+        [
+          692.4,
+          0.008404
+        ]
+      ]
+    },
+    {
+      "id": "Co-58",
+      "symbol": "⁵⁸Co",
+      "Z": 27,
+      "A": 58,
+      "name": "Cobalt-58",
+      "half_life_s": 6122304,
+      "half_life_display": "70.86 d",
+      "decay_modes": [
+        {
+          "mode": "β+",
+          "fraction": 0.15
+        },
+        {
+          "mode": "EC",
+          "fraction": 0.85
+        }
+      ],
+      "clinical_use": "Research; positron emission",
+      "category": "diagnostic",
+      "modality": "other",
+      "gamma_Kair": 130,
+      "gamma_H10": 153.6,
+      "gamma_H007": 153.6,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 811,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": 1,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 7.4e-10,
+      "effluent_liquid_limit_Bq_per_L": 2250,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "e_max_beta_MeV": 1.2,
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 130,
+        "gamma_H10_Cornejo": 155,
+        "gamma_H007_Cornejo": null,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "max_photon_energy_keV": 1674.7,
+      "e_mean_electron_MeV": 0.03395,
+      "shielding_spectrum": [
+        [
+          511,
+          0.165986
+        ],
+        [
+          810.8,
+          0.820835
+        ],
+        [
+          864,
+          0.00598
+        ],
+        [
+          1674.7,
+          0.007199
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          511,
+          0.165986
+        ],
+        [
+          810.8,
+          0.820835
+        ],
+        [
+          864,
+          0.00598
+        ],
+        [
+          1674.7,
+          0.007199
+        ]
+      ]
+    },
+    {
+      "id": "Fe-59",
+      "symbol": "⁵⁹Fe",
+      "Z": 26,
+      "A": 59,
+      "name": "Iron-59",
+      "half_life_s": 3843936,
+      "half_life_display": "44.49 d",
+      "decay_modes": [
+        {
+          "mode": "β-",
+          "fraction": 1
+        }
+      ],
+      "clinical_use": "Ferrokinetics; iron metabolism studies",
+      "category": "diagnostic",
+      "modality": "other",
+      "gamma_Kair": 148,
+      "gamma_H10": 168.98,
+      "gamma_H007": 168.93,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 1099,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": 1,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.8e-9,
+      "effluent_liquid_limit_Bq_per_L": 926,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "e_max_beta_MeV": 1.5,
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 148,
+        "gamma_H10_Cornejo": 171,
+        "gamma_H007_Cornejo": null,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "max_photon_energy_keV": 1481.7,
+      "e_mean_electron_MeV": 0.11788,
+      "shielding_spectrum": [
+        [
+          142.7,
+          0.001469
+        ],
+        [
+          192.3,
+          0.006016
+        ],
+        [
+          334.8,
+          0.000917
+        ],
+        [
+          382,
+          0.000069
+        ],
+        [
+          1099.3,
+          0.533361
+        ],
+        [
+          1291.6,
+          0.457483
+        ],
+        [
+          1481.7,
+          0.000685
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          142.7,
+          0.001405
+        ],
+        [
+          192.3,
+          0.005809
+        ],
+        [
+          334.8,
+          0.000888
+        ],
+        [
+          382,
+          0.000067
+        ],
+        [
+          1099.3,
+          0.533523
+        ],
+        [
+          1291.6,
+          0.457622
+        ],
+        [
+          1481.7,
+          0.000686
+        ]
+      ]
+    },
+    {
+      "id": "Co-60",
+      "symbol": "⁶⁰Co",
+      "Z": 27,
+      "A": 60,
+      "name": "Cobalt-60",
+      "half_life_s": 166348800,
+      "half_life_display": "5.27 y",
+      "decay_modes": [
+        {
+          "mode": "β-",
+          "fraction": 1
+        }
+      ],
+      "clinical_use": "Radiotherapy (teletherapy); calibration sources",
+      "category": "therapeutic",
+      "modality": "therapy",
+      "gamma_Kair": 307,
+      "gamma_H10": 349.67,
+      "gamma_H007": 349.67,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 1250,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": 0.1,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 3.4e-9,
+      "effluent_liquid_limit_Bq_per_L": 490,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "e_max_beta_MeV": 1.4,
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 307,
+        "gamma_H10_Cornejo": 355,
+        "gamma_H007_Cornejo": null,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "max_photon_energy_keV": 1332.5,
+      "e_mean_electron_MeV": 0.09686,
+      "shielding_spectrum": [
+        [
+          1173.2,
+          0.477444
+        ],
+        [
+          1332.5,
+          0.522556
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          1173.2,
+          0.477444
+        ],
+        [
+          1332.5,
+          0.522556
+        ]
+      ]
+    },
+    {
+      "id": "Cu-64",
+      "symbol": "⁶⁴Cu",
+      "Z": 29,
+      "A": 64,
+      "name": "Copper-64",
+      "half_life_s": 45723.6,
+      "half_life_display": "12.70 h",
+      "decay_modes": [
+        {
+          "mode": "β+",
+          "fraction": 0.178
+        },
+        {
+          "mode": "EC",
+          "fraction": 0.434
+        },
+        {
+          "mode": "β-",
+          "fraction": 0.388
+        }
+      ],
+      "clinical_use": "PET/therapy: [⁶⁴Cu]-DOTATATE, theranostics",
+      "category": "both",
+      "modality": "PET",
+      "gamma_Kair": 25.3,
+      "gamma_H10": 30.66,
+      "gamma_H007": 30.66,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 511,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": 100,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.2e-10,
+      "effluent_liquid_limit_Bq_per_L": 13900,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "e_max_beta_MeV": 0.65,
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 25.3,
+        "gamma_H10_Cornejo": 31,
+        "gamma_H007_Cornejo": null,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "max_photon_energy_keV": 1345.8,
+      "e_mean_electron_MeV": 0.12475,
+      "shielding_spectrum": [
+        [
+          511,
+          0.971593
+        ],
+        [
+          1345.8,
+          0.028407
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          511,
+          0.971593
+        ],
+        [
+          1345.8,
+          0.028407
+        ]
+      ]
+    },
+    {
+      "id": "Ga-67",
+      "symbol": "⁶⁷Ga",
+      "Z": 31,
+      "A": 67,
+      "name": "Gallium-67",
+      "half_life_s": 281768,
+      "half_life_display": "3.26 d",
+      "decay_modes": [
+        {
+          "mode": "EC",
+          "fraction": 1
+        }
+      ],
+      "clinical_use": "SPECT: ⁶⁷Ga-citrate (infection, lymphoma); largely replaced by ¹⁸F-FDG PET",
+      "category": "diagnostic",
+      "modality": "SPECT",
+      "gamma_Kair": 21,
+      "gamma_H10": 26.8,
+      "gamma_H007": 25.67,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 93,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": null,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.9e-10,
+      "effluent_liquid_limit_Bq_per_L": 8770,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 21,
+        "gamma_H10_Cornejo": 29,
+        "gamma_H007_Cornejo": null,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "max_photon_energy_keV": 887.7,
+      "e_mean_electron_MeV": 0.03633,
+      "shielding_spectrum": [
+        [
+          91.3,
+          0.01946
+        ],
+        [
+          93.3,
+          0.244721
+        ],
+        [
+          184.6,
+          0.250264
+        ],
+        [
+          209,
+          0.032177
+        ],
+        [
+          300.2,
+          0.323515
+        ],
+        [
+          393.5,
+          0.117205
+        ],
+        [
+          494.2,
+          0.002141
+        ],
+        [
+          703.1,
+          0.000445
+        ],
+        [
+          794.4,
+          0.002514
+        ],
+        [
+          887.7,
+          0.007558
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          91.3,
+          0.018795
+        ],
+        [
+          93.3,
+          0.237602
+        ],
+        [
+          184.6,
+          0.251832
+        ],
+        [
+          209,
+          0.032486
+        ],
+        [
+          300.2,
+          0.328296
+        ],
+        [
+          393.5,
+          0.117781
+        ],
+        [
+          494.2,
+          0.00223
+        ],
+        [
+          703.1,
+          0.000465
+        ],
+        [
+          794.4,
+          0.002624
+        ],
+        [
+          887.7,
+          0.007889
+        ]
+      ]
+    },
+    {
+      "id": "Ga-68",
+      "symbol": "⁶⁸Ga",
+      "Z": 31,
+      "A": 68,
+      "name": "Gallium-68",
+      "half_life_s": 4062.6,
+      "half_life_display": "67.71 min",
+      "decay_modes": [
+        {
+          "mode": "β+",
+          "fraction": 0.889
+        },
+        {
+          "mode": "EC",
+          "fraction": 0.111
+        }
+      ],
+      "clinical_use": "PET: [⁶⁸Ga]-DOTATATE/DOTATOC (NET), [⁶⁸Ga]-PSMA (prostate cancer), [⁶⁸Ga]-FAPI",
+      "category": "diagnostic",
+      "modality": "PET",
+      "gamma_Kair": 129,
+      "gamma_H10": 157.84,
+      "gamma_H007": 157.84,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 511,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": null,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1e-10,
+      "effluent_liquid_limit_Bq_per_L": 16700,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "e_max_beta_MeV": 1.8,
+      "max_photon_energy_keV": 1883.2,
+      "e_mean_electron_MeV": 0.73794,
+      "shielding_spectrum": [
+        [
+          511,
+          0.963938
+        ],
+        [
+          578.5,
+          0.000203
+        ],
+        [
+          805.8,
+          0.000751
+        ],
+        [
+          1077.3,
+          0.032071
+        ],
+        [
+          1261.1,
+          0.001052
+        ],
+        [
+          1883.2,
+          0.001985
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          511,
+          0.963938
+        ],
+        [
+          578.5,
+          0.000203
+        ],
+        [
+          805.8,
+          0.000751
+        ],
+        [
+          1077.3,
+          0.032071
+        ],
+        [
+          1261.1,
+          0.001052
+        ],
+        [
+          1883.2,
+          0.001985
+        ]
+      ]
+    },
+    {
+      "id": "Se-75",
+      "symbol": "⁷⁵Se",
+      "Z": 34,
+      "A": 75,
+      "name": "Selenium-75",
+      "half_life_s": 10347792,
+      "half_life_display": "119.78 d",
+      "decay_modes": [
+        {
+          "mode": "EC",
+          "fraction": 1
+        }
+      ],
+      "clinical_use": "Selenomethionine pancreas/parathyroid imaging (historical)",
+      "category": "diagnostic",
+      "modality": "SPECT",
+      "gamma_Kair": 51,
+      "gamma_H10": 65.78,
+      "gamma_H007": 63.47,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 265,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": 1,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 2.6e-9,
+      "effluent_liquid_limit_Bq_per_L": 641,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 51,
+        "gamma_H10_Cornejo": 69.3,
+        "gamma_H007_Cornejo": null,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "max_photon_energy_keV": 572.2,
+      "e_mean_electron_MeV": 0.01444,
+      "shielding_spectrum": [
+        [
+          24.4,
+          0.000109
+        ],
+        [
+          66.1,
+          0.002502
+        ],
+        [
+          96.7,
+          0.008897
+        ],
+        [
+          121.1,
+          0.054615
+        ],
+        [
+          136,
+          0.2061
+        ],
+        [
+          198.6,
+          0.007671
+        ],
+        [
+          264.7,
+          0.407418
+        ],
+        [
+          279.5,
+          0.182533
+        ],
+        [
+          303.9,
+          0.01045
+        ],
+        [
+          400.7,
+          0.119065
+        ],
+        [
+          418.8,
+          0.000128
+        ],
+        [
+          572.2,
+          0.000512
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          24.4,
+          0.000157
+        ],
+        [
+          66.1,
+          0.00229
+        ],
+        [
+          96.7,
+          0.008651
+        ],
+        [
+          121.1,
+          0.053845
+        ],
+        [
+          136,
+          0.20389
+        ],
+        [
+          198.6,
+          0.007683
+        ],
+        [
+          264.7,
+          0.409793
+        ],
+        [
+          279.5,
+          0.183739
+        ],
+        [
+          303.9,
+          0.010525
+        ],
+        [
+          400.7,
+          0.118769
+        ],
+        [
+          418.8,
+          0.000128
+        ],
+        [
+          572.2,
+          0.00053
+        ]
+      ]
+    },
+    {
+      "id": "Tc-99m",
+      "symbol": "⁹⁹ᵐTc",
+      "Z": 43,
+      "A": 99,
+      "name": "Technetium-99m",
+      "half_life_s": 21624.1,
+      "half_life_display": "6.007 h",
+      "decay_modes": [
+        {
+          "mode": "IT",
+          "fraction": 1
+        }
+      ],
+      "clinical_use": "SPECT: bone, cardiac (MIBI), renal, lung, thyroid, hepatobiliary, sentinel node. Most widely used radionuclide in nuclear medicine.",
+      "category": "diagnostic",
+      "modality": "SPECT",
+      "gamma_Kair": 14.6,
+      "gamma_H10": 21.72,
+      "gamma_H007": 20.99,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 141,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "archer_params": {
+        "Pb": {
+          "alpha": 2.558,
+          "beta": 1.01,
+          "gamma": 4.344
+        },
+        "concrete_NW": {
+          "alpha": 0.03102,
+          "beta": -0.01729,
+          "gamma": 0.3622
+        },
+        "concrete_LW": {
+          "alpha": 0.02047,
+          "beta": -0.01122,
+          "gamma": 0.4389
+        }
+      },
+      "clearance_a1_kBq_per_kg": 100,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 2.2e-11,
+      "effluent_liquid_limit_Bq_per_L": 75800,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "e_max_beta_MeV": 0.4,
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 14.6,
+        "gamma_H10_Cornejo": 21.7,
+        "gamma_H007_Cornejo": null,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "max_photon_energy_keV": 142.6,
+      "e_mean_electron_MeV": 0.01618,
+      "shielding_spectrum": [
+        [
+          20.6,
+          0.004563
+        ],
+        [
+          20.6,
+          0.008881
+        ],
+        [
+          21,
+          0.00087
+        ],
+        [
+          21,
+          0.001672
+        ],
+        [
+          140.5,
+          0.983805
+        ],
+        [
+          142.6,
+          0.000209
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          20.6,
+          0.00788
+        ],
+        [
+          20.6,
+          0.015338
+        ],
+        [
+          21,
+          0.001472
+        ],
+        [
+          21,
+          0.002827
+        ],
+        [
+          140.5,
+          0.972276
+        ],
+        [
+          142.6,
+          0.000207
+        ]
+      ]
+    },
+    {
+      "id": "Mo-99+Tc-99m",
+      "symbol": "⁹⁹Mo/⁹⁹ᵐTc",
+      "Z": 42,
+      "A": 99,
+      "name": "Molybdenum-99 + Technetium-99m (equilibrium)",
+      "half_life_s": 237513.6,
+      "half_life_display": "65.98 h",
+      "decay_modes": [
+        {
+          "mode": "β-",
+          "fraction": 1
+        }
+      ],
+      "clinical_use": "⁹⁹Mo/⁹⁹ᵐTc generator: source of ⁹⁹ᵐTc. Values correspond to equilibrium mixture.",
+      "category": "diagnostic",
+      "modality": "SPECT",
+      "gamma_Kair": 33.9,
+      "gamma_H10": 45,
+      "gamma_H007": 45,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 141,
+      "source": "Cornejo et al.",
+      "clearance_a1_kBq_per_kg": 10,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": null,
+      "effluent_liquid_limit_Bq_per_L": null,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_components": [
+        {
+          "id": "Mo-99",
+          "ingestion_dose_coeff_adult_Sv_per_Bq": 6e-10,
+          "effluent_liquid_limit_Bq_per_L": 2780,
+          "source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
+        },
+        {
+          "id": "Tc-99m",
+          "ingestion_dose_coeff_adult_Sv_per_Bq": 2.2e-11,
+          "effluent_liquid_limit_Bq_per_L": 75800,
+          "source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
+        }
+      ],
+      "effluent_liquid_note": "Assess generator effluents as a mixture of Mo-99 and Tc-99m components.",
+      "max_photon_energy_keV": null,
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 33.9,
+        "gamma_H10_Cornejo": 45,
+        "gamma_H007_Cornejo": null,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "shielding_spectrum": [
+        [
+          20.6,
+          0.0011
+        ],
+        [
+          20.6,
+          0.00214
+        ],
+        [
+          20.6,
+          0.002131
+        ],
+        [
+          20.6,
+          0.004148
+        ],
+        [
+          21,
+          0.00021
+        ],
+        [
+          21,
+          0.000403
+        ],
+        [
+          21,
+          0.000406
+        ],
+        [
+          21,
+          0.000781
+        ],
+        [
+          40.6,
+          0.004258
+        ],
+        [
+          140.5,
+          0.024181
+        ],
+        [
+          140.5,
+          0.459494
+        ],
+        [
+          142.6,
+          0.000098
+        ],
+        [
+          158.8,
+          0.000114
+        ],
+        [
+          162.4,
+          0.000073
+        ],
+        [
+          181.1,
+          0.041397
+        ],
+        [
+          366.4,
+          0.016617
+        ],
+        [
+          380.1,
+          0.00015
+        ],
+        [
+          411.5,
+          0.000228
+        ],
+        [
+          528.8,
+          0.00112
+        ],
+        [
+          621.8,
+          0.000412
+        ],
+        [
+          739.5,
+          0.317428
+        ],
+        [
+          777.9,
+          0.116255
+        ],
+        [
+          823,
+          0.003811
+        ],
+        [
+          960.8,
+          0.003045
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          20.6,
+          0.001867
+        ],
+        [
+          20.6,
+          0.003633
+        ],
+        [
+          20.6,
+          0.003618
+        ],
+        [
+          20.6,
+          0.007041
+        ],
+        [
+          21,
+          0.000349
+        ],
+        [
+          21,
+          0.00067
+        ],
+        [
+          21,
+          0.000676
+        ],
+        [
+          21,
+          0.001298
+        ],
+        [
+          40.6,
+          0.004076
+        ],
+        [
+          140.5,
+          0.023489
+        ],
+        [
+          140.5,
+          0.446342
+        ],
+        [
+          142.6,
+          0.000095
+        ],
+        [
+          158.8,
+          0.000111
+        ],
+        [
+          162.4,
+          0.000072
+        ],
+        [
+          181.1,
+          0.040548
+        ],
+        [
+          366.4,
+          0.016307
+        ],
+        [
+          380.1,
+          0.000147
+        ],
+        [
+          411.5,
+          0.000224
+        ],
+        [
+          528.8,
+          0.001138
+        ],
+        [
+          621.8,
+          0.000419
+        ],
+        [
+          739.5,
+          0.322718
+        ],
+        [
+          777.9,
+          0.118192
+        ],
+        [
+          823,
+          0.003875
+        ],
+        [
+          960.8,
+          0.003095
+        ]
+      ]
+    },
+    {
+      "id": "Pd-103",
+      "symbol": "¹⁰³Pd",
+      "Z": 46,
+      "A": 103,
+      "name": "Palladium-103",
+      "half_life_s": 1468022.4,
+      "half_life_display": "16.99 d",
+      "decay_modes": [
+        {
+          "mode": "EC",
+          "fraction": 1
+        }
+      ],
+      "clinical_use": "Brachytherapy: permanent prostate seed implants",
+      "category": "therapeutic",
+      "modality": "brachytherapy",
+      "gamma_Kair": 35.9,
+      "gamma_H10": 20.51,
+      "gamma_H007": 34.42,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 40,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": 1000,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.9e-10,
+      "effluent_liquid_limit_Bq_per_L": 8770,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 35.9,
+        "gamma_H10_Cornejo": 23.1,
+        "gamma_H007_Cornejo": 38,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "max_photon_energy_keV": 357.5,
+      "e_mean_electron_MeV": 0.00581,
+      "shielding_spectrum": [
+        [
+          20,
+          0.293417
+        ],
+        [
+          20.2,
+          0.551931
+        ],
+        [
+          22.7,
+          0.043559
+        ],
+        [
+          22.7,
+          0.0847
+        ],
+        [
+          22.9,
+          0.000258
+        ],
+        [
+          22.9,
+          0.000363
+        ],
+        [
+          23.1,
+          0.008567
+        ],
+        [
+          23.1,
+          0.016546
+        ],
+        [
+          357.5,
+          0.000659
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          20,
+          0.301341
+        ],
+        [
+          20.2,
+          0.560776
+        ],
+        [
+          22.7,
+          0.039015
+        ],
+        [
+          22.7,
+          0.075865
+        ],
+        [
+          22.9,
+          0.000229
+        ],
+        [
+          22.9,
+          0.000322
+        ],
+        [
+          23.1,
+          0.00753
+        ],
+        [
+          23.1,
+          0.014543
+        ],
+        [
+          357.5,
+          0.000379
+        ]
+      ]
+    },
+    {
+      "id": "In-111",
+      "symbol": "¹¹¹In",
+      "Z": 49,
+      "A": 111,
+      "name": "Indium-111",
+      "half_life_s": 242326.1,
+      "half_life_display": "2.80 d",
+      "decay_modes": [
+        {
+          "mode": "EC",
+          "fraction": 1
+        }
+      ],
+      "clinical_use": "SPECT: ¹¹¹In-Octreoscan (NET), ¹¹¹In-WBC (infection), ¹¹¹In-Zevalin (RIT)",
+      "category": "diagnostic",
+      "modality": "SPECT",
+      "gamma_Kair": 76.7,
+      "gamma_H10": 88.71,
+      "gamma_H007": 96.46,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 171,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": 10,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 2.9e-10,
+      "effluent_liquid_limit_Bq_per_L": 5750,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 76.7,
+        "gamma_H10_Cornejo": 89.9,
+        "gamma_H007_Cornejo": 96.1,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "max_photon_energy_keV": 245.4,
+      "e_mean_electron_MeV": 0.03481,
+      "shielding_spectrum": [
+        [
+          23,
+          0.074284
+        ],
+        [
+          23.2,
+          0.138859
+        ],
+        [
+          26,
+          0.01139
+        ],
+        [
+          26.1,
+          0.022071
+        ],
+        [
+          26.3,
+          0.000081
+        ],
+        [
+          26.3,
+          0.000113
+        ],
+        [
+          26.6,
+          0.002285
+        ],
+        [
+          26.6,
+          0.004434
+        ],
+        [
+          171.3,
+          0.299083
+        ],
+        [
+          245.4,
+          0.4474
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          23,
+          0.101252
+        ],
+        [
+          23.2,
+          0.187509
+        ],
+        [
+          26,
+          0.013599
+        ],
+        [
+          26.1,
+          0.026242
+        ],
+        [
+          26.3,
+          0.000096
+        ],
+        [
+          26.3,
+          0.000133
+        ],
+        [
+          26.6,
+          0.002662
+        ],
+        [
+          26.6,
+          0.005165
+        ],
+        [
+          171.3,
+          0.264478
+        ],
+        [
+          245.4,
+          0.398864
+        ]
+      ]
+    },
+    {
+      "id": "I-123",
+      "symbol": "¹²³I",
+      "Z": 53,
+      "A": 123,
+      "name": "Iodine-123",
+      "half_life_s": 47606.4,
+      "half_life_display": "13.22 h",
+      "decay_modes": [
+        {
+          "mode": "EC",
+          "fraction": 1
+        }
+      ],
+      "clinical_use": "SPECT: ¹²³I-NaI thyroid, ¹²³I-MIBG (pheo, neuroblastoma), ¹²³I-DaTSCAN",
+      "category": "diagnostic",
+      "modality": "SPECT",
+      "gamma_Kair": 38.5,
+      "gamma_H10": 46.2,
+      "gamma_H007": 49.57,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 159,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": 100,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 2.1e-10,
+      "effluent_liquid_limit_Bq_per_L": 7940,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 38.5,
+        "gamma_H10_Cornejo": 46.4,
+        "gamma_H007_Cornejo": null,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "max_photon_energy_keV": 783.6,
+      "e_mean_electron_MeV": 0.02818,
+      "shielding_spectrum": [
+        [
+          27.2,
+          0.133577
+        ],
+        [
+          27.5,
+          0.246927
+        ],
+        [
+          30.9,
+          0.020991
+        ],
+        [
+          31,
+          0.040602
+        ],
+        [
+          31.2,
+          0.000186
+        ],
+        [
+          31.2,
+          0.000255
+        ],
+        [
+          31.7,
+          0.004259
+        ],
+        [
+          31.7,
+          0.00837
+        ],
+        [
+          31.8,
+          0.000243
+        ],
+        [
+          31.8,
+          0.00045
+        ],
+        [
+          159,
+          0.488408
+        ],
+        [
+          182.6,
+          0.000087
+        ],
+        [
+          192.2,
+          0.000141
+        ],
+        [
+          248,
+          0.000653
+        ],
+        [
+          281,
+          0.000827
+        ],
+        [
+          330.7,
+          0.000142
+        ],
+        [
+          346.3,
+          0.001614
+        ],
+        [
+          440,
+          0.006906
+        ],
+        [
+          505.3,
+          0.005789
+        ],
+        [
+          529,
+          0.02656
+        ],
+        [
+          538.5,
+          0.007399
+        ],
+        [
+          624.6,
+          0.001838
+        ],
+        [
+          687.9,
+          0.000639
+        ],
+        [
+          735.8,
+          0.00156
+        ],
+        [
+          783.6,
+          0.001577
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          27.2,
+          0.15394
+        ],
+        [
+          27.5,
+          0.281216
+        ],
+        [
+          30.9,
+          0.021396
+        ],
+        [
+          31,
+          0.04131
+        ],
+        [
+          31.2,
+          0.000188
+        ],
+        [
+          31.2,
+          0.000259
+        ],
+        [
+          31.7,
+          0.004278
+        ],
+        [
+          31.7,
+          0.008408
+        ],
+        [
+          31.8,
+          0.000244
+        ],
+        [
+          31.8,
+          0.000451
+        ],
+        [
+          159,
+          0.436609
+        ],
+        [
+          182.6,
+          0.000078
+        ],
+        [
+          192.2,
+          0.000127
+        ],
+        [
+          248,
+          0.00059
+        ],
+        [
+          281,
+          0.000749
+        ],
+        [
+          330.7,
+          0.000129
+        ],
+        [
+          346.3,
+          0.001455
+        ],
+        [
+          440,
+          0.006296
+        ],
+        [
+          505.3,
+          0.005396
+        ],
+        [
+          529,
+          0.024754
+        ],
+        [
+          538.5,
+          0.006896
+        ],
+        [
+          624.6,
+          0.001713
+        ],
+        [
+          687.9,
+          0.000595
+        ],
+        [
+          735.8,
+          0.001453
+        ],
+        [
+          783.6,
+          0.00147
+        ]
+      ]
+    },
+    {
+      "id": "I-125",
+      "symbol": "¹²⁵I",
+      "Z": 53,
+      "A": 125,
+      "name": "Iodine-125",
+      "half_life_s": 5131564.8,
+      "half_life_display": "59.41 d",
+      "decay_modes": [
+        {
+          "mode": "EC",
+          "fraction": 1
+        }
+      ],
+      "clinical_use": "Brachytherapy: permanent prostate seed implants; RIA laboratory assays",
+      "category": "therapeutic",
+      "modality": "brachytherapy",
+      "gamma_Kair": 34.5,
+      "gamma_H10": 35.52,
+      "gamma_H007": 42.52,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 28,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": 100,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.5e-8,
+      "effluent_liquid_limit_Bq_per_L": 111,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 34.5,
+        "gamma_H10_Cornejo": 35.3,
+        "gamma_H007_Cornejo": 40.9,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "max_photon_energy_keV": 35.5,
+      "e_mean_electron_MeV": 0.01923,
+      "shielding_spectrum": [
+        [
+          27.2,
+          0.281838
+        ],
+        [
+          27.5,
+          0.520996
+        ],
+        [
+          30.9,
+          0.044289
+        ],
+        [
+          31,
+          0.085667
+        ],
+        [
+          31.2,
+          0.000392
+        ],
+        [
+          31.2,
+          0.000539
+        ],
+        [
+          31.7,
+          0.008986
+        ],
+        [
+          31.7,
+          0.01766
+        ],
+        [
+          31.8,
+          0.000065
+        ],
+        [
+          31.8,
+          0.000089
+        ],
+        [
+          31.8,
+          0.000513
+        ],
+        [
+          31.8,
+          0.00095
+        ],
+        [
+          35.5,
+          0.038016
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          27.2,
+          0.291151
+        ],
+        [
+          27.5,
+          0.531872
+        ],
+        [
+          30.9,
+          0.040467
+        ],
+        [
+          31,
+          0.07813
+        ],
+        [
+          31.2,
+          0.000356
+        ],
+        [
+          31.2,
+          0.00049
+        ],
+        [
+          31.7,
+          0.008091
+        ],
+        [
+          31.7,
+          0.015902
+        ],
+        [
+          31.8,
+          0.000058
+        ],
+        [
+          31.8,
+          0.00008
+        ],
+        [
+          31.8,
+          0.000461
+        ],
+        [
+          31.8,
+          0.000854
+        ],
+        [
+          35.5,
+          0.032088
+        ]
+      ]
+    },
+    {
+      "id": "I-131",
+      "symbol": "¹³¹I",
+      "Z": 53,
+      "A": 131,
+      "name": "Iodine-131",
+      "half_life_s": 693213.1,
+      "half_life_display": "8.02 d",
+      "decay_modes": [
+        {
+          "mode": "β-",
+          "fraction": 1
+        }
+      ],
+      "clinical_use": "Therapy: differentiated thyroid cancer, hyperthyroidism. SPECT: ¹³¹I-MIBG therapy",
+      "category": "both",
+      "modality": "therapy",
+      "gamma_Kair": 52,
+      "gamma_H10": 65.78,
+      "gamma_H007": 64.01,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 365,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "archer_params": {
+        "Pb": {
+          "alpha": 0.1082,
+          "beta": 0.2072,
+          "gamma": 0.5385
+        },
+        "concrete_NW": {
+          "alpha": 0.02062,
+          "beta": -0.0122,
+          "gamma": 0.4179
+        },
+        "concrete_LW": {
+          "alpha": 0.01363,
+          "beta": -0.007896,
+          "gamma": 0.4847
+        }
+      },
+      "clearance_a1_kBq_per_kg": 10,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 2.2e-8,
+      "effluent_liquid_limit_Bq_per_L": 75.8,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "e_max_beta_MeV": 0.8,
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 52,
+        "gamma_H10_Cornejo": 65.7,
+        "gamma_H007_Cornejo": null,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "max_photon_energy_keV": 722.9,
+      "e_mean_electron_MeV": 0.19184,
+      "shielding_spectrum": [
+        [
+          29.5,
+          0.004995
+        ],
+        [
+          29.8,
+          0.00919
+        ],
+        [
+          33.6,
+          0.000783
+        ],
+        [
+          33.6,
+          0.001518
+        ],
+        [
+          34.4,
+          0.000161
+        ],
+        [
+          34.4,
+          0.000314
+        ],
+        [
+          80.2,
+          0.006063
+        ],
+        [
+          177.2,
+          0.001242
+        ],
+        [
+          272.5,
+          0.000412
+        ],
+        [
+          284.3,
+          0.04558
+        ],
+        [
+          318.1,
+          0.000644
+        ],
+        [
+          324.7,
+          0.000179
+        ],
+        [
+          325.8,
+          0.002324
+        ],
+        [
+          358.4,
+          0.000152
+        ],
+        [
+          364.5,
+          0.773739
+        ],
+        [
+          404.8,
+          0.000573
+        ],
+        [
+          503,
+          0.004622
+        ],
+        [
+          637,
+          0.113001
+        ],
+        [
+          642.7,
+          0.003449
+        ],
+        [
+          722.9,
+          0.031059
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          29.5,
+          0.005815
+        ],
+        [
+          29.8,
+          0.010583
+        ],
+        [
+          33.6,
+          0.000839
+        ],
+        [
+          33.6,
+          0.001626
+        ],
+        [
+          34.4,
+          0.00017
+        ],
+        [
+          34.4,
+          0.000332
+        ],
+        [
+          80.2,
+          0.005588
+        ],
+        [
+          177.2,
+          0.001229
+        ],
+        [
+          272.5,
+          0.000411
+        ],
+        [
+          284.3,
+          0.045508
+        ],
+        [
+          318.1,
+          0.000642
+        ],
+        [
+          324.7,
+          0.000179
+        ],
+        [
+          325.8,
+          0.002316
+        ],
+        [
+          358.4,
+          0.000151
+        ],
+        [
+          364.5,
+          0.767694
+        ],
+        [
+          404.8,
+          0.000568
+        ],
+        [
+          503,
+          0.00475
+        ],
+        [
+          637,
+          0.116135
+        ],
+        [
+          642.7,
+          0.003544
+        ],
+        [
+          722.9,
+          0.03192
+        ]
+      ]
+    },
+    {
+      "id": "Xe-133",
+      "symbol": "¹³³Xe",
+      "Z": 54,
+      "A": 133,
+      "name": "Xenon-133",
+      "half_life_s": 453384,
+      "half_life_display": "5.25 d",
+      "decay_modes": [
+        {
+          "mode": "β-",
+          "fraction": 1
+        }
+      ],
+      "clinical_use": "SPECT: ¹³³Xe ventilation lung studies",
+      "category": "diagnostic",
+      "modality": "SPECT",
+      "gamma_Kair": 12.5,
+      "gamma_H10": 17.04,
+      "gamma_H007": 17.35,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 81,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": null,
+      "clearance_note": "Noble gas (inert): airborne release pathway; solid waste clearance not applicable. EU BSS 2013/59 Annex VI does not assign a kBq/kg limit.",
+      "ingestion_dose_coeff_adult_Sv_per_Bq": null,
+      "effluent_liquid_limit_Bq_per_L": null,
+      "effluent_liquid_limit_source": null,
+      "effluent_liquid_note": "No adult liquid-ingestion coefficient found in ICRP 119 Annex F; gaseous/inert-gas pathways should be assessed separately.",
+      "e_max_beta_MeV": 0.32,
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 12.5,
+        "gamma_H10_Cornejo": 16.3,
+        "gamma_H007_Cornejo": 16.8,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "max_photon_energy_keV": 160.6,
+      "e_mean_electron_MeV": 0.13791,
+      "shielding_spectrum": [
+        [
+          30.6,
+          0.192776
+        ],
+        [
+          31,
+          0.352249
+        ],
+        [
+          34.9,
+          0.030285
+        ],
+        [
+          35,
+          0.058565
+        ],
+        [
+          35.2,
+          0.000311
+        ],
+        [
+          35.3,
+          0.000423
+        ],
+        [
+          35.8,
+          0.006241
+        ],
+        [
+          35.8,
+          0.012164
+        ],
+        [
+          36,
+          0.000766
+        ],
+        [
+          36,
+          0.001449
+        ],
+        [
+          79.6,
+          0.002405
+        ],
+        [
+          81,
+          0.341306
+        ],
+        [
+          160.6,
+          0.00106
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          30.6,
+          0.208155
+        ],
+        [
+          31,
+          0.377538
+        ],
+        [
+          34.9,
+          0.030335
+        ],
+        [
+          35,
+          0.058565
+        ],
+        [
+          35.2,
+          0.00031
+        ],
+        [
+          35.3,
+          0.000421
+        ],
+        [
+          35.8,
+          0.006161
+        ],
+        [
+          35.8,
+          0.012008
+        ],
+        [
+          36,
+          0.000754
+        ],
+        [
+          36,
+          0.001426
+        ],
+        [
+          79.6,
+          0.002115
+        ],
+        [
+          81,
+          0.301213
+        ],
+        [
+          160.6,
+          0.000999
+        ]
+      ]
+    },
+    {
+      "id": "Cs-137",
+      "symbol": "¹³⁷Cs/¹³⁷ᵐBa",
+      "Z": 55,
+      "A": 137,
+      "name": "Caesium-137 + Barium-137m (equilibrium)",
+      "half_life_s": 951900000,
+      "half_life_display": "30.17 y",
+      "decay_modes": [
+        {
+          "mode": "β-",
+          "fraction": 1
+        }
+      ],
+      "clinical_use": "Calibration sources; brachytherapy (historical); radiation protection reference source",
+      "category": "other",
+      "modality": "other",
+      "gamma_Kair": 77.5,
+      "gamma_H10": 93.1,
+      "gamma_H007": 93.1,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 662,
+      "source": "Cornejo et al. — Values include ¹³⁷ᵐBa 661.7 keV gamma in secular equilibrium",
+      "clearance_a1_kBq_per_kg": 0.1,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.3e-8,
+      "effluent_liquid_limit_Bq_per_L": 128,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "max_photon_energy_keV": null,
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 77.5,
+        "gamma_H10_Cornejo": 93.1,
+        "gamma_H007_Cornejo": null,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "shielding_spectrum": [
+        [
+          31.8,
+          0.004894
+        ],
+        [
+          32.2,
+          0.008919
+        ],
+        [
+          36.3,
+          0.000773
+        ],
+        [
+          36.4,
+          0.001494
+        ],
+        [
+          37.2,
+          0.00016
+        ],
+        [
+          37.3,
+          0.000311
+        ],
+        [
+          37.4,
+          0.000022
+        ],
+        [
+          37.4,
+          0.000043
+        ],
+        [
+          661.7,
+          0.983384
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          31.8,
+          0.00526
+        ],
+        [
+          32.2,
+          0.009519
+        ],
+        [
+          36.3,
+          0.00077
+        ],
+        [
+          36.4,
+          0.001486
+        ],
+        [
+          37.2,
+          0.000157
+        ],
+        [
+          37.3,
+          0.000305
+        ],
+        [
+          37.4,
+          0.000022
+        ],
+        [
+          37.4,
+          0.000042
+        ],
+        [
+          661.7,
+          0.982439
+        ]
+      ]
+    },
+    {
+      "id": "Sm-153",
+      "symbol": "¹⁵³Sm",
+      "Z": 62,
+      "A": 153,
+      "name": "Samarium-153",
+      "half_life_s": 167400,
+      "half_life_display": "46.50 h",
+      "decay_modes": [
+        {
+          "mode": "β-",
+          "fraction": 1
+        }
+      ],
+      "clinical_use": "Therapy: ¹⁵³Sm-EDTMP bone pain palliation (metastatic bone disease)",
+      "category": "therapeutic",
+      "modality": "therapy",
+      "gamma_Kair": 10.6,
+      "gamma_H10": 17.5,
+      "gamma_H007": 16.41,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 103,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": 100,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 7.4e-10,
+      "effluent_liquid_limit_Bq_per_L": 2250,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "e_max_beta_MeV": 0.8,
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 10.6,
+        "gamma_H10_Cornejo": 16.7,
+        "gamma_H007_Cornejo": null,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "max_photon_energy_keV": 609.5,
+      "e_mean_electron_MeV": 0.26987,
+      "shielding_spectrum": [
+        [
+          40.9,
+          0.184432
+        ],
+        [
+          41.6,
+          0.328814
+        ],
+        [
+          47,
+          0.030548
+        ],
+        [
+          47.1,
+          0.059017
+        ],
+        [
+          47.4,
+          0.000445
+        ],
+        [
+          47.4,
+          0.00059
+        ],
+        [
+          48.3,
+          0.006533
+        ],
+        [
+          48.3,
+          0.012675
+        ],
+        [
+          48.4,
+          0.000098
+        ],
+        [
+          48.4,
+          0.000128
+        ],
+        [
+          48.5,
+          0.001346
+        ],
+        [
+          48.5,
+          0.002747
+        ],
+        [
+          69.7,
+          0.041273
+        ],
+        [
+          75.4,
+          0.003002
+        ],
+        [
+          83.4,
+          0.001646
+        ],
+        [
+          89.5,
+          0.001554
+        ],
+        [
+          97.4,
+          0.008312
+        ],
+        [
+          103.2,
+          0.306442
+        ],
+        [
+          151.6,
+          0.000166
+        ],
+        [
+          172.9,
+          0.001359
+        ],
+        [
+          463.6,
+          0.000653
+        ],
+        [
+          531.4,
+          0.003168
+        ],
+        [
+          533.2,
+          0.001619
+        ],
+        [
+          539.1,
+          0.001117
+        ],
+        [
+          596.7,
+          0.00065
+        ],
+        [
+          609.5,
+          0.000833
+        ],
+        [
+          609.5,
+          0.000833
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          40.9,
+          0.185048
+        ],
+        [
+          41.6,
+          0.329075
+        ],
+        [
+          47,
+          0.030018
+        ],
+        [
+          47.1,
+          0.057975
+        ],
+        [
+          47.4,
+          0.000437
+        ],
+        [
+          47.4,
+          0.000579
+        ],
+        [
+          48.3,
+          0.006394
+        ],
+        [
+          48.3,
+          0.012405
+        ],
+        [
+          48.4,
+          0.000095
+        ],
+        [
+          48.4,
+          0.000125
+        ],
+        [
+          48.5,
+          0.001316
+        ],
+        [
+          48.5,
+          0.002687
+        ],
+        [
+          69.7,
+          0.039038
+        ],
+        [
+          75.4,
+          0.002856
+        ],
+        [
+          83.4,
+          0.001589
+        ],
+        [
+          89.5,
+          0.001527
+        ],
+        [
+          97.4,
+          0.008333
+        ],
+        [
+          103.2,
+          0.309482
+        ],
+        [
+          151.6,
+          0.00017
+        ],
+        [
+          172.9,
+          0.001395
+        ],
+        [
+          463.6,
+          0.000687
+        ],
+        [
+          531.4,
+          0.003379
+        ],
+        [
+          533.2,
+          0.001727
+        ],
+        [
+          539.1,
+          0.001192
+        ],
+        [
+          596.7,
+          0.000693
+        ],
+        [
+          609.5,
+          0.000889
+        ],
+        [
+          609.5,
+          0.000889
+        ]
+      ]
+    },
+    {
+      "id": "Yb-169",
+      "symbol": "¹⁶⁹Yb",
+      "Z": 70,
+      "A": 169,
+      "name": "Ytterbium-169",
+      "half_life_s": 2766355.2,
+      "half_life_display": "32.02 d",
+      "decay_modes": [
+        {
+          "mode": "EC",
+          "fraction": 1
+        }
+      ],
+      "clinical_use": "Brachytherapy sources; research",
+      "category": "therapeutic",
+      "modality": "brachytherapy",
+      "gamma_Kair": 43,
+      "gamma_H10": 71.35,
+      "gamma_H007": 66.32,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 177,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": null,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 7.1e-10,
+      "effluent_liquid_limit_Bq_per_L": 2350,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 43,
+        "gamma_H10_Cornejo": 66.8,
+        "gamma_H007_Cornejo": null,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "max_photon_energy_keV": 307.7,
+      "e_mean_electron_MeV": 0.14713,
+      "shielding_spectrum": [
+        [
+          20.8,
+          0.000779
+        ],
+        [
+          42.8,
+          0.000615
+        ],
+        [
+          45.9,
+          0.000025
+        ],
+        [
+          49.9,
+          0.131647
+        ],
+        [
+          50.6,
+          0.00118
+        ],
+        [
+          50.9,
+          0.230706
+        ],
+        [
+          50.9,
+          0.001177
+        ],
+        [
+          51.5,
+          0.000039
+        ],
+        [
+          57.4,
+          0.023001
+        ],
+        [
+          57.6,
+          0.04439
+        ],
+        [
+          58,
+          0.00042
+        ],
+        [
+          58,
+          0.000542
+        ],
+        [
+          59.1,
+          0.005045
+        ],
+        [
+          59.2,
+          0.009749
+        ],
+        [
+          59.3,
+          0.000095
+        ],
+        [
+          59.3,
+          0.000122
+        ],
+        [
+          59.5,
+          0.001125
+        ],
+        [
+          59.5,
+          0.002333
+        ],
+        [
+          63,
+          0.004427
+        ],
+        [
+          63.1,
+          0.091144
+        ],
+        [
+          65.9,
+          0.000022
+        ],
+        [
+          93.6,
+          0.006122
+        ],
+        [
+          109.8,
+          0.046682
+        ],
+        [
+          113.6,
+          0.00003
+        ],
+        [
+          117.4,
+          0.000113
+        ],
+        [
+          118.2,
+          0.005349
+        ],
+        [
+          129.9,
+          0.001678
+        ],
+        [
+          130.5,
+          0.035506
+        ],
+        [
+          177.2,
+          0.094152
+        ],
+        [
+          198,
+          0.170693
+        ],
+        [
+          199.8,
+          0.000155
+        ],
+        [
+          240.3,
+          0.000659
+        ],
+        [
+          261.1,
+          0.010786
+        ],
+        [
+          306.8,
+          0.001322
+        ],
+        [
+          307.5,
+          0.00371
+        ],
+        [
+          307.7,
+          0.07446
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          20.8,
+          0.001384
+        ],
+        [
+          42.8,
+          0.000618
+        ],
+        [
+          45.9,
+          0.000025
+        ],
+        [
+          49.9,
+          0.129308
+        ],
+        [
+          50.6,
+          0.001156
+        ],
+        [
+          50.9,
+          0.225642
+        ],
+        [
+          50.9,
+          0.001151
+        ],
+        [
+          51.5,
+          0.000038
+        ],
+        [
+          57.4,
+          0.021903
+        ],
+        [
+          57.6,
+          0.042239
+        ],
+        [
+          58,
+          0.000399
+        ],
+        [
+          58,
+          0.000515
+        ],
+        [
+          59.1,
+          0.004773
+        ],
+        [
+          59.2,
+          0.009221
+        ],
+        [
+          59.3,
+          0.00009
+        ],
+        [
+          59.3,
+          0.000116
+        ],
+        [
+          59.5,
+          0.001063
+        ],
+        [
+          59.5,
+          0.002204
+        ],
+        [
+          63,
+          0.00419
+        ],
+        [
+          63.1,
+          0.086279
+        ],
+        [
+          65.9,
+          0.00002
+        ],
+        [
+          93.6,
+          0.006132
+        ],
+        [
+          109.8,
+          0.047636
+        ],
+        [
+          113.6,
+          0.00003
+        ],
+        [
+          117.4,
+          0.000115
+        ],
+        [
+          118.2,
+          0.00547
+        ],
+        [
+          129.9,
+          0.001721
+        ],
+        [
+          130.5,
+          0.036417
+        ],
+        [
+          177.2,
+          0.097515
+        ],
+        [
+          198,
+          0.177454
+        ],
+        [
+          199.8,
+          0.000161
+        ],
+        [
+          240.3,
+          0.000687
+        ],
+        [
+          261.1,
+          0.011259
+        ],
+        [
+          306.8,
+          0.001382
+        ],
+        [
+          307.5,
+          0.003877
+        ],
+        [
+          307.7,
+          0.07781
+        ]
+      ]
+    },
+    {
+      "id": "Tm-170",
+      "symbol": "¹⁷⁰Tm",
+      "Z": 69,
+      "A": 170,
+      "name": "Thulium-170",
+      "half_life_s": 11111040,
+      "half_life_display": "128.6 d",
+      "decay_modes": [
+        {
+          "mode": "β-",
+          "fraction": 0.999
+        }
+      ],
+      "clinical_use": "Brachytherapy (low gamma yield); predominantly beta emitter",
+      "category": "therapeutic",
+      "modality": "brachytherapy",
+      "gamma_Kair": 0.563,
+      "gamma_H10": 0.9,
+      "gamma_H007": 0.81,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 84,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": 100,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.3e-9,
+      "effluent_liquid_limit_Bq_per_L": 1280,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "e_max_beta_MeV": 0.9,
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 0.563,
+        "gamma_H10_Cornejo": 0.957,
+        "gamma_H007_Cornejo": null,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "max_photon_energy_keV": 84.3,
+      "e_mean_electron_MeV": 0.32799,
+      "shielding_spectrum": [
+        [
+          48.3,
+          0.005243
+        ],
+        [
+          49.2,
+          0.009185
+        ],
+        [
+          51.4,
+          0.162782
+        ],
+        [
+          52.5,
+          0.284358
+        ],
+        [
+          55.8,
+          0.001743
+        ],
+        [
+          59.3,
+          0.028501
+        ],
+        [
+          59.5,
+          0.054981
+        ],
+        [
+          61.1,
+          0.006326
+        ],
+        [
+          61.1,
+          0.012227
+        ],
+        [
+          61.4,
+          0.002953
+        ],
+        [
+          84.3,
+          0.431701
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          48.3,
+          0.005326
+        ],
+        [
+          49.2,
+          0.009304
+        ],
+        [
+          51.4,
+          0.163492
+        ],
+        [
+          52.5,
+          0.284256
+        ],
+        [
+          55.8,
+          0.001719
+        ],
+        [
+          59.3,
+          0.02773
+        ],
+        [
+          59.5,
+          0.053453
+        ],
+        [
+          61.1,
+          0.006147
+        ],
+        [
+          61.1,
+          0.011882
+        ],
+        [
+          61.4,
+          0.00287
+        ],
+        [
+          84.3,
+          0.433821
+        ]
+      ]
+    },
+    {
+      "id": "Lu-177",
+      "symbol": "¹⁷⁷Lu",
+      "Z": 71,
+      "A": 177,
+      "name": "Lutetium-177",
+      "half_life_s": 573875.5,
+      "half_life_display": "6.64 d",
+      "decay_modes": [
+        {
+          "mode": "β-",
+          "fraction": 1
+        }
+      ],
+      "clinical_use": "Therapy: [¹⁷⁷Lu]-DOTATATE (NETs/Lutathera), [¹⁷⁷Lu]-PSMA-617 (prostate cancer)",
+      "category": "therapeutic",
+      "modality": "therapy",
+      "gamma_Kair": 4.09,
+      "gamma_H10": 6.28,
+      "gamma_H007": 5.99,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 208,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "archer_params": {
+        "Pb": {
+          "alpha": 0.3855,
+          "beta": 1.071,
+          "gamma": 0.2822
+        },
+        "concrete_NW": {
+          "alpha": 0.02477,
+          "beta": -0.01173,
+          "gamma": 0.4404
+        },
+        "concrete_LW": {
+          "alpha": 0.01615,
+          "beta": -0.007056,
+          "gamma": 0.5194
+        }
+      },
+      "clearance_a1_kBq_per_kg": 100,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 5.3e-10,
+      "effluent_liquid_limit_Bq_per_L": 3140,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "e_max_beta_MeV": 0.45,
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 4.09,
+        "gamma_H10_Cornejo": 6,
+        "gamma_H007_Cornejo": null,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "max_photon_energy_keV": 321.3,
+      "e_mean_electron_MeV": 0.14792,
+      "shielding_spectrum": [
+        [
+          54.7,
+          0.039415
+        ],
+        [
+          55.9,
+          0.068345
+        ],
+        [
+          63.1,
+          0.007113
+        ],
+        [
+          63.4,
+          0.013757
+        ],
+        [
+          65,
+          0.001607
+        ],
+        [
+          65.1,
+          0.003109
+        ],
+        [
+          65.4,
+          0.000362
+        ],
+        [
+          65.4,
+          0.000753
+        ],
+        [
+          71.6,
+          0.003666
+        ],
+        [
+          113,
+          0.199423
+        ],
+        [
+          136.7,
+          0.001786
+        ],
+        [
+          208.4,
+          0.626979
+        ],
+        [
+          249.7,
+          0.014478
+        ],
+        [
+          321.3,
+          0.019207
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          54.7,
+          0.037002
+        ],
+        [
+          55.9,
+          0.063853
+        ],
+        [
+          63.1,
+          0.006567
+        ],
+        [
+          63.4,
+          0.012706
+        ],
+        [
+          65,
+          0.001487
+        ],
+        [
+          65.1,
+          0.002878
+        ],
+        [
+          65.4,
+          0.000335
+        ],
+        [
+          65.4,
+          0.000697
+        ],
+        [
+          71.6,
+          0.003418
+        ],
+        [
+          113,
+          0.198652
+        ],
+        [
+          136.7,
+          0.001789
+        ],
+        [
+          208.4,
+          0.636338
+        ],
+        [
+          249.7,
+          0.014732
+        ],
+        [
+          321.3,
+          0.019546
+        ]
+      ]
+    },
+    {
+      "id": "Re-186",
+      "symbol": "¹⁸⁶Re",
+      "Z": 75,
+      "A": 186,
+      "name": "Rhenium-186",
+      "half_life_s": 321261.1,
+      "half_life_display": "3.72 d",
+      "decay_modes": [
+        {
+          "mode": "β-",
+          "fraction": 0.921
+        },
+        {
+          "mode": "EC",
+          "fraction": 0.079
+        }
+      ],
+      "clinical_use": "Therapy: ¹⁸⁶Re-HEDP bone pain palliation; ¹⁸⁶Re-MAb RIT",
+      "category": "therapeutic",
+      "modality": "therapy",
+      "gamma_Kair": 2.42,
+      "gamma_H10": 3.86,
+      "gamma_H007": 3.58,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 137,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": 1000,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.5e-9,
+      "effluent_liquid_limit_Bq_per_L": 1110,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "e_max_beta_MeV": 1,
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 2.42,
+        "gamma_H10_Cornejo": 3.86,
+        "gamma_H007_Cornejo": null,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "max_photon_energy_keV": 767.5,
+      "e_mean_electron_MeV": 0.33624,
+      "shielding_spectrum": [
+        [
+          58.1,
+          0.066394
+        ],
+        [
+          59.5,
+          0.114135
+        ],
+        [
+          61.6,
+          0.043108
+        ],
+        [
+          63.2,
+          0.07452
+        ],
+        [
+          67.1,
+          0.012415
+        ],
+        [
+          67.4,
+          0.024006
+        ],
+        [
+          69.2,
+          0.002838
+        ],
+        [
+          69.3,
+          0.005502
+        ],
+        [
+          69.6,
+          0.000645
+        ],
+        [
+          69.6,
+          0.001321
+        ],
+        [
+          71.3,
+          0.008221
+        ],
+        [
+          71.6,
+          0.015901
+        ],
+        [
+          73.5,
+          0.001899
+        ],
+        [
+          73.6,
+          0.003698
+        ],
+        [
+          74,
+          0.000436
+        ],
+        [
+          74,
+          0.000876
+        ],
+        [
+          122.6,
+          0.033029
+        ],
+        [
+          137.2,
+          0.572981
+        ],
+        [
+          630.3,
+          0.007802
+        ],
+        [
+          767.5,
+          0.010273
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          58.1,
+          0.063173
+        ],
+        [
+          59.5,
+          0.108024
+        ],
+        [
+          61.6,
+          0.040807
+        ],
+        [
+          63.2,
+          0.070683
+        ],
+        [
+          67.1,
+          0.01183
+        ],
+        [
+          67.4,
+          0.022883
+        ],
+        [
+          69.2,
+          0.00271
+        ],
+        [
+          69.3,
+          0.005257
+        ],
+        [
+          69.6,
+          0.000617
+        ],
+        [
+          69.6,
+          0.001263
+        ],
+        [
+          71.3,
+          0.007871
+        ],
+        [
+          71.6,
+          0.015229
+        ],
+        [
+          73.5,
+          0.001823
+        ],
+        [
+          73.6,
+          0.003549
+        ],
+        [
+          74,
+          0.000419
+        ],
+        [
+          74,
+          0.000842
+        ],
+        [
+          122.6,
+          0.033878
+        ],
+        [
+          137.2,
+          0.58966
+        ],
+        [
+          630.3,
+          0.008409
+        ],
+        [
+          767.5,
+          0.011073
+        ]
+      ]
+    },
+    {
+      "id": "Re-188",
+      "symbol": "¹⁸⁸Re",
+      "Z": 75,
+      "A": 188,
+      "name": "Rhenium-188",
+      "half_life_s": 61210.8,
+      "half_life_display": "17.00 h",
+      "decay_modes": [
+        {
+          "mode": "β-",
+          "fraction": 1
+        }
+      ],
+      "clinical_use": "Therapy: ¹⁸⁸Re-HEDP bone pain palliation; ¹⁸⁸Re-generator from ¹⁸⁸W",
+      "category": "therapeutic",
+      "modality": "therapy",
+      "gamma_Kair": 7.08,
+      "gamma_H10": 9.91,
+      "gamma_H007": 9.65,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 155,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": 100,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.4e-9,
+      "effluent_liquid_limit_Bq_per_L": 1190,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "e_max_beta_MeV": 2,
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 7.08,
+        "gamma_H10_Cornejo": 9.44,
+        "gamma_H007_Cornejo": null,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "max_photon_energy_keV": 1957,
+      "e_mean_electron_MeV": 0.77934,
+      "shielding_spectrum": [
+        [
+          61.6,
+          0.020994
+        ],
+        [
+          63.2,
+          0.036291
+        ],
+        [
+          71.3,
+          0.004005
+        ],
+        [
+          71.6,
+          0.007743
+        ],
+        [
+          73.5,
+          0.000925
+        ],
+        [
+          73.6,
+          0.001801
+        ],
+        [
+          74,
+          0.000212
+        ],
+        [
+          74,
+          0.000427
+        ],
+        [
+          155,
+          0.415419
+        ],
+        [
+          322.9,
+          0.000939
+        ],
+        [
+          453.3,
+          0.006376
+        ],
+        [
+          478,
+          0.087778
+        ],
+        [
+          486.1,
+          0.007052
+        ],
+        [
+          633,
+          0.14288
+        ],
+        [
+          635,
+          0.016786
+        ],
+        [
+          672.5,
+          0.013282
+        ],
+        [
+          825.2,
+          0.002463
+        ],
+        [
+          829.5,
+          0.05792
+        ],
+        [
+          931.3,
+          0.084939
+        ],
+        [
+          1017.7,
+          0.002496
+        ],
+        [
+          1132.3,
+          0.015092
+        ],
+        [
+          1149.7,
+          0.002959
+        ],
+        [
+          1150.5,
+          0.00296
+        ],
+        [
+          1174.6,
+          0.003275
+        ],
+        [
+          1191.8,
+          0.002559
+        ],
+        [
+          1308,
+          0.013072
+        ],
+        [
+          1322.9,
+          0.002605
+        ],
+        [
+          1457.5,
+          0.004074
+        ],
+        [
+          1610.4,
+          0.0229
+        ],
+        [
+          1669.9,
+          0.002398
+        ],
+        [
+          1786,
+          0.004675
+        ],
+        [
+          1802,
+          0.008976
+        ],
+        [
+          1957,
+          0.003727
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          61.6,
+          0.018945
+        ],
+        [
+          63.2,
+          0.032814
+        ],
+        [
+          71.3,
+          0.003655
+        ],
+        [
+          71.6,
+          0.007069
+        ],
+        [
+          73.5,
+          0.000847
+        ],
+        [
+          73.6,
+          0.001648
+        ],
+        [
+          74,
+          0.000194
+        ],
+        [
+          74,
+          0.000391
+        ],
+        [
+          155,
+          0.409056
+        ],
+        [
+          322.9,
+          0.000935
+        ],
+        [
+          453.3,
+          0.006441
+        ],
+        [
+          478,
+          0.089491
+        ],
+        [
+          486.1,
+          0.007211
+        ],
+        [
+          633,
+          0.146804
+        ],
+        [
+          635,
+          0.017248
+        ],
+        [
+          672.5,
+          0.013647
+        ],
+        [
+          825.2,
+          0.002531
+        ],
+        [
+          829.5,
+          0.059511
+        ],
+        [
+          931.3,
+          0.087272
+        ],
+        [
+          1017.7,
+          0.002565
+        ],
+        [
+          1132.3,
+          0.015506
+        ],
+        [
+          1149.7,
+          0.00304
+        ],
+        [
+          1150.5,
+          0.003042
+        ],
+        [
+          1174.6,
+          0.003365
+        ],
+        [
+          1191.8,
+          0.002629
+        ],
+        [
+          1308,
+          0.013432
+        ],
+        [
+          1322.9,
+          0.002677
+        ],
+        [
+          1457.5,
+          0.004186
+        ],
+        [
+          1610.4,
+          0.023529
+        ],
+        [
+          1669.9,
+          0.002464
+        ],
+        [
+          1786,
+          0.004803
+        ],
+        [
+          1802,
+          0.009223
+        ],
+        [
+          1957,
+          0.003829
+        ]
+      ]
+    },
+    {
+      "id": "Ir-192",
+      "symbol": "¹⁹²Ir",
+      "Z": 77,
+      "A": 192,
+      "name": "Iridium-192",
+      "half_life_s": 6378825.6,
+      "half_life_display": "73.83 d",
+      "decay_modes": [
+        {
+          "mode": "β-",
+          "fraction": 0.954
+        },
+        {
+          "mode": "EC",
+          "fraction": 0.046
+        }
+      ],
+      "clinical_use": "Brachytherapy: HDR/LDR (breast, cervix, prostate, lung, biliary)",
+      "category": "therapeutic",
+      "modality": "brachytherapy",
+      "gamma_Kair": 109,
+      "gamma_H10": 138.86,
+      "gamma_H007": 135.91,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 370,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": 1,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.4e-9,
+      "effluent_liquid_limit_Bq_per_L": 1190,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "e_max_beta_MeV": 0.65,
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 109,
+        "gamma_H10_Cornejo": 139,
+        "gamma_H007_Cornejo": null,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "max_photon_energy_keV": 1061.5,
+      "e_mean_electron_MeV": 0.21769,
+      "shielding_spectrum": [
+        [
+          61.6,
+          0.001308
+        ],
+        [
+          63.2,
+          0.002262
+        ],
+        [
+          65.3,
+          0.002852
+        ],
+        [
+          67,
+          0.00489
+        ],
+        [
+          71.3,
+          0.000249
+        ],
+        [
+          71.6,
+          0.000483
+        ],
+        [
+          73.5,
+          0.000058
+        ],
+        [
+          73.6,
+          0.000112
+        ],
+        [
+          74,
+          0.000013
+        ],
+        [
+          74,
+          0.000027
+        ],
+        [
+          75.6,
+          0.000544
+        ],
+        [
+          76,
+          0.001053
+        ],
+        [
+          76.4,
+          0.000013
+        ],
+        [
+          76.5,
+          0.000016
+        ],
+        [
+          78,
+          0.000127
+        ],
+        [
+          78.1,
+          0.000249
+        ],
+        [
+          78.5,
+          0.000029
+        ],
+        [
+          78.6,
+          0.000058
+        ],
+        [
+          110.4,
+          0.000017
+        ],
+        [
+          136.3,
+          0.000334
+        ],
+        [
+          201.3,
+          0.001179
+        ],
+        [
+          205.8,
+          0.008509
+        ],
+        [
+          283.3,
+          0.000933
+        ],
+        [
+          296,
+          0.105235
+        ],
+        [
+          308.5,
+          0.113253
+        ],
+        [
+          316.5,
+          0.323546
+        ],
+        [
+          329.2,
+          0.000071
+        ],
+        [
+          374.5,
+          0.003344
+        ],
+        [
+          416.5,
+          0.003411
+        ],
+        [
+          420.5,
+          0.000355
+        ],
+        [
+          468.1,
+          0.271795
+        ],
+        [
+          484.6,
+          0.018712
+        ],
+        [
+          489.1,
+          0.002594
+        ],
+        [
+          588.6,
+          0.031521
+        ],
+        [
+          593.5,
+          0.000296
+        ],
+        [
+          604.4,
+          0.058556
+        ],
+        [
+          612.5,
+          0.038561
+        ],
+        [
+          884.5,
+          0.002841
+        ],
+        [
+          1061.5,
+          0.000594
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          61.6,
+          0.001174
+        ],
+        [
+          63.2,
+          0.002033
+        ],
+        [
+          65.3,
+          0.002571
+        ],
+        [
+          67,
+          0.004417
+        ],
+        [
+          71.3,
+          0.000226
+        ],
+        [
+          71.6,
+          0.000438
+        ],
+        [
+          73.5,
+          0.000053
+        ],
+        [
+          73.6,
+          0.000102
+        ],
+        [
+          74,
+          0.000012
+        ],
+        [
+          74,
+          0.000024
+        ],
+        [
+          75.6,
+          0.000496
+        ],
+        [
+          76,
+          0.000961
+        ],
+        [
+          76.4,
+          0.000012
+        ],
+        [
+          76.5,
+          0.000015
+        ],
+        [
+          78,
+          0.000116
+        ],
+        [
+          78.1,
+          0.000227
+        ],
+        [
+          78.5,
+          0.000027
+        ],
+        [
+          78.6,
+          0.000053
+        ],
+        [
+          110.4,
+          0.000016
+        ],
+        [
+          136.3,
+          0.000326
+        ],
+        [
+          201.3,
+          0.001164
+        ],
+        [
+          205.8,
+          0.008407
+        ],
+        [
+          283.3,
+          0.000926
+        ],
+        [
+          296,
+          0.104512
+        ],
+        [
+          308.5,
+          0.112383
+        ],
+        [
+          316.5,
+          0.320769
+        ],
+        [
+          329.2,
+          0.00007
+        ],
+        [
+          374.5,
+          0.003295
+        ],
+        [
+          416.5,
+          0.003377
+        ],
+        [
+          420.5,
+          0.000352
+        ],
+        [
+          468.1,
+          0.27455
+        ],
+        [
+          484.6,
+          0.019015
+        ],
+        [
+          489.1,
+          0.00264
+        ],
+        [
+          588.6,
+          0.032205
+        ],
+        [
+          593.5,
+          0.000302
+        ],
+        [
+          604.4,
+          0.059827
+        ],
+        [
+          612.5,
+          0.039398
+        ],
+        [
+          884.5,
+          0.002902
+        ],
+        [
+          1061.5,
+          0.000607
+        ]
+      ]
+    },
+    {
+      "id": "Au-198",
+      "symbol": "¹⁹⁸Au",
+      "Z": 79,
+      "A": 198,
+      "name": "Gold-198",
+      "half_life_s": 232770.2,
+      "half_life_display": "2.69 d",
+      "decay_modes": [
+        {
+          "mode": "β-",
+          "fraction": 1
+        }
+      ],
+      "clinical_use": "Brachytherapy (historical): ¹⁹⁸Au grain implants; research",
+      "category": "therapeutic",
+      "modality": "brachytherapy",
+      "gamma_Kair": 54.6,
+      "gamma_H10": 68.5,
+      "gamma_H007": 66.25,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 412,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": 10,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1e-9,
+      "effluent_liquid_limit_Bq_per_L": 1670,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "e_max_beta_MeV": 1.3,
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 54.6,
+        "gamma_H10_Cornejo": 68.6,
+        "gamma_H007_Cornejo": null,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "max_photon_energy_keV": 1087.7,
+      "e_mean_electron_MeV": 0.3277,
+      "shielding_spectrum": [
+        [
+          69.1,
+          0.001774
+        ],
+        [
+          71.1,
+          0.003018
+        ],
+        [
+          80.1,
+          0.000339
+        ],
+        [
+          80.5,
+          0.000658
+        ],
+        [
+          82.7,
+          0.000081
+        ],
+        [
+          82.8,
+          0.00016
+        ],
+        [
+          83.3,
+          0.000037
+        ],
+        [
+          411.8,
+          0.977479
+        ],
+        [
+          675.9,
+          0.01278
+        ],
+        [
+          1087.7,
+          0.003674
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          69.1,
+          0.001625
+        ],
+        [
+          71.1,
+          0.002771
+        ],
+        [
+          80.1,
+          0.000314
+        ],
+        [
+          80.5,
+          0.000611
+        ],
+        [
+          82.7,
+          0.000076
+        ],
+        [
+          82.8,
+          0.000149
+        ],
+        [
+          83.3,
+          0.000035
+        ],
+        [
+          411.8,
+          0.977405
+        ],
+        [
+          675.9,
+          0.013215
+        ],
+        [
+          1087.7,
+          0.003799
+        ]
+      ]
+    },
+    {
+      "id": "Tl-201",
+      "symbol": "²⁰¹Tl",
+      "Z": 81,
+      "A": 201,
+      "name": "Thallium-201",
+      "half_life_s": 262837.4,
+      "half_life_display": "3.04 d",
+      "decay_modes": [
+        {
+          "mode": "EC",
+          "fraction": 1
+        }
+      ],
+      "clinical_use": "SPECT: myocardial perfusion imaging (largely replaced by ⁹⁹ᵐTc-MIBI)",
+      "category": "diagnostic",
+      "modality": "SPECT",
+      "gamma_Kair": 10.4,
+      "gamma_H10": 17.64,
+      "gamma_H007": 15.97,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 71,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": 100,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 9.5e-11,
+      "effluent_liquid_limit_Bq_per_L": 17500,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "cornejo_validation": {
+        "gamma_Kair_Cornejo": 10.4,
+        "gamma_H10_Cornejo": 17.4,
+        "gamma_H007_Cornejo": null,
+        "source": "Cornejo et al., Radioprotección Nº 83 (2015), Tabla III"
+      },
+      "max_photon_energy_keV": 167.4,
+      "e_mean_electron_MeV": 0.04469,
+      "shielding_spectrum": [
+        [
+          30.6,
+          0.003274
+        ],
+        [
+          32.2,
+          0.003202
+        ],
+        [
+          69.1,
+          0.23089
+        ],
+        [
+          71.1,
+          0.392812
+        ],
+        [
+          80.1,
+          0.044117
+        ],
+        [
+          80.5,
+          0.085651
+        ],
+        [
+          81,
+          0.001147
+        ],
+        [
+          81.1,
+          0.001404
+        ],
+        [
+          82.7,
+          0.010611
+        ],
+        [
+          82.8,
+          0.020798
+        ],
+        [
+          83,
+          0.000302
+        ],
+        [
+          83,
+          0.000369
+        ],
+        [
+          83.3,
+          0.002463
+        ],
+        [
+          83.3,
+          0.004837
+        ],
+        [
+          135.3,
+          0.033671
+        ],
+        [
+          165.9,
+          0.002487
+        ],
+        [
+          167.4,
+          0.161965
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          30.6,
+          0.003979
+        ],
+        [
+          32.2,
+          0.00378
+        ],
+        [
+          69.1,
+          0.226088
+        ],
+        [
+          71.1,
+          0.385495
+        ],
+        [
+          80.1,
+          0.043706
+        ],
+        [
+          80.5,
+          0.084955
+        ],
+        [
+          81,
+          0.001139
+        ],
+        [
+          81.1,
+          0.001395
+        ],
+        [
+          82.7,
+          0.010594
+        ],
+        [
+          82.8,
+          0.02077
+        ],
+        [
+          83,
+          0.000302
+        ],
+        [
+          83,
+          0.000369
+        ],
+        [
+          83.3,
+          0.002463
+        ],
+        [
+          83.3,
+          0.004837
+        ],
+        [
+          135.3,
+          0.035512
+        ],
+        [
+          165.9,
+          0.00264
+        ],
+        [
+          167.4,
+          0.171976
+        ]
+      ]
+    },
+    {
+      "id": "Y-90",
+      "symbol": "⁹⁰Y",
+      "Z": 39,
+      "A": 90,
+      "name": "Yttrium-90",
+      "half_life_s": 230590.8,
+      "half_life_display": "64.05 h",
+      "decay_modes": [
+        {
+          "mode": "β-",
+          "fraction": 1
+        }
+      ],
+      "clinical_use": "Therapy: ⁹⁰Y-microspheres (SIRT/radioembolization), ⁹⁰Y-ibritumomab (RIT), ⁹⁰Y-DOTATATE",
+      "category": "therapeutic",
+      "modality": "therapy",
+      "gamma_Kair": null,
+      "gamma_H10": null,
+      "gamma_H007": null,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": null,
+      "source": "Not applicable — pure β⁻ emitter; see the experimental container-dependent bremsstrahlung scenario in Dose",
+      "clearance_a1_kBq_per_kg": 1000,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 2.7e-9,
+      "effluent_liquid_limit_Bq_per_L": 617,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "max_photon_energy_keV": null
+    },
+    {
+      "id": "Zr-89",
+      "symbol": "⁸⁹Zr",
+      "Z": 40,
+      "A": 89,
+      "name": "Zirconium-89",
+      "half_life_s": 282276,
+      "half_life_display": "3.267 d",
+      "decay_modes": [
+        {
+          "mode": "ECB+",
+          "branching": 1
+        }
+      ],
+      "clinical_use": "Immuno-PET: ⁸⁹Zr-labelled monoclonal antibodies (e.g. trastuzumab, atezolizumab); long-lived PET tracer.",
+      "category": "diagnostic",
+      "modality": "PET",
+      "gamma_Kair": 151.28,
+      "gamma_H10": 178.29,
+      "gamma_H007": 178.29,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 909,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": null,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 7.9e-10,
+      "effluent_liquid_limit_Bq_per_L": 2110,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "e_max_beta_MeV": 0.9,
+      "max_photon_energy_keV": 1744.5,
+      "shielding_spectrum": [
+        [
+          511,
+          0.218265
+        ],
+        [
+          909.2,
+          0.769104
+        ],
+        [
+          1620.8,
+          0.000856
+        ],
+        [
+          1657.3,
+          0.001256
+        ],
+        [
+          1713,
+          0.009015
+        ],
+        [
+          1744.5,
+          0.001504
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          511,
+          0.218265
+        ],
+        [
+          909.2,
+          0.769104
+        ],
+        [
+          1620.8,
+          0.000856
+        ],
+        [
+          1657.3,
+          0.001256
+        ],
+        [
+          1713,
+          0.009015
+        ],
+        [
+          1744.5,
+          0.001504
+        ]
+      ]
+    },
+    {
+      "id": "Cu-67",
+      "symbol": "⁶⁷Cu",
+      "Z": 29,
+      "A": 67,
+      "name": "Copper-67",
+      "half_life_s": 222588,
+      "half_life_display": "2.576 d",
+      "decay_modes": [
+        {
+          "mode": "B-",
+          "branching": 1
+        }
+      ],
+      "clinical_use": "Radioimmunotherapy and theranostics (pairs with Cu-64); β⁻ emitter with imageable gammas.",
+      "category": "therapeutic",
+      "modality": "therapy",
+      "gamma_Kair": 13.59,
+      "gamma_H10": 19.85,
+      "gamma_H007": 19.01,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 185,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": null,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 3.4e-10,
+      "effluent_liquid_limit_Bq_per_L": 4900,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "e_max_beta_MeV": 0.55,
+      "max_photon_energy_keV": 393.5,
+      "shielding_spectrum": [
+        [
+          91.3,
+          0.058182
+        ],
+        [
+          93.3,
+          0.135657
+        ],
+        [
+          184.6,
+          0.77593
+        ],
+        [
+          209,
+          0.002081
+        ],
+        [
+          300.2,
+          0.020714
+        ],
+        [
+          393.5,
+          0.007436
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          91.3,
+          0.056234
+        ],
+        [
+          93.3,
+          0.131804
+        ],
+        [
+          184.6,
+          0.781347
+        ],
+        [
+          209,
+          0.002102
+        ],
+        [
+          300.2,
+          0.021035
+        ],
+        [
+          393.5,
+          0.007478
+        ]
+      ]
+    },
+    {
+      "id": "Tb-161",
+      "symbol": "¹⁶¹Tb",
+      "Z": 65,
+      "A": 161,
+      "name": "Terbium-161",
+      "half_life_s": 596678.4,
+      "half_life_display": "6.906 d",
+      "decay_modes": [
+        {
+          "mode": "B-",
+          "branching": 1
+        }
+      ],
+      "clinical_use": "Targeted radionuclide therapy (e.g. ¹⁶¹Tb-PSMA, ¹⁶¹Tb-DOTATOC); β⁻ + conversion/Auger electrons; Lu-177-like.",
+      "category": "therapeutic",
+      "modality": "therapy",
+      "gamma_Kair": 11.95,
+      "gamma_H10": 14.41,
+      "gamma_H007": 15.55,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 26,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": null,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 7.2e-10,
+      "effluent_liquid_limit_Bq_per_L": 2310,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "e_max_beta_MeV": 0.55,
+      "max_photon_energy_keV": 550.2,
+      "shielding_spectrum": [
+        [
+          25.7,
+          0.411629
+        ],
+        [
+          28.7,
+          0.000605
+        ],
+        [
+          43.8,
+          0.00072
+        ],
+        [
+          45.3,
+          0.076902
+        ],
+        [
+          46.1,
+          0.135807
+        ],
+        [
+          48.9,
+          0.189074
+        ],
+        [
+          52,
+          0.013015
+        ],
+        [
+          52.2,
+          0.025118
+        ],
+        [
+          52.5,
+          0.000213
+        ],
+        [
+          52.6,
+          0.000278
+        ],
+        [
+          53.5,
+          0.002831
+        ],
+        [
+          53.6,
+          0.00548
+        ],
+        [
+          53.8,
+          0.000615
+        ],
+        [
+          53.8,
+          0.001276
+        ],
+        [
+          57.2,
+          0.018458
+        ],
+        [
+          59.2,
+          0.000226
+        ],
+        [
+          74.6,
+          0.106465
+        ],
+        [
+          77.4,
+          0.000626
+        ],
+        [
+          87.9,
+          0.002041
+        ],
+        [
+          103.1,
+          0.00126
+        ],
+        [
+          106.1,
+          0.000997
+        ],
+        [
+          286.5,
+          0.000489
+        ],
+        [
+          292.4,
+          0.002026
+        ],
+        [
+          343.6,
+          0.000543
+        ],
+        [
+          475.7,
+          0.001012
+        ],
+        [
+          550.2,
+          0.002294
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          25.7,
+          0.501648
+        ],
+        [
+          28.7,
+          0.000654
+        ],
+        [
+          43.8,
+          0.000621
+        ],
+        [
+          45.3,
+          0.066034
+        ],
+        [
+          46.1,
+          0.116308
+        ],
+        [
+          48.9,
+          0.160503
+        ],
+        [
+          52,
+          0.010916
+        ],
+        [
+          52.2,
+          0.021049
+        ],
+        [
+          52.5,
+          0.000178
+        ],
+        [
+          52.6,
+          0.000233
+        ],
+        [
+          53.5,
+          0.00236
+        ],
+        [
+          53.6,
+          0.004566
+        ],
+        [
+          53.8,
+          0.000512
+        ],
+        [
+          53.8,
+          0.001062
+        ],
+        [
+          57.2,
+          0.015157
+        ],
+        [
+          59.2,
+          0.000184
+        ],
+        [
+          74.6,
+          0.087971
+        ],
+        [
+          77.4,
+          0.000519
+        ],
+        [
+          87.9,
+          0.001735
+        ],
+        [
+          103.1,
+          0.001106
+        ],
+        [
+          106.1,
+          0.000876
+        ],
+        [
+          286.5,
+          0.00044
+        ],
+        [
+          292.4,
+          0.001825
+        ],
+        [
+          343.6,
+          0.000487
+        ],
+        [
+          475.7,
+          0.00093
+        ],
+        [
+          550.2,
+          0.002126
+        ]
+      ]
+    },
+    {
+      "id": "Ho-166",
+      "symbol": "¹⁶⁶Ho",
+      "Z": 67,
+      "A": 166,
+      "name": "Holmium-166",
+      "half_life_s": 96480,
+      "half_life_display": "1.117 d",
+      "decay_modes": [
+        {
+          "mode": "B-",
+          "branching": 1
+        }
+      ],
+      "clinical_use": "Radioembolization (¹⁶⁶Ho microspheres, liver), radiosynovectomy; high-energy β⁻ with 80.6 keV gamma.",
+      "category": "therapeutic",
+      "modality": "therapy",
+      "gamma_Kair": 3.79,
+      "gamma_H10": 5.15,
+      "gamma_H007": 4.9,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 1379,
+      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": 100,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1.4e-9,
+      "effluent_liquid_limit_Bq_per_L": 1190,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "e_max_beta_MeV": 1.8,
+      "max_photon_energy_keV": 1749.9,
+      "shielding_spectrum": [
+        [
+          48.3,
+          0.093614
+        ],
+        [
+          49.2,
+          0.164049
+        ],
+        [
+          55.6,
+          0.016174
+        ],
+        [
+          55.8,
+          0.031216
+        ],
+        [
+          56.2,
+          0.00037
+        ],
+        [
+          57.2,
+          0.003538
+        ],
+        [
+          57.3,
+          0.006843
+        ],
+        [
+          57.5,
+          0.000785
+        ],
+        [
+          57.5,
+          0.001631
+        ],
+        [
+          80.6,
+          0.198729
+        ],
+        [
+          674,
+          0.004093
+        ],
+        [
+          705.3,
+          0.002871
+        ],
+        [
+          785.9,
+          0.002856
+        ],
+        [
+          1379.4,
+          0.337764
+        ],
+        [
+          1581.9,
+          0.074394
+        ],
+        [
+          1662.5,
+          0.049306
+        ],
+        [
+          1749.9,
+          0.011767
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          48.3,
+          0.09028
+        ],
+        [
+          49.2,
+          0.157771
+        ],
+        [
+          55.6,
+          0.015156
+        ],
+        [
+          55.8,
+          0.029227
+        ],
+        [
+          56.2,
+          0.000346
+        ],
+        [
+          57.2,
+          0.003295
+        ],
+        [
+          57.3,
+          0.00637
+        ],
+        [
+          57.5,
+          0.00073
+        ],
+        [
+          57.5,
+          0.001517
+        ],
+        [
+          80.6,
+          0.187554
+        ],
+        [
+          674,
+          0.004302
+        ],
+        [
+          705.3,
+          0.003018
+        ],
+        [
+          785.9,
+          0.003002
+        ],
+        [
+          1379.4,
+          0.355037
+        ],
+        [
+          1581.9,
+          0.078199
+        ],
+        [
+          1662.5,
+          0.051828
+        ],
+        [
+          1749.9,
+          0.012368
+        ]
+      ]
+    },
+    {
+      "id": "Ra-223",
+      "symbol": "²²³Ra",
+      "Z": 88,
+      "A": 223,
+      "name": "Radium-223 (+ daughters)",
+      "half_life_s": 987552,
+      "half_life_display": "11.43 d",
+      "decay_modes": [
+        {
+          "mode": "A",
+          "daughter": "Rn-219",
+          "branching": 1
+        }
+      ],
+      "clinical_use": "Targeted alpha therapy of bone metastases (²²³RaCl₂, Xofigo). Constants include progeny in secular equilibrium (Rn-219, Po-215, Pb-211, Bi-211, Tl-207).",
+      "category": "therapeutic",
+      "modality": "therapy",
+      "gamma_Kair": 39.46,
+      "gamma_H10": 52.86,
+      "gamma_H007": 50.83,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 351,
+      "source": "ICRP 107 (photon data, incl. progeny in secular equilibrium) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": null,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 1e-7,
+      "effluent_liquid_limit_Bq_per_L": 16.7,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "e_max_beta_MeV": 1.4,
+      "max_photon_energy_keV": 1196.3,
+      "chain_members": [
+        {
+          "id": "Ra-223",
+          "equilibrium_activity_fraction": 1
+        },
+        {
+          "id": "Rn-219",
+          "equilibrium_activity_fraction": 1
+        },
+        {
+          "id": "Po-215",
+          "equilibrium_activity_fraction": 1
+        },
+        {
+          "id": "Pb-211",
+          "equilibrium_activity_fraction": 1
+        },
+        {
+          "id": "Bi-211",
+          "equilibrium_activity_fraction": 1
+        },
+        {
+          "id": "Tl-207",
+          "equilibrium_activity_fraction": 0.9972
+        },
+        {
+          "id": "Po-211",
+          "equilibrium_activity_fraction": 0.0028
+        }
+      ],
+      "shielding_spectrum": [
+        [
+          33.6,
+          0.000412
+        ],
+        [
+          63.2,
+          0.000155
+        ],
+        [
+          65.4,
+          0.000217
+        ],
+        [
+          71.1,
+          0.002151
+        ],
+        [
+          73.1,
+          0.003641
+        ],
+        [
+          75.1,
+          0.000688
+        ],
+        [
+          77.1,
+          0.001584
+        ],
+        [
+          77.4,
+          0.001155
+        ],
+        [
+          79.6,
+          0.002648
+        ],
+        [
+          81,
+          0.000131
+        ],
+        [
+          81.4,
+          0.045688
+        ],
+        [
+          82.4,
+          0.000417
+        ],
+        [
+          82.9,
+          0.00081
+        ],
+        [
+          83.8,
+          0.000172
+        ],
+        [
+          84.1,
+          0.076889
+        ],
+        [
+          85.1,
+          0.000101
+        ],
+        [
+          85.2,
+          0.000198
+        ],
+        [
+          85.7,
+          0.000046
+        ],
+        [
+          87.1,
+          0.000137
+        ],
+        [
+          87.7,
+          0.000267
+        ],
+        [
+          88.2,
+          0.000051
+        ],
+        [
+          89.6,
+          0.00032
+        ],
+        [
+          90,
+          0.000033
+        ],
+        [
+          90.1,
+          0.000622
+        ],
+        [
+          90.2,
+          0.000066
+        ],
+        [
+          92.6,
+          0.000079
+        ],
+        [
+          92.7,
+          0.000155
+        ],
+        [
+          93.3,
+          0.000035
+        ],
+        [
+          94.3,
+          0.000037
+        ],
+        [
+          94.6,
+          0.009364
+        ],
+        [
+          95,
+          0.000058
+        ],
+        [
+          95.2,
+          0.018265
+        ],
+        [
+          95.7,
+          0.000285
+        ],
+        [
+          95.9,
+          0.000338
+        ],
+        [
+          97.3,
+          0.000038
+        ],
+        [
+          97.8,
+          0.002328
+        ],
+        [
+          98,
+          0.004628
+        ],
+        [
+          98.2,
+          0.00008
+        ],
+        [
+          98.2,
+          0.000095
+        ],
+        [
+          98.6,
+          0.000553
+        ],
+        [
+          98.6,
+          0.001062
+        ],
+        [
+          98.8,
+          0.000064
+        ],
+        [
+          98.8,
+          0.000108
+        ],
+        [
+          104.2,
+          0.000067
+        ],
+        [
+          106.8,
+          0.000083
+        ],
+        [
+          110.9,
+          0.000213
+        ],
+        [
+          122.3,
+          0.004823
+        ],
+        [
+          130.6,
+          0.000549
+        ],
+        [
+          136.1,
+          0.000122
+        ],
+        [
+          144.2,
+          0.015188
+        ],
+        [
+          154.2,
+          0.02829
+        ],
+        [
+          158.6,
+          0.003552
+        ],
+        [
+          175.7,
+          0.000111
+        ],
+        [
+          177.3,
+          0.000271
+        ],
+        [
+          179.5,
+          0.000889
+        ],
+        [
+          219,
+          0.000099
+        ],
+        [
+          221.3,
+          0.00026
+        ],
+        [
+          221.5,
+          0.000218
+        ],
+        [
+          244,
+          0.000307
+        ],
+        [
+          249.3,
+          0.000315
+        ],
+        [
+          251.6,
+          0.000341
+        ],
+        [
+          255.2,
+          0.000438
+        ],
+        [
+          269.5,
+          0.121816
+        ],
+        [
+          271.2,
+          0.095246
+        ],
+        [
+          288.2,
+          0.001499
+        ],
+        [
+          293.6,
+          0.000701
+        ],
+        [
+          293.8,
+          0.000637
+        ],
+        [
+          313.6,
+          0.000316
+        ],
+        [
+          323.9,
+          0.041925
+        ],
+        [
+          328.4,
+          0.002221
+        ],
+        [
+          334,
+          0.001099
+        ],
+        [
+          338.3,
+          0.031086
+        ],
+        [
+          342.9,
+          0.00247
+        ],
+        [
+          342.9,
+          0.000388
+        ],
+        [
+          346.8,
+          0.002029
+        ],
+        [
+          351.1,
+          0.146338
+        ],
+        [
+          362.1,
+          0.000538
+        ],
+        [
+          362.1,
+          0.000499
+        ],
+        [
+          362.9,
+          0.00018
+        ],
+        [
+          369.5,
+          0.00025
+        ],
+        [
+          370.9,
+          0.000129
+        ],
+        [
+          371.7,
+          0.005844
+        ],
+        [
+          372.9,
+          0.000602
+        ],
+        [
+          373.3,
+          0.000603
+        ],
+        [
+          376,
+          0.000148
+        ],
+        [
+          376.1,
+          0.000152
+        ],
+        [
+          382.8,
+          0.000172
+        ],
+        [
+          387.7,
+          0.000191
+        ],
+        [
+          393.5,
+          0.000143
+        ],
+        [
+          401.8,
+          0.085335
+        ],
+        [
+          404.9,
+          0.049349
+        ],
+        [
+          427.1,
+          0.024074
+        ],
+        [
+          430.6,
+          0.000269
+        ],
+        [
+          432.1,
+          0.000481
+        ],
+        [
+          438.2,
+          0.000424
+        ],
+        [
+          438.8,
+          0.000562
+        ],
+        [
+          439.3,
+          0.001154
+        ],
+        [
+          445,
+          0.018416
+        ],
+        [
+          478,
+          0.000196
+        ],
+        [
+          481.1,
+          0.000395
+        ],
+        [
+          481.6,
+          0.00032
+        ],
+        [
+          481.9,
+          0.000158
+        ],
+        [
+          487.5,
+          0.000172
+        ],
+        [
+          500.4,
+          0.000184
+        ],
+        [
+          517.6,
+          0.000725
+        ],
+        [
+          527.6,
+          0.00118
+        ],
+        [
+          598.7,
+          0.001758
+        ],
+        [
+          609.3,
+          0.001077
+        ],
+        [
+          609.4,
+          0.000805
+        ],
+        [
+          632,
+          0.000596
+        ],
+        [
+          676.7,
+          0.000357
+        ],
+        [
+          676.7,
+          0.000266
+        ],
+        [
+          704.6,
+          0.009862
+        ],
+        [
+          766.5,
+          0.014132
+        ],
+        [
+          832,
+          0.086226
+        ],
+        [
+          897.8,
+          0.006726
+        ],
+        [
+          951,
+          0.000594
+        ],
+        [
+          1014.6,
+          0.000493
+        ],
+        [
+          1080.2,
+          0.000367
+        ],
+        [
+          1109.5,
+          0.003491
+        ],
+        [
+          1196.3,
+          0.000327
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          33.6,
+          0.000446
+        ],
+        [
+          63.2,
+          0.000142
+        ],
+        [
+          65.4,
+          0.000199
+        ],
+        [
+          71.1,
+          0.001986
+        ],
+        [
+          73.1,
+          0.00337
+        ],
+        [
+          75.1,
+          0.000638
+        ],
+        [
+          77.1,
+          0.001472
+        ],
+        [
+          77.4,
+          0.001074
+        ],
+        [
+          79.6,
+          0.002467
+        ],
+        [
+          81,
+          0.000122
+        ],
+        [
+          81.4,
+          0.042756
+        ],
+        [
+          82.4,
+          0.000391
+        ],
+        [
+          82.9,
+          0.000761
+        ],
+        [
+          83.8,
+          0.000162
+        ],
+        [
+          84.1,
+          0.072525
+        ],
+        [
+          85.1,
+          0.000095
+        ],
+        [
+          85.2,
+          0.000187
+        ],
+        [
+          85.7,
+          0.000043
+        ],
+        [
+          87.1,
+          0.00013
+        ],
+        [
+          87.7,
+          0.000254
+        ],
+        [
+          88.2,
+          0.000049
+        ],
+        [
+          89.6,
+          0.000306
+        ],
+        [
+          90,
+          0.000032
+        ],
+        [
+          90.1,
+          0.000597
+        ],
+        [
+          90.2,
+          0.000063
+        ],
+        [
+          92.6,
+          0.000076
+        ],
+        [
+          92.7,
+          0.00015
+        ],
+        [
+          93.3,
+          0.000034
+        ],
+        [
+          94.3,
+          0.000036
+        ],
+        [
+          94.6,
+          0.009088
+        ],
+        [
+          95,
+          0.000056
+        ],
+        [
+          95.2,
+          0.017752
+        ],
+        [
+          95.7,
+          0.000278
+        ],
+        [
+          95.9,
+          0.000329
+        ],
+        [
+          97.3,
+          0.000037
+        ],
+        [
+          97.8,
+          0.002278
+        ],
+        [
+          98,
+          0.00453
+        ],
+        [
+          98.2,
+          0.000079
+        ],
+        [
+          98.2,
+          0.000093
+        ],
+        [
+          98.6,
+          0.000542
+        ],
+        [
+          98.6,
+          0.001041
+        ],
+        [
+          98.8,
+          0.000062
+        ],
+        [
+          98.8,
+          0.000106
+        ],
+        [
+          104.2,
+          0.000066
+        ],
+        [
+          106.8,
+          0.000082
+        ],
+        [
+          110.9,
+          0.00021
+        ],
+        [
+          122.3,
+          0.004772
+        ],
+        [
+          130.6,
+          0.000545
+        ],
+        [
+          136.1,
+          0.000122
+        ],
+        [
+          144.2,
+          0.015101
+        ],
+        [
+          154.2,
+          0.028186
+        ],
+        [
+          158.6,
+          0.003543
+        ],
+        [
+          175.7,
+          0.000111
+        ],
+        [
+          177.3,
+          0.000272
+        ],
+        [
+          179.5,
+          0.00089
+        ],
+        [
+          219,
+          0.0001
+        ],
+        [
+          221.3,
+          0.000262
+        ],
+        [
+          221.5,
+          0.000219
+        ],
+        [
+          244,
+          0.00031
+        ],
+        [
+          249.3,
+          0.000318
+        ],
+        [
+          251.6,
+          0.000344
+        ],
+        [
+          255.2,
+          0.000442
+        ],
+        [
+          269.5,
+          0.122962
+        ],
+        [
+          271.2,
+          0.09615
+        ],
+        [
+          288.2,
+          0.001514
+        ],
+        [
+          293.6,
+          0.000708
+        ],
+        [
+          293.8,
+          0.000644
+        ],
+        [
+          313.6,
+          0.000319
+        ],
+        [
+          323.9,
+          0.042266
+        ],
+        [
+          328.4,
+          0.002238
+        ],
+        [
+          334,
+          0.001107
+        ],
+        [
+          338.3,
+          0.03129
+        ],
+        [
+          342.9,
+          0.002485
+        ],
+        [
+          342.9,
+          0.00039
+        ],
+        [
+          346.8,
+          0.002041
+        ],
+        [
+          351.1,
+          0.147095
+        ],
+        [
+          362.1,
+          0.00054
+        ],
+        [
+          362.1,
+          0.000501
+        ],
+        [
+          362.9,
+          0.00018
+        ],
+        [
+          369.5,
+          0.00025
+        ],
+        [
+          370.9,
+          0.00013
+        ],
+        [
+          371.7,
+          0.005862
+        ],
+        [
+          372.9,
+          0.000604
+        ],
+        [
+          373.3,
+          0.000605
+        ],
+        [
+          376,
+          0.000149
+        ],
+        [
+          376.1,
+          0.000152
+        ],
+        [
+          382.8,
+          0.000172
+        ],
+        [
+          387.7,
+          0.000192
+        ],
+        [
+          393.5,
+          0.000144
+        ],
+        [
+          401.8,
+          0.085444
+        ],
+        [
+          404.9,
+          0.049477
+        ],
+        [
+          427.1,
+          0.024361
+        ],
+        [
+          430.6,
+          0.000273
+        ],
+        [
+          432.1,
+          0.000488
+        ],
+        [
+          438.2,
+          0.000431
+        ],
+        [
+          438.8,
+          0.000572
+        ],
+        [
+          439.3,
+          0.001174
+        ],
+        [
+          445,
+          0.018768
+        ],
+        [
+          478,
+          0.000203
+        ],
+        [
+          481.1,
+          0.000408
+        ],
+        [
+          481.6,
+          0.000331
+        ],
+        [
+          481.9,
+          0.000163
+        ],
+        [
+          487.5,
+          0.000178
+        ],
+        [
+          500.4,
+          0.000192
+        ],
+        [
+          517.6,
+          0.000754
+        ],
+        [
+          527.6,
+          0.001227
+        ],
+        [
+          598.7,
+          0.001829
+        ],
+        [
+          609.3,
+          0.001119
+        ],
+        [
+          609.4,
+          0.000837
+        ],
+        [
+          632,
+          0.00062
+        ],
+        [
+          676.7,
+          0.000371
+        ],
+        [
+          676.7,
+          0.000277
+        ],
+        [
+          704.6,
+          0.010255
+        ],
+        [
+          766.5,
+          0.014695
+        ],
+        [
+          832,
+          0.08966
+        ],
+        [
+          897.8,
+          0.006994
+        ],
+        [
+          951,
+          0.000617
+        ],
+        [
+          1014.6,
+          0.000512
+        ],
+        [
+          1080.2,
+          0.000381
+        ],
+        [
+          1109.5,
+          0.00363
+        ],
+        [
+          1196.3,
+          0.00034
+        ]
+      ]
+    },
+    {
+      "id": "Ac-225",
+      "symbol": "²²⁵Ac",
+      "Z": 89,
+      "A": 225,
+      "name": "Actinium-225 (+ daughters)",
+      "half_life_s": 864000,
+      "half_life_display": "10 d",
+      "decay_modes": [
+        {
+          "mode": "A",
+          "daughter": "Fr-221",
+          "branching": 1
+        }
+      ],
+      "clinical_use": "Targeted alpha therapy (e.g. ²²⁵Ac-PSMA-617, ²²⁵Ac-DOTATATE). Constants include progeny in secular equilibrium (Fr-221, At-217, Bi-213, Po-213/Tl-209, Pb-209).",
+      "category": "therapeutic",
+      "modality": "therapy",
+      "gamma_Kair": 27.69,
+      "gamma_H10": 35.2,
+      "gamma_H007": 34.34,
+      "H007_from_cornejo": false,
+      "representative_energy_keV": 441,
+      "source": "ICRP 107 (photon data, incl. progeny in secular equilibrium) / ICRU 57 (conversion coefficients)",
+      "clearance_a1_kBq_per_kg": null,
+      "ingestion_dose_coeff_adult_Sv_per_Bq": 2.4e-8,
+      "effluent_liquid_limit_Bq_per_L": 69.4,
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "e_max_beta_MeV": 1.8,
+      "max_photon_energy_keV": 1567.1,
+      "chain_members": [
+        {
+          "id": "Ac-225",
+          "equilibrium_activity_fraction": 1
+        },
+        {
+          "id": "Fr-221",
+          "equilibrium_activity_fraction": 1
+        },
+        {
+          "id": "At-217",
+          "equilibrium_activity_fraction": 1
+        },
+        {
+          "id": "Bi-213",
+          "equilibrium_activity_fraction": 0.9999
+        },
+        {
+          "id": "Po-213",
+          "equilibrium_activity_fraction": 0.979
+        },
+        {
+          "id": "Tl-209",
+          "equilibrium_activity_fraction": 0.0209
+        },
+        {
+          "id": "Pb-209",
+          "equilibrium_activity_fraction": 0.9999
+        }
+      ],
+      "shielding_spectrum": [
+        [
+          36.7,
+          0.000097
+        ],
+        [
+          38.5,
+          0.00007
+        ],
+        [
+          63,
+          0.001867
+        ],
+        [
+          64.3,
+          0.000137
+        ],
+        [
+          71.7,
+          0.00006
+        ],
+        [
+          73,
+          0.000565
+        ],
+        [
+          73.9,
+          0.001344
+        ],
+        [
+          74.9,
+          0.000074
+        ],
+        [
+          75.3,
+          0.000953
+        ],
+        [
+          77.1,
+          0.00521
+        ],
+        [
+          77.4,
+          0.00007
+        ],
+        [
+          79.2,
+          0.003826
+        ],
+        [
+          79.6,
+          0.00871
+        ],
+        [
+          81.9,
+          0.006442
+        ],
+        [
+          82.6,
+          0.00072
+        ],
+        [
+          83.5,
+          0.005028
+        ],
+        [
+          84.7,
+          0.000111
+        ],
+        [
+          85.2,
+          0.000216
+        ],
+        [
+          86.5,
+          0.008436
+        ],
+        [
+          87.4,
+          0.001158
+        ],
+        [
+          87.7,
+          0.000053
+        ],
+        [
+          89.6,
+          0.001051
+        ],
+        [
+          90.1,
+          0.002046
+        ],
+        [
+          92.1,
+          0.000782
+        ],
+        [
+          92.6,
+          0.000259
+        ],
+        [
+          92.7,
+          0.001523
+        ],
+        [
+          92.7,
+          0.000511
+        ],
+        [
+          93.3,
+          0.000061
+        ],
+        [
+          93.3,
+          0.000117
+        ],
+        [
+          94.9,
+          0.000455
+        ],
+        [
+          95.2,
+          0.000193
+        ],
+        [
+          95.3,
+          0.000383
+        ],
+        [
+          96,
+          0.000088
+        ],
+        [
+          96.2,
+          0.000148
+        ],
+        [
+          97.2,
+          0.00103
+        ],
+        [
+          97.9,
+          0.002011
+        ],
+        [
+          99.5,
+          0.00055
+        ],
+        [
+          99.6,
+          0.003077
+        ],
+        [
+          99.9,
+          0.00503
+        ],
+        [
+          100.5,
+          0.000258
+        ],
+        [
+          100.7,
+          0.000514
+        ],
+        [
+          101,
+          0.00035
+        ],
+        [
+          101.3,
+          0.000062
+        ],
+        [
+          101.4,
+          0.000119
+        ],
+        [
+          108.4,
+          0.001342
+        ],
+        [
+          111.5,
+          0.001743
+        ],
+        [
+          117.2,
+          0.01014
+        ],
+        [
+          118.2,
+          0.000215
+        ],
+        [
+          119.9,
+          0.00032
+        ],
+        [
+          119.9,
+          0.000115
+        ],
+        [
+          123.8,
+          0.000436
+        ],
+        [
+          124.8,
+          0.00016
+        ],
+        [
+          133.6,
+          0.000092
+        ],
+        [
+          134.9,
+          0.0002
+        ],
+        [
+          138.2,
+          0.000146
+        ],
+        [
+          145.2,
+          0.001027
+        ],
+        [
+          147.6,
+          0.000078
+        ],
+        [
+          150,
+          0.005764
+        ],
+        [
+          150,
+          0.000537
+        ],
+        [
+          152.6,
+          0.000128
+        ],
+        [
+          153.9,
+          0.001395
+        ],
+        [
+          157.3,
+          0.002737
+        ],
+        [
+          169.1,
+          0.000152
+        ],
+        [
+          171.3,
+          0.000616
+        ],
+        [
+          178.4,
+          0.000123
+        ],
+        [
+          186.2,
+          0.000178
+        ],
+        [
+          188,
+          0.004942
+        ],
+        [
+          195.8,
+          0.001562
+        ],
+        [
+          197.7,
+          0.000579
+        ],
+        [
+          198.7,
+          0.000233
+        ],
+        [
+          216.9,
+          0.003348
+        ],
+        [
+          218.2,
+          0.123335
+        ],
+        [
+          224.6,
+          0.001052
+        ],
+        [
+          249.5,
+          0.000146
+        ],
+        [
+          253.5,
+          0.001525
+        ],
+        [
+          258.5,
+          0.000712
+        ],
+        [
+          279.3,
+          0.000252
+        ],
+        [
+          292.8,
+          0.006133
+        ],
+        [
+          323.8,
+          0.002598
+        ],
+        [
+          324.1,
+          0.000292
+        ],
+        [
+          359.1,
+          0.000645
+        ],
+        [
+          381.8,
+          0.000685
+        ],
+        [
+          410.7,
+          0.002758
+        ],
+        [
+          440.5,
+          0.553038
+        ],
+        [
+          452.4,
+          0.002557
+        ],
+        [
+          465.1,
+          0.045141
+        ],
+        [
+          481.1,
+          0.000752
+        ],
+        [
+          515.4,
+          0.00048
+        ],
+        [
+          517.8,
+          0.000349
+        ],
+        [
+          526.1,
+          0.000788
+        ],
+        [
+          544.9,
+          0.000424
+        ],
+        [
+          593.1,
+          0.000333
+        ],
+        [
+          659.8,
+          0.001182
+        ],
+        [
+          710.8,
+          0.000355
+        ],
+        [
+          807.4,
+          0.010482
+        ],
+        [
+          868,
+          0.000482
+        ],
+        [
+          920.1,
+          0.000506
+        ],
+        [
+          1003.6,
+          0.002249
+        ],
+        [
+          1100.2,
+          0.013149
+        ],
+        [
+          1119.4,
+          0.002846
+        ],
+        [
+          1567.1,
+          0.120681
+        ]
+      ],
+      "shielding_spectrum_h007": [
+        [
+          36.7,
+          0.000099
+        ],
+        [
+          38.5,
+          0.00007
+        ],
+        [
+          63,
+          0.001684
+        ],
+        [
+          64.3,
+          0.000124
+        ],
+        [
+          71.7,
+          0.000055
+        ],
+        [
+          73,
+          0.000516
+        ],
+        [
+          73.9,
+          0.001228
+        ],
+        [
+          74.9,
+          0.000068
+        ],
+        [
+          75.3,
+          0.000872
+        ],
+        [
+          77.1,
+          0.004773
+        ],
+        [
+          77.4,
+          0.000064
+        ],
+        [
+          79.2,
+          0.003512
+        ],
+        [
+          79.6,
+          0.007999
+        ],
+        [
+          81.9,
+          0.005952
+        ],
+        [
+          82.6,
+          0.000666
+        ],
+        [
+          83.5,
+          0.004667
+        ],
+        [
+          84.7,
+          0.000103
+        ],
+        [
+          85.2,
+          0.000201
+        ],
+        [
+          86.5,
+          0.007898
+        ],
+        [
+          87.4,
+          0.001087
+        ],
+        [
+          87.7,
+          0.00005
+        ],
+        [
+          89.6,
+          0.000992
+        ],
+        [
+          90.1,
+          0.001935
+        ],
+        [
+          92.1,
+          0.000743
+        ],
+        [
+          92.6,
+          0.000246
+        ],
+        [
+          92.7,
+          0.00145
+        ],
+        [
+          92.7,
+          0.000487
+        ],
+        [
+          93.3,
+          0.000058
+        ],
+        [
+          93.3,
+          0.000111
+        ],
+        [
+          94.9,
+          0.000436
+        ],
+        [
+          95.2,
+          0.000185
+        ],
+        [
+          95.3,
+          0.000367
+        ],
+        [
+          96,
+          0.000085
+        ],
+        [
+          96.2,
+          0.000142
+        ],
+        [
+          97.2,
+          0.000992
+        ],
+        [
+          97.9,
+          0.00194
+        ],
+        [
+          99.5,
+          0.000532
+        ],
+        [
+          99.6,
+          0.00298
+        ],
+        [
+          99.9,
+          0.004876
+        ],
+        [
+          100.5,
+          0.00025
+        ],
+        [
+          100.7,
+          0.000499
+        ],
+        [
+          101,
+          0.000339
+        ],
+        [
+          101.3,
+          0.00006
+        ],
+        [
+          101.4,
+          0.000115
+        ],
+        [
+          108.4,
+          0.001304
+        ],
+        [
+          111.5,
+          0.001695
+        ],
+        [
+          117.2,
+          0.009878
+        ],
+        [
+          118.2,
+          0.000209
+        ],
+        [
+          119.9,
+          0.000312
+        ],
+        [
+          119.9,
+          0.000112
+        ],
+        [
+          123.8,
+          0.000425
+        ],
+        [
+          124.8,
+          0.000156
+        ],
+        [
+          133.6,
+          0.00009
+        ],
+        [
+          134.9,
+          0.000196
+        ],
+        [
+          138.2,
+          0.000143
+        ],
+        [
+          145.2,
+          0.001007
+        ],
+        [
+          147.6,
+          0.000077
+        ],
+        [
+          150,
+          0.005656
+        ],
+        [
+          150,
+          0.000527
+        ],
+        [
+          152.6,
+          0.000126
+        ],
+        [
+          153.9,
+          0.00137
+        ],
+        [
+          157.3,
+          0.002691
+        ],
+        [
+          169.1,
+          0.00015
+        ],
+        [
+          171.3,
+          0.000607
+        ],
+        [
+          178.4,
+          0.000122
+        ],
+        [
+          186.2,
+          0.000176
+        ],
+        [
+          188,
+          0.004887
+        ],
+        [
+          195.8,
+          0.001547
+        ],
+        [
+          197.7,
+          0.000574
+        ],
+        [
+          198.7,
+          0.000231
+        ],
+        [
+          216.9,
+          0.003321
+        ],
+        [
+          218.2,
+          0.122364
+        ],
+        [
+          224.6,
+          0.001044
+        ],
+        [
+          249.5,
+          0.000145
+        ],
+        [
+          253.5,
+          0.001516
+        ],
+        [
+          258.5,
+          0.000708
+        ],
+        [
+          279.3,
+          0.000251
+        ],
+        [
+          292.8,
+          0.00611
+        ],
+        [
+          323.8,
+          0.002582
+        ],
+        [
+          324.1,
+          0.00029
+        ],
+        [
+          359.1,
+          0.000639
+        ],
+        [
+          381.8,
+          0.000677
+        ],
+        [
+          410.7,
+          0.002732
+        ],
+        [
+          440.5,
+          0.554629
+        ],
+        [
+          452.4,
+          0.002576
+        ],
+        [
+          465.1,
+          0.045698
+        ],
+        [
+          481.1,
+          0.000766
+        ],
+        [
+          515.4,
+          0.000492
+        ],
+        [
+          517.8,
+          0.000358
+        ],
+        [
+          526.1,
+          0.000808
+        ],
+        [
+          544.9,
+          0.000435
+        ],
+        [
+          593.1,
+          0.000341
+        ],
+        [
+          659.8,
+          0.001212
+        ],
+        [
+          710.8,
+          0.000364
+        ],
+        [
+          807.4,
+          0.010745
+        ],
+        [
+          868,
+          0.000494
+        ],
+        [
+          920.1,
+          0.000519
+        ],
+        [
+          1003.6,
+          0.002305
+        ],
+        [
+          1100.2,
+          0.013478
+        ],
+        [
+          1119.4,
+          0.002918
+        ],
+        [
+          1567.1,
+          0.123707
+        ]
+      ]
+    }
+  ]
+}

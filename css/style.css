@@ -1,0 +1,1526 @@
+/* =========================================================
+   Nuclear Medicine Radionuclide Planner — Shared Styles
+   ========================================================= */
+
+:root {
+  --green-900: #1b4332;
+  --green-800: #1e5631;
+  --green-700: #2d6a4f;
+  --green-600: #40916c;
+  --green-400: #74c69d;
+  --green-100: #d8f3dc;
+  --green-50:  #f0faf2;
+
+  --gray-900: #212529;
+  --gray-800: #343a40;
+  --gray-700: #495057;
+  --gray-500: #adb5bd;
+  --gray-200: #e9ecef;
+  --gray-100: #f8f9fa;
+  --white:    #ffffff;
+
+  --accent:   #0077b6;
+  --warning:  #e76f00;
+  /* --warning is tuned as a BACKGROUND/border accent; as text on a light surface
+     it only reaches 3.15:1, below the 4.5:1 AA floor for normal-size text. Use
+     --warning-text for warning-coloured glyphs and copy (5.0:1 on white,
+     4.8:1 on the alternating row) and keep --warning for fills. */
+  --warning-text: #b35400;
+  --warning-100: #ffefd3;
+  --danger:   #b00020;
+  --info:     #0096c7;
+  --success:  #2ecc71;
+
+  --border:      var(--gray-200);
+  --bg-elevated: var(--white);
+  --text-muted:  var(--gray-700);
+  --tooltip-bg:  #343a40;
+  --tooltip-text:#ffffff;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.10);
+  --shadow:    0 2px 8px rgba(0,0,0,.12);
+  --radius:    6px;
+  --radius-lg: 10px;
+
+  --font-mono: 'Consolas', 'Menlo', 'Liberation Mono', monospace;
+  --font-sans: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* ---- Dark mode variant ---- */
+[data-theme="dark"] {
+  --green-900: #74c69d;
+  --green-800: #95d5b2;
+  --green-700: #52b788;
+  --green-600: #74c69d;
+  --green-400: #40916c;
+  --green-100: #1a3a2a;
+  --green-50:  #112318;
+
+  --gray-900: #f0f0f0;
+  --gray-800: #d0d0d0;
+  --gray-700: #a0a0a0;
+  --gray-500: #b8b8b8;     /* Lightened for WCAG AAA contrast */
+  --gray-200: #2c2f33;
+  --gray-100: #e8e8e8;     /* Lightened for WCAG AAA contrast */
+  --white:    #23272b;
+
+  --accent:  #48cae4;
+  --warning: #f4a261;
+  /* In dark mode the accent is already a light orange on dark surfaces, so the
+     text token is the same value — the split only matters on light backgrounds. */
+  --warning-text: #f4a261;
+  --warning-100: #3a2817;
+  --danger:  #e63946;
+  --info:    #48cae4;
+  --success: #6bcf7f;
+
+  --border:      var(--gray-200);
+  --bg-elevated: var(--gray-800);
+  --text-muted:  var(--gray-700);
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.4);
+  --shadow:    0 2px 8px rgba(0,0,0,.5);
+}
+
+[data-theme="dark"] .site-header,
+[data-theme="dark"] .site-footer,
+[data-theme="dark"] .data-table th {
+  background: #1a2e25;
+  color: #ffffff;
+}
+
+[data-theme="dark"] body { background: #0f1517; }
+
+/* ---- Reset & Base ---- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 15px; scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--gray-100);
+  color: var(--gray-900);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+a { color: var(--green-700); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---- Header / Nav ---- */
+.site-header {
+  background: var(--green-900);
+  color: var(--white);
+  padding: 0 1.5rem;
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.site-header .inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  height: 58px;
+}
+
+/* The header is dark green in BOTH themes, so anything drawn on it must not use
+   a variable that flips with the theme. `color: var(--white)` looked right but
+   --white is the elevated-SURFACE colour, and dark mode redefines it to #23272b:
+   the logo rendered near-black on the dark header at 1.05:1 — invisible.
+   `inherit` takes the header's own colour, which is white in both themes. */
+.site-logo {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: inherit;
+  white-space: nowrap;
+  letter-spacing: .02em;
+}
+
+/* Literal, not var(--green-400): that token is a light green in the light theme
+   and a DARK green (#40916c) in the dark one, which dropped "NM" to 3.75:1 on
+   the always-dark header. This value gives 5.4:1 light / 6.1:1 dark. */
+.site-logo span { color: #74c69d; }
+
+.site-nav {
+  display: flex;
+  gap: .25rem;
+  flex-wrap: wrap;
+}
+
+.site-nav a {
+  color: rgba(255,255,255,.80);
+  padding: .35rem .85rem;
+  border-radius: var(--radius);
+  font-size: .9rem;
+  transition: background .15s, color .15s;
+}
+
+.site-nav a:hover,
+.site-nav a.active {
+  background: var(--green-700);
+  color: var(--white);
+  text-decoration: none;
+}
+
+/* ---- Main Content ---- */
+.page-body {
+  flex: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem 1.5rem 3rem;
+  width: 100%;
+}
+
+.page-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--green-900);
+  margin-bottom: .3rem;
+}
+
+.page-subtitle {
+  font-size: .9rem;
+  color: var(--gray-700);
+  margin-bottom: 1.5rem;
+}
+
+/* ---- Cards ---- */
+.card {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.card + .card { margin-top: 1rem; }
+
+.card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--green-800);
+  margin-bottom: .9rem;
+  padding-bottom: .5rem;
+  border-bottom: 2px solid var(--green-100);
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+/* ---- About / guide / licences ---- */
+.about-page {
+  max-width: 980px;
+}
+
+.about-content {
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.about-content h2 {
+  color: var(--green-800);
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.about-content h3 {
+  color: var(--green-800);
+  font-size: 1.05rem;
+  margin: 1.5rem 0 .65rem;
+}
+
+.about-content h4 {
+  color: var(--gray-900);
+  font-size: .98rem;
+  margin: 1.25rem 0 .55rem;
+}
+
+.about-content h5 {
+  color: var(--gray-900);
+  font-size: .9rem;
+  margin: 1rem 0 .45rem;
+}
+
+.about-content p {
+  margin-bottom: .8rem;
+}
+
+.about-content ul,
+.about-content ol {
+  margin: .45rem 0 1rem;
+  padding-left: 1.6rem;
+}
+
+.about-content ul { list-style: disc; }
+.about-content ol { list-style: decimal; }
+.about-content ul ul { list-style: circle; }
+.about-content ul ul ul { list-style: square; }
+
+.about-content li + li {
+  margin-top: .25rem;
+}
+
+.about-content li > ul,
+.about-content li > ol {
+  margin: .3rem 0 .45rem;
+}
+
+.about-content hr {
+  border: 0;
+  border-top: 1px solid var(--gray-300);
+  margin: 1.5rem 0;
+}
+
+.about-content a {
+  overflow-wrap: anywhere;
+}
+
+.about-content code {
+  background: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: .88em;
+  padding: .08rem .28rem;
+}
+
+.about-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: .5rem 0 1rem;
+  min-width: 420px;
+}
+
+.about-table th,
+.about-table td {
+  border: 1px solid var(--gray-300);
+  padding: .55rem .65rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.about-table th {
+  background: var(--green-100);
+  color: var(--gray-900);
+}
+
+.legal-text {
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  background: var(--gray-100);
+  color: var(--gray-900);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: .78rem;
+  line-height: 1.5;
+  margin: .5rem 0 1.25rem;
+  padding: 1rem;
+}
+
+.about-content blockquote {
+  border-left: 4px solid var(--green-500);
+  color: var(--gray-800);
+  margin: .75rem 0 1rem;
+  padding: .4rem 0 .4rem 1rem;
+}
+
+[data-theme="dark"] .about-content code,
+[data-theme="dark"] .legal-text {
+  background: var(--gray-200);
+  border-color: var(--gray-700);
+  color: var(--gray-900);
+}
+
+[data-theme="dark"] .about-table th {
+  background: var(--green-100);
+  color: var(--gray-900);
+}
+
+[data-theme="dark"] .about-table td {
+  border-color: var(--gray-700);
+}
+
+/* ---- Tables ---- */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .875rem;
+}
+
+.data-table th {
+  background: var(--green-900);
+  color: var(--white);
+  padding: .55rem .75rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: .82rem;
+  letter-spacing: .02em;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.data-table th:first-child { border-radius: var(--radius) 0 0 0; }
+.data-table th:last-child  { border-radius: 0 var(--radius) 0 0; }
+
+.data-table td {
+  padding: .5rem .75rem;
+  border-bottom: 1px solid var(--gray-200);
+  vertical-align: middle;
+}
+
+.data-table tbody tr:nth-child(even) td { background: var(--green-50); }
+.data-table tbody tr:hover td { background: var(--green-100); cursor: pointer; }
+.data-table tbody tr.selected td { background: #c8ebd4; }
+
+.data-table .num { text-align: right; font-family: var(--font-mono); font-size: .83rem; }
+.data-table .sym { font-weight: 700; font-size: .95rem; color: var(--green-900); }
+.data-table .tag { font-size: .72rem; padding: .15rem .4rem; border-radius: 3px; font-weight: 600; white-space: nowrap; }
+
+.th-unit {
+  display: block;
+  font-size: 0.72em;
+  font-weight: 400;
+  opacity: 0.6;
+  letter-spacing: 0;
+}
+
+.tag-pet       { background: #dbeafe; color: #1d4ed8; }
+.tag-spect     { background: #fef9c3; color: #854d0e; }
+.tag-therapy   { background: #fee2e2; color: #991b1b; }
+.tag-brachy    { background: #ede9fe; color: #4c1d95; }
+.tag-other     { background: var(--gray-200); color: var(--gray-700); }
+
+/* ---- Forms ---- */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: .9rem 1.2rem;
+}
+
+.form-group { display: flex; flex-direction: column; gap: .3rem; }
+
+.form-label {
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--gray-700);
+}
+
+.form-label sup { font-size: .7em; }
+
+.form-input, .form-select {
+  padding: .45rem .65rem;
+  border: 1px solid var(--gray-500);
+  border-radius: var(--radius);
+  font-size: .9rem;
+  background: var(--white);
+  color: var(--gray-900);
+  transition: border-color .15s, box-shadow .15s;
+  width: 100%;
+}
+
+[data-theme="dark"] .form-label {
+  color: var(--gray-800);
+}
+
+[data-theme="dark"] .form-input,
+[data-theme="dark"] .form-select {
+  background: var(--gray-200);
+  color: var(--gray-900);
+  border-color: var(--gray-700);
+}
+
+.form-input:focus, .form-select:focus {
+  outline: none;
+  border-color: var(--green-600);
+  box-shadow: 0 0 0 3px rgba(64,145,108,.18);
+}
+
+.form-hint {
+  font-size: .75rem;
+  color: var(--gray-700);
+  margin-top: .1rem;
+}
+
+/* ---- Buttons ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .5rem 1.1rem;
+  border: none;
+  border-radius: var(--radius);
+  font-size: .88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s, transform .1s, box-shadow .1s;
+}
+
+.btn:active { transform: translateY(1px); }
+
+.btn-primary  { background: var(--green-700); color: var(--white); }
+.btn-primary:hover  { background: var(--green-800); }
+.btn-secondary{ background: var(--gray-200); color: var(--gray-900); }
+.btn-secondary:hover{ background: var(--gray-500); color: var(--white); }
+.btn-danger   { background: var(--danger); color: var(--white); }
+.btn-sm { padding: .3rem .7rem; font-size: .8rem; }
+
+/* Dark mode inverts the gray ramp so the same token works as TEXT (--gray-900
+   becomes #f0f0f0, --gray-800 becomes #d0d0d0). Using --gray-800 as a BACKGROUND
+   here therefore produced a light #d0d0d0 button with #e8e8e8 text on it: 1.26:1,
+   i.e. the label was invisible. Surfaces in dark mode are --gray-200 (#2c2f33);
+   text is --gray-900 (#f0f0f0) — the same tokens the base rule already uses, so
+   this override now only supplies the border. */
+[data-theme="dark"] .btn-secondary {
+  background: var(--gray-200);
+  color: var(--gray-900);
+  border: 1px solid var(--gray-700);
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+  background: var(--gray-700);
+  color: var(--white);
+}
+
+/* ---- Result boxes ---- */
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: .75rem;
+  margin-top: 1rem;
+}
+
+.result-box {
+  background: var(--green-50);
+  border: 1px solid var(--green-400);
+  border-radius: var(--radius);
+  padding: .75rem 1rem;
+  text-align: center;
+}
+
+.result-box.warning { background: #fff7ed; border-color: var(--warning); }
+.result-box.danger  { background: #fff0f0; border-color: var(--danger); }
+
+.result-label {
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--gray-700);
+  margin-bottom: .2rem;
+}
+
+.result-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--green-900);
+  font-family: var(--font-mono);
+  line-height: 1.2;
+}
+
+.result-unit {
+  font-size: .78rem;
+  color: var(--gray-700);
+  margin-top: .1rem;
+}
+
+[data-theme="dark"] .result-box {
+  background: var(--green-100);
+  border-color: var(--green-400);
+}
+
+[data-theme="dark"] .result-box.warning {
+  background: #3a2a1a;
+  border-color: var(--warning);
+}
+
+[data-theme="dark"] .result-box.danger {
+  background: #3a1a1a;
+  border-color: var(--danger);
+}
+
+[data-theme="dark"] .result-label {
+  color: var(--gray-800);
+}
+
+[data-theme="dark"] .result-value {
+  color: var(--green-800);
+}
+
+[data-theme="dark"] .result-unit {
+  color: var(--gray-800);
+}
+
+/* ---- Nuclide detail panel ---- */
+.nuclide-detail {
+  display: none;
+  border-top: 3px solid var(--green-600);
+  margin-top: 1rem;
+  padding-top: 1rem;
+}
+
+.nuclide-detail.visible { display: block; }
+
+.nuclide-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.nuclide-symbol-large {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--green-900);
+  line-height: 1;
+}
+
+.nuclide-meta { flex: 1; min-width: 200px; }
+.nuclide-name { font-size: 1.1rem; font-weight: 700; color: var(--green-800); }
+.nuclide-use  { font-size: .85rem; color: var(--gray-700); margin-top: .3rem; line-height: 1.4; }
+
+.prop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: .5rem;
+}
+
+.prop-item {
+  background: var(--gray-100);
+  border-radius: var(--radius);
+  padding: .55rem .75rem;
+}
+
+.prop-key {
+  font-size: .72rem;
+  font-weight: 700;
+  color: var(--gray-700);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.prop-val {
+  font-size: .98rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  color: var(--gray-900);
+  margin-top: .1rem;
+}
+
+.prop-note { font-size: .72rem; color: var(--gray-700); margin-top: .1rem; font-style: italic; }
+
+[data-theme="dark"] .prop-item {
+  background: var(--gray-200);
+}
+
+[data-theme="dark"] .prop-key {
+  color: var(--gray-700);
+}
+
+[data-theme="dark"] .prop-val {
+  color: var(--gray-900);
+}
+
+[data-theme="dark"] .prop-note {
+  color: var(--gray-700);
+}
+
+/* ---- Search bar ---- */
+.search-bar {
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 220px;
+  padding: .5rem .9rem;
+  border: 1px solid var(--gray-500);
+  border-radius: var(--radius);
+  font-size: .9rem;
+  background: var(--white);
+  color: var(--gray-900);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--green-600);
+  box-shadow: 0 0 0 3px rgba(64,145,108,.18);
+}
+
+[data-theme="dark"] .search-input {
+  background: var(--gray-200);
+  color: var(--gray-900);
+  border-color: var(--gray-700);
+}
+
+.filter-bar {
+  display: flex;
+  gap: .4rem;
+  flex-wrap: wrap;
+  margin-bottom: .75rem;
+}
+
+.filter-btn {
+  padding: .28rem .7rem;
+  border-radius: 20px;
+  border: 1px solid var(--gray-500);
+  background: var(--white);
+  color: var(--gray-900);
+  font-size: .8rem;
+  cursor: pointer;
+  transition: background .12s, color .12s, border-color .12s;
+}
+
+.filter-btn.active {
+  background: var(--green-700);
+  color: var(--white);
+  border-color: var(--green-700);
+}
+
+/* Same inverted-ramp trap as .btn-secondary above: --gray-800 is a light gray in
+   dark mode, so the inactive modality filters (PET, SPECT, Therapy…) rendered at
+   1.26:1 and could not be read. */
+[data-theme="dark"] .filter-btn {
+  background: var(--gray-200);
+  color: var(--gray-900);
+  border-color: var(--gray-700);
+}
+
+[data-theme="dark"] .filter-btn.active {
+  background: var(--green-700);
+  color: var(--white);
+  border-color: var(--green-700);
+}
+
+/* ---- Chart container ---- */
+.chart-wrap {
+  position: relative;
+  height: 300px;
+  margin-top: .75rem;
+}
+
+/* ---- Alerts ---- */
+.alert {
+  padding: .65rem 1rem;
+  border-radius: var(--radius);
+  font-size: .85rem;
+  line-height: 1.5;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  margin-bottom: .75rem;
+  color: var(--gray-900);
+}
+
+.alert-info    { background: #e0f2fe; border-left: 4px solid var(--info); }
+.alert-warning { background: #fff7ed; border-left: 4px solid var(--warning); }
+
+/* Slightly larger than the .alert default (.85rem) for notes that carry a
+   caveat the reader must not skim past. Was an inline font-size:0.9rem repeated
+   at three call sites; kept at the same value so the rendering is unchanged. */
+.alert-lg { font-size: .9rem; }
+.alert-danger  { background: #fff0f0; border-left: 4px solid var(--danger); }
+.alert-success { background: var(--green-100); border-left: 4px solid var(--green-600); }
+
+[data-theme="dark"] .alert {
+  color: var(--gray-100);
+}
+
+[data-theme="dark"] .alert-info {
+  background: #1a3a4a;
+  border-left-color: var(--info);
+}
+
+[data-theme="dark"] .alert-warning {
+  background: #3a2a1a;
+  border-left-color: var(--warning);
+}
+
+[data-theme="dark"] .alert-danger {
+  background: #3a1a1a;
+  border-left-color: var(--danger);
+}
+
+[data-theme="dark"] .alert-success {
+  background: #1a3a2a;
+  border-left-color: var(--green-600);
+}
+
+/* ---- Footer ---- */
+.site-footer {
+  background: var(--green-900);
+  color: rgba(255,255,255,.6);
+  text-align: center;
+  padding: .75rem 1rem;
+  font-size: .78rem;
+}
+
+/* Literal for the same reason as .site-logo span: the footer is dark green in
+   both themes, but --green-400 flips to a dark green in dark mode (3.75:1). */
+.site-footer a { color: #74c69d; }
+
+/* ---- Upload zone ---- */
+.drop-zone {
+  border: 2px dashed var(--gray-500);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+  background: var(--gray-100);
+  color: var(--gray-700);
+}
+
+.drop-zone.drag-over {
+  border-color: var(--green-600);
+  background: var(--green-50);
+}
+
+.drop-zone-icon { font-size: 2rem; color: var(--gray-500); margin-bottom: .5rem; }
+.drop-zone-text { font-size: .9rem; color: var(--gray-700); }
+.drop-zone-hint { font-size: .78rem; color: var(--gray-500); margin-top: .3rem; }
+
+[data-theme="dark"] .drop-zone {
+  background: var(--gray-200);
+  border-color: var(--gray-700);
+  color: var(--gray-800);
+}
+
+[data-theme="dark"] .drop-zone.drag-over {
+  border-color: var(--green-600);
+  background: var(--green-100);
+}
+
+[data-theme="dark"] .drop-zone-icon {
+  color: var(--gray-700);
+}
+
+[data-theme="dark"] .drop-zone-text {
+  color: var(--gray-800);
+}
+
+[data-theme="dark"] .drop-zone-hint {
+  color: var(--gray-700);
+}
+
+/* ---- Dose limit reference lines ---- */
+.limit-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  font-size: .75rem;
+  padding: .2rem .5rem;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.limit-public     { background: #dbeafe; color: #1e40af; }
+.limit-worker     { background: #fef9c3; color: #713f12; }
+.limit-extremity  { background: #fce7f3; color: #9d174d; }
+
+[data-theme="dark"] .limit-badge {
+  color: var(--gray-100);
+}
+
+[data-theme="dark"] .limit-public {
+  background: #1a3a4a;
+  color: #48cae4;
+}
+
+[data-theme="dark"] .limit-worker {
+  background: #3a3a1a;
+  color: #f4a261;
+}
+
+[data-theme="dark"] .limit-extremity {
+  background: #3a1a2a;
+  color: #e76f8f;
+}
+
+/* ---- Misc utilities ---- */
+.mono { font-family: var(--font-mono); }
+.text-sm { font-size: .82rem; }
+.text-muted { color: var(--gray-700); }
+.text-right { text-align: right; }
+.mt-1 { margin-top: .5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mb-1 { margin-bottom: .5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.d-flex { display: flex; }
+.align-center { align-items: center; }
+.gap-1 { gap: .5rem; }
+.gap-2 { gap: 1rem; }
+.flex-wrap { flex-wrap: wrap; }
+.hidden { display: none !important; }
+.divider { border: none; border-top: 1px solid var(--gray-200); margin: 1rem 0; }
+
+/* ---- Custom page styles ---- */
+.methodology-text {
+  margin: .75rem 0 .5rem;
+  font-size: 1.08em;
+  letter-spacing: .01em;
+  font-family: Georgia, serif;
+  line-height: 2;
+}
+
+.methodology-table {
+  border-collapse: collapse;
+  margin-top: .25rem;
+  line-height: 1.8;
+}
+
+.methodology-td {
+  padding-right: 1rem;
+  white-space: nowrap;
+  font-family: Georgia, serif;
+}
+
+.emissions-table-wrap {
+  overflow-x: auto;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.contrib-table-wrap {
+  overflow-x: auto;
+}
+
+.file-input-hidden {
+  display: none;
+}
+
+.form-select-narrow {
+  width: 90px;
+}
+
+.form-select-medium {
+  width: 80px;
+}
+
+/* Visible only to assistive technology. Not display:none — that would remove it
+   from the accessibility tree and silence the live region entirely. */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Nuclide combobox */
+.nuclide-combobox {
+  position: relative;
+}
+
+.nuclide-dropdown {
+  position: absolute; top: 100%; left: 0; right: 0; z-index: 200;
+  background: var(--gray-100);
+  border: 1px solid var(--gray-500);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  max-height: 260px;
+  overflow-y: auto;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}
+
+[data-theme="dark"] .nuclide-dropdown {
+  background: var(--gray-200);
+  border-color: var(--gray-700);
+}
+
+.nuclide-dropdown.hidden {
+  display: none;
+}
+
+.nuclide-option {
+  display: flex;
+  align-items: baseline;
+  gap: .75rem;
+  padding: .4rem .75rem;
+  cursor: pointer;
+  font-size: .875rem;
+  color: var(--gray-800);
+}
+
+[data-theme="dark"] .nuclide-option {
+  color: var(--gray-900);
+}
+
+/* .is-active is the keyboard cursor. With the aria-activedescendant pattern the
+   focus never leaves the <input>, so :focus cannot express the highlighted
+   option — the class does. Keep it visually identical to :hover. */
+.nuclide-option:hover,
+.nuclide-option:focus,
+.nuclide-option.is-active {
+  background: var(--green-100);
+  outline: none;
+  font-weight: 600;
+}
+
+[data-theme="dark"] .nuclide-option:hover,
+[data-theme="dark"] .nuclide-option:focus,
+[data-theme="dark"] .nuclide-option.is-active {
+  background: var(--green-100);
+  color: var(--gray-900);
+}
+
+/* The highlight is the only cue for a keyboard user, so it must survive
+   forced-colors mode, where background-color is overridden. */
+@media (forced-colors: active) {
+  .nuclide-option.is-active {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+}
+
+.nuclide-opt-id {
+  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: .95rem;
+}
+
+.nuclide-opt-meta {
+  color: var(--gray-700);
+  font-size: .8rem;
+}
+
+[data-theme="dark"] .nuclide-opt-meta {
+  color: var(--gray-500);
+}
+
+.tag-icrp107 {
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-size: .7rem;
+  padding: .1rem .4rem;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+[data-theme="dark"] .tag-icrp107 {
+  background: #0c3b66;
+  color: #93d5ff;
+}
+
+.overflow-x-auto {
+  overflow-x: auto;
+}
+
+.max-height-260 {
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.percent-symbol {
+  line-height: 2.2rem;
+  padding: 0 0.4rem;
+}
+
+.ref-list {
+  line-height: 1.7;
+  padding-left: 1.2rem;
+}
+
+.loading-cell {
+  padding: 1rem;
+}
+
+.emission-row-dim {
+  opacity: 0.55;
+}
+
+.meets-yes {
+  color: var(--green-700);
+  font-weight: 700;
+}
+
+.meets-no {
+  color: var(--gray-500);
+}
+
+/* ---- Sticky table wrapper ---- */
+.table-scroll-wrap {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 420px;
+}
+
+/* ---- Custom tooltips ---- */
+.has-tooltip {
+  position: relative;
+  cursor: help;
+  border-bottom: 1px dotted var(--gray-500);
+}
+
+.has-tooltip:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.has-tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--tooltip-bg);
+  color: var(--tooltip-text);
+  font-size: .72rem;
+  font-family: var(--font-sans);
+  font-weight: 400;
+  padding: .35rem .6rem;
+  border-radius: 4px;
+  white-space: normal;
+  max-width: 240px;
+  min-width: 140px;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .15s, visibility .15s;
+  z-index: 200;
+  line-height: 1.4;
+}
+
+.has-tooltip::before {
+  content: '';
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-bottom-color: var(--tooltip-bg);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .15s, visibility .15s;
+  z-index: 200;
+}
+
+.has-tooltip:hover::after,
+.has-tooltip:focus::after,
+.has-tooltip:hover::before,
+.has-tooltip:focus::before {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ---- Dark mode: tag badges ---- */
+[data-theme="dark"] .tag-pet     { background: #1a3a4a; color: #48cae4; }
+[data-theme="dark"] .tag-spect   { background: #3a3a1a; color: #f4a261; }
+[data-theme="dark"] .tag-therapy { background: #3a1a1a; color: #e76f8f; }
+[data-theme="dark"] .tag-brachy  { background: #3a1a3a; color: #d6a7f0; }
+
+/* ---- Dark mode: selected table row ---- */
+[data-theme="dark"] .data-table tbody tr.selected td { background: var(--green-100); }
+
+/* ---- Dark mode: methodology box styling ---- */
+[data-theme="dark"] .methodology-text {
+  color: var(--gray-100);
+}
+
+[data-theme="dark"] .methodology-table {
+  color: var(--gray-100);
+}
+
+[data-theme="dark"] .methodology-td {
+  color: var(--gray-100);
+}
+
+/* ---- Dark mode toggle button ---- */
+.btn-icon {
+  background: none;
+  border: 1px solid rgba(255,255,255,.3);
+  color: rgba(255,255,255,.85);
+  border-radius: var(--radius);
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-left: auto;
+  flex-shrink: 0;
+  transition: background .15s, border-color .15s;
+}
+
+.btn-icon:hover {
+  background: rgba(255,255,255,.1);
+  border-color: rgba(255,255,255,.6);
+}
+
+/* ---- Keyboard shortcuts ---- */
+kbd {
+  background: var(--gray-800);
+  color: var(--white);
+  border: 1px solid rgba(0,0,0,.12);
+  border-radius: 3px;
+  padding: .1rem .35rem;
+  font-family: var(--font-mono);
+  font-size: .75rem;
+}
+
+.keyboard-hint {
+  text-align: right;
+  margin-top: 1.5rem;
+  font-size: .82rem;
+  color: var(--gray-900);
+}
+
+/* Dark theme adjustments for keyboard hint and kbd */
+[data-theme="dark"] kbd {
+  background: var(--gray-200);
+  color: var(--gray-900);
+  border: 1px solid var(--gray-700);
+}
+
+[data-theme="dark"] .keyboard-hint {
+  color: var(--gray-100);
+  opacity: .95;
+}
+
+/* ---- Calculation history ---- */
+.history-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .45rem .75rem;
+  border-bottom: 1px solid var(--gray-200);
+  font-size: .82rem;
+  cursor: pointer;
+  transition: background .1s;
+}
+
+.history-item:hover {
+  background: var(--green-50);
+}
+
+.history-ts {
+  color: var(--gray-700);
+  font-size: .72rem;
+  white-space: nowrap;
+}
+
+.history-summary {
+  flex: 1;
+}
+
+.history-restore {
+  color: var(--accent);
+  font-size: .75rem;
+  white-space: nowrap;
+}
+
+/* ---- Accessibility: Skip link ---- */
+/* Literal dark green, not var(--green-900): that token becomes a LIGHT green
+   (#74c69d) in dark mode, which put white text on it at 2.04:1 — on the very
+   first control a keyboard user reaches. The pill is dark in both themes. */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  background: #1b4332;
+  color: #ffffff;
+  padding: .5rem 1rem;
+  border-radius: 0 0 var(--radius) var(--radius);
+  z-index: 999;
+  transition: top .1s;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* ---- Print styles ---- */
+@media print {
+  /* Hide interactive chrome */
+  .site-header, .site-footer,
+  .btn, .filter-bar, .search-bar,
+  .drop-zone, #clearSearch,
+  [data-no-print] {
+    display: none !important;
+  }
+
+  /* Reset layout for print */
+  body {
+    background: white;
+    color: black;
+    font-size: 10pt;
+  }
+
+  .page-body {
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* Cards become plain sections */
+  .card {
+    border: 1px solid #ccc;
+    box-shadow: none;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    margin-bottom: 1rem;
+    padding: 1rem;
+  }
+
+  /* Table: full width, no hover effects, visible borders */
+  .data-table {
+    font-size: 8pt;
+  }
+
+  .data-table th {
+    background: #2d6a4f;
+    color: white;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .data-table tbody tr:nth-child(even) td {
+    background: #f0faf2;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .data-table tbody tr:hover td {
+    background: inherit;
+  }
+
+  /* Charts: preserve on print */
+  .chart-wrap {
+    height: 220pt;
+  }
+
+  /* Result boxes: flow as 2-column grid */
+  .result-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Page header stamp */
+  .page-body::before {
+    content: "NM Radionuclide Planner — " attr(data-print-title) " — Generated " attr(data-print-date);
+    display: block;
+    font-size: 8pt;
+    color: #555;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 4pt;
+  }
+
+  /* Force page breaks between major sections */
+  .card + .card {
+    page-break-before: auto;
+  }
+
+  #detailPanel {
+    page-break-before: always;
+  }
+
+  /* Nuclide detail: visible always when printing */
+  .nuclide-detail {
+    display: block !important;
+  }
+
+  /* Suppress URL printing */
+  a[href]::after {
+    content: none;
+  }
+
+  /* Sticky headers don't need to be sticky in print */
+  .data-table th {
+    position: static;
+  }
+}
+
+/* ---- Printable calculation report (js/report.js) ---- */
+#printReport {
+  display: none;
+}
+
+@media print {
+  /* When a formal report is active, print only the report */
+  body.print-report-mode > *:not(#printReport) {
+    display: none !important;
+  }
+
+  body.print-report-mode #printReport {
+    display: block;
+    color: black;
+    font-size: 10pt;
+    font-family: Georgia, 'Times New Roman', serif;
+    max-width: 100%;
+  }
+
+  body.print-report-mode .page-body::before {
+    content: none;
+  }
+
+  #printReport .rpt-title {
+    font-size: 14pt;
+    font-weight: 700;
+    border-bottom: 2pt solid #2d6a4f;
+    padding-bottom: 4pt;
+    margin-bottom: 8pt;
+  }
+
+  #printReport .rpt-meta,
+  #printReport .rpt-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 8pt;
+  }
+
+  #printReport .rpt-meta td,
+  #printReport .rpt-table td {
+    border: 0.5pt solid #999;
+    padding: 3pt 6pt;
+    vertical-align: top;
+  }
+
+  #printReport .rpt-meta td:first-child,
+  #printReport .rpt-table td:first-child {
+    width: 32%;
+    font-weight: 600;
+    background: #f0f0f0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  #printReport .rpt-heading {
+    font-size: 11pt;
+    font-weight: 700;
+    margin: 10pt 0 4pt;
+    border-bottom: 0.5pt solid #999;
+  }
+
+  #printReport .rpt-section {
+    break-inside: avoid;
+  }
+
+  #printReport .rpt-list {
+    margin: 2pt 0 6pt 14pt;
+    padding: 0;
+    font-size: 9pt;
+  }
+
+  #printReport .rpt-disclaimer {
+    margin-top: 10pt;
+    padding: 6pt;
+    border: 1pt solid #b00;
+    font-size: 8.5pt;
+    break-inside: avoid;
+  }
+
+  #printReport .rpt-sign {
+    margin-top: 16pt;
+    display: flex;
+    justify-content: space-between;
+    font-size: 9pt;
+    break-inside: avoid;
+  }
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 900px) {
+  .page-body {
+    padding: 1.25rem 1.25rem 2rem;
+  }
+
+  .form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .prop-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .result-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .site-header .inner {
+    height: auto;
+    padding: .6rem 0;
+    flex-wrap: wrap;
+  }
+
+  .site-nav {
+    gap: .15rem;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+
+  .site-nav a {
+    white-space: nowrap;
+    font-size: .8rem;
+    padding: .3rem .6rem;
+  }
+
+  .page-body {
+    padding: 1rem;
+  }
+
+  .result-value {
+    font-size: 1.1rem;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .data-table {
+    font-size: .78rem;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: .4rem .5rem;
+  }
+
+  .nuclide-symbol-large {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .page-body {
+    padding: .75rem .75rem 2rem;
+  }
+
+  .result-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .prop-grid {
+    grid-template-columns: 1fr;
+  }
+}

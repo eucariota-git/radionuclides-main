@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NM Radionuclide Planner — Properties</title>
+  <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+  <link rel="apple-touch-icon" href="assets/icons/icon-180.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2d6a4f">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<header class="site-header">
+  <div class="inner">
+    <div class="site-logo">&#9762; <span>NM</span> Radionuclide Planner</div>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="index.html" class="active">Properties</a>
+      <a href="decay.html">Decay</a>
+      <a href="dose.html">Dose</a>
+    </nav>
+    <button id="darkToggle" type="button" class="btn-icon" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
+      <span id="darkIcon">🌙</span>
+    </button>
+  </div>
+</header>
+
+<main class="page-body" id="main-content">
+  <h1 class="page-title">Radionuclide Properties</h1>
+
+  <!-- Search & Filters -->
+  <div class="card">
+    <div class="search-bar">
+      <!-- The placeholder is not an accessible name: it disappears as soon as the
+           user types, and assistive tech should not have to rely on it. The other
+           two pages label their search box; this one relied on placeholder alone
+           (audit 2026-07-15). Visually hidden to keep the bar's layout. -->
+      <label class="sr-only" for="searchInput">Search radionuclides</label>
+      <input type="search" id="searchInput" class="search-input"
+             placeholder="Search by name, symbol or clinical use…" autocomplete="off">
+      <button class="btn btn-secondary btn-sm" id="clearSearch">Clear</button>
+      <button class="btn btn-secondary btn-sm" id="btnExportCsv" title="Export table as CSV">⬇ Export CSV</button>
+    </div>
+    <div class="filter-bar" id="filterBar">
+      <button class="filter-btn active" data-modality="all">All</button>
+      <button class="filter-btn" data-modality="PET">PET</button>
+      <button class="filter-btn" data-modality="SPECT">SPECT</button>
+      <button class="filter-btn" data-modality="therapy">Therapy</button>
+      <button class="filter-btn" data-modality="brachytherapy">Brachytherapy</button>
+      <button class="filter-btn" data-modality="other">Other</button>
+    </div>
+    <div id="rowCount" class="text-sm text-muted mb-1"></div>
+
+    <div class="overflow-x-auto table-scroll-wrap">
+      <table class="data-table" id="nuclideTable" aria-label="Radionuclide properties">
+        <thead>
+          <tr>
+            <th>Nuclide</th>
+            <th>T&#189;</th>
+            <th>Decay</th>
+            <th>Modality</th>
+            <th class="has-tooltip" tabindex="0" aria-label="Gamma K-air. Air kerma rate constant at 1 metre from 1 GBq, in microgray per hour per GBq per square metre." data-tooltip="Air kerma rate constant. Photon field intensity at 1 m from 1 GBq. Units: μGy·h⁻¹·GBq⁻¹·m². See the Γ source column for provenance.">&#915;<sup>K-air</sup><span class="th-unit">μGy·h⁻¹·GBq⁻¹·m²</span></th>
+            <th class="has-tooltip" tabindex="0" aria-label="Gamma H star 10. Ambient dose equivalent rate constant for area monitoring and effective-dose estimation, in microsievert per hour per GBq per square metre." data-tooltip="Ambient dose equivalent rate constant (area monitoring; effective-dose estimator). Derived from ICRU 57 / ICRP 74. Units: μSv·h⁻¹·GBq⁻¹·m².">&#915;<sup>H*(10)</sup><span class="th-unit">μSv·h⁻¹·GBq⁻¹·m²</span></th>
+            <th class="has-tooltip" tabindex="0" aria-label="Gamma H prime 0.07. Directional dose equivalent rate constant for area monitoring and skin or extremity indication, in microsievert per hour per GBq per square metre." data-tooltip="Directional dose equivalent rate constant at 0.07 mm depth (area monitoring; skin/extremity indicator). Units: μSv·h⁻¹·GBq⁻¹·m².">&#915;<sup>H'(0.07)</sup><span class="th-unit">μSv·h⁻¹·GBq⁻¹·m²</span></th>
+            <th>Rep. energy<span class="th-unit">keV</span></th>
+            <th class="has-tooltip" tabindex="0" aria-label="Liquid effluent individual concentration level in becquerel per litre. A complete assessment must also check the mixture sum and annual activity limits." data-tooltip="Individual concentration level per nuclide, (1 mSv / e(g)) / 600 L — ONE of the IS-28 Annex II II.A.4 conditions. A complete discharge assessment must also verify the mixture sum of fractions Σ(Cᵢ/Lᵢ) ≤ 1 and the annual activity limits (10 GBq H-3, 1 GBq C-14, < 1 GBq the rest combined), which this app does not evaluate. Units: Bq/L.">Liquid effluent<span class="th-unit">Bq/L</span></th>
+            <th class="has-tooltip" tabindex="0" aria-label="Activity concentration value for exemption of practices or clearance of materials under RD 1217/2024 Annex IV Table A.1, in kilobecquerel per kilogram." data-tooltip="Activity concentration value for exemption of practices or clearance of materials (RD 1217/2024, Annex IV, Table A.1). The Decay calculator applies it specifically to clearance of material. Units: kBq/kg (= Bq/g).">Exemption /<br>clearance<span class="th-unit">kBq/kg</span></th>
+            <th class="has-tooltip" tabindex="0" aria-label="Source of the dose rate constants Gamma K-air, Gamma H star 10 and Gamma H prime 0.07." data-tooltip="Provenance of the three dose-rate constant columns only. Liquid-effluent and exemption/clearance values have their own regulatory sources.">&#915; source</th>
+          </tr>
+        </thead>
+        <tbody id="nuclideBody">
+          <tr><td colspan="11" class="text-muted text-sm loading-cell">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="text-sm text-muted mt-1">
+      Operational dose-rate constants use ICRP 107 photon emissions and ICRU 57 conversion coefficients where indicated; Cornejo et al. (2015) provides published comparison values for 32 curated nuclides.
+      Energy threshold &#948; = 20 keV, yield &ge; 0.01%.
+      Units: &#915;<sup>K-air</sup> in &#181;Gy&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;;
+      &#915;<sup>H*(10)</sup> and &#915;<sup>H'(0.07)</sup> in &#181;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;.
+    </p>
+  </div>
+
+  <!-- Detail panel -->
+  <div class="card nuclide-detail" id="detailPanel">
+    <h2 class="card-title" id="detailTitle">—</h2>
+    <div class="nuclide-header">
+      <div class="nuclide-symbol-large" id="detailSymbol"></div>
+      <div class="nuclide-meta">
+        <div class="nuclide-name" id="detailName"></div>
+        <div class="nuclide-use"  id="detailUse"></div>
+      </div>
+    </div>
+
+    <div class="prop-grid" id="detailProps"></div>
+
+    <div class="mt-2 d-flex gap-2 flex-wrap">
+      <a id="btnDecay" class="btn btn-primary btn-sm" href="#">&#8635; Open in Decay Calculator</a>
+      <a id="btnDose"  class="btn btn-primary btn-sm" href="#">&#128262; Open in Dose Estimator</a>
+    </div>
+
+    <div id="detailNotes" class="alert alert-info mt-2 hidden"></div>
+  </div>
+
+  <!-- Reference -->
+  <div class="card mt-2">
+    <h2 class="card-title">Reference & Data Notes</h2>
+    <ul class="text-sm ref-list" id="refList">
+      <li><strong>32 nuclides:</strong> Cornejo et al. (2015) provides published comparison values. Operational constants may differ because they use more recent ICRP 107 nuclear decay data and ICRU 57 conversion coefficients.</li>
+      <li><strong>Ga-68:</strong> addition beyond Cornejo et al., calculated using ICRP 107 photon data and ICRU 57 / ICRP 74 coefficients.</li>
+      <li><strong>Y-90:</strong> pure β⁻ emitter; photon dose-rate constants are not applicable on this page. Dose offers a separate, explicitly experimental container-dependent bremsstrahlung scenario.</li>
+      <li><strong>6 therapy/imaging additions (2026):</strong> Zr-89, Cu-67, Tb-161, Ho-166, <strong>Ra-223+daughters</strong> and <strong>Ac-225+daughters</strong> — calculated from ICRP 107 photon data (ICRU 57 coefficients). For the two alpha-therapy chains the constants <em>include progeny in secular equilibrium</em> (standard for aged sources; equilibrium within hours). Ra-223+progeny agrees within 6% with the published conservative constant (~50 &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;).</li>
+      <li><strong>H*(10) and H'(0.07)</strong> are both AREA-monitoring operational quantities and are always shown side by side: H*(10) estimates effective dose, H'(0.07) indicates skin/extremity dose. Neither is selected automatically from distance, and neither bounds the other (H*(10) is <em>not</em> always the higher figure — Pd-103 is 40% lower). Personal dosimetry quantities are Hp(10) / Hp(0.07) / Hp(3); limit comparisons in the dose page are indicative screening only.</li>
+      <li><strong>Exemption / clearance values</strong>: activity-concentration values for exemption of practices or clearance of materials under RD 1217/2024 Annex IV Table A.1. In Decay they are used specifically for a single-nuclide clearance estimate.</li>
+      <li><strong>Liquid effluent column</strong>: individual concentration level per nuclide, calculated from IS-28 Annex II II.A.4 using ICRP 119 Annex F adult ingestion coefficients: (1 mSv / e(g)) / 600 L. This is one condition of II.A.4. A complete discharge assessment must also verify the mixture sum of fractions &le; 1 and the annual activity limits (10 GBq H-3, 1 GBq C-14, &lt; 1 GBq the rest combined), which this app does not evaluate.</li>
+      <li>The JSON database (<code>data/nuclides.json</code>) can be edited directly to update or add values.</li>
+    </ul>
+  </div>
+</main>
+
+<footer class="site-footer">
+  NM Radionuclide Planner &mdash; For radiation protection estimation purposes.
+  Verify against primary sources for regulatory submissions.
+  <br>Original application and code: &copy; 2026 Ramon Sendon &middot; EUPL-1.2 &middot; Third-party data: separate terms &mdash;
+  <a href="about.html">About, guide &amp; licences</a>
+</footer>
+
+<script src="data/nuclides-data.js"></script>
+<script src="data/icrp107-data.js"></script>
+<script src="js/data.js"></script>
+<script src="js/physics.js"></script>
+<script src="js/nuclide-id.js"></script>
+<script src="js/db.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/icrp107-loader.js"></script>
+<script src="js/utils.js"></script>
+<script>
+(async () => {
+  // ---- UI initialization ----
+  UI.initDarkMode();
+  UI.initPrint();
+  UI.initKeyboard();
+
+  // ---- Load data ----
+  let nuclides = [];
+  try {
+    nuclides = await DB.load();
+    // Load ICRP 107 extended database
+    await ICRP107._ensureLoaded().catch(err => console.warn('ICRP 107 index not available:', err));
+  } catch (e) {
+    document.getElementById('nuclideBody').innerHTML =
+      `<tr><td colspan="11" style="color:var(--danger);padding:1rem;">Error loading database: ${e.message}</td></tr>`;
+    return;
+  }
+
+  let activeModality = 'all';
+  let activeSearch   = '';
+  let selectedId     = null;
+  let currentData    = [];
+
+  // ---- Render table ----
+  function modalityTag(n) {
+    const map = { PET:'pet', SPECT:'spect', therapy:'therapy', brachytherapy:'brachy', other:'other' };
+    const cls = map[n.modality] || 'other';
+    return `<span class="tag tag-${cls}">${n.modality || '—'}</span>`;
+  }
+
+  function fmtGamma(val) {
+    if (val === null || val === undefined) return '<span class="text-muted">—</span>';
+    return `<span class="mono">${val}</span>`;
+  }
+
+  // Warning marker when the stored (ICRP 107-recalculated) Γ H*(10) deviates
+  // more than 5% from the published Cornejo et al. (2015) Tabla III value
+  function cornejoDeviationNote(n) {
+    const pub = n.cornejo_validation && n.cornejo_validation.gamma_H10_Cornejo;
+    if (pub == null || n.gamma_H10 == null) return '';
+    const dev = (n.gamma_H10 - pub) / pub * 100;
+    if (Math.abs(dev) <= 5) return '';
+    return ` <span title="Recalculated from ICRP 107 photon data; differs ${dev > 0 ? '+' : ''}${dev.toFixed(1)}% from the published Cornejo et al. (2015) value (${pub})" style="cursor:help;color:var(--warning-text)">&#9888;</span>`;
+  }
+
+  function fmtNumber(val) {
+    return UTILS.fmt(val);
+  }
+
+  function fmtEffluentLimit(n) {
+    if (n.effluent_liquid_components && n.effluent_liquid_components.length) {
+      return '<span class="text-muted" title="Assess mixture components separately">mixture</span>';
+    }
+    if (n.effluent_liquid_limit_Bq_per_L === null || n.effluent_liquid_limit_Bq_per_L === undefined) {
+      return '<span class="text-muted">—</span>';
+    }
+    return `<span class="mono">${fmtNumber(n.effluent_liquid_limit_Bq_per_L)}</span>`;
+  }
+
+  function icrpDisplaySymbol(id) {
+    const sup = {'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','m':'ᵐ'};
+    const dash = id.indexOf('-');
+    if (dash === -1) return id;
+    const element = id.slice(0, dash);
+    const mass    = id.slice(dash + 1).replace(/./g, c => sup[c] ?? c);
+    return mass + element;
+  }
+
+  function enrichIcrpNuclide(n) {
+    const constants = ICRP107.calcConstants(n.id);
+    return {
+      ...n,
+      _icrp107: true,
+      symbol: icrpDisplaySymbol(n.id),
+      name: n.id,
+      decay_modes: n.decay_modes || [],
+      representative_energy_keV: '—',
+      gamma_H10: constants ? Number(constants.gammaH10.toPrecision(4)) : null,
+      gamma_H007: constants ? Number(constants.gammaH007.toPrecision(4)) : null,
+      source: 'ICRP 107',
+    };
+  }
+
+  function renderTable() {
+    let data = DB.getAll();
+    if (activeModality !== 'all') data = data.filter(n => n.modality === activeModality);
+
+    // Apply search filter to DB results
+    if (activeSearch) {
+      data = DB.search(activeSearch);
+      if (activeModality !== 'all') data = data.filter(n => n.modality === activeModality);
+
+      // If no DB results and we have a search query, try ICRP 107
+      if (data.length === 0 && ICRP107 && ICRP107.isReady()) {
+        const icrpResults = ICRP107.search(activeSearch);
+        // Add ICRP 107 results as synthetic entries (not filtered by modality, no clinical data)
+        data = icrpResults.map(enrichIcrpNuclide);
+      }
+    }
+
+    currentData = data;
+    document.getElementById('rowCount').textContent = `${data.length} nuclide${data.length !== 1 ? 's' : ''}`;
+
+    const rows = data.map(n => {
+      const sel = n.id === selectedId ? 'selected' : '';
+      const decayStr = (n.decay_modes || []).map(d => d.mode || d.daughter ? `${d.mode || 'decay'}` : d.mode).join(', ');
+
+      if (n._icrp107) {
+        // ICRP 107 extended database entry
+        const icrpBadge = '<span class="tag tag-icrp107" style="font-size:0.85em;">ICRP 107</span>';
+        return `<tr class="${sel}" data-id="${n.id}" style="opacity:0.85;">
+          <td class="sym">${UTILS.escapeHtml(n.symbol)}</td>
+          <td>${UTILS.escapeHtml(n.half_life_display)}</td>
+          <td class="text-sm">${UTILS.escapeHtml(decayStr)}</td>
+          <td>${icrpBadge}</td>
+          <td class="num text-muted">—</td>
+          <td class="num">${fmtGamma(n.gamma_H10)}</td>
+          <td class="num">${fmtGamma(n.gamma_H007)}</td>
+          <td class="num text-muted">—</td>
+          <td class="num text-muted">—</td>
+          <td class="num text-muted">—</td>
+          <td class="text-sm">${n.source}</td>
+        </tr>`;
+      }
+
+      const h007note = n.H007_from_cornejo
+        ? ` <span title="H'(0.07) from Cornejo et al. — applies for extremity dose" style="cursor:help;color:var(--warning-text)">&#9888;</span>`
+        : '';
+      return `<tr class="${sel}" data-id="${n.id}">
+        <td class="sym">${UTILS.escapeHtml(n.symbol)}</td>
+        <td>${UTILS.escapeHtml(n.half_life_display)}</td>
+        <td class="text-sm">${UTILS.escapeHtml(decayStr)}</td>
+        <td>${modalityTag(n)}</td>
+        <td class="num">${fmtGamma(n.gamma_Kair)}</td>
+        <td class="num">${fmtGamma(n.gamma_H10)}${cornejoDeviationNote(n)}</td>
+        <td class="num">${fmtGamma(n.gamma_H007)}${h007note}</td>
+        <td class="num">${n.representative_energy_keV ?? '—'}</td>
+        <td class="num">${fmtEffluentLimit(n)}</td>
+        <td class="num">${n.clearance_a1_kBq_per_kg != null ? n.clearance_a1_kBq_per_kg : '—'}</td>
+        <td class="text-sm">${
+          n.id === 'Y-90' ? 'Not applicable'
+          : !n.source ? '—'
+          : n.source.startsWith('Cornejo') ? 'Cornejo 2015'
+          : n.source.startsWith('Zanzonico') ? 'Zanzonico 1999 (est.)'
+          : n.source.startsWith('ICRP 107') ? 'ICRP 107'
+          : 'Calc.'
+        }</td>
+      </tr>`;
+    }).join('');
+
+    if (!rows && activeSearch) {
+      // No results in main DB and there's a search query
+      document.getElementById('nuclideBody').innerHTML =
+        `<tr><td colspan="11" class="text-muted text-sm" style="padding:1rem;">
+          No results in main database.
+          <button id="btnSearchIcrp107" class="btn btn-secondary btn-sm" style="margin-left:0.5rem;">Search in ICRP 107</button>
+        </td></tr>`;
+      document.getElementById('btnSearchIcrp107').addEventListener('click', () => searchIcrp107());
+    } else {
+      document.getElementById('nuclideBody').innerHTML = rows ||
+        '<tr><td colspan="11" class="text-muted text-sm" style="padding:1rem;">No results.</td></tr>';
+    }
+
+    // Re-bind click handlers
+    document.querySelectorAll('#nuclideBody tr[data-id]').forEach(tr => {
+      tr.addEventListener('click', () => selectNuclide(tr.dataset.id));
+    });
+  }
+
+  // Search in ICRP 107 database
+  function searchIcrp107() {
+    if (!ICRP107 || !ICRP107.isReady()) {
+      alert('ICRP 107 database is not loaded. Please try again in a moment.');
+      return;
+    }
+
+    const icrpResults = ICRP107.search(activeSearch);
+    if (icrpResults.length === 0) {
+      document.getElementById('nuclideBody').innerHTML =
+        `<tr><td colspan="11" class="text-muted text-sm" style="padding:1rem;">
+          No results found in ICRP 107 either. Try a different search term.
+        </td></tr>`;
+      return;
+    }
+
+    // Convert ICRP 107 results to table rows
+    currentData = icrpResults.map(enrichIcrpNuclide);
+
+    const rows = currentData.map(n => {
+      const sel = n.id === selectedId ? 'selected' : '';
+      const decayStr = (n.decay_modes || []).map(d => d.mode || d.daughter ? `${d.mode || 'decay'}` : d.mode).join(', ');
+      const icrpBadge = '<span class="tag tag-icrp107" style="font-size:0.85em;">ICRP 107</span>';
+      return `<tr class="${sel}" data-id="${UTILS.escapeHtml(n.id)}" style="opacity:0.85;">
+        <td class="sym">${UTILS.escapeHtml(n.symbol)}</td>
+        <td>${UTILS.escapeHtml(n.half_life_display)}</td>
+        <td class="text-sm">${UTILS.escapeHtml(decayStr)}</td>
+        <td>${icrpBadge}</td>
+        <td class="num text-muted">—</td>
+        <td class="num">${fmtGamma(n.gamma_H10)}</td>
+        <td class="num">${fmtGamma(n.gamma_H007)}</td>
+        <td class="num text-muted">—</td>
+        <td class="num text-muted">—</td>
+        <td class="num text-muted">—</td>
+        <td class="text-sm">${UTILS.escapeHtml(n.source)}</td>
+      </tr>`;
+    }).join('');
+
+    document.getElementById('nuclideBody').innerHTML = rows;
+    document.querySelectorAll('#nuclideBody tr[data-id]').forEach(tr => {
+      tr.addEventListener('click', () => selectNuclide(tr.dataset.id));
+    });
+  }
+
+  // ---- Detail panel ----
+  function selectNuclide(id) {
+    selectedId = id;
+    renderTable();
+
+    let n = DB.getById(id);
+    if (!n && ICRP107 && ICRP107.isReady()) {
+      n = ICRP107.get(id);
+      if (n) {
+        n._icrp107 = true;
+        n.symbol = icrpDisplaySymbol(n.id);
+      }
+    }
+    if (!n) return;
+
+    const panel = document.getElementById('detailPanel');
+    panel.classList.add('visible');
+
+    document.getElementById('detailTitle').textContent = n.id;
+    document.getElementById('detailSymbol').textContent = n.symbol;
+    document.getElementById('detailName').textContent   = n.id;
+    document.getElementById('detailUse').textContent    = n.clinical_use || '—';
+
+    // For ICRP 107 nuclides, show info with calculated dose constants
+    if (n._icrp107) {
+      const decayStr = (n.decay_modes || []).map(d => {
+        if (d.mode && d.daughter) return `${d.mode} → ${d.daughter}${d.branching < 1 ? ' (' + UTILS.fmt(d.branching * 100) + '%)' : ''}`;
+        return d.mode || '—';
+      }).join(', ');
+
+      const photonCount = n.photon_count_filtered || 0;
+      const photonNote = photonCount > 0
+        ? `${photonCount} G/X ray${photonCount !== 1 ? 's' : ''} (E≥20keV, yield≥0.01%)`
+        : 'No significant G/X/AQ photons';
+
+      // Calculate dose constants from photons
+      let gammaH10 = '—', gammaH007 = '—', gammaKair = '—';
+      if (n.photons && n.photons.length > 0 && typeof PHYSICS !== 'undefined' && PHYSICS.calcGammaConstants) {
+        try {
+          const constants = PHYSICS.calcGammaConstants(n.photons);
+          if (constants) {
+            gammaH10 = (constants.gammaH10 || constants.gamma_H10) != null ? UTILS.fmt(constants.gammaH10 || constants.gamma_H10) : '—';
+            gammaH007 = (constants.gammaH007 || constants.gamma_H007) != null ? UTILS.fmt(constants.gammaH007 || constants.gamma_H007) : '—';
+            gammaKair = (constants.gammaKair || constants.gamma_Kair) != null ? UTILS.fmt(constants.gammaKair || constants.gamma_Kair) : gammaH10; // Fallback to H10
+          }
+        } catch (e) {
+          console.warn('Error calculating dose constants:', e);
+        }
+      }
+
+      // Build beta energy display
+      let betaEnergyHtml = '';
+      if (n.e_max_beta_MeV) {
+        betaEnergyHtml += `<div class="prop-item"><div class="prop-key">β E<sub>max</sub></div><div class="prop-val">${UTILS.fmt(n.e_max_beta_MeV)}</div><div class="prop-note">Endpoint energy (MeV)</div></div>`;
+      }
+
+      const hlParts = n.half_life_display.split(' ');
+      document.getElementById('detailProps').innerHTML = `
+        <div class="prop-item">
+          <div class="prop-key">Half-life</div>
+          <div class="prop-val">${UTILS.escapeHtml(hlParts.slice(0, -1).join(' '))}</div>
+          <div class="prop-note">${UTILS.escapeHtml(hlParts.slice(-1)[0])}</div>
+        </div>
+        <div class="prop-item">
+          <div class="prop-key">Decay mode</div>
+          <div class="prop-val">${UTILS.escapeHtml(decayStr) || '—'}</div>
+        </div>
+        ${betaEnergyHtml}
+        <div class="prop-item">
+          <div class="prop-key">Photon emissions</div>
+          <div class="prop-val">${photonNote}</div>
+          <div class="prop-note">Filtered from ICRP 107</div>
+        </div>
+        <div class="prop-item">
+          <div class="prop-key">Γ<sup>H*(10)</sup></div>
+          <div class="prop-val" style="font-family:monospace;">${gammaH10}</div>
+          <div class="prop-note">Calculated from photons</div>
+        </div>
+        <div class="prop-item">
+          <div class="prop-key">Γ<sup>H'(0.07)</sup></div>
+          <div class="prop-val" style="font-family:monospace;">${gammaH007}</div>
+          <div class="prop-note">Extremity dose constant</div>
+        </div>
+      `;
+
+      // Show photon table for ICRP 107
+      if (n.photons && n.photons.length > 0) {
+        const photonRows = n.photons.map(p => `
+          <tr>
+            <td class="mono">${p.energy_keV}</td>
+            <td class="mono">${UTILS.fmt(p.yield_percent)}</td>
+            <td class="mono">${UTILS.escapeHtml(p.type)}</td>
+          </tr>
+        `).join('');
+
+        document.getElementById('detailProps').innerHTML += `
+          <div style="margin-top:1rem;">
+            <div style="font-weight:600;margin-bottom:0.5rem;">Photon spectrum (filtered):</div>
+            <div class="overflow-x-auto" style="max-height:200px;overflow-y:auto;">
+              <table style="font-size:0.9em;width:100%;">
+                <thead style="position:sticky;top:0;background:var(--bg-elevated);border-bottom:1px solid var(--border);">
+                  <tr>
+                    <th style="padding:0.3rem 0.5rem;text-align:left;border-right:1px solid var(--border);">E [keV]</th>
+                    <th style="padding:0.3rem 0.5rem;text-align:left;border-right:1px solid var(--border);">Yield [%]</th>
+                    <th style="padding:0.3rem 0.5rem;text-align:left;">Type</th>
+                  </tr>
+                </thead>
+                <tbody>${photonRows}</tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      // Show ingestion dose and effluent limit for ICRP 107
+      if (n.dose_ingestion_Sv_per_Bq) {
+        const ingestionCoeff = fmtNumber(n.dose_ingestion_Sv_per_Bq);
+        const effluentLimitCalc = ICRP107.calcEffluentLimit ? ICRP107.calcEffluentLimit(n.id) : null;
+        const effluentHtml = effluentLimitCalc !== null
+          ? `<div class="prop-item"><div class="prop-key">Liquid effluent limit</div><div class="prop-val">${fmtNumber(effluentLimitCalc)}</div><div class="prop-note">Bq/L (calculated)</div></div>`
+          : '';
+        document.getElementById('detailProps').innerHTML += `
+          <div style="margin-top:1rem;">
+            <div class="prop-item">
+              <div class="prop-key">Adult ingestion e(g)</div>
+              <div class="prop-val">${ingestionCoeff}</div>
+              <div class="prop-note">Sv/Bq, ICRP 107</div>
+            </div>
+            ${effluentHtml}
+          </div>
+        `;
+      }
+    } else {
+      // Standard nuclide from main database
+      const decayStr = (n.decay_modes || []).map(d =>
+        `${UTILS.escapeHtml(d.mode)}${d.fraction < 1 ? ' (' + UTILS.fmt(d.fraction * 100) + '%)' : ''}`
+      ).join(', ');
+      const effluentLimit = n.effluent_liquid_components && n.effluent_liquid_components.length
+        ? 'mixture'
+        : fmtNumber(n.effluent_liquid_limit_Bq_per_L);
+      const effluentNote = n.effluent_liquid_components && n.effluent_liquid_components.length
+        ? n.effluent_liquid_components
+            .map(c => `${UTILS.escapeHtml(c.id)}: ${fmtNumber(c.effluent_liquid_limit_Bq_per_L)} Bq/L`)
+            .join('; ')
+        : 'Bq/L';
+      const ingestionCoeff = fmtNumber(n.ingestion_dose_coeff_adult_Sv_per_Bq);
+
+      // Build beta energy display
+      let betaEnergyHtml = '';
+      if (n.e_max_beta_MeV) {
+        betaEnergyHtml += `<div class="prop-item"><div class="prop-key">β E<sub>max</sub></div><div class="prop-val">${UTILS.fmt(n.e_max_beta_MeV)}</div><div class="prop-note">Endpoint energy (MeV)</div></div>`;
+      }
+
+      const hlParts2 = n.half_life_display.split(' ');
+      document.getElementById('detailProps').innerHTML = `
+        <div class="prop-item">
+          <div class="prop-key">Half-life</div>
+          <div class="prop-val">${UTILS.escapeHtml(hlParts2.slice(0, -1).join(' '))}</div>
+          <div class="prop-note">${UTILS.escapeHtml(hlParts2.slice(-1)[0])}</div>
+        </div>
+        <div class="prop-item">
+          <div class="prop-key">Decay mode</div>
+          <div class="prop-val">${UTILS.escapeHtml(decayStr) || '—'}</div>
+        </div>
+        ${betaEnergyHtml}
+        <div class="prop-item">
+          <div class="prop-key">Representative &#947; energy</div>
+          <div class="prop-val">${n.representative_energy_keV ?? '—'}</div>
+          <div class="prop-note">keV</div>
+        </div>
+        <div class="prop-item">
+          <div class="prop-key">&#915;<sup>K-air</sup></div>
+          <div class="prop-val">${n.gamma_Kair !== null ? n.gamma_Kair : '—'}</div>
+          <div class="prop-note">&#956;Gy&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;</div>
+        </div>
+        <div class="prop-item">
+          <div class="prop-key">&#915;<sup>H*(10)</sup></div>
+          <div class="prop-val">${n.gamma_H10 !== null ? n.gamma_H10 : '—'}</div>
+          <div class="prop-note">&#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;</div>
+        </div>
+        <div class="prop-item">
+          <div class="prop-key">&#915;<sup>H'(0.07)</sup></div>
+          <div class="prop-val">${n.gamma_H007 !== null ? n.gamma_H007 : '—'}</div>
+          <div class="prop-note">&#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;${n.H007_from_cornejo ? ' &#9888;' : ''}</div>
+        </div>
+        ${n.clearance_a1_kBq_per_kg != null
+          ? `<div class="prop-item">
+               <div class="prop-key">Clearance level</div>
+               <div class="prop-val">${n.clearance_a1_kBq_per_kg}</div>
+               <div class="prop-note">kBq/kg · RD 1217/2024 Tabla A.1</div>
+             </div>`
+          : ''}
+        <div class="prop-item">
+          <div class="prop-key">Liquid effluent limit</div>
+          <div class="prop-val">${effluentLimit}</div>
+          <div class="prop-note">${effluentNote}</div>
+        </div>
+      `;
+
+      // Show photon spectrum table for curated nuclides (from ICRP 107)
+      // Try to get photon data from ICRP 107 if available
+      let photonTable = '';
+      if (ICRP107 && ICRP107.isReady()) {
+        const icrpNuclide = ICRP107.get(n.id);
+        if (icrpNuclide && icrpNuclide.photons && icrpNuclide.photons.length > 0) {
+          const photonRows = icrpNuclide.photons.map(p => `
+            <tr>
+              <td class="mono">${p.energy_keV}</td>
+              <td class="mono">${UTILS.fmt(p.yield_percent)}</td>
+              <td class="mono">${p.type}</td>
+            </tr>
+          `).join('');
+          photonTable = `
+            <div style="margin-top:1rem;">
+              <div style="font-weight:600;margin-bottom:0.5rem;">Photon spectrum (E≥20keV, yield≥0.01%):</div>
+              <div class="overflow-x-auto" style="max-height:200px;overflow-y:auto;">
+                <table style="font-size:0.9em;width:100%;">
+                  <thead style="position:sticky;top:0;background:var(--bg-elevated);border-bottom:1px solid var(--border);">
+                    <tr>
+                      <th style="padding:0.3rem 0.5rem;text-align:left;border-right:1px solid var(--border);">E [keV]</th>
+                      <th style="padding:0.3rem 0.5rem;text-align:left;border-right:1px solid var(--border);">Yield [%]</th>
+                      <th style="padding:0.3rem 0.5rem;text-align:left;">Type</th>
+                    </tr>
+                  </thead>
+                  <tbody>${photonRows}</tbody>
+                </table>
+              </div>
+            </div>
+          `;
+        }
+      }
+      if (photonTable) {
+        document.getElementById('detailProps').innerHTML += photonTable;
+      }
+    }
+
+    // Links to other calculators
+    const btnDecay = document.getElementById('btnDecay');
+    const btnDose = document.getElementById('btnDose');
+    const calcButtons = btnDecay.parentElement;
+    // Both Cornejo and ICRP 107 nuclides support both calculators
+    calcButtons.classList.remove('hidden');
+    btnDecay.href = `decay.html?id=${encodeURIComponent(id)}`;
+    btnDose.href  = `dose.html?id=${encodeURIComponent(id)}`;
+
+    // Notes
+    const noteEl = document.getElementById('detailNotes');
+    const notes = [];
+
+    if (n._icrp107) {
+      notes.push('&#9888; This nuclide is from the ICRP 107 extended database. Photon emissions are available from ICRP Publication 107 (2008). Constants have NOT been manually validated. For clinical/regulatory use, verify against primary sources.');
+    }
+
+    const pubH10 = n.cornejo_validation && n.cornejo_validation.gamma_H10_Cornejo;
+    if (pubH10 != null && n.gamma_H10 != null) {
+      const dev = (n.gamma_H10 - pubH10) / pubH10 * 100;
+      if (Math.abs(dev) > 5) {
+        notes.push(`&#9888; &#915;<sup>H*(10)</sup> recalculated from ICRP 107 differs ${dev > 0 ? '+' : ''}${dev.toFixed(1)}% from the published Cornejo et al. (2015) value (${pubH10} &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;).`);
+      }
+    }
+
+    if (n.id === 'Y-90') {
+      notes.push('Pure β⁻ emitter: photon dose-rate constants are not applicable. The Dose page provides a separate experimental bremsstrahlung scenario whose estimates depend on container material; they are not primary-source container constants and must not be used for regulatory conclusions.');
+    } else if (n.source && !n.source.startsWith('Cornejo') && !n._icrp107) {
+      notes.push('Source: ' + UTILS.escapeHtml(n.source));
+    } else if (n.H007_from_cornejo) {
+      notes.push('H\'(0.07) value from Cornejo et al.: applies when all photon energies < 300 keV and H\'(0.07) > H*(10). Used instead of H*(10) for extremity dose estimation.');
+    }
+    if (n.effluent_liquid_note) {
+      notes.push(UTILS.escapeHtml(n.effluent_liquid_note));
+    } else if (n.effluent_liquid_limit_source && !n._icrp107) {
+      notes.push('Liquid effluent limit source: ' + UTILS.escapeHtml(n.effluent_liquid_limit_source) + '. Calculated as (1 mSv / e(g)) / 600 L.');
+    }
+    if (notes.length) {
+      noteEl.innerHTML = notes.map(note => note).join('<br>');
+      noteEl.classList.remove('hidden');
+    } else {
+      noteEl.classList.add('hidden');
+    }
+
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  // ---- Event listeners ----
+  document.getElementById('searchInput').addEventListener('input', e => {
+    activeSearch = e.target.value;
+    renderTable();
+  });
+
+  document.getElementById('clearSearch').addEventListener('click', () => {
+    document.getElementById('searchInput').value = '';
+    activeSearch = '';
+    renderTable();
+  });
+
+  document.getElementById('filterBar').addEventListener('click', e => {
+    const btn = e.target.closest('.filter-btn');
+    if (!btn) return;
+    activeModality = btn.dataset.modality;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderTable();
+  });
+
+  // CSV export
+  document.getElementById('btnExportCsv').addEventListener('click', () => {
+    const headers = ['id', 'symbol', 'name', 'half_life_display', 'decay_modes', 'modality',
+                     'gamma_Kair', 'gamma_H10', 'gamma_H007', 'representative_energy_keV',
+                     'ingestion_dose_coeff_adult_Sv_per_Bq', 'effluent_liquid_limit_Bq_per_L',
+                     'effluent_liquid_limit_source', 'clearance_a1_kBq_per_kg',
+                     'clearance_a1_source', 'gamma_source'];
+    const rows = currentData.map(n => [
+      n.id,
+      n.symbol,
+      n.name,
+      n.half_life_display,
+      (n.decay_modes || []).map(d => d.mode).join('; '),
+      n.modality,
+      n.gamma_Kair ?? '',
+      n.gamma_H10 ?? '',
+      n.gamma_H007 ?? '',
+      n.representative_energy_keV ?? '',
+      n.ingestion_dose_coeff_adult_Sv_per_Bq ?? '',
+      n.effluent_liquid_limit_Bq_per_L ?? '',
+      n.effluent_liquid_limit_source ?? '',
+      n.clearance_a1_kBq_per_kg ?? '',
+      n.clearance_a1_kBq_per_kg != null ? 'RD 1217/2024 Annex IV Table A.1' : '',
+      n.source || ''
+    ].map(v => {
+      const str = String(v);
+      const safe = /^[=+\-@\t\r]/.test(str) ? "'" + str : str;
+      return `"${safe.replace(/"/g, '""')}"`;
+    }).join(','));
+    const csv = [headers.join(','), ...rows].join('\r\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    a.href = url;
+    a.download = `radionuclide_properties_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 0);
+  });
+
+  // Auto-select from URL param
+  const urlId = new URLSearchParams(location.search).get('id');
+  if (urlId) selectNuclide(urlId);
+
+  renderTable();
+
+})();
+</script>
+<script>
+// Register the service worker for offline/PWA use (HTTP(S) only — file:// has no SW support)
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.protocol === 'http:')) {
+  navigator.serviceWorker.register('sw.js').catch(() => { /* offline-first is best-effort */ });
+}
+</script>
+</body>
+</html>

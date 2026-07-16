@@ -1,0 +1,28 @@
+# Runtime artifacts (local dev server)
+server.log
+server.pid
+
+# Personal Claude Code settings (machine-specific permission grants)
+.claude/settings.local.json
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+__pycache__/
+*.pyc
+
+# Copyrighted references kept locally only (not redistributable in a public repo).
+# Only open-license documents are tracked: BOE legal texts (no IP per art. 13 LPI)
+# and the CC BY Oumano 2025 JACMP article. See references/icrp107/README.md for
+# how to obtain and verify the local-only files.
+references/ICRP 119*.pdf
+references/Art*culo*.pdf
+references/Zanzonico*.pdf
+references/icrp107/USERGUIDE.pdf
+
+# ICRP 107 raw distribution files (© ICRP, "all rights reserved") — local only.
+# Download free from icrp.org and verify SHA256 against data/icrp107-index.json.
+data/sources/
+
+# Local audit working reports (the remediation plan remains versioned in docs/).
+docs/AUDIT_*.md

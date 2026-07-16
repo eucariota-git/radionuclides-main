@@ -1,0 +1,372 @@
+/**
+ * physics.js — Core radiological calculations
+ *
+ * All functions are pure (no DOM). Requires data.js to be loaded first.
+ *
+ * Dose rate formula (point source):
+ *   Ḣ [μSv/h] = Γ [μSv·h⁻¹·GBq⁻¹·m²] × A [GBq] × T(x) / d² [m²]
+ *
+ * Transmission T(x):
+ *   Archer (broad beam, default when params available):
+ *     T(x) = [(1 + β/α)·e^(αγx) − β/α]^(−1/γ)   x in mm
+ *     Source: Oumano et al. J Appl Clin Med Phys 2025
+ *     (Archer parameters are Monte Carlo fits to the nuclide's FULL photon
+ *      spectrum, so no further spectral weighting applies.)
+ *   Narrow beam, spectrum-weighted with buildup:
+ *     T(x) = Σ wᵢ·min(1, B(Eᵢ, μᵢx)·e^(−μᵢx))   x in cm
+ *     wᵢ = relative dose contribution of each line (Σwᵢ = 1, from ICRP 107 yields
+ *     × ICRU 57; see tools/add-shielding-spectra.js). One spectrum PER QUANTITY —
+ *     nuclide.shielding_spectrum weights h*(10), nuclide.shielding_spectrum_h007
+ *     weights h'(0.07). They are not interchangeable and neither bounds the other
+ *     (Pd-103 −42%, Re-186 +8% at 5 mm Pb — the response ratio is non-monotonic).
+ *     Accounts for spectral hardening AND scatter buildup. B = exposure buildup
+ *     factor for a point isotropic source (ANSI/ANS-6.4.3 reference data,
+ *     NUREG/CR-5740 Table 3 — see PHYSICS.getBuildup). The min(1, ·) clamp
+ *     removes the infinite-medium artifact T > 1 at low energies / thin shields
+ *     (B assumes scatter from surrounding medium) and keeps T monotonically
+ *     decreasing, which the thickness solvers rely on.
+ *
+ *     Model limits (declared, not corrected): B is an infinite-medium factor
+ *     applied to a finite slab, and it is tabulated against mfp counted WITHOUT
+ *     coherent scattering while μ here includes it. Neither deviation has a
+ *     universally conservative direction — see the notes in PHYSICS.ATTENUATION
+ *     and PHYSICS.getBuildup.
+ *   Narrow beam, single line (internal fallback when no stored spectrum):
+ *     T(x) = min(1, B(E, μx)·e^(−μx))   x in cm
+ *
+ * Cumulative dose with radioactive decay over time t [h]:
+ *   H [μSv] = Γ × A₀ × T / d² × (1 − e^(−λt)) / λ
+ *   λ [h⁻¹] = ln(2) / T½[h]
+ */
+
+'use strict';
+
+const CALC = (() => {
+
+  const LN2 = Math.LN2;
+
+  // ---------------------------------------------------------------------------
+  // Decay
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Decay constant λ from half-life.
+   * @param {number} halfLife - half-life in any unit
+   * @returns {number} λ in same unit⁻¹
+   */
+  function lambda(halfLife) {
+    return LN2 / halfLife;
+  }
+
+  /**
+   * Activity at time t.
+   * @param {number} A0   - initial activity (any unit)
+   * @param {number} T_half - half-life (same time unit as t)
+   * @param {number} t    - elapsed time (same unit)
+   * @returns {number} A(t) in same activity unit
+   */
+  function activityAtTime(A0, T_half, t) {
+    return A0 * Math.exp(-lambda(T_half) * t);
+  }
+
+  /**
+   * Time to reach a target activity.
+   * @param {number} A0      - initial activity
+   * @param {number} Atarget - target activity (< A0)
+   * @param {number} T_half  - half-life (any time unit)
+   * @returns {number} time in same unit as T_half; 0 if Atarget >= A0 (already met); Infinity if Atarget <= 0
+   */
+  function timeToActivity(A0, Atarget, T_half) {
+    if (Atarget >= A0) return 0;
+    if (Atarget <= 0)  return Infinity;
+    return -T_half * Math.log2(Atarget / A0);
+  }
+
+  /**
+   * Generate decay curve data points.
+   * @param {number} A0       - initial activity [MBq or GBq]
+   * @param {number} T_half_h - half-life in hours
+   * @param {number} nPoints  - number of data points
+   * @returns {Array<{t_h, A}>} array of {t_h [h], A [same unit as A0]}
+   */
+  function decayCurve(A0, T_half_h, nPoints = 100) {
+    // Time span: either 10 half-lives OR until activity < 0.1% of A0, whichever is shorter
+    // This prevents unbounded curves for very long half-lives while showing meaningful decay
+    const tMax = T_half_h * 10;  // 10 half-lives = 99.9% decay
+    const dt   = tMax / (nPoints - 1);
+    const points = [];
+    for (let i = 0; i < nPoints; i++) {
+      const t = i * dt;
+      const A = activityAtTime(A0, T_half_h, t);
+      if (A < 0.001 * A0) break;  // Stop if activity < 0.1% of initial
+      points.push({ t_h: t, A: A });
+    }
+    return points;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Dose rate
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Narrow-beam transmission factor (single line, buildup included).
+   * T(x) = min(1, B(E, μx)·e^(−μx)) — see module header.
+   * @param {number} x_cm    - shield thickness [cm]
+   * @param {number} E_MeV   - representative photon energy [MeV]
+   * @param {string} material - 'Pb'|'Fe'|'concrete'|'concrete_NW'|'concrete_LW'|'none'
+   * @returns {number} T ∈ (0, 1]
+   */
+  function transmission(x_cm, E_MeV, material) {
+    if (material === 'none' || x_cm <= 0) return 1.0;
+    return transmissionSpectrum(x_cm, [[E_MeV * 1000, 1]], material);
+  }
+
+  /**
+   * Spectrum-weighted narrow-beam transmission with exposure buildup.
+   * T(x) = Σ wᵢ·min(1, B(Eᵢ, μᵢx)·e^(−μᵢx)), weights renormalized defensively.
+   * @param {number} x_cm     - shield thickness [cm]
+   * @param {Array<[number,number]>} spectrum - [[E_keV, w], ...] dose-weighted lines
+   * @param {string} material - 'Pb'|'Fe'|'concrete_NW'|'concrete_LW'
+   * @returns {number} T ∈ (0, 1]
+   */
+  function transmissionSpectrum(x_cm, spectrum, material) {
+    if (x_cm <= 0) return 1.0;
+    let sumW = 0, sumT = 0;
+    for (const [E_keV, w] of spectrum) {
+      const E_MeV = E_keV / 1000;
+      const mu  = PHYSICS.getMu(E_MeV, material);
+      const mfp = mu * x_cm;
+      const B   = PHYSICS.getBuildup(E_MeV, mfp, material);
+      sumW += w;
+      sumT += w * Math.min(1, B * Math.exp(-mfp));
+    }
+    return sumW > 0 ? sumT / sumW : 1.0;
+  }
+
+  /**
+   * Thickness [cm] for a target spectrum-weighted transmission (bisection;
+   * T(x) is strictly decreasing in x).
+   */
+  function _spectrumThickness_cm(T_target, spectrum, material) {
+    if (T_target >= 1) return 0;
+    if (T_target <= 0) return Infinity;
+    let lo = 0, hi = 1;
+    while (transmissionSpectrum(hi, spectrum, material) > T_target) {
+      hi *= 2;
+      if (hi > 1e4) return Infinity;
+    }
+    for (let i = 0; i < 60; i++) {
+      const mid = (lo + hi) / 2;
+      if (transmissionSpectrum(mid, spectrum, material) > T_target) lo = mid;
+      else hi = mid;
+    }
+    return (lo + hi) / 2;
+  }
+
+  /**
+   * Archer broad-beam transmission.
+   * T(x) = [(1 + β/α)·e^(αγx) − β/α]^(−1/γ)
+   * @param {number} x_mm - shield thickness [mm]
+   * @param {{alpha:number, beta:number, gamma:number}} p - Archer parameters
+   * @returns {number} T ∈ (0, 1]
+   */
+  function transmissionArcher(x_mm, p) {
+    if (x_mm <= 0) return 1.0;
+    const ratio = p.beta / p.alpha;
+    const val   = (1 + ratio) * Math.exp(p.alpha * p.gamma * x_mm) - ratio;
+    return Math.pow(val, -1 / p.gamma);
+  }
+
+  /**
+   * Inverse Archer equation: thickness [mm] for a desired transmission T.
+   * x = (1/αγ) · ln[(T^(−γ) + β/α) / (1 + β/α)]
+   */
+  function _archerThickness_mm(T, p) {
+    if (T >= 1) return 0;
+    if (T <= 0) return Infinity;
+    const ratio = p.beta / p.alpha;
+    return (1 / (p.alpha * p.gamma)) *
+           Math.log((Math.pow(T, -p.gamma) + ratio) / (1 + ratio));
+  }
+
+  /**
+   * Best available transmission: Archer if params given (full-spectrum Monte
+   * Carlo fit), else spectrum-weighted narrow beam, else single-line narrow beam.
+   * @param {number} x_cm
+   * @param {number} E_MeV
+   * @param {string} material
+   * @param {object|null} archerParams - from nuclide.archer_params[material] or null
+   * @param {Array<[number,number]>|null} [spectrum] - nuclide.shielding_spectrum or null
+   */
+  function getTransmission(x_cm, E_MeV, material, archerParams, spectrum) {
+    if (material === 'none' || x_cm <= 0) return 1.0;
+    if (archerParams) return transmissionArcher(x_cm * 10, archerParams);
+    if (spectrum && spectrum.length > 0) return transmissionSpectrum(x_cm, spectrum, material);
+    return transmission(x_cm, E_MeV, material);
+  }
+
+  /**
+   * Instantaneous dose rate at distance d with optional shielding.
+   * @param {number} gamma        - Γ [μSv·h⁻¹·GBq⁻¹·m²]
+   * @param {number} A_GBq        - activity [GBq]
+   * @param {number} d_m          - distance [m]
+   * @param {number} x_cm         - shield thickness [cm]
+   * @param {number} E_MeV        - representative photon energy [MeV]
+   * @param {string} material
+   * @param {object|null} [archerParams] - optional Archer parameters
+   * @param {Array<[number,number]>|null} [spectrum] - optional dose-weighted line spectrum
+   * @returns {number} dose rate [μSv/h]
+   */
+  function doseRate(gamma, A_GBq, d_m, x_cm, E_MeV, material, archerParams, spectrum) {
+    if (d_m <= 0) return Infinity;
+    const T = getTransmission(x_cm, E_MeV, material, archerParams || null, spectrum || null);
+    return (gamma * A_GBq * T) / (d_m * d_m);
+  }
+
+  /**
+   * Cumulative dose over time t_h considering radioactive decay.
+   * H = Γ × A₀ × T / d² × (1 − e^(−λt)) / λ
+   * @param {number} gamma        - Γ constant [μSv·h⁻¹·GBq⁻¹·m²]
+   * @param {number} A0_GBq       - initial activity [GBq]
+   * @param {number} d_m          - distance [m]
+   * @param {number} t_h          - exposure time [h]
+   * @param {number} T_half_h     - half-life [h]
+   * @param {number} x_cm         - shield thickness [cm]
+   * @param {number} E_MeV        - representative energy [MeV]
+   * @param {string} material
+   * @param {object|null} [archerParams] - optional Archer parameters
+   * @param {Array<[number,number]>|null} [spectrum] - optional dose-weighted line spectrum
+   * @returns {number} cumulative dose [μSv]
+   */
+  function cumulativeDose(gamma, A0_GBq, d_m, t_h, T_half_h, x_cm, E_MeV, material, archerParams, spectrum) {
+    if (d_m <= 0) return Infinity;
+    const T     = getTransmission(x_cm, E_MeV, material, archerParams || null, spectrum || null);
+    const lam   = lambda(T_half_h);
+    const Hdot0 = (gamma * A0_GBq * T) / (d_m * d_m);
+    if (T_half_h === Infinity || lam === 0) return Hdot0 * t_h;
+    return Hdot0 * (1 - Math.exp(-lam * t_h)) / lam;
+  }
+
+  /**
+   * HVL and TVL — Archer when params provided, else spectrum-weighted narrow
+   * beam, else single-line narrow beam (both narrow-beam branches include
+   * buildup, so they are solved numerically).
+   * Note: with buildup and/or a spectrum, successive HVLs grow with depth;
+   * the values returned are the FIRST HVL/TVL (from x = 0).
+   * @param {number} E_MeV
+   * @param {string} material
+   * @param {object|null} [archerParams]
+   * @param {Array<[number,number]>|null} [spectrum]
+   * @returns {{ hvl_cm, tvl_cm, mu_cm, method }}
+   */
+  function hvlTvl(E_MeV, material, archerParams, spectrum) {
+    if (archerParams) {
+      const hvl_mm = _archerThickness_mm(0.5, archerParams);
+      const tvl_mm = _archerThickness_mm(0.1, archerParams);
+      return {
+        mu_cm:  null,
+        hvl_cm: hvl_mm / 10,
+        tvl_cm: tvl_mm / 10,
+        method: 'archer',
+      };
+    }
+    // length > 0, matching getTransmission: a 1-line spectrum must be solved on
+    // its own line, not on representative_energy_keV. The two differ (Cr-51:
+    // 320.1 vs 320 keV), so the old `> 1` made HVL/TVL and the reported method
+    // disagree with the transmission actually applied (audit 2026-07-15).
+    if (spectrum && spectrum.length > 0) {
+      return {
+        mu_cm:  null,
+        hvl_cm: _spectrumThickness_cm(0.5, spectrum, material),
+        tvl_cm: _spectrumThickness_cm(0.1, spectrum, material),
+        method: 'narrow_beam_spectrum',
+      };
+    }
+    const mono = [[E_MeV * 1000, 1]];
+    return {
+      mu_cm:  PHYSICS.getMu(E_MeV, material),  // informational (μ of the line)
+      hvl_cm: _spectrumThickness_cm(0.5, mono, material),
+      tvl_cm: _spectrumThickness_cm(0.1, mono, material),
+      method: 'narrow_beam',
+    };
+  }
+
+  /**
+   * Thickness [cm] of material required to achieve a given transmission.
+   * Archer when params given, else (spectrum or single-line) narrow beam with
+   * buildup, solved numerically.
+   */
+  function thicknessForAttenuation(attenuation, E_MeV, material, archerParams, spectrum) {
+    if (attenuation >= 1) return 0;
+    if (attenuation <= 0) return Infinity;
+    if (archerParams) return _archerThickness_mm(attenuation, archerParams) / 10;
+    // length > 0 — same threshold as getTransmission and hvlTvl (see note there)
+    if (spectrum && spectrum.length > 0) return _spectrumThickness_cm(attenuation, spectrum, material);
+    return _spectrumThickness_cm(attenuation, [[E_MeV * 1000, 1]], material);
+  }
+
+  /**
+   * Convert activity between units.
+   * @param {number} value
+   * @param {'MBq'|'GBq'|'mCi'|'Ci'|'kBq'|'Bq'} fromUnit
+   * @param {'MBq'|'GBq'|'mCi'|'Ci'|'kBq'|'Bq'} toUnit
+   */
+  function convertActivity(value, fromUnit, toUnit) {
+    // Activity unit conversion reference (SI and legacy units):
+    // SI:     Bq (1/s), kBq (10³/s), MBq (10⁶/s), GBq (10⁹/s)
+    // Legacy: mCi (37 MBq), Ci (37000 MBq = 37 GBq) — per IAEA definition
+    const toMBq = { Bq: 1e-6, kBq: 1e-3, MBq: 1, GBq: 1e3, mCi: 37, Ci: 37000 };
+    const valMBq = value * (toMBq[fromUnit] || 1);
+    return valMBq / (toMBq[toUnit] || 1);
+  }
+
+  /**
+   * Format a dose rate or dose value with appropriate unit prefix.
+   * @param {number} value - in μSv or μSv/h
+   * @returns {{ value: number, unit: string, display: string }}
+   */
+  function formatDose(value_uSv) {
+    if (!isFinite(value_uSv) || value_uSv < 0) return { value: value_uSv, unit: 'μSv', display: '—' };
+    if (value_uSv >= 1e6)  return { value: value_uSv / 1e6, unit: 'Sv',  display: UTILS.fmt(value_uSv / 1e6) + ' Sv' };
+    if (value_uSv >= 1e3)  return { value: value_uSv / 1e3, unit: 'mSv', display: UTILS.fmt(value_uSv / 1e3) + ' mSv' };
+    if (value_uSv >= 1)    return { value: value_uSv,       unit: 'μSv', display: UTILS.fmt(value_uSv) + ' μSv' };
+    return { value: value_uSv * 1e3, unit: 'nSv', display: UTILS.fmt(value_uSv * 1e3) + ' nSv' };
+  }
+
+  function formatDoseRate(value_uSvh) {
+    const f = formatDose(value_uSvh);
+    return { ...f, unit: f.unit + '/h', display: f.display.replace(f.unit, f.unit + '/h') };
+  }
+
+  /**
+   * Format a time value nicely.
+   * @param {number} t_s - time in seconds
+   */
+  function formatHalfLife(t_s) {
+    if (t_s < 60)        return UTILS.fmt(t_s) + ' s';
+    if (t_s < 3600)      return UTILS.fmt(t_s / 60) + ' min';
+    if (t_s < 86400)     return UTILS.fmt(t_s / 3600) + ' h';
+    if (t_s < 31557600)  return UTILS.fmt(t_s / 86400) + ' d';
+    return UTILS.fmt(t_s / 31557600) + ' y';
+  }
+
+  return {
+    lambda,
+    activityAtTime,
+    timeToActivity,
+    decayCurve,
+    transmission,
+    transmissionArcher,
+    transmissionSpectrum,
+    getTransmission,
+    doseRate,
+    cumulativeDose,
+    hvlTvl,
+    thicknessForAttenuation,
+    convertActivity,
+    formatDose,
+    formatDoseRate,
+    formatHalfLife,
+  };
+
+})();
