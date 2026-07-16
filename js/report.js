@@ -79,11 +79,18 @@ const REPORT = (() => {
     const n    = spec.nuclide || {};
     const validationTag = validationStatus(n);
 
+    // Identify the CODE, not just the data: two app versions sharing the same
+    // nuclides.json must not produce indistinguishable reports (audit
+    // 2026-07-16, H-07). UTILS.APP_BUILD is kept equal to sw.js CACHE_VERSION.
+    const appVersion = (typeof UTILS !== 'undefined' && UTILS.APP_VERSION) || '?';
+    const appBuild = (typeof UTILS !== 'undefined' && UTILS.APP_BUILD) || '?';
+
     let html = `
       <div class="rpt-header">
         <div class="rpt-title">&#9762; NM Radionuclide Planner — ${esc(spec.title)}</div>
         <table class="rpt-meta">
           <tr><td>Generated</td><td>${esc(ts)}</td></tr>
+          <tr><td>Application</td><td>NM Radionuclide Planner v${esc(appVersion)} (build ${esc(appBuild)})</td></tr>
           <tr><td>Database</td><td>nuclides.json v${esc(meta.version || '?')} — ${esc(meta.reference ? String(meta.reference).slice(0, 90) : '')}&hellip;</td></tr>
           <tr><td>Nuclide</td><td><strong>${esc(n.id)}</strong> — ${esc(n.name)} (T&#189; = ${esc(n.half_life_display)})</td></tr>
           <tr><td>Data status</td><td>${esc(validationTag)}</td></tr>

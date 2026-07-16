@@ -158,7 +158,14 @@ async function main() {
       addEventListener: (type, handler) => { handlers[type] = handler; },
     },
     caches: {
-      match: async request => request === './index.html' ? scenario.navigationFallback : scenario.cached,
+      // Query-sensitive like the real Cache API: a request URL carrying a query
+      // string only matches the precache when the SW passes ignoreSearch (H-04).
+      match: async (request, opts) => {
+        if (request === './index.html') return scenario.navigationFallback;
+        const url = typeof request === 'string' ? request : request.url;
+        if (url.includes('?') && !(opts && opts.ignoreSearch)) return undefined;
+        return scenario.cached;
+      },
       open: async () => ({ addAll: async () => {} }),
       keys: async () => [],
       delete: async () => true,
@@ -192,6 +199,16 @@ async function main() {
   const offlineNavigation = await dispatchFetch({ method: 'GET', mode: 'navigate', url: 'https://example.test/not-cached' });
   check('an uncached offline navigation returns the precached app shell',
     (await offlineNavigation.text()) === 'app shell');
+
+  // Pages are linked with query parameters (Properties emits dose.html?id=Y-90);
+  // offline they must reload as themselves, not as the app shell (H-04).
+  scenario.cached = new Response('precached dose page', { status: 200 });
+  scenario.fetchCalls = 0;
+  const queryNavigation = await dispatchFetch({ method: 'GET', mode: 'navigate', url: 'https://example.test/dose.html?id=Y-90' });
+  check('an offline navigation with a query string returns its own precached page',
+    (await queryNavigation.text()) === 'precached dose page' && scenario.fetchCalls === 0);
+  check('service worker matches the precache ignoring query strings',
+    /ignoreSearch:\s*true/.test(swJs));
   check('service worker no longer writes piecemeal runtime updates into the versioned cache',
     !/cache\.put\(/.test(swJs) && !/stale-while-revalidate/.test(swJs));
   console.log();
@@ -276,8 +293,12 @@ async function main() {
     'assets/icons/icon-192.png',
     'assets/icons/icon-512.png',
   ];
-  check('service-worker cache version was bumped for this asset change',
-    /nm-planner-v25/.test(swJs));
+  const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
+  const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
+  check('service-worker cache version was bumped for this change',
+    swVersion === 'nm-planner-v26');
+  check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
+    Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
     iconPaths.every(rel => fs.existsSync(path.join(ROOT, rel))) &&
     ['favicon.svg', 'icon-180.png', 'icon-192.png', 'icon-512.png']
@@ -310,6 +331,30 @@ async function main() {
     /@kurkle\/color v0\.3\.2/.test(noticesMd) && /Copyright \(c\) 2023 Jukka Kurkela/.test(noticesMd) &&
     /@kurkle\/color v0\.3\.2/.test(aboutHtml) && /Copyright \(c\) 2023 Jukka Kurkela/.test(aboutHtml) &&
     !/2018-2024 Jukka Kurkela/.test(`${noticesMd}\n${aboutHtml}`));
+  console.log();
+
+  console.log('Test 10: scientific-message and traceability regressions (audit 2026-07-16)');
+  check('no user-facing text claims infinite-medium build-up is conservative for finite barriers',
+    ![doseHtml, aboutHtml, guideMd].some(text => /conservative for finite|slightly conservative/i.test(text)) &&
+    /not universally conservative/.test(doseHtml));
+  check('dose page derives the photon-less label from real decay modes, not a blanket β− claim',
+    /decay_modes: icrpN\.decay_modes/.test(doseHtml) &&
+    /isPureBetaMinus/.test(doseHtml) &&
+    /m\.branching >= 1e-4/.test(doseHtml) &&
+    !doseHtml.includes('is a pure &beta;&#8315; emitter.</strong>'));
+  check('Y-90 report snapshot keeps container, patient transmission and decay-integration mode',
+    /containerName: container\.name/.test(doseHtml) &&
+    /patientTx: patientTx,\s*\n\s*withDecay: withDecay/.test(doseHtml) &&
+    doseHtml.includes("['Assumptions', '', '', '', '', ''"));
+  check('printed reports identify the application build',
+    /<tr><td>Application<\/td>/.test(reportJs) && /APP_BUILD/.test(reportJs));
+  check('decay validates the vial weight before any result is rendered',
+    decayHtml.indexOf('Vial / container weight must be a positive number') > 0 &&
+    decayHtml.indexOf('Vial / container weight must be a positive number') <
+    decayHtml.indexOf("card.classList.remove('hidden')"));
+  check('deployment docs build distributions from an allowlist, never the working folder',
+    /allowlist/i.test(developmentMd) && /data\/sources\//.test(developmentMd) &&
+    !/Distribute the complete project folder/.test(developmentMd));
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);
   process.exitCode = failed === 0 ? 0 : 1;

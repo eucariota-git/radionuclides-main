@@ -1,6 +1,13 @@
 'use strict';
 
 const UTILS = (() => {
+  // Application identity, printed in every calculation report (report.js) so
+  // two different code versions never produce indistinguishable reports
+  // (audit 2026-07-16, H-07). APP_BUILD must equal CACHE_VERSION in sw.js —
+  // update both together; validate-app.js enforces the match.
+  const APP_VERSION = '1.2';
+  const APP_BUILD = 'nm-planner-v26';
+
   function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
@@ -106,6 +113,8 @@ const UTILS = (() => {
   }
 
   return {
+    APP_VERSION,
+    APP_BUILD,
     escapeHtml,
     safeFilename,
     fmt,

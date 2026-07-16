@@ -292,6 +292,7 @@
         archer_params: null,
         _icrp107: true,
         _noPhotons: true,
+        decay_modes: icrpN.decay_modes || null,
         source: 'ICRP 107 (no photon emission above the 20 keV / 0.01% filter)',
       };
     }
@@ -641,7 +642,7 @@
     const methodText = {
       unshielded: 'No shielding applied.',
       archer: 'Archer broad-beam transmission (Monte Carlo full-spectrum fit, Oumano et al. 2025).',
-      narrow_beam_spectrum: `Spectrum-weighted narrow-beam transmission over ${r.spectrumLines} ICRP 107 photon lines with point-isotropic exposure build-up (ANSI/ANS-6.4.3 reference data); accounts for beam hardening and scatter build-up; infinite-medium build-up is conservative for finite barriers.`,
+      narrow_beam_spectrum: `Spectrum-weighted narrow-beam transmission over ${r.spectrumLines} ICRP 107 photon lines with point-isotropic exposure build-up (ANSI/ANS-6.4.3 reference data); accounts for beam hardening and scatter build-up. Infinite-medium build-up applied to a finite barrier: the deviation is not universally conservative — treat results as estimates, not shielding-design values.`,
       narrow_beam: 'Single-line narrow-beam attenuation with point-isotropic exposure build-up (ANSI/ANS-6.4.3 reference data; NIST XCOM attenuation).',
     }[r.method] || '';
     const notes = [methodText];
@@ -651,6 +652,19 @@
     if (r.n._icrp107) notes.push('ICRP 107 extended entry: constants computed automatically, NOT manually validated. Verify against primary sources before regulatory use.');
     if (r.patientTx !== undefined && r.patientTx < 1) notes.push(`Patient attenuation applied: transmission ${UTILS.fmt(r.patientTx * 100)}%.`);
 
+    // Only the sources the calculation actually used (audit 2026-07-16, H-06):
+    // a Y-90 or unshielded report must not cite Archer fits or buildup tables.
+    const sources = [];
+    if (r.isY90) {
+      sources.push('Zanzonico et al. (1999) J Nucl Med 40(6):1024–1028 — bremsstrahlung dose-rate methodology (the container constants used here are estimates, not tabulated in that publication).');
+    } else if (r.method === 'archer') {
+      sources.push('Oumano et al. (2025) J Appl Clin Med Phys — Archer broad-beam shielding parameters.');
+    } else if (r.method === 'narrow_beam_spectrum' || r.method === 'narrow_beam') {
+      sources.push('NIST XCOM — photon mass attenuation coefficients.');
+      sources.push('Trubey D.K. (1991) NUREG/CR-5740 / ORNL/RSIC-49/R1 — ANSI/ANS-6.4.3 exposure buildup factors (Table 3).');
+    }
+    sources.push('RD 1029/2022 — dose limits used in the regulatory comparison.');
+
     REPORT.print({
       title: 'External Dose Estimate',
       nuclide: r.n,
@@ -658,7 +672,7 @@
         { heading: 'Input parameters', rows: [
           ['Activity A₀', `${r.A0raw} ${r.A0unit} (${UTILS.fmt(r.A0_GBq)} GBq)`],
           ['Distance', `${r.d_m.toFixed(2)} m`],
-          ['Shielding', r.mat && r.mat !== 'none' ? `${r.mat}, ${r.thick} cm` : 'none'],
+          ['Shielding', r.isY90 ? `Y-90 bremsstrahlung container: ${r.containerName || '—'}` : r.mat && r.mat !== 'none' ? `${r.mat}, ${r.thick} cm` : 'none'],
           ['Exposure time per administration', `${UTILS.fmt(r.t_h)} h`],
           ['Administrations per year', String(r.nAdmin)],
           ['Decay during exposure', r.withDecay === undefined ? '—' : r.withDecay ? 'integrated A(t)' : 'no (constant activity, worst case)'],
@@ -674,18 +688,13 @@
         ]},
       ],
       notes,
-      sources: [
-        'Oumano et al. (2025) J Appl Clin Med Phys — Archer broad-beam shielding parameters.',
-        'NIST XCOM — photon mass attenuation coefficients.',
-        'Trubey D.K. (1991) NUREG/CR-5740 / ORNL/RSIC-49/R1 — ANSI/ANS-6.4.3 exposure buildup factors (Table 3).',
-        'RD 1029/2022 — dose limits used in the regulatory comparison.',
-      ],
+      sources,
     });
   };
 
   document.getElementById('btnExportDoseCsv').onclick = () => {
     if (!lastCalcResult) { alert('Calculate dose first.'); return; }
-    const { useH007, gammaExt, gammaWB, nAdmin, H_WB_cum, H_Ext_cum, Hdot_WB, Hdot_WB_t, Hdot_Ext, Hdot_Ext_t, Hdot_WB_1m, Hdot_WB_t_1m, Hdot_Ext_1m, Hdot_Ext_t_1m, n, A0raw, A0unit, d_m, isY90 } = lastCalcResult;
+    const { useH007, gammaExt, gammaWB, nAdmin, H_WB_cum, H_Ext_cum, Hdot_WB, Hdot_WB_t, Hdot_Ext, Hdot_Ext_t, Hdot_WB_1m, Hdot_WB_t_1m, Hdot_Ext_1m, Hdot_Ext_t_1m, n, A0raw, A0unit, d_m, t_h, mat, thick, withDecay, patientTx, containerName, isY90 } = lastCalcResult;
     const date = new Date().toISOString().slice(0, 10);
     const extLabel = useH007 ? "H'(0.07) skin/extremity indicator" : "H'(0.07) row (H*(10) value — no H'(0.07) constant)";
     const rows = [
@@ -694,6 +703,12 @@
        `γ=${gammaWB} μSv·h⁻¹·GBq⁻¹·m²`],
       [isY90 ? `Y-90 ${extLabel}` : extLabel, Hdot_Ext.toPrecision(5), Hdot_Ext_t.toPrecision(5), Hdot_Ext_1m.toPrecision(5), Hdot_Ext_t_1m.toPrecision(5), (H_Ext_cum * nAdmin).toPrecision(5),
        `γ=${gammaExt} μSv·h⁻¹·GBq⁻¹·m²${useH007 ? '' : ' (H*(10) value — no H\'(0.07) constant)'}`],
+      // Every assumption behind the numbers, so the CSV alone reproduces the
+      // scenario (audit 2026-07-16, H-06).
+      ['Assumptions', '', '', '', '', '',
+       `exposure ${t_h} h × ${nAdmin} admin/y; decay during exposure: ${withDecay === undefined ? '—' : withDecay ? 'integrated A(t)' : 'no (constant activity, worst case)'}; ` +
+       `shielding: ${isY90 ? `Y-90 bremsstrahlung container: ${containerName || '—'}` : mat && mat !== 'none' ? `${mat}, ${thick} cm` : 'none'}; ` +
+       `patient transmission: ${patientTx !== undefined && patientTx < 1 ? (patientTx * 100) + '%' : 'none'}`],
     ];
     const csv = rows.map(r => r.map(v => {
       const str = String(v);
@@ -819,6 +834,20 @@
       document.getElementById('nuclideInfo').innerHTML =
         `<strong>${UTILS.escapeHtml(n.symbol)} — ${UTILS.escapeHtml(n.name)}</strong> &nbsp;|&nbsp; T&#189; = ${UTILS.escapeHtml(n.half_life_display)}`;
 
+      // Radiologically honest label for entries with no photon dose component:
+      // 50 of the 89 photon-less ICRP 107 entries decay by α, EC or IT, not β−
+      // (audit 2026-07-16, H-02), so "pure β− emitter" is only claimed when the
+      // stored decay modes say so. Branches below 0.01% are ignored — the same
+      // threshold as the photon yield filter (e.g. Bi-210's 1.3e-6 α branch).
+      // Curated entries carry no decay_modes field; the only curated
+      // photon-less nuclide is Y-90, which IS a pure β− emitter.
+      const DECAY_MODE_NAMES = { 'A': 'α', 'B-': 'β−', 'B+': 'β+', 'EC': 'electron capture', 'ECB+': 'electron capture / β+', 'IT': 'isomeric transition', 'SF': 'spontaneous fission' };
+      const decayModes = (n.decay_modes || [])
+        .filter(m => m && (m.branching == null || m.branching >= 1e-4))
+        .map(m => String(m.mode || '').trim()).filter(Boolean);
+      const decayModeText = decayModes.map(m => DECAY_MODE_NAMES[m] || m).join(' + ');
+      const isPureBetaMinus = decayModes.length ? decayModes.every(m => m === 'B-') : !n._noPhotons;
+
       // Special handling for Y-90 with Zanzonico table
       if (n.id === 'Y-90') {
         // A0raw/A0unit/A0_GBq/d_m/t_h/nAdmin/patientTx/T_half_h/withDecay are
@@ -929,6 +958,14 @@
           A0_GBq: A0_GBq,
           d_m: d_m,
           t_h: t_h,
+          // Full scenario assumptions, so the printed report and the CSV can
+          // reproduce the calculation (audit 2026-07-16, H-06): container,
+          // patient transmission and time-integration mode were previously
+          // dropped, and the report showed "Shielding: none" / "Decay: —".
+          containerKey: selectedContainer,
+          containerName: container.name,
+          patientTx: patientTx,
+          withDecay: withDecay,
           isY90: true
         };
       } else {
@@ -942,8 +979,10 @@
             ${n._noPhotons
               ? `${UTILS.escapeHtml(n.symbol)} is an ICRP 107 entry with no photon emission passing the
                  selection filter (&#8805; 20 keV, yield &#8805; 0.01%), so no external photon dose can be
-                 estimated. Any external hazard would come from bremsstrahlung, which depends on the
-                 container geometry and is not modelled here.`
+                 estimated. Decay mode${decayModes.length > 1 ? 's' : ''}: <strong>${UTILS.escapeHtml(decayModeText || 'not recorded')}</strong>.
+                 ${isPureBetaMinus
+                   ? 'Any external hazard would come from bremsstrahlung, which depends on the container geometry and is not modelled here.'
+                   : 'This is not a pure β− emitter: assess the radiological hazard from the actual decay mode (for photon-less α and EC emitters the main concern is internal exposure).'}`
               : `<strong>Pure &beta;&#8315; emitter</strong> — external dose requires bremsstrahlung data
                  specific to container geometry.`}
           </td></tr>`;
@@ -954,10 +993,14 @@
       if (distChart) { distChart.destroy(); distChart = null; }
       document.getElementById('distChartContainer').innerHTML = `
         <div class="alert alert-warning" style="margin:1rem 0;">
-          <strong>${UTILS.escapeHtml(n.symbol)} is a pure &beta;&#8315; emitter.</strong><br>
+          <strong>${UTILS.escapeHtml(n.symbol)} ${isPureBetaMinus
+            ? 'is a pure &beta;&#8315; emitter.'
+            : `has no photon emission above the selection filter (decay: ${UTILS.escapeHtml(decayModeText || 'see ICRP 107')}).`}</strong><br>
           ${n.id === 'Y-90'
             ? 'Dose shown above is an experimental container-dependent scenario inspired by the Zanzonico et al. formalism (J Nucl Med 40(6):1024–1028, 1999). That publication does not tabulate these container constants; do not use them for design or regulatory conclusions without geometry-specific evidence.'
-            : 'External dose estimation requires bremsstrahlung data specific to the container geometry. See Zanzonico et al. (J Nucl Med 40(6), 1999) for the methodology.'}
+            : isPureBetaMinus
+              ? 'External dose estimation requires bremsstrahlung data specific to the container geometry. See Zanzonico et al. (J Nucl Med 40(6), 1999) for the methodology.'
+              : 'No external photon dose can be estimated with this app. Assess the hazard according to the actual decay mode shown above — a β− bremsstrahlung scenario does not apply.'}
         </div>`;
 
       // Y-90 gets NO regulatory verdict (audit 2026-07-15, finding 5).

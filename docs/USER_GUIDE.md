@@ -206,8 +206,7 @@ Toggle dark/light mode using the **moon icon** (🌙) in the top-right corner. P
 - **Ambient dose equivalent H\*(10)** assumes:
   - Photon field (gamma and X-rays)
   - Point source at specified distance
-  - Scatter build-up included via infinite-medium point-isotropic factors (ANSI/ANS-6.4.3) — slightly conservative for finite barriers; still not a substitute for structural shielding design calculations
-  - Calibration per ICRU 51
+  - Scatter build-up included via infinite-medium point-isotropic factors (ANSI/ANS-6.4.3) applied to finite barriers — the deviation is not universally conservative (the finite-barrier and interface corrections of NUREG/CR-5740 are not applied); not a substitute for structural shielding design calculations
 
 - **Directional dose H'(0.07)** for extremities:
   - 0.07 mm depth (70 μm)
@@ -221,7 +220,7 @@ Toggle dark/light mode using the **moon icon** (🌙) in the top-right corner. P
 **Q: Search returns no results**
 - A: Check spelling (e.g., "Tc-99m" not "Tc99m")
 - A: Click "Search in ICRP 107" for extended database
-- A: Try searching by atomic number or clinical use
+- A: Try searching by element name (English or Spanish, e.g. "technetium", "tecnecio") or by clinical use
 
 **Q: ICRP 107 data doesn't load**
 - A: The ICRP 107 database is bundled locally; an internet connection is not required
@@ -266,7 +265,7 @@ For issues, questions, or feature requests, contact the person or organisation t
 
 This application was developed with the assistance of AI coding tools — Anthropic **Claude Code** and OpenAI **Codex** — operated, reviewed and directed by the author, who remains the sole author and licensor of the original code. These tools hold no authorship, copyright or licence interest in the application; this statement is a voluntary transparency notice, not a licence obligation.
 
-Correctness does not rest on how the code was written: all numerical data are transcribed from the cited primary sources (ICRP, ICRU, NIST, NUREG/ANS, BOE), the calculation paths are checked by the automated test suites against external anchors, and adoption for professional use requires the independent human validation described in the acceptance sheet.
+Correctness does not rest on how the code was written: numerical data are taken from the cited sources (ICRP, ICRU, NIST, NUREG/ANS, BOE) — transcribed where the source tabulates them, computed or reconstructed from them where indicated (e.g. the operational Γ constants, the H'(0.07) spectra, the explicitly experimental Y-90 container estimates), with the status labelled per value — the calculation paths are checked by the automated test suites against external anchors, and adoption for professional use requires the independent human validation described in the acceptance sheet.
 
 ---
 

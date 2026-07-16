@@ -26,3 +26,7 @@ data/sources/
 
 # Local audit working reports (the remediation plan remains versioned in docs/).
 docs/AUDIT_*.md
+
+# Local working copy of the acceptance sheet (partially filled evidence).
+# The tracked docs/ACCEPTANCE_TEST.md must stay a clean template.
+docs/ACCEPTANCE_TEST.local.md

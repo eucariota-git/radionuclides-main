@@ -170,19 +170,61 @@ warning is only silenced when the code is right and the rule does not apply.
 
 ## Deployment
 
-### Local or static hosting
-No build step. Distribute the complete project folder for direct `file://` use,
-or serve its root with any local or remote static web server.
+### Distribution purpose
 
-### Files
-- Static: `*.html`, `css/style.css`, `js/*.js`
-- Embedded data: `data/*.json`, `data/*.js`
-- End-user folders and archives must exclude version-control metadata such as
-  the hidden `.git` directory.
+This package is distributed for **non-commercial purposes** (education,
+research and non-profit professional use): the bundled ICRP-07 nuclear decay
+data are licensed by ICRP for those uses only (`LICENSE.TXT`). The original
+application code remains EUPL-1.2, which itself permits commercial use, but
+any commercial redistribution of the complete package would additionally
+require permission from ICRP and a review of the NIST SRD terms — neither of
+which is on file.
+
+### Local or static hosting
+No build step. Serve the distribution folder with any local or remote static
+web server, or open it directly via `file://`.
+
+### Building a distribution folder or archive (allowlist)
+
+Do **NOT** copy or zip the working directory. It contains restricted
+third-party source material (`data/sources/` — original ICRP-07 data files —
+and local PDFs of publications) and personal tooling (`.claude/`, local audit
+reports, editor metadata) that must never be redistributed. `.gitignore` does
+not protect a folder copy or a ZIP.
+
+Build the package from this explicit allowlist and nothing else:
+
+- `index.html`, `decay.html`, `dose.html`, `about.html`
+- `css/`
+- `js/` (includes the locally bundled `chart.umd.min.js`)
+- `data/nuclides.json`, `data/nuclides-data.js`
+- `data/icrp107-index.json`, `data/icrp107-data.js`
+- `assets/icons/`
+- `manifest.json`, `sw.js`
+- `README.md`, `docs/USER_GUIDE.md`, `docs/DEVELOPMENT.md`
+- `docs/ACCEPTANCE_TEST.md` — a clean template, never a partially filled
+  working copy
+- `test/`, `tools/` (source traceability; not needed at runtime)
+- `LICENSE`, `LICENSE.TXT`, `LICENSING.md`, `THIRD_PARTY_NOTICES.md`
+  (all four are mandatory and travel together)
+
+### Verify the built package (from the extracted copy, not the working tree)
+
+1. Inventory matches the allowlist exactly — nothing extra, nothing missing.
+2. None of these are present: `.git/`, `.claude/`, `CLAUDE.md`,
+   `data/sources/`, `docs/AUDIT_*`, `*.pdf`, `server.log`, `server.pid`,
+   caches or editor/OS metadata.
+3. Generate a sorted `SHA256SUMS` manifest of every file and record the
+   SHA-256 of the final archive.
+4. Re-run the four test suites from the extracted folder (`node test/…`).
+5. Open via `file://` and via HTTP(S); check PWA install and offline reload of
+   all four pages, with and without `?id=` query parameters.
 
 ---
 
 See also `docs/ACCEPTANCE_TEST.md` (independent validation sheet).
 
-**Version:** 2.2  
-**Last updated:** 2026-06-11
+**Document version:** 2.3 — this guide only; the application and database are
+versioned separately (`nuclides.json` v1.2, `UTILS.APP_VERSION` in
+`js/utils.js`, `CACHE_VERSION` in `sw.js`)  
+**Last updated:** 2026-07-16

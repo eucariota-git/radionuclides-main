@@ -286,7 +286,7 @@
         <ul>
           <li>Photon field (gamma and X-rays)</li>
           <li>Point source at specified distance</li>
-          <li>Scatter build-up included via infinite-medium point-isotropic factors (ANSI/ANS-6.4.3) — slightly conservative for finite barriers; still not a substitute for structural shielding design calculations</li>
+          <li>Scatter build-up included via infinite-medium point-isotropic factors (ANSI/ANS-6.4.3) applied to finite barriers — the deviation is not universally conservative (the finite-barrier and interface corrections of NUREG/CR-5740 are not applied); not a substitute for structural shielding design calculations</li>
           <li>Calibration per ICRU 51</li>
         </ul>
       </li>
@@ -354,11 +354,14 @@
     directed by the author, who remains the sole author and licensor of the original code.
     These tools hold no authorship, copyright or licence interest in the application; this
     statement is a voluntary transparency notice, not a licence obligation.</p>
-    <p>Correctness does not rest on how the code was written: all numerical data are
-    transcribed from the cited primary sources (ICRP, ICRU, NIST, NUREG/ANS, BOE), the
-    calculation paths are checked by the automated test suites against external anchors,
-    and adoption for professional use requires the independent human validation described
-    in the acceptance sheet.</p>
+    <p>Correctness does not rest on how the code was written: numerical data are taken
+    from the cited sources (ICRP, ICRU, NIST, NUREG/ANS, BOE) &mdash; transcribed where the
+    source tabulates them, computed or reconstructed from them where indicated (e.g. the
+    operational &Gamma; constants, the H'(0.07) spectra, the explicitly experimental Y-90
+    container estimates), with the status labelled per value &mdash; the calculation paths
+    are checked by the automated test suites against external anchors, and adoption for
+    professional use requires the independent human validation described in the
+    acceptance sheet.</p>
 
     <hr>
     <h3>License</h3>

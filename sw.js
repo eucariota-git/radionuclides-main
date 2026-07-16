@@ -12,7 +12,7 @@
 
 'use strict';
 
-const CACHE_VERSION = 'nm-planner-v25';
+const CACHE_VERSION = 'nm-planner-v26';
 
 const ASSETS = [
   './',
@@ -59,7 +59,12 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   event.respondWith(
-    caches.match(event.request).then((cached) => {
+    // ignoreSearch: pages are linked with query parameters (dose.html?id=Y-90,
+    // decay.html?id=Tc-99m from Properties) but precached without them. A
+    // query-sensitive match missed those offline reloads and the navigation
+    // fallback silently served index.html instead, losing the page AND the
+    // selection (audit 2026-07-16, H-04). No precached asset varies by query.
+    caches.match(event.request, { ignoreSearch: true }).then((cached) => {
       if (cached) return cached;
 
       // Deliberately uncached resources (notably data/nuclides.json) use the

@@ -471,6 +471,21 @@
       return;
     }
 
+    // Validate ALL inputs before rendering anything: the vial weight used to
+    // be checked only at the chart stage, after the result boxes were already
+    // updated — an invalid weight then left fresh numbers above a stale chart,
+    // table and report snapshot (audit 2026-07-16, H-08).
+    const vialWeightInput = document.getElementById('vialWeight');
+    const vialWeightText  = vialWeightInput.value.trim();
+    const vialWeightRaw   = vialWeightText === '' ? NaN : Number(vialWeightText);
+    if (vialWeightText !== '' && (!Number.isFinite(vialWeightRaw) || vialWeightRaw <= 0)) {
+      alert('Vial / container weight must be a positive number.');
+      vialWeightInput.focus();
+      return;
+    }
+    const vialWeightUnit  = document.getElementById('vialWeightUnit').value;
+    const weight_kg       = vialWeightText === '' ? null : (vialWeightUnit === 'g' ? vialWeightRaw / 1000 : vialWeightRaw);
+
     const At_MBq = CALC.activityAtTime(A0_MBq, T_half_h, t_h);
     const fraction = At_MBq / A0_MBq;
 
@@ -545,17 +560,6 @@
     }
 
     // ---- Chart ----
-    const vialWeightInput = document.getElementById('vialWeight');
-    const vialWeightText  = vialWeightInput.value.trim();
-    const vialWeightRaw   = vialWeightText === '' ? NaN : Number(vialWeightText);
-    if (vialWeightText !== '' && (!Number.isFinite(vialWeightRaw) || vialWeightRaw <= 0)) {
-      alert('Vial / container weight must be a positive number.');
-      vialWeightInput.focus();
-      return;
-    }
-    const vialWeightUnit  = document.getElementById('vialWeightUnit').value;
-    const weight_kg       = vialWeightText === '' ? null : (vialWeightUnit === 'g' ? vialWeightRaw / 1000 : vialWeightRaw);
-
     const showConcentration = weight_kg !== null;
     let tMax_h = Math.max(t_h * 2, T_half_h * 5);
     if (showConcentration) {

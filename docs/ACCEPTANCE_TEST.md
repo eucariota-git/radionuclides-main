@@ -60,7 +60,7 @@ El validador confirma que conoce y acepta estas limitaciones documentadas:
 | | |
 |---|---|
 | Casos A superados | ____ / 10 |
-| Comprobaciones B superadas | ____ / 10 |
+| Comprobaciones B superadas | ____ / 11 |
 | Incidencias abiertas | |
 | **Veredicto** | ☐ APTA para uso en el servicio ☐ APTA con restricciones: ____________ ☐ NO APTA |
 
