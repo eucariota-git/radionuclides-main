@@ -30,3 +30,6 @@ docs/AUDIT_*.md
 # Local working copy of the acceptance sheet (partially filled evidence).
 # The tracked docs/ACCEPTANCE_TEST.md must stay a clean template.
 docs/ACCEPTANCE_TEST.local.md
+
+# Distribution staging and archives (built by tools/build-package.js)
+dist/

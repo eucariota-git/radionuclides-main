@@ -192,7 +192,11 @@ and local PDFs of publications) and personal tooling (`.claude/`, local audit
 reports, editor metadata) that must never be redistributed. `.gitignore` does
 not protect a folder copy or a ZIP.
 
-Build the package from this explicit allowlist and nothing else:
+Build the package with `node tools/build-package.js`: it stages the allowlist
+below into `dist/`, requires a clean tracked tree for the staged files,
+verifies the final inventory, writes `SHA256SUMS` and `PACKAGE-INFO.txt`,
+re-runs the four test suites from the staged copy, and zips the result. The
+allowlist (duplicated in that script — keep both in sync) is:
 
 - `index.html`, `decay.html`, `dose.html`, `about.html`
 - `css/`
@@ -201,19 +205,33 @@ Build the package from this explicit allowlist and nothing else:
 - `data/icrp107-index.json`, `data/icrp107-data.js`
 - `assets/icons/`
 - `manifest.json`, `sw.js`
-- `README.md`, `docs/USER_GUIDE.md`, `docs/DEVELOPMENT.md`
+- `README.md`, `docs/USER_GUIDE.md`
 - `docs/ACCEPTANCE_TEST.md` — a clean template, never a partially filled
   working copy
-- `test/`, `tools/` (source traceability; not needed at runtime)
+- `test/` and `docs/DEVELOPMENT.md` — the acceptance sheet (case B1) requires
+  the validator to run the four suites from the package, and
+  `test/validate-app.js` reads this document; the suites read nothing outside
+  this allowlist, so the package verifies itself without development material
 - `LICENSE`, `LICENSE.TXT`, `LICENSING.md`, `THIRD_PARTY_NOTICES.md`
   (all four are mandatory and travel together)
+- Generated at build time: `SHA256SUMS` (sorted manifest) and
+  `PACKAGE-INFO.txt` (version, build id, commit, date, non-commercial purpose)
+
+Version-controlled files that must NOT ship (development-only): `tools/`
+(data-regeneration scripts — they overwrite `data/`), `references/` (external
+documents already linked from about.html), `docs/PLAN_AUDIT_*.md`, `CLAUDE.md`,
+`.claude/`, `.hintrc`, `.gitignore`.
 
 ### Verify the built package (from the extracted copy, not the working tree)
 
+Steps 1–4 are automated by `tools/build-package.js` and fail the build when
+violated; step 5 remains manual.
+
 1. Inventory matches the allowlist exactly — nothing extra, nothing missing.
-2. None of these are present: `.git/`, `.claude/`, `CLAUDE.md`,
-   `data/sources/`, `docs/AUDIT_*`, `*.pdf`, `server.log`, `server.pid`,
-   caches or editor/OS metadata.
+2. None of these are present: `.git/`, `.claude/`, `CLAUDE.md`, `tools/`,
+   `references/`, `data/sources/`, `docs/AUDIT_*`, `docs/PLAN_AUDIT_*`,
+   `*.local.md`, `*.pdf`, `server.log`, `server.pid`, caches or editor/OS
+   metadata.
 3. Generate a sorted `SHA256SUMS` manifest of every file and record the
    SHA-256 of the final archive.
 4. Re-run the four test suites from the extracted folder (`node test/…`).
