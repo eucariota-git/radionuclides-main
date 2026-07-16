@@ -1,0 +1,20 @@
+# Canonical repository bytes. Distribution staging reads committed Git blobs,
+# but explicit LF policy also keeps checkouts, diffs and ad-hoc verification
+# consistent across Windows, macOS and Linux.
+* text=auto
+
+*.css  text eol=lf
+*.html text eol=lf
+*.js   text eol=lf
+*.json text eol=lf
+*.md   text eol=lf
+*.svg  text eol=lf
+*.txt  text eol=lf
+
+LICENSE       text eol=lf
+.gitignore    text eol=lf
+.gitattributes text eol=lf
+
+*.png binary
+*.pdf binary
+*.zip binary

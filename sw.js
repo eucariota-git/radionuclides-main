@@ -12,7 +12,7 @@
 
 'use strict';
 
-const CACHE_VERSION = 'nm-planner-v27';
+const CACHE_VERSION = 'nm-planner-v28';
 
 const ASSETS = [
   './',

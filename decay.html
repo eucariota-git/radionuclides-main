@@ -774,33 +774,61 @@
 
     // ---- Export CSV ----
     document.getElementById('btnExportCsv').onclick = () => {
-      let header, rows;
+      // Keep the export self-describing even after it is renamed or imported
+      // outside the application (final audit 2026-07-16, M-01). Metadata are
+      // repeated on every row so the file remains a conventional rectangular
+      // CSV rather than a mixture of free-form preamble and tabular data.
+      const dbMeta = (typeof DB !== 'undefined' && DB.getMeta) ? DB.getMeta() : {};
+      const exportedUtc = new Date().toISOString();
+      const referenceDateTime = document.getElementById('refDateTime').value || '';
+      const targetDateTime = document.getElementById('targetDateTime').value || '';
+      const commonHeaders = [
+        'App_version', 'App_build', 'Database_version', 'Exported_UTC',
+        'Nuclide', 'Half_life_h', 'Initial_activity_input',
+        'Initial_activity_unit', 'Initial_activity_MBq',
+        'Reference_datetime', 'Target_datetime',
+        'Vial_weight_input', 'Vial_weight_unit',
+        'Clearance_level_kBq_per_kg',
+      ];
+      const commonValues = [
+        UTILS.APP_VERSION, UTILS.APP_BUILD, dbMeta.version || '', exportedUtc,
+        n.id, T_half_h, A0raw, A0unit, A0_MBq,
+        referenceDateTime, targetDateTime,
+        showConcentration ? vialWeightRaw : '', showConcentration ? vialWeightUnit : '',
+        n.clearance_a1_kBq_per_kg ?? '',
+      ];
+      const csvCell = value => {
+        const str = String(value ?? '');
+        const safe = /^[=+\-@\t\r]/.test(str) ? "'" + str : str;
+        return `"${safe.replace(/"/g, '""')}"`;
+      };
+
+      let headers, rows;
       if (showConcentration) {
-        header = 'Time_h,Concentration_kBqPerKg,Fraction\n';
+        headers = commonHeaders.concat('Time_h', 'Concentration_kBqPerKg', 'Fraction');
         rows = steps.map(s => {
           const A = CALC.activityAtTime(A0_MBq, T_half_h, s);
           const A_kBq = CALC.convertActivity(A, 'MBq', 'kBq');
           const conc = A_kBq / weight_kg;
-          const vals = [s.toFixed(4), conc.toPrecision(6), (A/A0_MBq).toPrecision(5)];
-          return vals.map(v => {
-            const str = String(v);
-            const safe = /^[=+\-@\t\r]/.test(str) ? "'" + str : str;
-            return safe;
-          }).join(',');
-        }).join('\n');
+          return commonValues.concat(s.toFixed(4), conc.toPrecision(6), (A / A0_MBq).toPrecision(5));
+        });
       } else {
-        header = 'Time_h,Activity_MBq,Activity_mCi,Activity_GBq,Fraction\n';
+        headers = commonHeaders.concat('Time_h', 'Activity_MBq', 'Activity_mCi', 'Activity_GBq', 'Fraction');
         rows = steps.map(s => {
           const A = CALC.activityAtTime(A0_MBq, T_half_h, s);
-          const vals = [s.toFixed(4), A.toPrecision(6), CALC.convertActivity(A,'MBq','mCi').toPrecision(5), CALC.convertActivity(A,'MBq','GBq').toPrecision(5), (A/A0_MBq).toPrecision(5)];
-          return vals.map(v => {
-            const str = String(v);
-            const safe = /^[=+\-@\t\r]/.test(str) ? "'" + str : str;
-            return safe;
-          }).join(',');
-        }).join('\n');
+          return commonValues.concat(
+            s.toFixed(4),
+            A.toPrecision(6),
+            CALC.convertActivity(A, 'MBq', 'mCi').toPrecision(5),
+            CALC.convertActivity(A, 'MBq', 'GBq').toPrecision(5),
+            (A / A0_MBq).toPrecision(5),
+          );
+        });
       }
-      const blob = new Blob([header + rows], { type: 'text/csv' });
+      const csv = [headers, ...rows]
+        .map(row => row.map(csvCell).join(','))
+        .join('\r\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
       const a = document.createElement('a');
       const url = URL.createObjectURL(blob);
       a.href = url;

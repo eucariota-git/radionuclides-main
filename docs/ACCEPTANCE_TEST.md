@@ -1,6 +1,9 @@
 # Hoja de prueba de aceptación — NM Radionuclide Planner
 
-**Versión de la aplicación:** v1.2 (base de datos `nuclides.json` v1.2; blindaje narrow-beam con build-up ANS-6.4.3; espectros de blindaje regenerados sin corte espectral, 2026-07)
+**Candidato que se valida (copiar literalmente de `PACKAGE-INFO.txt`):**
+
+Aplicación: v__________ · Build: ____________________ · Base de datos: v__________<br>
+Commit fuente completo: ________________________________________ · SHA-256 del ZIP: ________________________________________
 **Objeto:** validación independiente por un radiofísico / especialista en PR distinto del desarrollador, previa a la adopción de la herramienta en el servicio.
 **Instrucciones:** ejecute cada caso en la aplicación, anote el valor obtenido y contraste con su fuente independiente (Delacroix et al. 2002 *Radionuclide and Radiation Protection Data Handbook*, Smith & Stabin 2012, ficha técnica del radiofármaco, o cálculo propio). Marque ✓/✗ y firme al final.
 
@@ -31,7 +34,7 @@
 |---|--------------|--------------------|-----|
 | B1 | Las cuatro suites de tests (`node test/validate-app.js`, `validate-math.js`, `validate-data.js`, `validate-constants.js`) | Todas en verde (0 failed) | |
 | B2 | Nucleido ICRP 107 (p. ej. Na-22) buscado en Properties y abierto en Dose | Constantes Γ calculadas mostradas; la comparación con Cornejo la cubre `validate-constants.js` (B1) | |
-| B3 | Informe 📄 Report / PDF (Dose y Decay) | Cabecera con fecha y "nuclides.json v1.2", método de blindaje declarado, disclaimer y línea de firma | |
+| B3 | Informe 📄 Report / PDF (Dose y Decay) | Cabecera con versión de aplicación, build, versión de base de datos y fecha; método declarado, disclaimer y línea de firma | |
 | B4 | Nucleido ICRP 107 extendido (p. ej. Na-22) en Dose | Aviso "NOT manually validated" antes de calcular | |
 | B5 | Funcionamiento offline | Abrir vía `file://` y, en HTTPS, recargar sin conexión tras primera visita (service worker) | |
 | B6 | Instalación PWA (Android/desktop, HTTPS) | El navegador ofrece "Instalar"; icono trébol; arranca standalone | |
@@ -66,4 +69,4 @@ El validador confirma que conoce y acepta estas limitaciones documentadas:
 
 **Validador (nombre y firma):** ______________________________
 **Fecha:** ____________
-**Versión validada:** v1.2 — commit: ____________
+**Candidato validado:** aplicación v__________ — build: ____________________ — commit completo: ________________________________________

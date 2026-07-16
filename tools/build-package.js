@@ -5,8 +5,9 @@
  * Development-only tool: it never ships in the package it builds. Stages the
  * allowlist below into dist/<name>/, then gates the result:
  *
- *   1. requires a clean tracked tree for every staged file (a dirty working
- *      copy must never be a package input — audit 2026-07-16);
+ *   1. requires a clean tracked tree for every staged file and for this build
+ *      tool (a dirty working copy must never be a package input — audit
+ *      2026-07-16);
  *   2. verifies the staged inventory matches the allowlist exactly and that
  *      no forbidden name (restricted ICRP sources, personal tooling, local
  *      working copies) slipped in;
@@ -15,9 +16,10 @@
  *   4. re-runs the four test suites FROM THE STAGED COPY, proving the package
  *      is self-verifiable;
  *   5. writes a deterministic zip — pure Node, no external zipper — whose
- *      bytes depend only on the staged content and SOURCE_DATE_EPOCH, so two
- *      builds of the same commit are byte-identical (re-audit 2026-07-16,
- *      R-05) — and records its SHA-256 in a .zip.sha256 sidecar.
+ *      bytes depend on the source commit, SOURCE_DATE_EPOCH and Node/zlib
+ *      toolchain. Identical inputs produce identical archives; the toolchain
+ *      is recorded for traceability (re-audit 2026-07-16, R-05). Its SHA-256
+ *      is written to a .zip.sha256 sidecar.
  *
  * The allowlist is duplicated in docs/DEVELOPMENT.md § Deployment — keep both
  * in sync. Manual step 5 of that section (file://, HTTP(S), PWA install,
@@ -32,7 +34,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const zlib = require('zlib');
-const { execSync, spawnSync } = require('child_process');
+const { execFileSync, spawnSync } = require('child_process');
 
 const ROOT = path.join(__dirname, '..');
 
@@ -68,7 +70,16 @@ function fail(msg) {
 }
 
 function git(args) {
-  return execSync(`git ${args}`, { cwd: ROOT, encoding: 'utf8' });
+  return execFileSync('git', args, { cwd: ROOT, encoding: 'utf8' });
+}
+
+/** Return the exact committed bytes, independent of checkout EOL settings. */
+function gitBlob(ref, file) {
+  return execFileSync('git', ['show', `${ref}:${file}`], {
+    cwd: ROOT,
+    encoding: null,
+    maxBuffer: 64 * 1024 * 1024,
+  });
 }
 
 function sha256(filePath) {
@@ -86,8 +97,9 @@ function walk(dir, base = dir, out = []) {
 
 // ---- Deterministic zip writer ----------------------------------------------
 // Pure Node (built-in zlib): entry order, timestamps and header fields are
-// fully determined by the file list and the build epoch, so two builds of the
-// same commit produce byte-identical archives (re-audit 2026-07-16, R-05).
+// fully determined by the file list and the build epoch. The same committed
+// blobs, epoch and Node/zlib toolchain produce byte-identical archives
+// (re-audit 2026-07-16, R-05).
 // External zippers (bsdtar & co.) embed filesystem mtimes/birthtimes in extra
 // fields and are not reproducible.
 
@@ -170,20 +182,22 @@ function writeZip(zipPath, baseDir, relPaths, prefix, date) {
 
 // ---- 1. Identity ----------------------------------------------------------
 
-const utilsJs = fs.readFileSync(path.join(ROOT, 'js/utils.js'), 'utf8');
+const commit = git(['rev-parse', 'HEAD']).trim();
+const commitShort = commit.slice(0, 7);
+const utilsJs = gitBlob(commit, 'js/utils.js').toString('utf8');
 const APP_VERSION = (utilsJs.match(/APP_VERSION = '([^']+)'/) || [])[1];
 const APP_BUILD = (utilsJs.match(/APP_BUILD = '([^']+)'/) || [])[1];
 if (!APP_VERSION || !APP_BUILD) fail('APP_VERSION / APP_BUILD not found in js/utils.js');
-const dbVersion = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/nuclides.json'), 'utf8')).version || '?';
-const commit = git('rev-parse HEAD').trim();
-const commitShort = commit.slice(0, 7);
+const dbVersion = JSON.parse(gitBlob(commit, 'data/nuclides.json').toString('utf8')).version || '?';
+const toolchain = `Node v${process.versions.node}; zlib ${process.versions.zlib || '?'}`;
 
 // Reproducibility (re-audit 2026-07-16, R-05): every timestamp in the package
 // and in the zip derives from SOURCE_DATE_EPOCH — defaulting to the source
-// commit date — never from the wall clock, so rebuilding the same commit
-// yields a byte-identical archive.
+// commit date — never from the wall clock. The package records the compression
+// toolchain because compressed bytes are only guaranteed identical when that
+// toolchain, the source commit and the epoch are all identical.
 const envEpoch = parseInt(process.env.SOURCE_DATE_EPOCH, 10);
-const epochSec = Number.isFinite(envEpoch) ? envEpoch : parseInt(git('log -1 --format=%ct').trim(), 10);
+const epochSec = Number.isFinite(envEpoch) ? envEpoch : parseInt(git(['log', '-1', '--format=%ct']).trim(), 10);
 if (!Number.isFinite(epochSec)) fail('could not determine SOURCE_DATE_EPOCH or the commit date');
 const buildDate = new Date(epochSec * 1000);
 
@@ -195,7 +209,7 @@ console.log(`Building ${pkgName} (build ${APP_BUILD}, commit ${commitShort}, epo
 
 // ---- 2. Select tracked files from the allowlist ---------------------------
 
-const tracked = git('ls-files -z').split('\0').filter(Boolean);
+const tracked = git(['ls-files', '-z']).split('\0').filter(Boolean);
 const matchesEntry = (file, entry) => entry.endsWith('/') ? file.startsWith(entry) : file === entry;
 
 for (const entry of ALLOWLIST) {
@@ -205,13 +219,14 @@ for (const entry of ALLOWLIST) {
 }
 const files = tracked.filter(f => ALLOWLIST.some(e => matchesEntry(f, e))).sort();
 
-// ---- 3. Clean-tree gate for every staged file -----------------------------
+// ---- 3. Clean-tree gate for package inputs --------------------------------
 
-const dirty = git('status --porcelain').split('\n').filter(Boolean)
+const buildInputs = new Set([...files, 'tools/build-package.js']);
+const dirty = git(['status', '--porcelain']).split('\n').filter(Boolean)
   .map(line => line.slice(3).replace(/^"|"$/g, ''))
-  .filter(p => files.includes(p));
+  .filter(p => buildInputs.has(p));
 if (dirty.length) {
-  fail(`tracked files staged for the package have uncommitted changes:\n  ${dirty.join('\n  ')}\nCommit (or stash) them first — a dirty tree must never be a package input.`);
+  fail(`package inputs have uncommitted changes:\n  ${dirty.join('\n  ')}\nCommit (or stash) them first — a dirty tree must never be a package input.`);
 }
 
 // ---- 4. Stage --------------------------------------------------------------
@@ -220,9 +235,9 @@ fs.rmSync(stageDir, { recursive: true, force: true });
 for (const f of files) {
   const dest = path.join(stageDir, f);
   fs.mkdirSync(path.dirname(dest), { recursive: true });
-  fs.copyFileSync(path.join(ROOT, f), dest);
+  fs.writeFileSync(dest, gitBlob(commit, f));
 }
-console.log(`✓ staged ${files.length} tracked files into dist/${pkgName}/`);
+console.log(`✓ staged ${files.length} canonical Git blobs into dist/${pkgName}/`);
 
 // ---- 5. PACKAGE-INFO.txt ---------------------------------------------------
 
@@ -233,7 +248,8 @@ const info = [
   `Build id            : ${APP_BUILD} (equals CACHE_VERSION in sw.js; printed in every calculation report)`,
   `Database            : nuclides.json v${dbVersion}`,
   `Source commit       : ${commit} (${commitShort})`,
-  `Built               : ${buildDate.toISOString()} (source commit date — reproducible build; override with SOURCE_DATE_EPOCH)`,
+  `Build toolchain     : ${toolchain}`,
+  `Built               : ${buildDate.toISOString()} (SOURCE_DATE_EPOCH; defaults to source commit date)`,
   '',
   'Purpose: non-commercial distribution (education, research and non-profit',
   'professional use), per the ICRP-07 data terms in LICENSE.TXT. See',

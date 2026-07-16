@@ -645,7 +645,7 @@
       narrow_beam_spectrum: `Spectrum-weighted narrow-beam transmission over ${r.spectrumLines} ICRP 107 photon lines with point-isotropic exposure build-up (ANSI/ANS-6.4.3 reference data); accounts for beam hardening and scatter build-up. Infinite-medium build-up applied to a finite barrier: the deviation is not universally conservative — treat results as estimates, not shielding-design values.`,
       narrow_beam: 'Single-line narrow-beam attenuation with point-isotropic exposure build-up (ANSI/ANS-6.4.3 reference data; NIST XCOM attenuation).',
     }[r.method] || '';
-    const notes = [methodText];
+    const notes = methodText ? [methodText] : [];
     if (r.isY90) notes.push('Y-90 bremsstrahlung container estimate (methodology after Zanzonico et al. 1999); container values are estimates, not tabulated in that publication.');
     if (!r.useH007) notes.push("No H'(0.07) constant for this nuclide/energy — the H'(0.07) row shows the H*(10) value instead (may underestimate the skin dose of low-energy emitters).");
     notes.push('H*(10) and H\'(0.07) are area-monitoring quantities; compliance with dose limits is assessed with personal dosimetry (Hp(10), Hp(0.07), Hp(3)). The limit screening in this report is indicative only.');

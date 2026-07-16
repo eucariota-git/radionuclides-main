@@ -199,13 +199,18 @@ reports, editor metadata) that must never be redistributed. `.gitignore` does
 not protect a folder copy or a ZIP.
 
 Build the package with `node tools/build-package.js`: it stages the allowlist
-below into `dist/`, requires a clean tracked tree for the staged files,
-verifies the final inventory, writes `SHA256SUMS` and `PACKAGE-INFO.txt`,
-re-runs the four test suites from the staged copy, and writes a deterministic
-zip plus a `<name>.zip.sha256` sidecar. Every timestamp derives from the
-source commit date (override with `SOURCE_DATE_EPOCH`), never the wall clock,
-so rebuilding the same commit yields a byte-identical archive. The allowlist
-(duplicated in that script — keep both in sync) is:
+below into `dist/` from the canonical blobs of `HEAD`, not from the working
+checkout. This makes staged text independent of the platform's line-ending
+conversion. The builder requires clean tracked package files and a clean
+`tools/build-package.js`, verifies the final inventory, writes `SHA256SUMS`
+and `PACKAGE-INFO.txt`, re-runs the four test suites from the staged copy, and
+writes a deterministic zip plus a `<name>.zip.sha256` sidecar. Every timestamp
+derives from the source commit date (override with `SOURCE_DATE_EPOCH`), never
+the wall clock. A byte-identical archive is guaranteed for the same commit,
+epoch and Node/zlib toolchain; `PACKAGE-INFO.txt` records that toolchain so
+builds made with another compressor version remain auditable, although their
+compressed bytes are not promised to match. The allowlist (duplicated in that
+script — keep both in sync) is:
 
 - `index.html`, `decay.html`, `dose.html`, `about.html`
 - `css/`
@@ -224,7 +229,8 @@ so rebuilding the same commit yields a byte-identical archive. The allowlist
 - `LICENSE`, `LICENSE.TXT`, `LICENSING.md`, `THIRD_PARTY_NOTICES.md`
   (all four are mandatory and travel together)
 - Generated at build time: `SHA256SUMS` (sorted manifest) and
-  `PACKAGE-INFO.txt` (version, build id, commit, date, non-commercial purpose)
+  `PACKAGE-INFO.txt` (version, build id, full commit, date, Node/zlib
+  toolchain and non-commercial purpose)
 
 Version-controlled files that must NOT ship (development-only): `tools/`
 (data-regeneration scripts — they overwrite `data/`), `references/` (external
@@ -241,8 +247,11 @@ violated; step 5 remains manual.
    `references/`, `data/sources/`, `docs/AUDIT_*`, `docs/PLAN_AUDIT_*`,
    `*.local.md`, `*.pdf`, `server.log`, `server.pid`, caches or editor/OS
    metadata.
-3. Generate a sorted `SHA256SUMS` manifest of every file; the SHA-256 of the
-   final archive is recorded in the `<name>.zip.sha256` sidecar next to it.
+3. Confirm that staged source files equal the committed Git blobs, then
+   generate a sorted `SHA256SUMS` manifest of every file. The SHA-256 of the
+   final archive is recorded in the `<name>.zip.sha256` sidecar next to it;
+   `PACKAGE-INFO.txt` records the source commit, epoch and compression
+   toolchain needed to reproduce it.
 4. Re-run the four test suites from the extracted folder (`node test/…`).
 5. Open via `file://` and via HTTP(S); check PWA install and offline reload of
    all four pages, with and without `?id=` query parameters.
@@ -251,7 +260,7 @@ violated; step 5 remains manual.
 
 See also `docs/ACCEPTANCE_TEST.md` (independent validation sheet).
 
-**Document version:** 2.4 — this guide only; the application and database are
+**Document version:** 2.5 — this guide only; the application and database are
 versioned separately (`nuclides.json` v1.2, `UTILS.APP_VERSION` in
 `js/utils.js`, `CACHE_VERSION` in `sw.js`)  
 **Last updated:** 2026-07-16

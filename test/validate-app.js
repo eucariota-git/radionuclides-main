@@ -284,6 +284,7 @@ async function main() {
 
   console.log('Test 9: audit-sensitive documentation and notices');
   const developmentMd = read('docs/DEVELOPMENT.md');
+  const acceptanceMd = read('docs/ACCEPTANCE_TEST.md');
   const readmeMd = read('README.md');
   const guideMd = read('docs/USER_GUIDE.md');
   const noticesMd = read('THIRD_PARTY_NOTICES.md');
@@ -296,7 +297,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v27');
+    swVersion === 'nm-planner-v28');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -331,6 +332,11 @@ async function main() {
     /@kurkle\/color v0\.3\.2/.test(noticesMd) && /Copyright \(c\) 2023 Jukka Kurkela/.test(noticesMd) &&
     /@kurkle\/color v0\.3\.2/.test(aboutHtml) && /Copyright \(c\) 2023 Jukka Kurkela/.test(aboutHtml) &&
     !/2018-2024 Jukka Kurkela/.test(`${noticesMd}\n${aboutHtml}`));
+  check('acceptance sheet takes candidate identity from PACKAGE-INFO instead of hardcoding an app release',
+    /copiar literalmente de `PACKAGE-INFO\.txt`/.test(acceptanceMd) &&
+    /Aplicación: v_+/.test(acceptanceMd) && /Build: _+/.test(acceptanceMd) &&
+    /Commit fuente completo: _+/.test(acceptanceMd) && /SHA-256 del ZIP: _+/.test(acceptanceMd) &&
+    !/\*\*Versión de la aplicación:\*\*\s*v1\.2/.test(acceptanceMd));
   console.log();
 
   console.log('Test 10: scientific-message and traceability regressions (audit 2026-07-16)');
@@ -350,15 +356,30 @@ async function main() {
     doseHtml.includes("['Assumptions', '', '', '', '', ''") &&
     !/ICRU Report 57/.test(reportJs) &&
     /if \(r\.isY90\) \{/.test(doseHtml));
+  check('Y-90 report does not create an empty assumptions list item when no method text exists',
+    /const notes = methodText \? \[methodText\] : \[\];/.test(doseHtml));
   check('printed reports identify the application build',
     /<tr><td>Application<\/td>/.test(reportJs) && /APP_BUILD/.test(reportJs));
   check('decay validates the vial weight before any result is rendered',
     decayHtml.indexOf('Vial / container weight must be a positive number') > 0 &&
     decayHtml.indexOf('Vial / container weight must be a positive number') <
     decayHtml.indexOf("card.classList.remove('hidden')"));
+  check('decay CSV is rectangular and repeats self-describing version and scenario metadata',
+    [
+      'App_version', 'App_build', 'Database_version', 'Exported_UTC',
+      'Nuclide', 'Half_life_h', 'Initial_activity_input',
+      'Initial_activity_unit', 'Initial_activity_MBq', 'Reference_datetime',
+      'Target_datetime', 'Vial_weight_input', 'Vial_weight_unit',
+      'Clearance_level_kBq_per_kg',
+    ].every(field => decayHtml.includes(`'${field}'`)) &&
+    /UTILS\.APP_VERSION, UTILS\.APP_BUILD, dbMeta\.version/.test(decayHtml) &&
+    /const csv = \[headers, \.\.\.rows\]/.test(decayHtml));
   check('deployment docs build distributions from an allowlist, never the working folder',
     /allowlist/i.test(developmentMd) && /data\/sources\//.test(developmentMd) &&
     !/Distribute the complete project folder/.test(developmentMd));
+  check('deployment docs scope reproducibility to canonical Git blobs, epoch and Node/zlib toolchain',
+    /canonical blobs of `HEAD`/.test(developmentMd) && /same commit,\s*\nepoch and Node\/zlib toolchain/.test(developmentMd) &&
+    /compressed bytes are not promised to match/.test(developmentMd));
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);
   process.exitCode = failed === 0 ? 0 : 1;
