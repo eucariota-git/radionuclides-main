@@ -192,7 +192,13 @@ for (const suite of ['validate-math', 'validate-data', 'validate-constants', 'va
 const zipPath = path.join(distDir, `${pkgName}.zip`);
 fs.rmSync(zipPath, { force: true });
 try {
-  execSync(`tar -a -cf "${zipPath}" -C "${distDir}" "${pkgName}"`, { cwd: ROOT });
+  // Windows ships bsdtar (System32), which writes zip via -a and is immune to
+  // GNU tar's "C: is a remote host" path parsing; relative paths + cwd keep
+  // any tar variant off drive-letter syntax.
+  const tarBin = process.platform === 'win32'
+    ? path.join(process.env.SystemRoot || 'C:\\Windows', 'System32', 'tar.exe')
+    : 'tar';
+  execSync(`"${tarBin}" -a -cf "${pkgName}.zip" "${pkgName}"`, { cwd: distDir });
   console.log(`\n✓ package ready: dist/${pkgName}.zip`);
   console.log(`  SHA-256: ${sha256(zipPath)}`);
 } catch (err) {
