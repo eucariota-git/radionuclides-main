@@ -23,9 +23,12 @@ distribution is offered under `EUPL-1.2` as delimited here.
 ## Source-code availability
 
 The application is distributed directly in machine-readable source-code form.
-Its original HTML, CSS and JavaScript, maintenance files, documentation and
-licence notices accompany the local copy. No external source-code service is
-required to study, modify or redistribute the application.
+Its original HTML, CSS and JavaScript, documentation and licence notices
+accompany the local copy. No external source-code service is required to
+study, modify or redistribute the application. Development-only maintenance
+and data-regeneration tools (the repository's `tools/` and `references/`
+directories) are not part of the application and are distributed only with the
+project's source repository, available from the maintainer.
 
 Version-control metadata, including the hidden `.git` directory, is development
 infrastructure rather than part of the application and must be excluded from

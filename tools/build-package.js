@@ -14,7 +14,10 @@
  *      purpose) and a sorted SHA256SUMS manifest;
  *   4. re-runs the four test suites FROM THE STAGED COPY, proving the package
  *      is self-verifiable;
- *   5. zips the staging folder and prints the archive's SHA-256.
+ *   5. writes a deterministic zip — pure Node, no external zipper — whose
+ *      bytes depend only on the staged content and SOURCE_DATE_EPOCH, so two
+ *      builds of the same commit are byte-identical (re-audit 2026-07-16,
+ *      R-05) — and records its SHA-256 in a .zip.sha256 sidecar.
  *
  * The allowlist is duplicated in docs/DEVELOPMENT.md § Deployment — keep both
  * in sync. Manual step 5 of that section (file://, HTTP(S), PWA install,
@@ -28,6 +31,7 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const zlib = require('zlib');
 const { execSync, spawnSync } = require('child_process');
 
 const ROOT = path.join(__dirname, '..');
@@ -80,6 +84,90 @@ function walk(dir, base = dir, out = []) {
   return out;
 }
 
+// ---- Deterministic zip writer ----------------------------------------------
+// Pure Node (built-in zlib): entry order, timestamps and header fields are
+// fully determined by the file list and the build epoch, so two builds of the
+// same commit produce byte-identical archives (re-audit 2026-07-16, R-05).
+// External zippers (bsdtar & co.) embed filesystem mtimes/birthtimes in extra
+// fields and are not reproducible.
+
+const CRC_TABLE = (() => {
+  const t = new Uint32Array(256);
+  for (let n = 0; n < 256; n++) {
+    let c = n;
+    for (let k = 0; k < 8; k++) c = (c & 1) ? 0xEDB88320 ^ (c >>> 1) : c >>> 1;
+    t[n] = c >>> 0;
+  }
+  return t;
+})();
+
+function crc32(buf) {
+  let c = 0xFFFFFFFF;
+  for (let i = 0; i < buf.length; i++) c = CRC_TABLE[(c ^ buf[i]) & 0xFF] ^ (c >>> 8);
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+
+/** MS-DOS date/time pair (2 s resolution, UTC) used by both zip headers. */
+function dosDateTime(date) {
+  return {
+    time: (date.getUTCHours() << 11) | (date.getUTCMinutes() << 5) | (date.getUTCSeconds() >> 1),
+    day:  (Math.max(0, date.getUTCFullYear() - 1980) << 9) | ((date.getUTCMonth() + 1) << 5) | date.getUTCDate(),
+  };
+}
+
+/**
+ * Write baseDir's relPaths (sorted, forward-slash) to zipPath, each entry
+ * named `prefix/relPath`, deflated at level 9, stamped with `date`, no extra
+ * fields. Plain zip (no zip64): fine below 4 GB / 65535 entries.
+ */
+function writeZip(zipPath, baseDir, relPaths, prefix, date) {
+  const { time, day } = dosDateTime(date);
+  const chunks = [];
+  const central = [];
+  let offset = 0;
+  for (const rel of relPaths) {
+    const name = Buffer.from(`${prefix}/${rel}`, 'utf8');
+    const data = fs.readFileSync(path.join(baseDir, rel));
+    const crc = crc32(data);
+    const deflated = zlib.deflateRawSync(data, { level: 9 });
+
+    const local = Buffer.alloc(30);
+    local.writeUInt32LE(0x04034B50, 0);       // local file header signature
+    local.writeUInt16LE(20, 4);               // version needed: 2.0 (deflate)
+    local.writeUInt16LE(8, 8);                // method: deflate (flags at 6 stay 0)
+    local.writeUInt16LE(time, 10);
+    local.writeUInt16LE(day, 12);
+    local.writeUInt32LE(crc, 14);
+    local.writeUInt32LE(deflated.length, 18);
+    local.writeUInt32LE(data.length, 22);
+    local.writeUInt16LE(name.length, 26);     // extra length at 28 stays 0
+    chunks.push(local, name, deflated);
+
+    const cen = Buffer.alloc(46);
+    cen.writeUInt32LE(0x02014B50, 0);         // central directory signature
+    cen.writeUInt16LE(20, 4);                 // version made by: 2.0, MS-DOS attrs
+    cen.writeUInt16LE(20, 6);                 // version needed
+    cen.writeUInt16LE(8, 10);                 // method: deflate
+    cen.writeUInt16LE(time, 12);
+    cen.writeUInt16LE(day, 14);
+    cen.writeUInt32LE(crc, 16);
+    cen.writeUInt32LE(deflated.length, 20);
+    cen.writeUInt32LE(data.length, 24);
+    cen.writeUInt16LE(name.length, 28);       // extra/comment/disk/attrs stay 0
+    cen.writeUInt32LE(offset, 42);            // local header offset
+    central.push(cen, name);
+    offset += 30 + name.length + deflated.length;
+  }
+  const centralBuf = Buffer.concat(central);
+  const eocd = Buffer.alloc(22);
+  eocd.writeUInt32LE(0x06054B50, 0);          // end of central directory
+  eocd.writeUInt16LE(relPaths.length, 8);     // entries on this disk
+  eocd.writeUInt16LE(relPaths.length, 10);    // entries total
+  eocd.writeUInt32LE(centralBuf.length, 12);
+  eocd.writeUInt32LE(offset, 16);             // central directory offset
+  fs.writeFileSync(zipPath, Buffer.concat([...chunks, centralBuf, eocd]));
+}
+
 // ---- 1. Identity ----------------------------------------------------------
 
 const utilsJs = fs.readFileSync(path.join(ROOT, 'js/utils.js'), 'utf8');
@@ -87,13 +175,23 @@ const APP_VERSION = (utilsJs.match(/APP_VERSION = '([^']+)'/) || [])[1];
 const APP_BUILD = (utilsJs.match(/APP_BUILD = '([^']+)'/) || [])[1];
 if (!APP_VERSION || !APP_BUILD) fail('APP_VERSION / APP_BUILD not found in js/utils.js');
 const dbVersion = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/nuclides.json'), 'utf8')).version || '?';
-const commit = git('rev-parse --short HEAD').trim();
+const commit = git('rev-parse HEAD').trim();
+const commitShort = commit.slice(0, 7);
+
+// Reproducibility (re-audit 2026-07-16, R-05): every timestamp in the package
+// and in the zip derives from SOURCE_DATE_EPOCH — defaulting to the source
+// commit date — never from the wall clock, so rebuilding the same commit
+// yields a byte-identical archive.
+const envEpoch = parseInt(process.env.SOURCE_DATE_EPOCH, 10);
+const epochSec = Number.isFinite(envEpoch) ? envEpoch : parseInt(git('log -1 --format=%ct').trim(), 10);
+if (!Number.isFinite(epochSec)) fail('could not determine SOURCE_DATE_EPOCH or the commit date');
+const buildDate = new Date(epochSec * 1000);
 
 const pkgName = `nm-radionuclide-planner-v${APP_VERSION}`;
 const distDir = path.join(ROOT, 'dist');
 const stageDir = path.join(distDir, pkgName);
 
-console.log(`Building ${pkgName} (build ${APP_BUILD}, commit ${commit})`);
+console.log(`Building ${pkgName} (build ${APP_BUILD}, commit ${commitShort}, epoch ${buildDate.toISOString()})`);
 
 // ---- 2. Select tracked files from the allowlist ---------------------------
 
@@ -134,14 +232,20 @@ const info = [
   `Application version : v${APP_VERSION}`,
   `Build id            : ${APP_BUILD} (equals CACHE_VERSION in sw.js; printed in every calculation report)`,
   `Database            : nuclides.json v${dbVersion}`,
-  `Source commit       : ${commit}`,
-  `Built               : ${new Date().toISOString()}`,
+  `Source commit       : ${commit} (${commitShort})`,
+  `Built               : ${buildDate.toISOString()} (source commit date — reproducible build; override with SOURCE_DATE_EPOCH)`,
   '',
   'Purpose: non-commercial distribution (education, research and non-profit',
   'professional use), per the ICRP-07 data terms in LICENSE.TXT. See',
   'docs/DEVELOPMENT.md ("Distribution purpose") and LICENSING.md for the full',
   'licence map: original code EUPL-1.2; Chart.js and @kurkle/color MIT; ICRP',
   'and other third-party data under their own terms.',
+  '',
+  'This package contains the runtime application, its data, the test suites',
+  'and the user/licensing documentation. Development and maintenance tools',
+  '(the repository\'s tools/ and references/ directories) do not ship with it;',
+  'they are distributed with the project source repository, available from',
+  'the maintainer.',
   '',
   'Verify this package:',
   '  sha256sum -c SHA256SUMS',
@@ -187,22 +291,16 @@ for (const suite of ['validate-math', 'validate-data', 'validate-constants', 'va
   console.log(`✓ test/${suite}.js passes from the staged copy`);
 }
 
-// ---- 9. Zip ------------------------------------------------------------------
+// ---- 9. Deterministic zip + sidecar hash -------------------------------------
 
 const zipPath = path.join(distDir, `${pkgName}.zip`);
 fs.rmSync(zipPath, { force: true });
-try {
-  // Windows ships bsdtar (System32), which writes zip via -a and is immune to
-  // GNU tar's "C: is a remote host" path parsing; relative paths + cwd keep
-  // any tar variant off drive-letter syntax.
-  const tarBin = process.platform === 'win32'
-    ? path.join(process.env.SystemRoot || 'C:\\Windows', 'System32', 'tar.exe')
-    : 'tar';
-  execSync(`"${tarBin}" -a -cf "${pkgName}.zip" "${pkgName}"`, { cwd: distDir });
-  console.log(`\n✓ package ready: dist/${pkgName}.zip`);
-  console.log(`  SHA-256: ${sha256(zipPath)}`);
-} catch (err) {
-  console.warn(`\n⚠ could not create the zip with tar (${err.message.split('\n')[0]}).`);
-  console.warn(`  The verified staging folder is ready at dist/${pkgName}/ — zip it manually.`);
-}
+writeZip(zipPath, stageDir, walk(stageDir).sort(), pkgName, buildDate);
+const zipHash = sha256(zipPath);
+// sha256sum -c compatible sidecar — the archive hash must live in a file, not
+// only on a console that scrolls away (re-audit 2026-07-16, R-05).
+fs.writeFileSync(`${zipPath}.sha256`, `${zipHash}  ${pkgName}.zip\n`);
+console.log(`\n✓ package ready: dist/${pkgName}.zip (deterministic; entry timestamps ${buildDate.toISOString()})`);
+console.log(`  SHA-256: ${zipHash}`);
+console.log(`  recorded in dist/${pkgName}.zip.sha256`);
 console.log(`  Manual step remaining (docs/DEVELOPMENT.md § Verify): file://, HTTP(S), PWA install, offline reload with and without ?id=.`);

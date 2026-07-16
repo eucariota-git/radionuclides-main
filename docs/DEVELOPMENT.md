@@ -186,6 +186,12 @@ web server, or open it directly via `file://`.
 
 ### Building a distribution folder or archive (allowlist)
 
+> **Reading this from a distribution package?** This section applies to the
+> full source repository only. `tools/` — including `build-package.js` — and
+> `references/` are development material and do not ship in the package, so a
+> package cannot rebuild itself. To rebuild or modify the package, obtain the
+> project's source repository from the maintainer.
+
 Do **NOT** copy or zip the working directory. It contains restricted
 third-party source material (`data/sources/` — original ICRP-07 data files —
 and local PDFs of publications) and personal tooling (`.claude/`, local audit
@@ -195,8 +201,11 @@ not protect a folder copy or a ZIP.
 Build the package with `node tools/build-package.js`: it stages the allowlist
 below into `dist/`, requires a clean tracked tree for the staged files,
 verifies the final inventory, writes `SHA256SUMS` and `PACKAGE-INFO.txt`,
-re-runs the four test suites from the staged copy, and zips the result. The
-allowlist (duplicated in that script — keep both in sync) is:
+re-runs the four test suites from the staged copy, and writes a deterministic
+zip plus a `<name>.zip.sha256` sidecar. Every timestamp derives from the
+source commit date (override with `SOURCE_DATE_EPOCH`), never the wall clock,
+so rebuilding the same commit yields a byte-identical archive. The allowlist
+(duplicated in that script — keep both in sync) is:
 
 - `index.html`, `decay.html`, `dose.html`, `about.html`
 - `css/`
@@ -232,8 +241,8 @@ violated; step 5 remains manual.
    `references/`, `data/sources/`, `docs/AUDIT_*`, `docs/PLAN_AUDIT_*`,
    `*.local.md`, `*.pdf`, `server.log`, `server.pid`, caches or editor/OS
    metadata.
-3. Generate a sorted `SHA256SUMS` manifest of every file and record the
-   SHA-256 of the final archive.
+3. Generate a sorted `SHA256SUMS` manifest of every file; the SHA-256 of the
+   final archive is recorded in the `<name>.zip.sha256` sidecar next to it.
 4. Re-run the four test suites from the extracted folder (`node test/…`).
 5. Open via `file://` and via HTTP(S); check PWA install and offline reload of
    all four pages, with and without `?id=` query parameters.
@@ -242,7 +251,7 @@ violated; step 5 remains manual.
 
 See also `docs/ACCEPTANCE_TEST.md` (independent validation sheet).
 
-**Document version:** 2.3 — this guide only; the application and database are
+**Document version:** 2.4 — this guide only; the application and database are
 versioned separately (`nuclides.json` v1.2, `UTILS.APP_VERSION` in
 `js/utils.js`, `CACHE_VERSION` in `sw.js`)  
 **Last updated:** 2026-07-16

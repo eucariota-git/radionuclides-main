@@ -296,7 +296,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v26');
+    swVersion === 'nm-planner-v27');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -337,15 +337,19 @@ async function main() {
   check('no user-facing text claims infinite-medium build-up is conservative for finite barriers',
     ![doseHtml, aboutHtml, guideMd].some(text => /conservative for finite|slightly conservative/i.test(text)) &&
     /not universally conservative/.test(doseHtml));
-  check('dose page derives the photon-less label from real decay modes, not a blanket β− claim',
+  check('dose page derives the photon-less label from real decay modes and discloses sub-0.01% branches',
     /decay_modes: icrpN\.decay_modes/.test(doseHtml) &&
     /isPureBetaMinus/.test(doseHtml) &&
     /m\.branching >= 1e-4/.test(doseHtml) &&
+    /essentially a pure &beta;/.test(doseHtml) &&
+    /minorModes/.test(doseHtml) &&
     !doseHtml.includes('is a pure &beta;&#8315; emitter.</strong>'));
-  check('Y-90 report snapshot keeps container, patient transmission and decay-integration mode',
+  check('Y-90 report keeps its scenario snapshot and cites only scenario sources (no auto ICRU 57/Cornejo)',
     /containerName: container\.name/.test(doseHtml) &&
     /patientTx: patientTx,\s*\n\s*withDecay: withDecay/.test(doseHtml) &&
-    doseHtml.includes("['Assumptions', '', '', '', '', ''"));
+    doseHtml.includes("['Assumptions', '', '', '', '', ''") &&
+    !/ICRU Report 57/.test(reportJs) &&
+    /if \(r\.isY90\) \{/.test(doseHtml));
   check('printed reports identify the application build',
     /<tr><td>Application<\/td>/.test(reportJs) && /APP_BUILD/.test(reportJs));
   check('decay validates the vial weight before any result is rendered',

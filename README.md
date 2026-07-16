@@ -210,6 +210,13 @@ docs/USER_GUIDE.md      Canonical source for the in-app guide
 docs/                   Acceptance and audit/remediation material
 ```
 
+> **Repository vs. distribution package.** This README describes the full
+> source repository. The distribution package built by
+> `tools/build-package.js` ships only the runtime application, its data, the
+> test suites and the user/licensing documentation; development material such
+> as `tools/`, `references/` and `data/sources/` stays in the source
+> repository, available from the project maintainer.
+
 ---
 
 ## Development tooling

@@ -652,18 +652,25 @@
     if (r.n._icrp107) notes.push('ICRP 107 extended entry: constants computed automatically, NOT manually validated. Verify against primary sources before regulatory use.');
     if (r.patientTx !== undefined && r.patientTx < 1) notes.push(`Patient attenuation applied: transmission ${UTILS.fmt(r.patientTx * 100)}%.`);
 
-    // Only the sources the calculation actually used (audit 2026-07-16, H-06):
-    // a Y-90 or unshielded report must not cite Archer fits or buildup tables.
+    // Only the sources the calculation actually used (audit 2026-07-16, H-06;
+    // re-audit R-02): a Y-90 report must not cite conversion coefficients, the
+    // Γ methodology, Archer fits or buildup tables — its container constants
+    // have no primary source — and it issues no regulatory verdict, so RD
+    // 1029/2022 is not cited for it either.
     const sources = [];
     if (r.isY90) {
       sources.push('Zanzonico et al. (1999) J Nucl Med 40(6):1024–1028 — bremsstrahlung dose-rate methodology (the container constants used here are estimates, not tabulated in that publication).');
-    } else if (r.method === 'archer') {
-      sources.push('Oumano et al. (2025) J Appl Clin Med Phys — Archer broad-beam shielding parameters.');
-    } else if (r.method === 'narrow_beam_spectrum' || r.method === 'narrow_beam') {
-      sources.push('NIST XCOM — photon mass attenuation coefficients.');
-      sources.push('Trubey D.K. (1991) NUREG/CR-5740 / ORNL/RSIC-49/R1 — ANSI/ANS-6.4.3 exposure buildup factors (Table 3).');
+    } else {
+      sources.push('ICRU Report 57 / ICRP Publication 74 (1996) — Conversion coefficients H*(10), H\'(0.07).');
+      sources.push('Cornejo Díaz N., Brosed Serreta A., Ruiz Manzano P. (2015) — Constantes de tasa de kerma en aire y de dosis. Radioprotección Nº 83.');
+      if (r.method === 'archer') {
+        sources.push('Oumano et al. (2025) J Appl Clin Med Phys — Archer broad-beam shielding parameters.');
+      } else if (r.method === 'narrow_beam_spectrum' || r.method === 'narrow_beam') {
+        sources.push('NIST XCOM — photon mass attenuation coefficients.');
+        sources.push('Trubey D.K. (1991) NUREG/CR-5740 / ORNL/RSIC-49/R1 — ANSI/ANS-6.4.3 exposure buildup factors (Table 3).');
+      }
+      sources.push('RD 1029/2022 — dose limits used in the regulatory comparison.');
     }
-    sources.push('RD 1029/2022 — dose limits used in the regulatory comparison.');
 
     REPORT.print({
       title: 'External Dose Estimate',
@@ -837,15 +844,23 @@
       // Radiologically honest label for entries with no photon dose component:
       // 50 of the 89 photon-less ICRP 107 entries decay by α, EC or IT, not β−
       // (audit 2026-07-16, H-02), so "pure β− emitter" is only claimed when the
-      // stored decay modes say so. Branches below 0.01% are ignored — the same
-      // threshold as the photon yield filter (e.g. Bi-210's 1.3e-6 α branch).
-      // Curated entries carry no decay_modes field; the only curated
-      // photon-less nuclide is Y-90, which IS a pure β− emitter.
+      // stored decay modes say so. Branches below 0.01% — the same threshold as
+      // the photon yield filter — still drive the bremsstrahlung guidance, but
+      // they forbid the word "pure": Bi-210 (α 1.3e-6), Bk-249 and Pu-241 are
+      // labelled "essentially pure β−" with the minor branch disclosed
+      // (re-audit 2026-07-16, R-01). Curated entries carry no decay_modes
+      // field; the only curated photon-less nuclide is Y-90, which IS a pure
+      // β− emitter.
       const DECAY_MODE_NAMES = { 'A': 'α', 'B-': 'β−', 'B+': 'β+', 'EC': 'electron capture', 'ECB+': 'electron capture / β+', 'IT': 'isomeric transition', 'SF': 'spontaneous fission' };
-      const decayModes = (n.decay_modes || [])
-        .filter(m => m && (m.branching == null || m.branching >= 1e-4))
-        .map(m => String(m.mode || '').trim()).filter(Boolean);
+      const allModes = (n.decay_modes || []).filter(m => m && String(m.mode || '').trim());
+      const decayModes = allModes
+        .filter(m => m.branching == null || m.branching >= 1e-4)
+        .map(m => String(m.mode || '').trim());
+      const minorModes = allModes.filter(m => m.branching != null && m.branching < 1e-4);
       const decayModeText = decayModes.map(m => DECAY_MODE_NAMES[m] || m).join(' + ');
+      const minorModeText = minorModes
+        .map(m => `${DECAY_MODE_NAMES[String(m.mode).trim()] || String(m.mode).trim()} ${(m.branching * 100).toExponential(2)}%`)
+        .join(', ');
       const isPureBetaMinus = decayModes.length ? decayModes.every(m => m === 'B-') : !n._noPhotons;
 
       // Special handling for Y-90 with Zanzonico table
@@ -979,7 +994,7 @@
             ${n._noPhotons
               ? `${UTILS.escapeHtml(n.symbol)} is an ICRP 107 entry with no photon emission passing the
                  selection filter (&#8805; 20 keV, yield &#8805; 0.01%), so no external photon dose can be
-                 estimated. Decay mode${decayModes.length > 1 ? 's' : ''}: <strong>${UTILS.escapeHtml(decayModeText || 'not recorded')}</strong>.
+                 estimated. Decay mode${decayModes.length > 1 ? 's' : ''}: <strong>${UTILS.escapeHtml(decayModeText || 'not recorded')}</strong>${minorModes.length ? ` (minor branches &lt; 0.01%: ${UTILS.escapeHtml(minorModeText)})` : ''}.
                  ${isPureBetaMinus
                    ? 'Any external hazard would come from bremsstrahlung, which depends on the container geometry and is not modelled here.'
                    : 'This is not a pure β− emitter: assess the radiological hazard from the actual decay mode (for photon-less α and EC emitters the main concern is internal exposure).'}`
@@ -994,7 +1009,9 @@
       document.getElementById('distChartContainer').innerHTML = `
         <div class="alert alert-warning" style="margin:1rem 0;">
           <strong>${UTILS.escapeHtml(n.symbol)} ${isPureBetaMinus
-            ? 'is a pure &beta;&#8315; emitter.'
+            ? (minorModes.length
+                ? `is essentially a pure &beta;&#8315; emitter (minor branches &lt; 0.01%: ${UTILS.escapeHtml(minorModeText)}).`
+                : 'is a pure &beta;&#8315; emitter.')
             : `has no photon emission above the selection filter (decay: ${UTILS.escapeHtml(decayModeText || 'see ICRP 107')}).`}</strong><br>
           ${n.id === 'Y-90'
             ? 'Dose shown above is an experimental container-dependent scenario inspired by the Zanzonico et al. formalism (J Nucl Med 40(6):1024–1028, 1999). That publication does not tabulate these container constants; do not use them for design or regulatory conclusions without geometry-specific evidence.'

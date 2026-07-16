@@ -21,10 +21,14 @@
 
 const REPORT = (() => {
 
+  // Only the source every report actually uses (decay data: half-lives,
+  // emissions). ICRU 57 / Cornejo used to be listed here unconditionally, which
+  // over-attributed them to reports that never touch conversion coefficients —
+  // the Y-90 container estimates (no primary source at all) and plain decay
+  // calculations (re-audit 2026-07-16, R-02). Scenario-specific sources are the
+  // caller's responsibility via spec.sources.
   const COMMON_SOURCES = [
     'ICRP Publication 107 (2008) — Nuclear Decay Data for Dosimetric Calculations.',
-    'ICRU Report 57 / ICRP Publication 74 (1996) — Conversion coefficients H*(10), H\'(0.07).',
-    'Cornejo Díaz N., Brosed Serreta A., Ruiz Manzano P. (2015) — Constantes de tasa de kerma en aire y de dosis. Radioprotección Nº 83.',
   ];
 
   const DISCLAIMER =
