@@ -19,6 +19,11 @@ references/ICRP 119*.pdf
 references/Art*culo*.pdf
 references/Zanzonico*.pdf
 references/icrp107/USERGUIDE.pdf
+# Effluent Scenario 2 sources (NUREG/CR-5814, IAEA SRS-19 © IAEA) and the
+# reference workbook — redistribution terms not confirmed, kept local only.
+references/NRC NUREG-CR-5814*.pdf
+references/OIEA SRS-19*.pdf
+references/IRA-*.xlsx
 
 # ICRP 107 raw distribution files (© ICRP, "all rights reserved") — local only.
 # Download free from icrp.org and verify SHA256 against data/icrp107-index.json.
