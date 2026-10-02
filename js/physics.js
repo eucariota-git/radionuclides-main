@@ -306,6 +306,78 @@ const CALC = (() => {
   }
 
   /**
+   * NUREG/CR-5814 Scenario No. 2 — sewage-treatment-plant sludge process operator.
+   *
+   * Screening model (IAEA SRS-19 §4.9 case b): the annual discharge is retained
+   * in the sludge produced in one year (steady state, C = Q/S), after decaying
+   * during transit to the sludge press. Two pathways:
+   *   C_dry  [Bq/kg] = A · f_sludge · DF / (M_wet · f_solids)
+   *   C_wet  [Bq/m³] = A · f_sludge · DF · ρ_wet / M_wet
+   *   C_air  [Bq/m³] = C_dry · dust · f_resp
+   *   E_ext  [Sv/y]  = C_wet · k · t_ext · f_geom
+   *   E_inh  [Sv/y]  = C_air · BR · t_inh · e_inh
+   * with DF = exp(−λ·t_transit). Algorithm reproduced from the reference
+   * workbook IRA-xxxx_Lu-177_dosis_en_escenario2_v1.xlsx (sheet Escenario-2).
+   *
+   * No decay during the exposure year is modelled: the sludge is continuously
+   * renewed, so the annual-average concentration is the steady-state one.
+   * k must be an effective-dose-rate coefficient for the SAME sludge geometry
+   * (see data/effluent-scenario2.json) — it is not a point-source Γ.
+   *
+   * All inputs and outputs in SI.
+   * @param {object} p
+   * @param {number} p.lambda_s              decay constant [s⁻¹]
+   * @param {number} p.transit_s             discharge → sludge press [s]
+   * @param {number} p.A_Bq_per_y            activity reaching the sewer [Bq/y]
+   * @param {number} p.wet_sludge_kg_per_y   wet (dewatered) sludge production [kg/y]
+   * @param {number} p.solids_fraction       dry mass / wet mass [–]
+   * @param {number} p.wet_density_kg_m3     wet sludge density [kg/m³]
+   * @param {number} p.dust_kg_m3            dust loading in air [kg/m³]
+   * @param {number} p.respirable_fraction   [–]
+   * @param {number} p.sludge_fraction       fraction of discharge retained in sludge [–]
+   * @param {number} p.breathing_m3_s        breathing rate [m³/s]
+   * @param {number} p.t_ext_s               external exposure time per year [s]
+   * @param {number} p.t_inh_s               inhalation exposure time per year [s]
+   * @param {number} p.geometry_factor       external geometry/shielding factor [–]
+   * @param {number} p.k_Sv_m3_per_Bq_s      external coefficient [(Sv/s)/(Bq/m³)]
+   * @param {number} p.e_inh_Sv_per_Bq       inhalation dose coefficient [Sv/Bq]
+   * @returns {{DF:number, C_dry:number, C_wet:number, C_air:number,
+   *            E_ext:number, E_inh:number, E:number, FD_Sv_per_Bq:number,
+   *            dominant:'external'|'inhalation'}}
+   */
+  function sludgeOperatorScenario2(p) {
+    const nonNeg = ['lambda_s', 'transit_s', 'A_Bq_per_y', 'wet_density_kg_m3', 'dust_kg_m3',
+      'breathing_m3_s', 't_ext_s', 't_inh_s', 'k_Sv_m3_per_Bq_s', 'e_inh_Sv_per_Bq'];
+    const fractions = ['respirable_fraction', 'sludge_fraction', 'geometry_factor'];
+    const positive = ['wet_sludge_kg_per_y', 'solids_fraction'];
+    for (const key of nonNeg.concat(fractions, positive)) {
+      if (typeof p[key] !== 'number' || !Number.isFinite(p[key]) || p[key] < 0) {
+        throw new RangeError(`sludgeOperatorScenario2: ${key} must be a finite number ≥ 0`);
+      }
+    }
+    for (const key of positive) {
+      if (p[key] === 0) throw new RangeError(`sludgeOperatorScenario2: ${key} must be > 0`);
+    }
+    for (const key of fractions.concat('solids_fraction')) {
+      if (p[key] > 1) throw new RangeError(`sludgeOperatorScenario2: ${key} must be ≤ 1`);
+    }
+
+    const DF = Math.exp(-p.lambda_s * p.transit_s);
+    const retained = p.A_Bq_per_y * p.sludge_fraction * DF;                      // Bq per year of sludge
+    const C_dry = retained / (p.wet_sludge_kg_per_y * p.solids_fraction);         // Bq/kg dry
+    const C_wet = retained / p.wet_sludge_kg_per_y * p.wet_density_kg_m3;         // Bq/m³ wet
+    const C_air = C_dry * p.dust_kg_m3 * p.respirable_fraction;                   // Bq/m³ air
+    const E_ext = C_wet * p.k_Sv_m3_per_Bq_s * p.t_ext_s * p.geometry_factor;     // Sv/y
+    const E_inh = C_air * p.breathing_m3_s * p.t_inh_s * p.e_inh_Sv_per_Bq;       // Sv/y
+    const E = E_ext + E_inh;
+    return {
+      DF, C_dry, C_wet, C_air, E_ext, E_inh, E,
+      FD_Sv_per_Bq: p.A_Bq_per_y > 0 ? E / p.A_Bq_per_y : NaN,
+      dominant: E_ext >= E_inh ? 'external' : 'inhalation',
+    };
+  }
+
+  /**
    * Convert activity between units.
    * @param {number} value
    * @param {'MBq'|'GBq'|'mCi'|'Ci'|'kBq'|'Bq'} fromUnit
@@ -363,6 +435,7 @@ const CALC = (() => {
     cumulativeDose,
     hvlTvl,
     thicknessForAttenuation,
+    sludgeOperatorScenario2,
     convertActivity,
     formatDose,
     formatDoseRate,

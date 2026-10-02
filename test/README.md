@@ -18,6 +18,9 @@ Every suite exits with code 0 on success and non-zero on a failure.
 Exercises the production `PHYSICS` and `CALC` modules: dose constants, decay,
 HVL/TVL, attenuation, spectrum-weighted transmission, separate H*(10) and
 H'(0.07) spectra, build-up factors, the lead K edge and numerical solvers.
+Test 13 checks the effluent Scenario 2 model against the cached cells of the
+reference workbook, NUREG/CR-5814 Tables A.16 and B.7, input validation and
+the full `EFFLUENT.evaluate` chain with the shipped data.
 
 Reference anchors come from the sources identified alongside each test. A green
 suite demonstrates that the implemented calculations reproduce those anchors;
@@ -28,7 +31,8 @@ it is not a substitute for independent clinical or regulatory validation.
 Checks curated half-lives, published Cornejo constants, the actual
 `PHYSICS.ICRU57` table, material densities, RD 1217/2024 clearance levels,
 filtered photon counts, adult ingestion coefficients and liquid-effluent
-formula consistency.
+formula consistency, and the effluent Scenario 2 coefficients (ICRP 119 G.1,
+PHITS reports) and workbook defaults.
 
 The ICRU57 checks load `js/data.js` through `vm`; they do not validate a copied
 table. Selected published anchors remain independent assertions.
@@ -48,7 +52,9 @@ Covers integration and structure outside the mathematical modules:
 - H'(0.07) table/chart wiring and threshold-safe report formatting;
 - canonical URL aliases and curated-database precedence;
 - input-state validation and visible data-load failures;
-- deep equality of `nuclides.json` and `nuclides-data.js`;
+- deep equality of `nuclides.json` and `nuclides-data.js`, and of the effluent
+  data file and its JS twin;
+- effluent page navigation, precache, packaging and report wiring;
 - empty, partial and offline database fallback behavior;
 - service-worker cache-first and explicit offline responses;
 - keyboard-accessible tooltips and dynamic light/dark chart themes;

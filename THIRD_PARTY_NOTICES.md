@@ -120,6 +120,19 @@ distribution. The underlying ANSI/ANS-6.4.3 standard is © American Nuclear
 Society and is **not** redistributed here (only the numeric Table 3 values are
 used).
 
+### Effluent Scenario 2 — dose coefficients and model parameters
+Files: `data/effluent-scenario2.json`, `data/effluent-scenario2-data.js`.
+- Inhalation dose coefficients for Lu-177 and I-131 (adult members of the
+  public): ICRP Publication 119 (2012), Table G.1, © ICRP. Two numeric values
+  cited with attribution; the publication is not redistributed.
+- Model structure and default parameter values (sludge density, dust loading,
+  respirable fraction, exposure times, transit time): Kennedy W.E. Jr. et al.,
+  NUREG/CR-5814 / PNL-7892 (1992), U.S. NRC; and IAEA Safety Reports Series
+  No. 19 (2001), © IAEA. Numeric values cited with attribution; neither report
+  is included in the distribution package.
+- External dose-rate coefficients k: own PHITS calculations by the project
+  author (not third-party data).
+
 ### BOE — Spanish legal texts
 `references/RD 1029 de 2022 …`, `references/RD 1217 de 2024 …`. Legal and
 regulatory provisions are excluded from intellectual property under art. 13 of

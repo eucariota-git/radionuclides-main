@@ -33,6 +33,7 @@ async function main() {
   const doseHtml = read('dose.html');
   const decayHtml = read('decay.html');
   const aboutHtml = read('about.html');
+  const effluentHtml = read('effluent.html');
   const reportJs = read('js/report.js');
   const icrpLoaderJs = read('js/icrp107-loader.js');
 
@@ -232,11 +233,11 @@ async function main() {
     /usePointStyle: true/.test(decayHtml) && /pointStyle: 'line'/.test(doseHtml) &&
     /pointStyle: 'circle'/.test(doseHtml) && /usePointStyle: true/.test(doseHtml));
   check('all public footers use the shared estimation disclaimer',
-    [indexHtml, decayHtml, doseHtml, aboutHtml].every(html =>
+    [indexHtml, decayHtml, doseHtml, effluentHtml, aboutHtml].every(html =>
       /For radiation protection estimation purposes\.\s*\n\s*Verify against primary sources for regulatory submissions\./.test(html)) &&
     !/Dose rate constants: Cornejo/.test(`${decayHtml}\n${doseHtml}`));
   check('all public footers identify the original author and keep third-party scope separate',
-    [indexHtml, decayHtml, doseHtml, aboutHtml].every(html =>
+    [indexHtml, decayHtml, doseHtml, effluentHtml, aboutHtml].every(html =>
       /Original application and code: &copy; 2026 Ramon Sendon &middot; EUPL-1\.2 &middot; Third-party data: separate terms/.test(html)));
   check('overflow-table tooltips no longer open upward outside the scrollport',
     !/tooltip-up/.test(indexHtml) && !/\.has-tooltip\.tooltip-up/.test(styleCss));
@@ -268,7 +269,7 @@ async function main() {
   console.log();
 
   console.log('Test 8: inline application scripts parse');
-  for (const [name, html] of [['index.html', indexHtml], ['decay.html', decayHtml], ['dose.html', doseHtml]]) {
+  for (const [name, html] of [['index.html', indexHtml], ['decay.html', decayHtml], ['dose.html', doseHtml], ['effluent.html', effluentHtml]]) {
     const inlineScripts = [...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)]
       .map(match => match[1]).filter(source => source.trim());
     let syntaxOk = true;
@@ -297,7 +298,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v28');
+    swVersion === 'nm-planner-v29');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -305,7 +306,7 @@ async function main() {
     ['favicon.svg', 'icon-180.png', 'icon-192.png', 'icon-512.png']
       .every(rel => !fs.existsSync(path.join(ROOT, rel))));
   check('all public pages reference the organized favicon and Apple Touch icon',
-    [indexHtml, decayHtml, doseHtml, aboutHtml].every(html =>
+    [indexHtml, decayHtml, doseHtml, effluentHtml, aboutHtml].every(html =>
       /href="assets\/icons\/favicon\.svg"/.test(html) &&
       /href="assets\/icons\/icon-180\.png"/.test(html)));
   const manifest = JSON.parse(read('manifest.json'));
@@ -380,6 +381,37 @@ async function main() {
   check('deployment docs scope reproducibility to canonical Git blobs, epoch and Node/zlib toolchain',
     /canonical blobs of `HEAD`/.test(developmentMd) && /same commit,\s*\nepoch and Node\/zlib toolchain/.test(developmentMd) &&
     /compressed bytes are not promised to match/.test(developmentMd));
+
+  console.log();
+
+  console.log('Test 11: effluent page (NUREG/CR-5814 Scenario 2) wiring');
+  const effluentJs = read('js/effluent.js');
+  const buildPackageJs = read('tools/build-package.js');
+  const effluentCtx = vm.createContext({});
+  vm.runInContext(read('data/effluent-scenario2-data.js') + ';this.__E = EFFLUENT_S2_DATA;', effluentCtx);
+  check('effluent-scenario2-data.js is the exact twin of effluent-scenario2.json',
+    JSON.stringify(effluentCtx.__E) === JSON.stringify(JSON.parse(read('data/effluent-scenario2.json'))));
+  check('every page links the effluent page in its navigation',
+    [indexHtml, decayHtml, doseHtml, aboutHtml].every(html =>
+      /<nav class="site-nav"[\s\S]*?href="effluent\.html"[\s\S]*?<\/nav>/.test(html)) &&
+    /href="effluent\.html" class="active"/.test(effluentHtml));
+  check('service worker precaches the effluent page, module and embedded data',
+    ['./effluent.html', './js/effluent.js', './data/effluent-scenario2-data.js'].every(a => swJs.includes(`'${a}'`)));
+  check('package allowlist includes the effluent page and data',
+    /'effluent\.html'/.test(buildPackageJs) &&
+    /'data\/effluent-scenario2\.json', 'data\/effluent-scenario2-data\.js'/.test(buildPackageJs));
+  check('effluent page loads its embedded data before the module, and the module uses the pure physics function',
+    effluentHtml.indexOf('data/effluent-scenario2-data.js') < effluentHtml.indexOf('js/effluent.js') &&
+    /CALC\.sludgeOperatorScenario2/.test(effluentJs) && !/document\./.test(effluentJs));
+  check('effluent page reads every data-file parameter, the geometry selector and locks I-131 cycles',
+    /for \(const key of Object\.keys\(P\)\) plant\[key\] = readNumber/.test(effluentHtml) &&
+    /nd\.k_ext\[geometry\]\.value/.test(effluentHtml) &&
+    /cycles_locked \? 1 :/.test(effluentHtml));
+  check('effluent report overrides the point-source disclaimer and nuclide header',
+    /disclaimer: 'Generic screening estimate/.test(effluentHtml) && /headerRows:/.test(effluentHtml) &&
+    /spec\.disclaimer \|\| DISCLAIMER/.test(reportJs) && /spec\.headerRows/.test(reportJs));
+  check('effluent page states it is not a complete discharge assessment and uses public inhalation coefficients',
+    /not a complete discharge assessment/.test(effluentHtml) && /members of the public/.test(effluentHtml));
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);
   process.exitCode = failed === 0 ? 0 : 1;

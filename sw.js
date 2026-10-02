@@ -12,13 +12,14 @@
 
 'use strict';
 
-const CACHE_VERSION = 'nm-planner-v28';
+const CACHE_VERSION = 'nm-planner-v29';
 
 const ASSETS = [
   './',
   './index.html',
   './decay.html',
   './dose.html',
+  './effluent.html',
   './about.html',
   './assets/icons/favicon.svg',
   './assets/icons/icon-180.png',
@@ -28,6 +29,7 @@ const ASSETS = [
   './css/style.css',
   './js/chart.umd.min.js',
   './js/data.js',
+  './js/effluent.js',
   './js/nuclide-id.js',
   './js/db.js',
   './js/icrp107-loader.js',
@@ -40,6 +42,7 @@ const ASSETS = [
   // back to them offline, so precaching the JSONs doubled the install (~16 MB).
   './data/nuclides-data.js',
   './data/icrp107-data.js',
+  './data/effluent-scenario2-data.js',
 ];
 
 self.addEventListener('install', (event) => {

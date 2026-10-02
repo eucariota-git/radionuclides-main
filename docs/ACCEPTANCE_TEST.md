@@ -27,6 +27,7 @@ Commit fuente completo: ________________________________________ · SHA-256 del 
 | A8 | **Desclasificación** (Decay) | Lu-177, A₀ = 2 GBq, peso = 10 kg | 200 000 kBq/kg inicial; nivel 100 kBq/kg; alcanza desclasificación tras ≈ 72.8 d | | RD 1217/2024 Anexo IV Tabla A.1 (Lu-177 = 1E+02 Bq/g) | |
 | A9 | **Efluente líquido** (Properties) | I-131 | 75.8 Bq/L; e(g) = 2.2×10⁻⁸ Sv/Bq | | ICRP 119 Anexo F Tabla F.1 (adulto); IS-28 | |
 | A10 | **Y-90 bremsstrahlung** (Dose) | Y-90, 2 GBq, d = 0.30 m, contenedor PMMA | Ḣ\*(10) = 0.200 μSv/h; aviso al seleccionar Pb (3–4× más bremsstrahlung) | | ⚠ valores de contenedor son ESTIMACIONES (no tabuladas en Zanzonico 1999) — contrastar con medida o criterio experto | |
+| A11 | **Efluente — operador de lodos de EDAR** (Effluent) | Valores por defecto, geometría ≤ 2000 m² | Lu-177: 732.6 GBq/a; FD = 1.065 µSv/GBq; E = 0.780 mSv/a. I-131: 8 GBq/a; FD = 13.10 µSv/GBq; E = 0.105 mSv/a. Total 0.885 mSv/a | | Libro `IRA-xxxx_Lu-177_dosis_en_escenario2_v1.xlsx`: Lu-177 FD = 1.0648 µSv/GBq, E = 0.7801 mSv/a (el I-131 del libro, 0.112 mSv/a, usa el atajo NUREG B.7 y no es comparable) | |
 
 ## B. Comprobaciones funcionales
 
@@ -34,7 +35,7 @@ Commit fuente completo: ________________________________________ · SHA-256 del 
 |---|--------------|--------------------|-----|
 | B1 | Las cuatro suites de tests (`node test/validate-app.js`, `validate-math.js`, `validate-data.js`, `validate-constants.js`) | Todas en verde (0 failed) | |
 | B2 | Nucleido ICRP 107 (p. ej. Na-22) buscado en Properties y abierto en Dose | Constantes Γ calculadas mostradas; la comparación con Cornejo la cubre `validate-constants.js` (B1) | |
-| B3 | Informe 📄 Report / PDF (Dose y Decay) | Cabecera con versión de aplicación, build, versión de base de datos y fecha; método declarado, disclaimer y línea de firma | |
+| B3 | Informe 📄 Report / PDF (Dose, Decay y Effluent) | Cabecera con versión de aplicación, build, versión de base de datos y fecha; método declarado, disclaimer y línea de firma | |
 | B4 | Nucleido ICRP 107 extendido (p. ej. Na-22) en Dose | Aviso "NOT manually validated" antes de calcular | |
 | B5 | Funcionamiento offline | Abrir vía `file://` y, en HTTPS, recargar sin conexión tras primera visita (service worker) | |
 | B6 | Instalación PWA (Android/desktop, HTTPS) | El navegador ofrece "Instalar"; icono trébol; arranca standalone | |
@@ -54,6 +55,7 @@ El validador confirma que conoce y acepta estas limitaciones documentadas:
 - [ ] Cristalino estimado con H\*(10).
 - [ ] Decaimiento entre administraciones no modelado (cada administración independiente).
 - [ ] Entradas ICRP 107 extendidas: constantes calculadas automáticamente, no validadas manualmente.
+- [ ] Efluente (escenario 2): cribado con todo el vertido retenido en el lodo; los coeficientes externos solo valen para la geometría PHITS declarada y ninguno cubre la losa infinita de NUREG/CR-5814; no es una evaluación completa del vertido (IS-28 II.A.4 y mezclas aparte).
 - [ ] La herramienta es de apoyo: no sustituye el juicio del experto ni el cálculo regulatorio formal.
 
 ---

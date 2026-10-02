@@ -1,6 +1,6 @@
 # NM Radionuclide Planner — User Guide
 
-A web application for nuclear medicine radionuclide properties, decay calculations, and external dose estimation.
+A web application for nuclear medicine radionuclide properties, decay calculations, external dose estimation and liquid-effluent screening.
 
 **Local distribution:** Keep the supplied folder intact and open `index.html` in a modern web browser.
 
@@ -17,7 +17,7 @@ The application has no installation or authentication. It can be used in either 
 - **Mobile**: iOS Safari, Chrome mobile (with landscape mode for better experience)
 - **Offline**: Works entirely offline when opened from `file://`; a copy first loaded over HTTP(S) can also work offline from its local cache
 - **Install as app (PWA)**: when served through `localhost` or HTTPS, a compatible browser can offer "Install" / "Add to Home screen" — the app then runs standalone with its own icon and a service worker keeps all assets cached for fully offline use
-- **Reports**: the Decay and Dose calculators include a **📄 Report / PDF** button that generates a printable calculation report (timestamp, database version, inputs, results, method, data sources, disclaimer and sign-off line) — use the browser's "Save as PDF" destination to archive it
+- **Reports**: the Decay, Dose and Effluent calculators include a **📄 Report / PDF** button that generates a printable calculation report (timestamp, database version, inputs, results, method, data sources, disclaimer and sign-off line) — use the browser's "Save as PDF" destination to archive it
 
 ---
 
@@ -156,7 +156,44 @@ The application includes an **extended database of 1,252 radionuclides** from IC
 
 ---
 
-### 4. ICRP 107 data integrity
+### 4. Liquid Effluent — STP Sludge Operator (`effluent.html`)
+
+**Purpose**: Screening estimate of the annual effective dose to a sewage-treatment-plant (STP / EDAR) worker who operates sludge dewatering equipment (centrifuge, sludge press), from Lu-177 and I-131 excreted by patients at home. Implements Scenario No. 2 of NUREG/CR-5814 (1992) with the screening philosophy of IAEA SRS-19 (2001) §4.9 and §6.6.
+
+**How to use**:
+1. **Source term** (one row per nuclide; untick *Include* to leave one out):
+   - Lu-177: patients/year × cycles/patient × administered activity per cycle × fraction reaching the sewer
+   - I-131: patients/year × activity at hospital discharge × fraction excreted at home (always one treatment per patient)
+   - *Patients living in the STP catchment* (%) applies to both
+2. **Treatment plant and sludge**: wet (dewatered) sludge production — plant-specific, from PRTR-España, waste code LER 19 08 05 —, solids fraction, wet density, fraction retained in sludge, transit time to the press, dust loading and respirable fraction
+3. **Exposure**: breathing rate, external and inhalation times, geometry/shielding factor, and a **user-defined** dose criterion (the app attributes no regulatory basis to it)
+4. **External coefficient geometry**: *up to 100 m²* (10 × 10 × 3 m) or *up to 2000 m²* (45 × 45 × 3 m, default)
+
+Results update as you type: decay factor, sludge and air concentrations and dose factor per GBq discharged; annual external, inhalation and total dose per nuclide; linear sum and percentage of the criterion. **📄 Report / PDF** and **⬇ Export CSV** record every input and coefficient.
+
+**Model** (per nuclide, A = activity reaching the sewer in one year, DF = exp(−λ·t_transit)):
+- C_dry [Bq/kg] = A · f_sludge · DF / (M_wet · f_solids)
+- C_wet [Bq/m³] = A · f_sludge · DF · ρ_wet / M_wet
+- C_air [Bq/m³] = C_dry · dust loading · f_resp
+- E_ext = C_wet · k · t_ext · f_geom; E_inh = C_air · BR · t_inh · e(inh)
+
+**Data**:
+- **k** (external): effective-dose-rate coefficients (ICRP 116, rotational geometry) calculated with PHITS for a uniform 3 m deep sludge source, receptor 2 m above its centre. They are **not** point-source Γ constants and apply only to that geometry
+- **e(inh)**: ICRP 119 Table G.1, adult member of the public — Lu-177 type M, 1.1×10⁻⁹ Sv/Bq; I-131 type F, 7.4×10⁻⁹ Sv/Bq (the most conservative type)
+- Half-lives from the app database
+
+**Limitations**:
+- Screening model: all discharged activity is retained in one year of sludge, with no decay during the exposure year
+- NUREG/CR-5814 prescribes an infinite slab, which neither coefficient covers. For Lu-177 the PHITS study measured that the 2000 m² coefficient captures 73–75 % of the infinite slab
+- Inhalation uses public dose coefficients: the STP worker is not an exposed worker of the licensee
+- **Not a complete discharge assessment.** The IS-28 Annex II II.A.4 sewer conditions (per-nuclide level, sum of fractions, annual activity limits) and mixture clearance are evaluated separately
+- A collapsible panel compares the I-131 result with NUREG/CR-5814 Table B.7 (rescaled to the plant) and IAEA SRS-19 Table I–IV. Both are indicative only: SRS-19 Annex I uses an occupancy of 0.288 where 2000/8760 = 0.228
+
+**Example** (default values, 2000 m² geometry): Lu-177 75 patients × 6 cycles × 7.4 GBq × 0.55 × 40 % = 732.6 GBq/y → 1.065 µSv/GBq → 0.780 mSv/y; I-131 50 × 0.8 GBq × 0.5 × 40 % = 8 GBq/y → 13.10 µSv/GBq → 0.105 mSv/y; total 0.885 mSv/y.
+
+---
+
+### 5. ICRP 107 data integrity
 
 Constants for the extended ICRP 107 nuclides are computed from the parsed photon
 emissions and cross-checked against the published Cornejo (2015) values by the
@@ -246,6 +283,9 @@ Toggle dark/light mode using the **moon icon** (🌙) in the top-right corner. P
 - **ICRP Publication 74** (1996). "Conversion Coefficients for Use in Radiological Protection against External Radiation." International Commission on Radiological Protection.
 - **ICRP Publication 107** (2008). "Nuclear Decay Data for Dosimetric Calculations." Endo & Eckerman.
 - **ICRP Publication 119** (2012). "Compendium of Dose Coefficients based on ICRP Publication 60."
+- **ICRP Publication 116** (2010). "Conversion Coefficients for Radiological Protection Quantities for External Radiation Exposures." With the corrigenda in ICRP Publication 129 (2015).
+- **IAEA Safety Reports Series No. 19** (2001). "Generic Models for Use in Assessing the Impact of Discharges of Radioactive Substances to the Environment." §4.9 and §6.6.
+- **Kennedy W.E. Jr., Parkhurst M.A., Aaberg R.L., Rhoads K.C., Hill R.L., Martin J.B.** (1992). *Evaluation of Exposure Pathways to Man From Disposal of Radioactive Materials Into Sanitary Sewer Systems*. NUREG/CR-5814 / PNL-7892, U.S. NRC. §5.2.2, Tables A.16, A.21, B.7.
 - **ICRU Report 57** (1998). "Conversion Coefficients for use in Radiological Protection against External Radiation."
 - **Instrucción IS-28** (CSN, 22 September 2010). "Especificaciones técnicas de funcionamiento que deben cumplir las instalaciones radiactivas de segunda y tercera categoría." BOE nº 246, 11 October 2010 (BOE-A-2010-15594).
 - **[Real Decreto 1029/2022](https://www.boe.es/buscar/act.php?id=BOE-A-2022-21682)**, de 20 de diciembre, por el que se aprueba el Reglamento sobre protección de la salud contra los riesgos derivados de la exposición a las radiaciones ionizantes. BOE-A-2022-21682.

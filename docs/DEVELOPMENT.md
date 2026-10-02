@@ -55,6 +55,12 @@ Each module (PHYSICS, CALC, DB, ICRP107, UI) is an IIFE returning public API. No
 ### `REPORT` (`js/report.js`)
 - `print(spec)` — builds a print-only calculation report (timestamp, DB version, inputs, results, method, sources, disclaimer, sign-off) and opens the print dialog
 
+### `EFFLUENT` (`js/effluent.js`)
+- `load()` — `data/effluent-scenario2.json` by fetch, falling back to the embedded `EFFLUENT_S2_DATA` (same coherence rule as `DB.load()`)
+- `evaluate(input)` — converts page inputs (display units) to SI, calls the pure `CALC.sludgeOperatorScenario2` per nuclide, returns per-GBq factors, annual doses and the linear sum
+- `crossChecks(nuclide, half_life_s, plant)` — NUREG/CR-5814 Table B.7 rescaled to the plant and IAEA SRS-19 Table I–IV (indicative only, never used in the result)
+- No DOM access. Half-lives come from `nuclides.json`, not from the effluent data file
+
 ### PWA (`manifest.json`, `sw.js`, `assets/icons/`)
 - Cache-first service worker; registered on HTTP(S) only (`file://` unaffected)
 - **Bump `CACHE_VERSION` in `sw.js`** whenever data files or app logic change
@@ -67,8 +73,11 @@ Each module (PHYSICS, CALC, DB, ICRP107, UI) is an IIFE returning public API. No
 - Includes metadata: generation timestamp, SHA256 hash of source ICRP files
 - Stores Cornejo published values in `cornejo_validation` for traceability
 
+**`data/effluent-scenario2.json`** — source of truth for the effluent page: parameter defaults with unit, range and source; per-nuclide PHITS coefficients (L10 / L45) with uncertainty and report id; ICRP 119 inhalation coefficients; default source terms and cross-check factors
+
 **Auto-generated:**
 - `nuclides-data.js` — JavaScript wrapper for file:// compatibility
+- `effluent-scenario2-data.js` — JavaScript wrapper of `effluent-scenario2.json`
 - `icrp107-index.json` — 1252 nuclides with photon emissions
 - `icrp107-data.js` — Embedded for offline use
 
@@ -79,7 +88,7 @@ Each module (PHYSICS, CALC, DB, ICRP107, UI) is an IIFE returning public API. No
 ### Regenerating Data
 
 ```bash
-# Wrap nuclides.json as JS
+# Wrap nuclides.json and effluent-scenario2.json as JS
 node tools/generate-data.js
 
 # Parse ICRP 107 (generates icrp107-index.json + icrp107-data.js)
@@ -212,10 +221,11 @@ builds made with another compressor version remain auditable, although their
 compressed bytes are not promised to match. The allowlist (duplicated in that
 script — keep both in sync) is:
 
-- `index.html`, `decay.html`, `dose.html`, `about.html`
+- `index.html`, `decay.html`, `dose.html`, `effluent.html`, `about.html`
 - `css/`
 - `js/` (includes the locally bundled `chart.umd.min.js`)
 - `data/nuclides.json`, `data/nuclides-data.js`
+- `data/effluent-scenario2.json`, `data/effluent-scenario2-data.js`
 - `data/icrp107-index.json`, `data/icrp107-data.js`
 - `assets/icons/`
 - `manifest.json`, `sw.js`

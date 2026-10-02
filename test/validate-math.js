@@ -678,6 +678,119 @@ test('B clamps beyond 40 mfp (concrete, 1 MeV)',
 }
 console.log();
 
+// ---------------------------------------------------------------------------
+// TEST 13: Liquid effluent — NUREG/CR-5814 Scenario No. 2 (STP sludge operator)
+// ---------------------------------------------------------------------------
+console.log('TEST 13: Effluent Scenario 2 (CALC.sludgeOperatorScenario2 + EFFLUENT.evaluate)');
+{
+  const S_PER_D = 86400, S_PER_H = 3600;
+  const kSI = k_nSv_h => k_nSv_h * 1e-9 / S_PER_H;
+  // Workbook defaults (IRA-xxxx_Lu-177_dosis_en_escenario2_v1.xlsx, sheet Escenario-2).
+  const base = {
+    transit_s: 3 * S_PER_D, wet_sludge_kg_per_y: 5090e3, solids_fraction: 0.25,
+    wet_density_kg_m3: 1200, dust_kg_m3: 1e-7, respirable_fraction: 0.2, sludge_fraction: 1,
+    breathing_m3_s: 1.2 / S_PER_H, t_ext_s: 1500 * S_PER_H, t_inh_s: 300 * S_PER_H, geometry_factor: 1,
+  };
+
+  // 13a: workbook regression for A_ref = 1 GBq, Lu-177 with the WORKBOOK half-life
+  // (6.647 d) and coefficients — cached values of cells D47, D51–D56.
+  const xl = CALC_.sludgeOperatorScenario2(Object.assign({}, base, {
+    lambda_s: Math.LN2 / (6.647 * S_PER_D), A_Bq_per_y: 1e9,
+    k_Sv_m3_per_Bq_s: kSI(4.117e-6), e_inh_Sv_per_Bq: 1.1e-9,
+  }));
+  test('workbook D47 DF = 0.7313676', xl.DF, 0.7313675753068278, 1e-9);
+  test('workbook D51 C dry = 574.7486 Bq/kg', xl.C_dry, 574.7485857028117, 1e-9);
+  test('workbook D52 C wet = 1.724246E5 Bq/m³', xl.C_wet, 172424.57571084352, 1e-9);
+  test('workbook D53 C air = 1.149497E-5 Bq/m³', xl.C_air, 1.1494971714056235e-05, 1e-9);
+  test('workbook D54 D ext = 1.064808E-3 mSv/GBq', xl.E_ext * 1e3, 0.0010648079673023138, 1e-9);
+  test('workbook D55 D inh = 4.552009E-9 mSv/GBq', xl.E_inh * 1e3, 4.552008798766269e-09, 1e-9);
+  test('workbook D62 FD = 1.064813 µSv/GBq', xl.E * 1e6, 1.0648125193111126, 1e-9);
+  test('workbook E62 E = FD × 732.6 GBq/y = 0.7800817 mSv/y', xl.FD_Sv_per_Bq * 732.6e9 * 1e3, 0.7800816516473212, 1e-9);
+
+  // 13b: NUREG/CR-5814 structural check. With the NUREG reference plant
+  // (1700 t/y dry sludge, 30 % solids, 1200 kg/m³, 3 d, 1500 h) and the GENII
+  // 'STP WKR' factor of Table A.21 for I-131 (3.82E-10 Sv/y per Bq/m³, y = 8766 h),
+  // 1 Ci/y must reproduce Table B.7: external 3.9E-2 rem/y. Tolerance 3 % covers
+  // the two-figure rounding of the table and the year length convention.
+  const i131 = nuclides.find(n => n.id === 'I-131');
+  const nureg = CALC_.sludgeOperatorScenario2(Object.assign({}, base, {
+    lambda_s: Math.LN2 / i131.half_life_s, A_Bq_per_y: 3.7e10,
+    wet_sludge_kg_per_y: 1700e3 / 0.30, solids_fraction: 0.30,
+    k_Sv_m3_per_Bq_s: 3.82e-10 / (8766 * S_PER_H), e_inh_Sv_per_Bq: 0,
+  }));
+  test('NUREG Table B.7 I-131 fraction remaining after 3 d = 0.77', nureg.DF, 0.77, 0.01);
+  test('NUREG Table B.7 I-131 external = 3.9E-2 rem/y per Ci/y', nureg.E_ext * 100, 3.9e-2, 0.03);
+  test('NUREG Table A.16 wet sludge = 2.1E-4 Ci/m³ per Ci/y (before decay)', nureg.C_wet / nureg.DF / 3.7e10, 2.1e-4, 0.03);
+
+  // 13c: input validation
+  let threw = 0;
+  for (const bad of [{ solids_fraction: 0 }, { solids_fraction: 1.2 }, { respirable_fraction: -0.1 },
+                     { wet_sludge_kg_per_y: 0 }, { t_ext_s: NaN }, { A_Bq_per_y: -1 }]) {
+    try {
+      CALC_.sludgeOperatorScenario2(Object.assign({}, base, {
+        lambda_s: 1e-6, A_Bq_per_y: 1e9, k_Sv_m3_per_Bq_s: 1e-18, e_inh_Sv_per_Bq: 1e-9 }, bad));
+    } catch (e) { if (e.name === 'RangeError') threw++; }   // cross-realm: compare by name
+  }
+  test('invalid inputs (fractions outside [0,1], zero sludge, NaN, negative) are rejected', threw, 6, 0);
+
+  // 13d: application chain with the shipped data file and default inputs
+  // (half-lives from nuclides.json). Reference values computed independently
+  // during planning, 2026-10-02.
+  const effCtx = vm.createContext({ console, fetch: async () => { throw new Error('offline test'); } });
+  vm.runInContext(fs.readFileSync(path.join(__dirname, '../js/data.js'), 'utf8'), effCtx);
+  vm.runInContext(fs.readFileSync(path.join(__dirname, '../js/physics.js'), 'utf8'), effCtx);
+  vm.runInContext(fs.readFileSync(path.join(__dirname, '../data/effluent-scenario2-data.js'), 'utf8'), effCtx);
+  vm.runInContext(fs.readFileSync(path.join(__dirname, '../js/effluent.js'), 'utf8') +
+    ';this.__EFF = EFFLUENT; this.__ED = EFFLUENT_S2_DATA;', effCtx);
+  const EFF = effCtx.__EFF, ED = effCtx.__ED;
+  const plant = {};
+  for (const [k, v] of Object.entries(ED.parameters)) plant[k] = v.value;
+  const runApp = geo => EFF.evaluate({
+    geometry: geo, plant,
+    nuclides: ED.nuclides.map(nd => Object.assign({ id: nd.id, include: true,
+      half_life_s: nuclides.find(n => n.id === nd.id).half_life_s,
+      k_nSv_h_per_Bq_m3: nd.k_ext[geo].value, e_inh_Sv_per_Bq: nd.e_inh.value }, nd.source_term)),
+  });
+  const l45 = runApp('L45'), l10 = runApp('L10');
+  const row = (out, id) => out.rows.find(r => r.id === id);
+  test('app L45 Lu-177 activity to sewer = 732.6 GBq/y', row(l45, 'Lu-177').A_GBq_y, 732.6, 1e-9);
+  test('app L45 Lu-177 FD = 1.06479 µSv/GBq', row(l45, 'Lu-177').per_GBq.FD_uSv, 1.064791672, 1e-6);
+  test('app L45 Lu-177 E = 0.780066 mSv/y', row(l45, 'Lu-177').E_mSv_y, 0.7800663790, 1e-6);
+  test('app L45 I-131 activity to sewer = 8 GBq/y (50 × 1 × 0.8 × 0.5 × 40 %)', row(l45, 'I-131').A_GBq_y, 8, 1e-9);
+  test('app L45 I-131 DF = 0.771688', row(l45, 'I-131').DF, 0.7716876942, 1e-6);
+  test('app L45 I-131 FD = 13.0990 µSv/GBq', row(l45, 'I-131').per_GBq.FD_uSv, 13.09901400, 1e-6);
+  test('app L45 I-131 E = 0.104792 mSv/y', row(l45, 'I-131').E_mSv_y, 0.1047921120, 1e-6);
+  test('app L45 total = 0.884858 mSv/y', l45.total_mSv_y, 0.8848584910, 1e-6);
+  test('app L10 Lu-177 E = 0.535761 mSv/y', row(l10, 'Lu-177').E_mSv_y, 0.5357608886, 1e-6);
+  test('app L10 I-131 E = 0.0742497 mSv/y', row(l10, 'I-131').E_mSv_y, 0.07424965301, 1e-6);
+  test('app linear sum equals the sum of the rows', l45.total_mSv_y,
+    row(l45, 'Lu-177').E_mSv_y + row(l45, 'I-131').E_mSv_y, 1e-12);
+
+  // 13e: every input changes the result in the expected direction / proportion
+  const doubled = (key, factor) => {
+    const p2 = Object.assign({}, plant, { [key]: plant[key] * factor });
+    const o = EFF.evaluate({ geometry: 'L45', plant: p2, nuclides: ED.nuclides.map(nd => Object.assign({ id: nd.id, include: true,
+      half_life_s: nuclides.find(n => n.id === nd.id).half_life_s,
+      k_nSv_h_per_Bq_m3: nd.k_ext.L45.value, e_inh_Sv_per_Bq: nd.e_inh.value }, nd.source_term)) });
+    return o.total_mSv_y / l45.total_mSv_y;
+  };
+  test('catchment × 0.5 halves the total', doubled('catchment_pct', 0.5), 0.5, 1e-12);
+  test('wet sludge mass × 2 halves the total', doubled('wet_sludge_t_per_y', 2), 0.5, 1e-9);
+  test('external time × 2 ≈ doubles the total (external dominant)', doubled('t_external_h_y', 2), 2, 1e-4);
+  test('geometry factor × 0.5 ≈ halves the total', doubled('geometry_factor', 0.5), 0.5, 1e-4);
+  test('density × 2 ≈ doubles the total', doubled('wet_density_kg_m3', 2), 2, 1e-4);
+  const excl = EFF.evaluate({ geometry: 'L45', plant, nuclides: ED.nuclides.map(nd => Object.assign({ id: nd.id,
+    include: nd.id !== 'I-131', half_life_s: nuclides.find(n => n.id === nd.id).half_life_s,
+    k_nSv_h_per_Bq_m3: nd.k_ext.L45.value, e_inh_Sv_per_Bq: nd.e_inh.value }, nd.source_term)) });
+  test('excluding I-131 leaves only Lu-177 in the total', excl.total_mSv_y, row(l45, 'Lu-177').E_mSv_y, 1e-12);
+
+  // 13f: cross-check of the NUREG Table B.7 rescaling for the workbook plant:
+  // 10.5 × (1700 / 1272.5) × (0.25 / 0.30) = 11.6896 µSv/GBq.
+  const cc = EFF.crossChecks(ED.nuclides.find(n => n.id === 'I-131'), i131.half_life_s, plant);
+  test('NUREG B.7 rescaled to the workbook plant = 11.69 µSv/GBq', cc.nureg_uSv_per_GBq, 10.5 * 1700 / 1272.5 * 0.25 / 0.30, 1e-9);
+}
+console.log();
+
 // Summary
 console.log('\n=== SUMMARY ===');
 console.log(`Total: ${passedTests} passed, ${failedTests} failed (out of ${totalTests} tests)`);

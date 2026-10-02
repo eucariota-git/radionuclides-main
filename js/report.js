@@ -12,6 +12,9 @@
  *   sections: [ { heading, rows: [[label, value], ...] }, ... ],
  *   notes:    [ 'method / warning strings', ... ],
  *   sources:  [ 'reference strings', ... ],     // appended to the common ones
+ *   // Optional, for reports that are not about one point-source nuclide:
+ *   headerRows: [[label, value], ...],           // replace the Nuclide / Data status rows
+ *   disclaimer: 'text',                          // replaces the point-source DISCLAIMER
  * }
  *
  * All values are rendered as escaped text — pass plain strings.
@@ -81,7 +84,14 @@ const REPORT = (() => {
     const now  = new Date();
     const ts   = now.toISOString().slice(0, 16).replace('T', ' ') + ' (local: ' + now.toLocaleString() + ')';
     const n    = spec.nuclide || {};
-    const validationTag = validationStatus(n);
+    // The per-nuclide status describes the stored Γ constants. A report built
+    // on other coefficients (e.g. the sludge scenario) passes its own headerRows
+    // instead, so that status is never printed against data it does not cover.
+    const nuclideRows = spec.headerRows
+      ? spec.headerRows.map(([k, v]) => `<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join('')
+      : `<tr><td>Nuclide</td><td><strong>${esc(n.id)}</strong> — ${esc(n.name)} (T&#189; = ${esc(n.half_life_display)})</td></tr>
+          <tr><td>Data status</td><td>${esc(validationStatus(n))}</td></tr>
+          ${n.source ? `<tr><td>Nuclide source</td><td>${esc(n.source)}</td></tr>` : ''}`;
 
     // Identify the CODE, not just the data: two app versions sharing the same
     // nuclides.json must not produce indistinguishable reports (audit
@@ -96,9 +106,7 @@ const REPORT = (() => {
           <tr><td>Generated</td><td>${esc(ts)}</td></tr>
           <tr><td>Application</td><td>NM Radionuclide Planner v${esc(appVersion)} (build ${esc(appBuild)})</td></tr>
           <tr><td>Database</td><td>nuclides.json v${esc(meta.version || '?')} — ${esc(meta.reference ? String(meta.reference).slice(0, 90) : '')}&hellip;</td></tr>
-          <tr><td>Nuclide</td><td><strong>${esc(n.id)}</strong> — ${esc(n.name)} (T&#189; = ${esc(n.half_life_display)})</td></tr>
-          <tr><td>Data status</td><td>${esc(validationTag)}</td></tr>
-          ${n.source ? `<tr><td>Nuclide source</td><td>${esc(n.source)}</td></tr>` : ''}
+          ${nuclideRows}
         </table>
       </div>`;
 
@@ -121,7 +129,7 @@ const REPORT = (() => {
     html += `</ul></div>`;
 
     html += `
-      <div class="rpt-disclaimer"><strong>Disclaimer.</strong> ${esc(DISCLAIMER)}</div>
+      <div class="rpt-disclaimer"><strong>Disclaimer.</strong> ${esc(spec.disclaimer || DISCLAIMER)}</div>
       <div class="rpt-sign">
         <div>Reviewed by (name / signature): ______________________________</div>
         <div>Date: ____________</div>

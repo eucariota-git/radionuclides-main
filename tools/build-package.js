@@ -41,10 +41,11 @@ const ROOT = path.join(__dirname, '..');
 // Allowlist — exact tracked files, or whole directories (trailing slash).
 // Keep in sync with docs/DEVELOPMENT.md § Deployment.
 const ALLOWLIST = [
-  'index.html', 'decay.html', 'dose.html', 'about.html',
+  'index.html', 'decay.html', 'dose.html', 'effluent.html', 'about.html',
   'css/',
   'js/',
   'data/nuclides.json', 'data/nuclides-data.js',
+  'data/effluent-scenario2.json', 'data/effluent-scenario2-data.js',
   'data/icrp107-index.json', 'data/icrp107-data.js',
   'assets/icons/',
   'manifest.json', 'sw.js',

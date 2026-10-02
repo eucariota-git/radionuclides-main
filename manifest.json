@@ -1,7 +1,7 @@
 {
   "name": "NM Radionuclide Planner",
   "short_name": "NM Planner",
-  "description": "Nuclear medicine radionuclide reference: properties, decay, external dose and clearance calculators. Works fully offline.",
+  "description": "Nuclear medicine radionuclide reference: properties, decay, external dose, clearance and liquid-effluent screening calculators. Works fully offline.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NM Radionuclide Planner — Effluent: STP Sludge Operator</title>
+  <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+  <link rel="apple-touch-icon" href="assets/icons/icon-180.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2d6a4f">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<header class="site-header">
+  <div class="inner">
+    <div class="site-logo">&#9762; <span>NM</span> Radionuclide Planner</div>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="index.html">Properties</a>
+      <a href="decay.html">Decay</a>
+      <a href="dose.html">Dose</a>
+      <a href="effluent.html" class="active">Effluent</a>
+    </nav>
+    <button id="darkToggle" type="button" class="btn-icon" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
+      <span id="darkIcon">🌙</span>
+    </button>
+  </div>
+</header>
+
+<main class="page-body" id="main-content">
+  <h1 class="page-title">Liquid Effluent — STP Sludge Operator</h1>
+  <div class="page-subtitle">
+    NUREG/CR-5814 Scenario No. 2: annual effective dose to a sewage-treatment-plant (STP / EDAR) worker
+    who operates sludge dewatering equipment, from activity excreted by nuclear-medicine patients.
+    External exposure to dewatered sludge + inhalation of resuspended dry sludge.
+    Screening model (IAEA SRS-19 §4.9): all discharged activity is retained in one year of sludge.
+  </div>
+
+  <div class="alert alert-warning mb-1">
+    <strong>Screening estimate, not a complete discharge assessment.</strong>
+    Doses are computed per nuclide and summed linearly. The IS-28 Annex II II.A.4 sewer conditions
+    (per-nuclide concentration level, sum of fractions, annual activity limits) and mixture clearance
+    are evaluated separately. Inhalation uses dose coefficients for adult <em>members of the public</em>
+    (the STP worker is not an exposed worker of the licensee).
+  </div>
+
+  <!-- A. Source term -->
+  <div class="card">
+    <h2 class="card-title">&#128138; A. Source term</h2>
+    <div class="overflow-x-auto">
+      <table class="data-table" id="sourceTable">
+        <thead>
+          <tr>
+            <th>Include</th>
+            <th>Nuclide</th>
+            <th>Patients / y</th>
+            <th>Cycles / patient</th>
+            <th>Activity per cycle (GBq)</th>
+            <th>Fraction to sewer</th>
+            <th class="text-right">Activity to sewer (GBq/y)</th>
+          </tr>
+        </thead>
+        <tbody id="sourceBody"></tbody>
+      </table>
+    </div>
+    <div class="form-hint mt-1" id="sourceHint"></div>
+    <div class="form-grid mt-2" id="catchmentGrid"></div>
+  </div>
+
+  <!-- B. Plant -->
+  <div class="card mt-2">
+    <h2 class="card-title">&#127981; B. Treatment plant and sludge</h2>
+    <div class="form-grid" id="plantGrid"></div>
+    <div class="form-hint mt-1">
+      Wet sludge production is plant-specific: PRTR-España
+      (<a href="https://prtr-es.miteco.gob.es/" target="_blank" rel="noopener">prtr-es.miteco.gob.es</a>),
+      waste code LER 19 08 05.
+    </div>
+  </div>
+
+  <!-- C. Exposure -->
+  <div class="card mt-2">
+    <h2 class="card-title">&#8987; C. Exposure</h2>
+    <div class="form-grid" id="exposureGrid"></div>
+    <div class="form-grid mt-2">
+      <div class="form-group">
+        <label class="form-label" for="geometry">External coefficient geometry</label>
+        <select class="form-select" id="geometry" title="Sludge mass lateral extent"></select>
+        <div class="form-hint" id="geometryHint"></div>
+      </div>
+    </div>
+    <div class="alert alert-info mt-1" id="slabWarning"></div>
+  </div>
+
+  <!-- Results -->
+  <div class="card mt-2">
+    <h2 class="card-title">&#128202; Results</h2>
+    <div id="calcError" class="alert alert-danger hidden" role="alert"></div>
+    <div id="resultBlock">
+      <h3 class="card-title">Dose factor per GBq discharged</h3>
+      <div class="overflow-x-auto">
+        <table class="data-table" id="factorTable">
+          <thead>
+            <tr>
+              <th>Nuclide</th>
+              <th class="text-right">DF (transit decay)</th>
+              <th class="text-right">C dry sludge (Bq/kg)</th>
+              <th class="text-right">C wet sludge (Bq/m³)</th>
+              <th class="text-right">C air (Bq/m³)</th>
+              <th class="text-right">External (µSv/GBq)</th>
+              <th class="text-right">Inhalation (µSv/GBq)</th>
+              <th class="text-right">Total FD (µSv/GBq)</th>
+            </tr>
+          </thead>
+          <tbody id="factorBody"></tbody>
+        </table>
+      </div>
+
+      <h3 class="card-title mt-2">Annual dose</h3>
+      <div class="overflow-x-auto">
+        <table class="data-table" id="annualTable">
+          <thead>
+            <tr>
+              <th>Nuclide</th>
+              <th class="text-right">Activity to sewer (GBq/y)</th>
+              <th class="text-right">External (mSv/y)</th>
+              <th class="text-right">Inhalation (mSv/y)</th>
+              <th class="text-right">E (mSv/y)</th>
+              <th>Dominant pathway</th>
+            </tr>
+          </thead>
+          <tbody id="annualBody"></tbody>
+        </table>
+      </div>
+
+      <div class="result-grid mt-2">
+        <div class="result-box">
+          <div class="result-label">Total E (sum of included nuclides)</div>
+          <div class="result-value" id="totalE">—</div>
+          <div class="result-unit">mSv/y</div>
+        </div>
+        <div class="result-box">
+          <div class="result-label">Fraction of the user-defined criterion</div>
+          <div class="result-value" id="totalPct">—</div>
+          <div class="result-unit" id="totalPctUnit">%</div>
+        </div>
+      </div>
+
+      <details class="mt-2" id="coeffDetails">
+        <summary><strong>Coefficients used</strong></summary>
+        <div class="overflow-x-auto mt-1">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Nuclide</th>
+                <th class="text-right">T½ (d)</th>
+                <th class="text-right">k external ((nSv/h)/(Bq/m³))</th>
+                <th>Uncertainty / envelope</th>
+                <th class="text-right">e(inh) (Sv/Bq)</th>
+                <th>Type</th>
+              </tr>
+            </thead>
+            <tbody id="coeffBody"></tbody>
+          </table>
+        </div>
+        <ul class="ref-list text-sm mt-1" id="coeffSources"></ul>
+      </details>
+
+      <details class="mt-2" id="crossCheckDetails">
+        <summary><strong>Cross-check against published generic factors (indicative)</strong></summary>
+        <div id="crossCheckBody" class="mt-1"></div>
+      </details>
+
+      <div class="d-flex gap-2 mt-2 mb-1" data-no-print>
+        <button class="btn btn-secondary btn-sm" id="btnPrint" type="button" title="Generate a printable calculation report with traceability (sources, method, disclaimer)">📄 Report / PDF</button>
+        <button class="btn btn-secondary btn-sm" id="btnCsv" type="button" title="Export results as CSV">⬇ Export CSV</button>
+        <button class="btn btn-secondary btn-sm" id="btnReset" type="button" title="Restore the default values">↺ Defaults</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mt-2">
+    <h2 class="card-title">&#128214; Method</h2>
+    <div class="text-sm">
+      <p>For each nuclide, with A the activity reaching the sewer in one year and DF = exp(−λ·t<sub>transit</sub>):</p>
+      <ul>
+        <li>C<sub>dry</sub> [Bq/kg] = A · f<sub>sludge</sub> · DF / (M<sub>wet</sub> · f<sub>solids</sub>)</li>
+        <li>C<sub>wet</sub> [Bq/m³] = A · f<sub>sludge</sub> · DF · ρ<sub>wet</sub> / M<sub>wet</sub></li>
+        <li>C<sub>air</sub> [Bq/m³] = C<sub>dry</sub> · dust loading · f<sub>resp</sub></li>
+        <li>E<sub>ext</sub> = C<sub>wet</sub> · k · t<sub>ext</sub> · f<sub>geom</sub>;
+            E<sub>inh</sub> = C<sub>air</sub> · BR · t<sub>inh</sub> · e(inh)</li>
+      </ul>
+      <p>The sludge is continuously renewed, so the annual-average concentration is the steady-state one and
+      no decay during the exposure year is applied. k is an effective-dose-rate coefficient (ICRP 116, ROT)
+      calculated with PHITS for a uniform 3 m deep sludge source, receptor 2 m above its centre — it is
+      <strong>not</strong> a point-source Γ and only applies to that geometry.</p>
+      <p>Algorithm and default values reproduce the reference workbook
+      <em>IRA-xxxx_Lu-177_dosis_en_escenario2_v1.xlsx</em>. Differences: I-131 is evaluated with the same
+      explicit model (the workbook rescaled the NUREG/CR-5814 Table B.7 factor) and half-lives are taken
+      from the app database.</p>
+    </div>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  NM Radionuclide Planner &mdash; For radiation protection estimation purposes.
+  Verify against primary sources for regulatory submissions.
+  <br>Original application and code: &copy; 2026 Ramon Sendon &middot; EUPL-1.2 &middot; Third-party data: separate terms &mdash;
+  <a href="about.html">About, guide &amp; licences</a>
+</footer>
+
+<script src="data/nuclides-data.js"></script>
+<script src="data/effluent-scenario2-data.js"></script>
+<script src="js/data.js"></script>
+<script src="js/physics.js"></script>
+<script src="js/nuclide-id.js"></script>
+<script src="js/db.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/report.js"></script>
+<script src="js/effluent.js"></script>
+<script>
+(async () => {
+  UI.initDarkMode();
+  UI.initPrint();
+  UI.initKeyboard();
+
+  let data;
+  try {
+    await DB.load();
+    data = await EFFLUENT.load();
+  } catch (err) {
+    console.error('Failed to initialize effluent calculator:', err);
+    UI.showFatalError(`Error loading data: ${err.message}`);
+    return;
+  }
+
+  const P = data.parameters;
+  const esc = UTILS.escapeHtml;
+  const GROUPS = {
+    catchmentGrid: ['catchment_pct'],
+    plantGrid: ['wet_sludge_t_per_y', 'solids_fraction', 'wet_density_kg_m3', 'sludge_fraction', 'transit_d',
+                'dust_loading_kg_m3', 'respirable_fraction'],
+    exposureGrid: ['breathing_rate_m3_h', 't_external_h_y', 't_inhalation_h_y', 'geometry_factor', 'dose_criterion_mSv_y'],
+  };
+
+  // Half-lives come from the app database (single source of truth), not from
+  // the effluent data file.
+  const nuclides = data.nuclides.map(nd => {
+    const db = DB.getById(nd.id);
+    if (!db) throw new Error(`${nd.id} missing from nuclides.json`);
+    return { nd, db };
+  });
+
+  // ---- Build inputs from the data file ----
+  for (const [gridId, keys] of Object.entries(GROUPS)) {
+    document.getElementById(gridId).innerHTML = keys.map(key => {
+      const p = P[key];
+      const attrs = [`min="${p.min ?? 0}"`, p.max !== undefined ? `max="${p.max}"` : ''].join(' ');
+      return `<div class="form-group">
+        <label class="form-label" for="p_${key}">${esc(p.label)} (${esc(p.unit)})</label>
+        <input type="number" class="form-input" id="p_${key}" data-param="${key}" value="${p.value}" ${attrs} step="any" title="${UTILS.safeAttr(p.label)}">
+        <div class="form-hint">${esc(p.source)}</div>
+      </div>`;
+    }).join('');
+  }
+
+  document.getElementById('sourceBody').innerHTML = nuclides.map(({ nd }, i) => {
+    const st = nd.source_term;
+    const cell = (field, val, extra = '') =>
+      `<input type="number" class="form-input" id="st_${i}_${field}" data-st="${i}" value="${val}" min="0" step="any" ${extra}
+        aria-label="${UTILS.safeAttr(nd.id + ' ' + field.replace(/_/g, ' '))}" title="${UTILS.safeAttr(nd.id)}">`;
+    return `<tr>
+      <td><input type="checkbox" id="st_${i}_include" data-st="${i}" checked aria-label="Include ${UTILS.safeAttr(nd.id)}"></td>
+      <td class="sym">${esc(nd.id)}</td>
+      <td>${cell('patients_per_y', st.patients_per_y)}</td>
+      <td>${cell('cycles_per_patient', st.cycles_per_patient, st.cycles_locked ? 'disabled' : '')}</td>
+      <td>${cell('activity_per_cycle_GBq', st.activity_per_cycle_GBq)}<div class="form-hint">${esc(st.activity_label)}</div></td>
+      <td>${cell('fraction_to_sewer', st.fraction_to_sewer, 'max="1"')}<div class="form-hint">${esc(st.fraction_label)}</div></td>
+      <td class="num" id="st_${i}_A">—</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('sourceHint').textContent =
+    'Activity to sewer = patients × cycles × activity per cycle × fraction × catchment fraction. ' +
+    nuclides.map(({ nd }) => `${nd.id}: ${nd.source_term.source}`).join(' ');
+
+  const geoSel = document.getElementById('geometry');
+  geoSel.innerHTML = ['L10', 'L45'].map(g =>
+    `<option value="${g}" ${g === data.geometries.default ? 'selected' : ''}>${esc(data.geometries[g].label)}</option>`).join('');
+  document.getElementById('slabWarning').textContent = data.geometries.infinite_slab_warning;
+
+  function readNumber(el) {
+    const v = parseFloat(el.value);
+    if (!Number.isFinite(v)) throw new RangeError(`"${el.title || el.id}" must be a number`);
+    return v;
+  }
+
+  function readInputs() {
+    const plant = {};
+    for (const key of Object.keys(P)) plant[key] = readNumber(document.getElementById(`p_${key}`));
+    const geometry = geoSel.value;
+    const list = nuclides.map(({ nd, db }, i) => ({
+      id: nd.id,
+      include: document.getElementById(`st_${i}_include`).checked,
+      half_life_s: db.half_life_s,
+      patients_per_y: readNumber(document.getElementById(`st_${i}_patients_per_y`)),
+      cycles_per_patient: nd.source_term.cycles_locked ? 1 : readNumber(document.getElementById(`st_${i}_cycles_per_patient`)),
+      activity_per_cycle_GBq: readNumber(document.getElementById(`st_${i}_activity_per_cycle_GBq`)),
+      fraction_to_sewer: readNumber(document.getElementById(`st_${i}_fraction_to_sewer`)),
+      k_nSv_h_per_Bq_m3: nd.k_ext[geometry].value,
+      e_inh_Sv_per_Bq: nd.e_inh.value,
+    }));
+    return { geometry, plant, nuclides: list };
+  }
+
+  // 4 significant figures; exponent notation outside [1e-3, 1e5) so small
+  // inhalation terms do not render as long strings of zeros.
+  const sci = v => {
+    if (!Number.isFinite(v)) return '—';
+    if (v === 0) return '0';
+    const a = Math.abs(v);
+    return (a < 1e-3 || a >= 1e5) ? v.toExponential(3) : v.toPrecision(4);
+  };
+  let last = null;
+
+  function render() {
+    const errBox = document.getElementById('calcError');
+    let input, out;
+    try {
+      input = readInputs();
+      out = EFFLUENT.evaluate(input);
+    } catch (err) {
+      errBox.textContent = err.message;
+      errBox.classList.remove('hidden');
+      document.getElementById('resultBlock').classList.add('hidden');
+      last = null;
+      return;
+    }
+    errBox.classList.add('hidden');
+    document.getElementById('resultBlock').classList.remove('hidden');
+    last = { input, out };
+
+    const geo = input.geometry;
+    document.getElementById('geometryHint').textContent = data.geometries[geo].note;
+
+    nuclides.forEach(({ nd }, i) => {
+      const row = out.rows.find(r => r.id === nd.id);
+      document.getElementById(`st_${i}_A`).textContent = row ? sci(row.A_GBq_y) : 'excluded';
+    });
+
+    document.getElementById('factorBody').innerHTML = out.rows.map(r => `<tr>
+      <td class="sym">${esc(r.id)}</td>
+      <td class="num">${r.DF.toFixed(4)}</td>
+      <td class="num">${sci(r.per_GBq.C_dry_Bq_kg)}</td>
+      <td class="num">${sci(r.per_GBq.C_wet_Bq_m3)}</td>
+      <td class="num">${sci(r.per_GBq.C_air_Bq_m3)}</td>
+      <td class="num">${sci(r.per_GBq.D_ext_uSv)}</td>
+      <td class="num">${sci(r.per_GBq.D_inh_uSv)}</td>
+      <td class="num"><strong>${sci(r.per_GBq.FD_uSv)}</strong></td>
+    </tr>`).join('') || '<tr><td colspan="8">No nuclide included.</td></tr>';
+
+    document.getElementById('annualBody').innerHTML = out.rows.map(r => `<tr>
+      <td class="sym">${esc(r.id)}</td>
+      <td class="num">${sci(r.A_GBq_y)}</td>
+      <td class="num">${sci(r.E_ext_mSv_y)}</td>
+      <td class="num">${sci(r.E_inh_mSv_y)}</td>
+      <td class="num"><strong>${sci(r.E_mSv_y)}</strong></td>
+      <td>${esc(r.dominant)}</td>
+    </tr>`).join('') || '<tr><td colspan="6">No nuclide included.</td></tr>';
+
+    document.getElementById('totalE').textContent = sci(out.total_mSv_y);
+    document.getElementById('totalPct').textContent =
+      Number.isFinite(out.fraction_of_criterion) ? UTILS.fmtRatio(out.fraction_of_criterion * 100, 100) : '—';
+    document.getElementById('totalPctUnit').textContent = `% of ${out.criterion_mSv_y} mSv/y (user-defined, no regulatory basis attributed)`;
+
+    document.getElementById('coeffBody').innerHTML = nuclides.map(({ nd, db }) => {
+      const k = nd.k_ext[geo];
+      const env = k.envelope_pos !== null ? `; one-sided model envelope [0, +${(k.envelope_pos * 100).toFixed(2)} %]` : '; no envelope stated';
+      return `<tr>
+        <td class="sym">${esc(nd.id)}</td>
+        <td class="num">${(db.half_life_s / 86400).toFixed(3)}</td>
+        <td class="num">${k.value.toExponential(4)}</td>
+        <td class="text-sm">u = ${(k.u_rel * 100).toFixed(2)} % (k = 1)${esc(env)}<br>${esc(k.report_id)}</td>
+        <td class="num">${nd.e_inh.value.toExponential(1)}</td>
+        <td>${esc(nd.e_inh.type)}</td>
+      </tr>`;
+    }).join('');
+    document.getElementById('coeffSources').innerHTML = nuclides.map(({ nd }) =>
+      `<li><strong>${esc(nd.id)}</strong> — k: ${esc(nd.k_ext.quantity)} ${esc(nd.k_ext.source)} e(inh): ${esc(nd.e_inh.source)}</li>`).join('');
+
+    const ccHtml = nuclides.map(({ nd, db }) => {
+      const cc = EFFLUENT.crossChecks(nd, db.half_life_s, input.plant);
+      if (!cc) return '';
+      const row = out.rows.find(r => r.id === nd.id);
+      const model = row ? row.per_GBq.FD_uSv : null;
+      return `<table class="data-table"><thead><tr><th>${esc(nd.id)}</th><th class="text-right">µSv per GBq</th><th>Basis</th></tr></thead><tbody>
+        <tr><td>This model (${esc(geo)})</td><td class="num">${sci(model)}</td><td>PHITS k, ICRP 116 effective dose</td></tr>
+        <tr><td>NUREG/CR-5814 Table B.7, rescaled</td><td class="num">${sci(cc.nureg_uSv_per_GBq)}</td>
+            <td class="text-sm">${sci(cc.nureg_raw_uSv_per_GBq)} µSv/GBq at the NUREG reference plant, scaled by dry sludge mass, solids fraction, density, transit decay, t<sub>ext</sub>·f<sub>geom</sub> and f<sub>sludge</sub>. ${esc(nd.cross_checks.nureg_table_B7.note)}</td></tr>
+        <tr><td>IAEA SRS-19 Table I–IV</td><td class="num">${sci(cc.srs19_uSv_per_GBq)} (rescaled: ${sci(cc.srs19_rescaled_uSv_per_GBq)})</td>
+            <td class="text-sm">${esc(nd.cross_checks.srs19_table_I_IV.note)} Rescaled value: × 400 t / dry sludge mass of this plant. SRS-19 treats the sludge activity as a surface deposit (1 m × 1000 kg/m³) with the ground-surface coefficient, i.e. without self-absorption, which explains most of the difference.</td></tr>
+      </tbody></table>`;
+    }).join('');
+    document.getElementById('crossCheckBody').innerHTML = ccHtml || '<p>No published factor available.</p>';
+  }
+
+  document.querySelectorAll('input, select').forEach(el => {
+    if (el.id === 'nuclideSearch') return;
+    el.addEventListener('input', render);
+    el.addEventListener('change', render);
+  });
+
+  document.getElementById('btnReset').addEventListener('click', () => {
+    for (const key of Object.keys(P)) document.getElementById(`p_${key}`).value = P[key].value;
+    nuclides.forEach(({ nd }, i) => {
+      const st = nd.source_term;
+      document.getElementById(`st_${i}_include`).checked = true;
+      for (const f of ['patients_per_y', 'cycles_per_patient', 'activity_per_cycle_GBq', 'fraction_to_sewer']) {
+        document.getElementById(`st_${i}_${f}`).value = st[f];
+      }
+    });
+    geoSel.value = data.geometries.default;
+    render();
+  });
+
+  function assumptionRows(input) {
+    return Object.keys(P).map(key => [`${P[key].label} (${P[key].unit})`, String(input.plant[key])]);
+  }
+
+  document.getElementById('btnPrint').addEventListener('click', () => {
+    if (!last) { alert('Correct the input errors first.'); return; }
+    const { input, out } = last;
+    const geo = input.geometry;
+    const sections = [
+      { heading: 'Source term', rows: input.nuclides.map(n => [n.id, n.include
+        ? `${n.patients_per_y} patients/y × ${n.cycles_per_patient} cycles × ${n.activity_per_cycle_GBq} GBq × ${n.fraction_to_sewer} × ${input.plant.catchment_pct} % = ${sci(out.rows.find(r => r.id === n.id).A_GBq_y)} GBq/y`
+        : 'excluded']) },
+      { heading: 'Plant and exposure parameters', rows: assumptionRows(input).concat([
+        ['External coefficient geometry', data.geometries[geo].label]]) },
+      { heading: 'Coefficients', rows: nuclides.flatMap(({ nd, db }) => [
+        [`${nd.id} half-life`, `${(db.half_life_s / 86400).toFixed(3)} d (app database)`],
+        [`${nd.id} k external (${geo})`, `${nd.k_ext[geo].value.toExponential(4)} (nSv/h)/(Bq/m³), u = ${(nd.k_ext[geo].u_rel * 100).toFixed(2)} % — ${nd.k_ext[geo].report_id}`],
+        [`${nd.id} e(inh)`, `${nd.e_inh.value.toExponential(1)} Sv/Bq, type ${nd.e_inh.type}`],
+      ]) },
+      { heading: 'Results per GBq discharged', rows: out.rows.flatMap(r => [
+        [`${r.id} DF / C dry / C wet / C air`, `${r.DF.toFixed(4)} / ${sci(r.per_GBq.C_dry_Bq_kg)} Bq/kg / ${sci(r.per_GBq.C_wet_Bq_m3)} Bq/m³ / ${sci(r.per_GBq.C_air_Bq_m3)} Bq/m³`],
+        [`${r.id} FD (external + inhalation)`, `${sci(r.per_GBq.D_ext_uSv)} + ${sci(r.per_GBq.D_inh_uSv)} = ${sci(r.per_GBq.FD_uSv)} µSv/GBq`],
+      ]) },
+      { heading: 'Annual dose', rows: out.rows.map(r =>
+        [r.id, `${sci(r.E_mSv_y)} mSv/y (external ${sci(r.E_ext_mSv_y)}, inhalation ${sci(r.E_inh_mSv_y)}; ${r.dominant} dominant)`])
+        .concat([['Total (linear sum)', `${sci(out.total_mSv_y)} mSv/y = ${UTILS.fmtRatio(out.fraction_of_criterion * 100, 100)} % of the user-defined criterion of ${out.criterion_mSv_y} mSv/y`]]) },
+    ];
+    REPORT.print({
+      title: 'Liquid Effluent — STP Sludge Operator (NUREG/CR-5814 Scenario 2)',
+      headerRows: [
+        ['Nuclides', out.rows.map(r => r.id).join(', ') || 'none'],
+        ['Data status', `effluent-scenario2.json v${data.meta.version} (${data.meta.date}). External coefficients from own PHITS calculations, not from a published table.`],
+      ],
+      sections,
+      notes: [
+        'Screening model: all discharged activity retained in one year of sludge (IAEA SRS-19 §4.9 case b; NUREG/CR-5814 §5.1). Steady-state concentration, no decay during the exposure year.',
+        'Not a complete discharge assessment: IS-28 Annex II II.A.4 conditions and mixture clearance are evaluated separately. Doses of the nuclides are summed linearly.',
+        'Inhalation dose coefficients for adult members of the public (ICRP 119 Table G.1).',
+        data.geometries.infinite_slab_warning,
+        'The criterion is user-defined; the app attributes no regulatory basis to it.',
+      ],
+      sources: data.references,
+      disclaimer: 'Generic screening estimate of the dose to a sewage-treatment-plant sludge operator, for radiation protection planning. ' +
+        'The external coefficients apply only to the declared sludge geometry. Results must be reviewed by a qualified radiation protection ' +
+        'expert before regulatory use. Generated by NM Radionuclide Planner, an open-source reference tool provided without warranty of any kind.',
+    });
+  });
+
+  document.getElementById('btnCsv').addEventListener('click', () => {
+    if (!last) { alert('Correct the input errors first.'); return; }
+    const { input, out } = last;
+    const rows = [
+      ['Nuclide', 'Activity_to_sewer_GBq_per_y', 'DF', 'C_dry_Bq_per_kg_per_GBq', 'C_wet_Bq_per_m3_per_GBq', 'C_air_Bq_per_m3_per_GBq',
+       'D_ext_uSv_per_GBq', 'D_inh_uSv_per_GBq', 'FD_uSv_per_GBq', 'E_ext_mSv_per_y', 'E_inh_mSv_per_y', 'E_mSv_per_y',
+       'k_nSv_h_per_Bq_m3', 'e_inh_Sv_per_Bq'],
+      ...out.rows.map(r => {
+        const n = input.nuclides.find(x => x.id === r.id);
+        return [r.id, r.A_GBq_y, r.DF, r.per_GBq.C_dry_Bq_kg, r.per_GBq.C_wet_Bq_m3, r.per_GBq.C_air_Bq_m3,
+          r.per_GBq.D_ext_uSv, r.per_GBq.D_inh_uSv, r.per_GBq.FD_uSv, r.E_ext_mSv_y, r.E_inh_mSv_y, r.E_mSv_y,
+          n.k_nSv_h_per_Bq_m3, n.e_inh_Sv_per_Bq].map(v => typeof v === 'number' ? v.toPrecision(6) : v);
+      }),
+      ['Total', '', '', '', '', '', '', '', '', '', '', out.total_mSv_y.toPrecision(6), '', ''],
+      // Every assumption, so the CSV alone reproduces the scenario.
+      ['Assumptions', `geometry ${input.geometry}; ` +
+        Object.keys(P).map(k => `${k}=${input.plant[k]}`).join('; ') + '; ' +
+        input.nuclides.map(n => `${n.id}: include=${n.include}, T½=${n.half_life_s} s, ${n.patients_per_y} pat × ${n.cycles_per_patient} cyc × ${n.activity_per_cycle_GBq} GBq × ${n.fraction_to_sewer}`).join('; ')],
+    ];
+    const csv = rows.map(r => r.map(v => {
+      const str = String(v);
+      const safe = /^[=+\-@\t\r]/.test(str) ? "'" + str : str;
+      return `"${safe.replace(/"/g, '""')}"`;
+    }).join(',')).join('\r\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    a.href = url;
+    a.download = `effluent_scenario2_${input.geometry}_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 0);
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
