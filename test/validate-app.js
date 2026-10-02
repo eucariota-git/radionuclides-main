@@ -386,7 +386,10 @@ async function main() {
 
   console.log('Test 11: effluent page (NUREG/CR-5814 Scenario 2) wiring');
   const effluentJs = read('js/effluent.js');
-  const buildPackageJs = read('tools/build-package.js');
+  // tools/ is not shipped: inside a built package the allowlist check is
+  // replaced by the presence of the files it must have copied.
+  const hasTools = fs.existsSync(path.join(ROOT, 'tools/build-package.js'));
+  const buildPackageJs = hasTools ? read('tools/build-package.js') : '';
   const effluentCtx = vm.createContext({});
   vm.runInContext(read('data/effluent-scenario2-data.js') + ';this.__E = EFFLUENT_S2_DATA;', effluentCtx);
   check('effluent-scenario2-data.js is the exact twin of effluent-scenario2.json',
@@ -397,9 +400,13 @@ async function main() {
     /href="effluent\.html" class="active"/.test(effluentHtml));
   check('service worker precaches the effluent page, module and embedded data',
     ['./effluent.html', './js/effluent.js', './data/effluent-scenario2-data.js'].every(a => swJs.includes(`'${a}'`)));
-  check('package allowlist includes the effluent page and data',
-    /'effluent\.html'/.test(buildPackageJs) &&
-    /'data\/effluent-scenario2\.json', 'data\/effluent-scenario2-data\.js'/.test(buildPackageJs));
+  check(hasTools ? 'package allowlist includes the effluent page and data'
+                 : 'packaged copy contains the effluent page and data',
+    hasTools
+      ? /'effluent\.html'/.test(buildPackageJs) &&
+        /'data\/effluent-scenario2\.json', 'data\/effluent-scenario2-data\.js'/.test(buildPackageJs)
+      : ['effluent.html', 'js/effluent.js', 'data/effluent-scenario2.json', 'data/effluent-scenario2-data.js']
+          .every(rel => fs.existsSync(path.join(ROOT, rel))));
   check('effluent page loads its embedded data before the module, and the module uses the pure physics function',
     effluentHtml.indexOf('data/effluent-scenario2-data.js') < effluentHtml.indexOf('js/effluent.js') &&
     /CALC\.sludgeOperatorScenario2/.test(effluentJs) && !/document\./.test(effluentJs));
