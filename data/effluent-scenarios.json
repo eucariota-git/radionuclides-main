@@ -1,0 +1,463 @@
+{
+  "meta": {
+    "id": "effluent-scenarios",
+    "version": "2.0.0",
+    "date": "2026-10-03",
+    "title": "Liquid effluent to sewer — NUREG/CR-5814 Scenarios No. 1 (sewer inspector) and No. 2 (STP sludge process operator)",
+    "description": "Screening doses to two workers who are members of the public with respect to the licensee: (1) a sewer system inspector exposed to the facility's wastewater in the interceptor — external immersion in a water slab at 1 m plus inhalation of aerosol; (2) a sewage-treatment-plant (EDAR) operator of sludge dewatering equipment — external exposure to dewatered sludge plus inhalation of resuspended dry sludge. Scenario 1 reproduces the workbook 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx' (sheet Escenario-1); Scenario 2 reproduces IRA-xxxx_Lu-177_dosis_en_escenario2_v1.xlsx (sheet Escenario-2). Screening philosophy of IAEA SRS-19 §4.9 and §6.6.",
+    "units_note": "Values in this file are in the display units stated in each 'unit' field; the CALC functions work in SI and EFFLUENT.evaluate converts."
+  },
+  "parameters": {
+    "common": {
+      "breathing_rate_m3_h": {
+        "label": "Breathing rate (light work)",
+        "value": 1.2,
+        "unit": "m³/h",
+        "min": 0,
+        "source": "ICRP light-work breathing rate (workbook cell D38)."
+      },
+      "dose_criterion_mSv_y": {
+        "label": "Dose criterion for comparison",
+        "value": 1,
+        "unit": "mSv/y",
+        "min": 0,
+        "source": "User-defined. Workbook default (cell D60). No regulatory basis is attributed by the app."
+      }
+    },
+    "s1": {
+      "water_volume_m3_y": {
+        "label": "Water discharged by the facility",
+        "value": 20000,
+        "unit": "m³/y",
+        "min": 0,
+        "source": "Site-specific: obtain from the licensee (consumption ≈ discharge in a hospital). Workbook generic values (cell D20): hospital 20 000 m³/y, clinic 3650 m³/y."
+      },
+      "water_density_kg_m3": {
+        "label": "Water density",
+        "value": 1000,
+        "unit": "kg/m³",
+        "min": 0,
+        "source": "Mass basis for the aerosol resuspension model (workbook cell D21)."
+      },
+      "aerosol_loading_kg_m3": {
+        "label": "Aerosol loading in air",
+        "value": 1e-07,
+        "unit": "kg/m³",
+        "min": 0,
+        "source": "NUREG/CR-5814 §5.2.1 (1.0E-4 g/m³)."
+      },
+      "respirable_fraction": {
+        "label": "Respirable fraction",
+        "value": 0.2,
+        "unit": "–",
+        "min": 0,
+        "max": 1,
+        "source": "NUREG/CR-5814 §5.2.1 (20 %)."
+      },
+      "t_external_h_y": {
+        "label": "External exposure time",
+        "value": 100,
+        "unit": "h/y",
+        "min": 0,
+        "max": 8760,
+        "source": "NUREG/CR-5814 §5.2.1 (100 h/y)."
+      },
+      "t_inhalation_h_y": {
+        "label": "Inhalation exposure time",
+        "value": 20,
+        "unit": "h/y",
+        "min": 0,
+        "max": 8760,
+        "source": "NUREG/CR-5814 §5.2.1 (20 h/y; respirator worn most of the time)."
+      },
+      "geometry_factor": {
+        "label": "Geometry factor on external dose",
+        "value": 1,
+        "unit": "–",
+        "min": 0,
+        "max": 1,
+        "source": "Workbook cell D37 (water slab at 1 m, no correction)."
+      },
+      "transit_h": {
+        "label": "Decay time from discharge to the inspector",
+        "value": 0.2,
+        "unit": "h",
+        "min": 0,
+        "source": "NUREG/CR-5814 §5.2.1 (≈ 0.2 h). Workbook cell D42: 0.008333 d."
+      }
+    },
+    "s2": {
+      "catchment_pct": {
+        "label": "Patients living in the STP catchment",
+        "value": 40,
+        "unit": "%",
+        "min": 0,
+        "max": 100,
+        "source": "Site-specific. Workbook default (cell D10)."
+      },
+      "wet_sludge_t_per_y": {
+        "label": "Wet (dewatered) sludge production",
+        "value": 5090,
+        "unit": "t/y",
+        "min": 0,
+        "source": "Site-specific: PRTR-España (prtr-es.miteco.gob.es), waste code LER 19 08 05. Workbook default: STP PRTR code 7504."
+      },
+      "solids_fraction": {
+        "label": "Solids fraction of wet sludge",
+        "value": 0.25,
+        "unit": "–",
+        "min": 0,
+        "max": 1,
+        "source": "PEMAR 2025-2035 (dewatered sludge 20–25 % solids). NUREG/CR-5814 reference: 0.30."
+      },
+      "wet_density_kg_m3": {
+        "label": "Wet sludge density",
+        "value": 1200,
+        "unit": "kg/m³",
+        "min": 0,
+        "source": "NUREG/CR-5814 (1992), Table A.16."
+      },
+      "dust_loading_kg_m3": {
+        "label": "Dust loading in air",
+        "value": 1e-07,
+        "unit": "kg/m³",
+        "min": 0,
+        "source": "NUREG/CR-5814 §5.2.2 (1.0E-4 g/m³); range 5E-8 – 5E-6 kg/m³. Same value in IAEA SRS-19 §6.6.2."
+      },
+      "respirable_fraction": {
+        "label": "Respirable fraction",
+        "value": 0.2,
+        "unit": "–",
+        "min": 0,
+        "max": 1,
+        "source": "NUREG/CR-5814 §5.2.2 (20 %)."
+      },
+      "sludge_fraction": {
+        "label": "Fraction of discharged activity retained in sludge",
+        "value": 1,
+        "unit": "–",
+        "min": 0,
+        "max": 1,
+        "source": "NUREG/CR-5814 §5.1 and IAEA SRS-19 §4.9 case (b): all activity to sludge (conservative screening assumption)."
+      },
+      "t_external_h_y": {
+        "label": "External exposure time",
+        "value": 1500,
+        "unit": "h/y",
+        "min": 0,
+        "max": 8760,
+        "source": "NUREG/CR-5814 §5.2.2 (1500 h/y; range 500–1750 h/y). ISCORS 2004 §4.7.3: 1000 h/y."
+      },
+      "t_inhalation_h_y": {
+        "label": "Inhalation exposure time",
+        "value": 300,
+        "unit": "h/y",
+        "min": 0,
+        "max": 8760,
+        "source": "NUREG/CR-5814 §5.2.2 (300 h/y; range 100–350 h/y)."
+      },
+      "geometry_factor": {
+        "label": "Geometry / shielding factor on external dose",
+        "value": 1,
+        "unit": "–",
+        "min": 0,
+        "max": 1,
+        "source": "Workbook cell D41 (no credit for structures)."
+      },
+      "transit_d": {
+        "label": "Decay time from discharge to sludge press",
+        "value": 3,
+        "unit": "d",
+        "min": 0,
+        "source": "NUREG/CR-5814 §5.2.2 (~3 d; range 3 – 50+ d)."
+      }
+    }
+  },
+  "facility_presets": {
+    "hospital": {
+      "label": "Hospital",
+      "water_volume_m3_y": 20000
+    },
+    "clinic": {
+      "label": "Clinic",
+      "water_volume_m3_y": 3650
+    },
+    "source": "Workbook 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx', sheet Escenario-1, cell D20. Generic values; use the licensee's figure when available."
+  },
+  "geometries": {
+    "L10": {
+      "label": "Small sludge mass, up to 100 m² (10 × 10 × 3 m pool)",
+      "scope_m2": 100,
+      "note": "Covers sludge press / hopper (3–6 m, NUREG/CR-5814 §5.2.2), 100 m² biosolids pile (ISCORS 2004-03 §4.7.3) and drying beds 3.0–3.7 m wide (NUREG/CR-6289)."
+    },
+    "L45": {
+      "label": "General sludge mass, up to 2000 m² (45 × 45 × 3 m pool)",
+      "scope_m2": 2000,
+      "note": "Default. Covers real Spanish STP sludge elements (largest found: 616 m², EDAR Sur de Madrid)."
+    },
+    "default": "L45",
+    "infinite_slab_warning": "NUREG/CR-5814 prescribes an infinite slab; no released coefficient covers it. For Lu-177 the PHITS study measured that the 45 × 45 m coefficient captures 73–75 % of the infinite slab (10 × 10 m: ≈ 51 %). No equivalent measurement exists for I-131."
+  },
+  "scenario1_geometry": {
+    "label": "Water slab 600 × 200 × 50 cm (6 m³), receptor 1 m above the centre of its surface",
+    "note": "NUREG/CR-5814 §5.2.1 and Table A.20. The coefficients are photon-only: bremsstrahlung from beta and positron emission is not included and has not been bounded for this geometry (the CSDA range in air of a 0.5 MeV electron exceeds the 1 m distance). The limitation is more severe for F-18 and I-131 than for Lu-177, and least for Tc-99m."
+  },
+  "nuclides": [
+    {
+      "id": "Lu-177",
+      "include_default": true,
+      "k_ext": {
+        "unit": "(nSv/h)/(Bq/m³)",
+        "s1": {
+          "value": 2.295e-06,
+          "u_rel": 0.002,
+          "report_id": "PHITS Scenario 1 report, 2026-08-20",
+          "source": "Own PHITS 3.33 calculation: 'Escenario 1 del NUREG/CR-5814 · Lu-177, Lu-177m, Tc-99m, I-131 y F-18', 2026-08-20, Table 7. Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); photon transport only. Uncertainty: Monte Carlo statistical, k = 1."
+        },
+        "s2": {
+          "quantity": "Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); receptor 2 m above the centre of a uniform 3 m deep source of water-equivalent sludge (1.2 g/cm³).",
+          "L10": {
+            "value": 2.82821e-06,
+            "u_rel": 0.004705,
+            "envelope_pos": null,
+            "report_id": "P20P21-G9-FINAL-1.0.0 (coefficient A)"
+          },
+          "L45": {
+            "value": 4.117874e-06,
+            "u_rel": 0.00804,
+            "envelope_pos": null,
+            "report_id": "P20P21-G9-FINAL-1.0.0 × f45 = 1.4560 (coefficient B)"
+          },
+          "source": "Own PHITS calculation: 'Coeficientes de tasa de dosis efectiva externa para Lu-177 y Lu-177m en el escenario 2 de NUREG/CR-5814', approved 2026-07-30, §7.2. Uncertainties are Monte Carlo standard uncertainties (k = 1). The report does not state a one-sided secondary-electron envelope."
+        }
+      },
+      "e_inh": {
+        "value": 1.1e-09,
+        "unit": "Sv/Bq",
+        "type": "M",
+        "source": "ICRP Publication 119 (2012), Table G.1, adult member of the public, absorption type M (Lu-177 is tabulated for types M and S only). Same value as RD 783/2001 Annex III table b), repealed by RD 1029/2022 but kept for members of the public by CSN Resolution of 3 April 2024."
+      },
+      "source_term": {
+        "patients_per_y": 75,
+        "cycles_per_patient": 6,
+        "cycles_locked": false,
+        "activity_per_cycle_GBq": 7.4,
+        "fraction_to_sewer": 0.55,
+        "activity_label": "Administered activity per cycle",
+        "fraction_label": "Fraction reaching the sewer",
+        "source": "Workbook defaults (cells D9, D11, D12, D14). Site-specific."
+      }
+    },
+    {
+      "id": "I-131",
+      "include_default": true,
+      "k_ext": {
+        "unit": "(nSv/h)/(Bq/m³)",
+        "s1": {
+          "value": 2.709e-05,
+          "u_rel": 0.004,
+          "report_id": "PHITS Scenario 1 report, 2026-08-20",
+          "source": "Own PHITS 3.33 calculation: 'Escenario 1 del NUREG/CR-5814 · Lu-177, Lu-177m, Tc-99m, I-131 y F-18', 2026-08-20, Table 7. Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); photon transport only. Uncertainty: Monte Carlo statistical, k = 1."
+        },
+        "s2": {
+          "quantity": "Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); receptor 2 m above the centre of a uniform 3 m deep source of water-equivalent sludge (1.2 g/cm³). Xe-131m excluded (open pool).",
+          "L10": {
+            "value": 3.401e-05,
+            "u_rel": 0.0044,
+            "envelope_pos": 0.0052713,
+            "report_id": "INF-I131-S2-RESULTADOS-1.1.0, §VII.3"
+          },
+          "L45": {
+            "value": 4.8e-05,
+            "u_rel": 0.0089,
+            "envelope_pos": 0.0082268,
+            "report_id": "INF-I131-S2-RESULTADOS-1.1.0, §X.5 (air domain accepted with DEV-05)"
+          },
+          "source": "Own PHITS 3.330 calculation: 'Informe de resultados del I-131 en el escenario 2 de NUREG/CR-5814', INF-I131-S2-RESULTADOS-1.1.0, 2026-08-23. Uncertainties are Monte Carlo standard uncertainties (k = 1); the envelope is a separate one-sided model bound for bremsstrahlung and direct beta, not added to the central value."
+        }
+      },
+      "e_inh": {
+        "value": 7.4e-09,
+        "unit": "Sv/Bq",
+        "type": "F",
+        "source": "ICRP Publication 119 (2012), Table G.1, adult member of the public, absorption type F (types M and S give 2.4E-9 and 1.6E-9 Sv/Bq; F is the most conservative and the type used by IAEA SRS-19 Table XVI)."
+      },
+      "source_term": {
+        "patients_per_y": 50,
+        "cycles_per_patient": 1,
+        "cycles_locked": true,
+        "activity_per_cycle_GBq": 0.8,
+        "fraction_to_sewer": 0.5,
+        "activity_label": "Activity at hospital discharge",
+        "fraction_label": "Fraction excreted (workbook: at home)",
+        "source": "Workbook I-131 estimate (cells G6, G56): patients leave hospital with 0.8 GBq and excrete half of it at home. Always one treatment per patient. Site-specific."
+      },
+      "cross_checks": {
+        "nureg_table_B7": {
+          "dose_rem_per_Ci": 0.039,
+          "uSv_per_GBq": 10.5,
+          "reference_plant": {
+            "dry_sludge_t_per_y": 1700,
+            "solids_fraction": 0.3,
+            "wet_density_kg_m3": 1200,
+            "transit_d": 3,
+            "t_external_h_y": 1500
+          },
+          "note": "NUREG/CR-5814 Table B.7: I-131, 3 d decay, 3.9E-2 rem/y for 1 Ci/y (≈ 10.5 µSv/GBq), external dose from the GENII-1990 'STP WKR' factor (effective dose equivalent, ICRP 26/30 era) for a 1 m deep infinite slab at 2 m. Rescaled to the user plant by dry sludge mass and solids fraction."
+        },
+        "srs19_table_I_IV": {
+          "Sv_per_y_per_Bq_per_y": 3.4e-13,
+          "note": "IAEA SRS-19 (2001) Table I–IV: 400 t/y dry sludge, no transit decay, 2000 h/y. Annex I uses an occupancy of 0.288 where 2000/8760 = 0.228, so the factor may be 26 % high. Indicative only."
+        }
+      },
+      "nureg_table_A21": {
+        "stp_wkr_Sv_y_per_Bq_m3": 3.82e-10,
+        "sewer_maint_Sv_y_per_Bq_m3": 8.79e-11,
+        "page": "A.56"
+      }
+    },
+    {
+      "id": "Lu-177m",
+      "include_default": false,
+      "k_ext": {
+        "unit": "(nSv/h)/(Bq/m³)",
+        "s1": {
+          "value": 6.81e-05,
+          "u_rel": 0.0046,
+          "report_id": "PHITS Scenario 1 report, 2026-08-20",
+          "source": "Own PHITS 3.33 calculation: 'Escenario 1 del NUREG/CR-5814 · Lu-177, Lu-177m, Tc-99m, I-131 y F-18', 2026-08-20, Table 7. Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); photon transport only. Uncertainty: Monte Carlo statistical, k = 1."
+        },
+        "s2": {
+          "quantity": "Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); receptor 2 m above the centre of a uniform 3 m deep source of water-equivalent sludge (1.2 g/cm³).",
+          "L10": {
+            "value": 8.409831e-05,
+            "u_rel": 0.003108,
+            "envelope_pos": null,
+            "report_id": "P20P21-G9-FINAL-1.0.0 (coefficient A)"
+          },
+          "L45": {
+            "value": 0.0001206727,
+            "u_rel": 0.0059,
+            "envelope_pos": null,
+            "report_id": "P20P21-G9-FINAL-1.0.0 × f45 = 1.4349 (coefficient B)"
+          },
+          "source": "Own PHITS calculation: 'Coeficientes de tasa de dosis efectiva externa para Lu-177 y Lu-177m en el escenario 2 de NUREG/CR-5814', approved 2026-07-30, §7.2. Monte Carlo standard uncertainties (k = 1)."
+        }
+      },
+      "e_inh": {
+        "value": 1.3e-08,
+        "unit": "Sv/Bq",
+        "type": "M",
+        "source": "ICRP Publication 119 (2012), Table G.1, adult member of the public, absorption type M (lutetium is tabulated for types M and S only)."
+      },
+      "source_term": {
+        "patients_per_y": 75,
+        "cycles_per_patient": 6,
+        "cycles_locked": false,
+        "activity_per_cycle_GBq": 0.00074,
+        "fraction_to_sewer": 0.55,
+        "activity_label": "Lu-177m impurity per cycle",
+        "fraction_label": "Fraction reaching the sewer",
+        "source": "Impurity of carrier-added Lu-177: 0.01 % of 7.4 GBq per cycle (Workbook 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx', sheet Escenario-2, cell D11). Site-specific."
+      },
+      "half_life_s_fallback": 13858560,
+      "half_life_source": "ICRP Publication 107 (2008), 160.4 d (not in the curated database)."
+    },
+    {
+      "id": "Tc-99m",
+      "include_default": false,
+      "k_ext": {
+        "unit": "(nSv/h)/(Bq/m³)",
+        "s1": {
+          "value": 8.306e-06,
+          "u_rel": 0.00364,
+          "report_id": "PHITS Scenario 1 report, 2026-08-20",
+          "source": "Own PHITS 3.33 calculation: 'Escenario 1 del NUREG/CR-5814 · Lu-177, Lu-177m, Tc-99m, I-131 y F-18', 2026-08-20, Table 7. Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); photon transport only. Uncertainty: Monte Carlo statistical, k = 1."
+        },
+        "s2": {
+          "quantity": "Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); receptor 2 m above the centre of a uniform 3 m deep source of water-equivalent sludge (1.2 g/cm³).",
+          "L10": {
+            "value": 1.0265e-05,
+            "u_rel": 0.0051,
+            "envelope_pos": null,
+            "report_id": "Tc-99m Scenario 2 report (DEV-03, DEV-04)"
+          },
+          "L45": {
+            "value": 1.496e-05,
+            "u_rel": 0.00995,
+            "envelope_pos": null,
+            "report_id": "Tc-99m Scenario 2 report (DEV-03, DEV-04, DEV-05)"
+          },
+          "source": "Own PHITS calculation: 'informe_resultados_tc99m', Scenario 2 of NUREG/CR-5814, approved for L10 and L45 with declared deviations DEV-03, DEV-04 and DEV-05. Monte Carlo standard uncertainties (k = 1)."
+        }
+      },
+      "e_inh": {
+        "value": 1.9e-11,
+        "unit": "Sv/Bq",
+        "type": "M",
+        "source": "ICRP Publication 119 (2012), Table G.1, adult member of the public, absorption type M (workbook choice; types F and S give 1.2E-11 and 2.0E-11 Sv/Bq)."
+      },
+      "source_term": {
+        "patients_per_y": 0,
+        "cycles_per_patient": 1,
+        "cycles_locked": false,
+        "activity_per_cycle_GBq": 0,
+        "fraction_to_sewer": 0.55,
+        "activity_label": "Administered activity per study",
+        "fraction_label": "Fraction reaching the sewer",
+        "source": "No default in the workbooks: enter the facility's data. Fraction 0.55 is the workbook's generic value."
+      },
+      "nureg_table_A21": {
+        "stp_wkr_Sv_y_per_Bq_m3": 6.68e-11,
+        "sewer_maint_Sv_y_per_Bq_m3": 2.02e-11,
+        "page": "A.55"
+      }
+    },
+    {
+      "id": "F-18",
+      "include_default": false,
+      "k_ext": {
+        "unit": "(nSv/h)/(Bq/m³)",
+        "s1": {
+          "value": 7.197e-05,
+          "u_rel": 0.0013,
+          "report_id": "PHITS Scenario 1 report, 2026-08-20",
+          "source": "Own PHITS 3.33 calculation: 'Escenario 1 del NUREG/CR-5814 · Lu-177, Lu-177m, Tc-99m, I-131 y F-18', 2026-08-20, Table 7. Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); photon transport only. Uncertainty: Monte Carlo statistical, k = 1."
+        },
+        "s2": null
+      },
+      "e_inh": {
+        "value": 5.6e-11,
+        "unit": "Sv/Bq",
+        "type": "M",
+        "source": "ICRP Publication 119 (2012), Table G.1, adult member of the public, absorption type M (workbook choice; type S gives 5.9E-11 Sv/Bq, F 2.8E-11)."
+      },
+      "source_term": {
+        "patients_per_y": 2500,
+        "cycles_per_patient": 1,
+        "cycles_locked": false,
+        "activity_per_cycle_GBq": 0.3,
+        "fraction_to_sewer": 0.55,
+        "activity_label": "Administered activity per study",
+        "fraction_label": "Fraction reaching the sewer",
+        "source": "Workbook 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx', sheet Escenario-1 (cells D9–D13). Site-specific."
+      },
+      "s2_note": "No Scenario 2 coefficient has been calculated (the workbook's 0 means 'not calculated'); after 3 d of transit the F-18 decay factor is about 1E-12.",
+      "nureg_table_A21": {
+        "stp_wkr_Sv_y_per_Bq_m3": 1.07e-09,
+        "sewer_maint_Sv_y_per_Bq_m3": 2.3e-10,
+        "page": "A.54"
+      }
+    }
+  ],
+  "references": [
+    "NUREG/CR-5814 / PNL-7892 (May 1992) — Kennedy W.E. Jr., Parkhurst M.A., Aaberg R.L., Rhoads K.C., Hill R.L., Martin J.B., Evaluation of Exposure Pathways to Man From Disposal of Radioactive Materials Into Sanitary Sewer Systems. U.S. NRC. §5.2.1, §5.2.2 and Tables A.16, A.20, A.21, B.7.",
+    "IAEA Safety Reports Series No. 19 (2001) — Generic Models for Use in Assessing the Impact of Discharges of Radioactive Substances to the Environment, §4.9 and §6.6.",
+    "ICRP Publication 119 (2012) — Compendium of Dose Coefficients based on ICRP Publication 60, Table G.1 (inhalation, members of the public).",
+    "ICRP Publication 116 (2010) — Conversion Coefficients for Radiological Protection Quantities for External Radiation Exposures (ROT geometry), with ICRP Publication 129 (2015) corrigenda.",
+    "Own PHITS calculations of the Scenario 2 external coefficients for Lu-177 and Lu-177m (approved 2026-07-30), I-131 (INF-I131-S2-RESULTADOS-1.1.0, 2026-08-23) and Tc-99m.",
+    "Own PHITS calculations of the Scenario 1 external coefficients for Lu-177, Lu-177m, Tc-99m, I-131 and F-18 (2026-08-20).",
+    "Workbooks IRA-xxxx_Lu-177_dosis_en_escenario2_v1.xlsx (Scenario 2) and 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx' (Scenario 1) — reference implementations of the algorithms."
+  ],
+  "nureg_table_A21_note": "NUREG/CR-5814 Table A.21 (pp. A.54–A.56), 'Modified external dose factors for GENII, Sv/yr per Bq/m3 (8-Aug-90)': column 'SEWER MAINT 1.0 m' (Scenario 1) and 'STP WKR 0.15 m' (Scenario 2). Converted with 1 y = 8766 h, the convention that reproduces Table B.7. GENII-1990 effective dose equivalent (ICRP 26/30 era) and NUREG geometries (Table A.20); Lu-177 and Lu-177m are not tabulated. Indicative comparison only; the differences have not been investigated."
+}

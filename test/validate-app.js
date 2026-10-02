@@ -298,7 +298,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v29');
+    swVersion === 'nm-planner-v30');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -384,36 +384,49 @@ async function main() {
 
   console.log();
 
-  console.log('Test 11: effluent page (NUREG/CR-5814 Scenario 2) wiring');
+  console.log('Test 11: effluent page (NUREG/CR-5814 Scenarios 1 and 2) wiring');
   const effluentJs = read('js/effluent.js');
   // tools/ is not shipped: inside a built package the allowlist check is
   // replaced by the presence of the files it must have copied.
   const hasTools = fs.existsSync(path.join(ROOT, 'tools/build-package.js'));
   const buildPackageJs = hasTools ? read('tools/build-package.js') : '';
   const effluentCtx = vm.createContext({});
-  vm.runInContext(read('data/effluent-scenario2-data.js') + ';this.__E = EFFLUENT_S2_DATA;', effluentCtx);
-  check('effluent-scenario2-data.js is the exact twin of effluent-scenario2.json',
-    JSON.stringify(effluentCtx.__E) === JSON.stringify(JSON.parse(read('data/effluent-scenario2.json'))));
+  vm.runInContext(read('data/effluent-scenarios-data.js') + ';this.__E = EFFLUENT_DATA;', effluentCtx);
+  check('effluent-scenarios-data.js is the exact twin of effluent-scenarios.json',
+    JSON.stringify(effluentCtx.__E) === JSON.stringify(JSON.parse(read('data/effluent-scenarios.json'))));
   check('every page links the effluent page in its navigation',
     [indexHtml, decayHtml, doseHtml, aboutHtml].every(html =>
       /<nav class="site-nav"[\s\S]*?href="effluent\.html"[\s\S]*?<\/nav>/.test(html)) &&
     /href="effluent\.html" class="active"/.test(effluentHtml));
   check('service worker precaches the effluent page, module and embedded data',
-    ['./effluent.html', './js/effluent.js', './data/effluent-scenario2-data.js'].every(a => swJs.includes(`'${a}'`)));
+    ['./effluent.html', './js/effluent.js', './data/effluent-scenarios-data.js'].every(a => swJs.includes(`'${a}'`)));
   check(hasTools ? 'package allowlist includes the effluent page and data'
                  : 'packaged copy contains the effluent page and data',
     hasTools
       ? /'effluent\.html'/.test(buildPackageJs) &&
-        /'data\/effluent-scenario2\.json', 'data\/effluent-scenario2-data\.js'/.test(buildPackageJs)
-      : ['effluent.html', 'js/effluent.js', 'data/effluent-scenario2.json', 'data/effluent-scenario2-data.js']
+        /'data\/effluent-scenarios\.json', 'data\/effluent-scenarios-data\.js'/.test(buildPackageJs)
+      : ['effluent.html', 'js/effluent.js', 'data/effluent-scenarios.json', 'data/effluent-scenarios-data.js']
           .every(rel => fs.existsSync(path.join(ROOT, rel))));
-  check('effluent page loads its embedded data before the module, and the module uses the pure physics function',
-    effluentHtml.indexOf('data/effluent-scenario2-data.js') < effluentHtml.indexOf('js/effluent.js') &&
-    /CALC\.sludgeOperatorScenario2/.test(effluentJs) && !/document\./.test(effluentJs));
-  check('effluent page reads every data-file parameter, the geometry selector and locks I-131 cycles',
-    /for \(const key of Object\.keys\(P\)\) plant\[key\] = readNumber/.test(effluentHtml) &&
-    /nd\.k_ext\[geometry\]\.value/.test(effluentHtml) &&
+  check('no stale reference to the old effluent-scenario2 data file remains',
+    ![effluentHtml, effluentJs, swJs, buildPackageJs].some(t => /effluent-scenario2|EFFLUENT_S2_DATA/.test(t)));
+  check('effluent page loads its embedded data before the module, and the module uses both pure physics functions',
+    effluentHtml.indexOf('data/effluent-scenarios-data.js') < effluentHtml.indexOf('js/effluent.js') &&
+    /CALC\.sewerInspectorScenario1/.test(effluentJs) && /CALC\.sludgeOperatorScenario2/.test(effluentJs) &&
+    !/document\./.test(effluentJs));
+  check('effluent page reads every data-file parameter of all groups, both coefficients and locks I-131 cycles',
+    /for \(const key of Object\.keys\(PG\[s\]\)\) input\[s\]\[key\] = readNumber/.test(effluentHtml) &&
+    /const SCEN = \['common', 's1', 's2'\]/.test(effluentHtml) &&
+    /k1_nSv_h_per_Bq_m3: nd\.k_ext\.s1\.value/.test(effluentHtml) &&
+    /k2_nSv_h_per_Bq_m3: nd\.k_ext\.s2 \? nd\.k_ext\.s2\[geometry\]\.value : null/.test(effluentHtml) &&
     /cycles_locked \? 1 :/.test(effluentHtml));
+  check('facility selector fills the Scenario 1 water volume and a manual edit switches it to Custom',
+    /volInput\.value = presets\[facSel\.value\]\.water_volume_m3_y/.test(effluentHtml) &&
+    /facSel\.value = match \|\| 'custom'/.test(effluentHtml));
+  check('the two scenarios are reported separately and never added together',
+    /never added together/.test(effluentHtml) && /not added together/.test(effluentHtml) &&
+    !/s1\.total_mSv_y\s*\+\s*[^;]*s2\.total_mSv_y/.test(effluentHtml + effluentJs));
+  check('a nuclide without a Scenario 2 coefficient is shown as not evaluated, not as zero',
+    /no_coefficient: true/.test(effluentJs) && /not a zero dose/.test(effluentHtml));
   check('effluent report overrides the point-source disclaimer and nuclide header',
     /disclaimer: 'Generic screening estimate/.test(effluentHtml) && /headerRows:/.test(effluentHtml) &&
     /spec\.disclaimer \|\| DISCLAIMER/.test(reportJs) && /spec\.headerRows/.test(reportJs));

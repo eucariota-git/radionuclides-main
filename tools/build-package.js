@@ -45,7 +45,7 @@ const ALLOWLIST = [
   'css/',
   'js/',
   'data/nuclides.json', 'data/nuclides-data.js',
-  'data/effluent-scenario2.json', 'data/effluent-scenario2-data.js',
+  'data/effluent-scenarios.json', 'data/effluent-scenarios-data.js',
   'data/icrp107-index.json', 'data/icrp107-data.js',
   'assets/icons/',
   'manifest.json', 'sw.js',

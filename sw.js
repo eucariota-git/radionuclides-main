@@ -12,7 +12,7 @@
 
 'use strict';
 
-const CACHE_VERSION = 'nm-planner-v29';
+const CACHE_VERSION = 'nm-planner-v30';
 
 const ASSETS = [
   './',
@@ -42,7 +42,7 @@ const ASSETS = [
   // back to them offline, so precaching the JSONs doubled the install (~16 MB).
   './data/nuclides-data.js',
   './data/icrp107-data.js',
-  './data/effluent-scenario2-data.js',
+  './data/effluent-scenarios-data.js',
 ];
 
 self.addEventListener('install', (event) => {

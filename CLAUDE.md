@@ -20,7 +20,7 @@ A static web application for medical physicists and radiation protection special
 index.html        Radionuclide properties database
 decay.html        Decay calculator
 dose.html         External dose estimator
-effluent.html     Liquid effluent screening — NUREG/CR-5814 Scenario 2 (STP sludge operator)
+effluent.html     Liquid effluent screening — NUREG/CR-5814 Scenarios 1 (sewer inspector) and 2 (STP sludge operator)
 
 css/style.css     Shared styles (CSS variables, responsive grid)
 
@@ -28,11 +28,11 @@ js/data.js        PHYSICS module — ICRU 57/ICRP 74 conversion coefficients, at
 js/physics.js     CALC module — decay, dose, Archer/spectrum/narrow-beam shielding algorithms
 js/db.js          DB module — nuclide database, search/filter
 js/report.js      REPORT module — printable calculation reports with traceability
-js/effluent.js    EFFLUENT module — Scenario 2 data loading, unit conversion, cross-checks (no DOM)
+js/effluent.js    EFFLUENT module — Scenario 1/2 data loading, unit conversion, cross-checks (no DOM)
 
 data/nuclides.json        Main radionuclide database (40 entries — source of truth)
 data/nuclides-data.js     Auto-generated from nuclides.json for file:// compatibility
-data/effluent-scenario2.json / -data.js  Scenario 2 parameters and coefficients (+ generated twin)
+data/effluent-scenarios.json / -data.js  Effluent Scenario 1 and 2 parameters and coefficients (+ generated twin)
 
 manifest.json / sw.js                 PWA manifest and cache-first service worker
 assets/icons/                         Favicon, Apple Touch and install icons
@@ -76,7 +76,7 @@ Regulatory references use RD 1029/2022 (not RD 783/2001). Dose limits: effective
 
 IS-28 Anexo II II.A.4 (liquid discharges to public sewer) has THREE numeric conditions. The app implements only the per-nuclide concentration level (1 mSv / e(g))/600 L. It does not evaluate the mixture sum of fractions Σ(Cᵢ/Lᵢ) ≤ 1 or the annual activity limits (≤ 10 GBq H-3, ≤ 1 GBq C-14, strictly < 1 GBq the sum of the rest). RD 1217/2024 clearance is implemented only for a single nuclide; mixture clearance must be evaluated separately. Always present single-nuclide values as "individual level", not as a complete discharge/clearance assessment.
 
-Effluent page (`effluent.html`, NUREG/CR-5814 Scenario 2): screening model, all discharged activity retained in one year of sludge (C = Q/S, SRS-19 §4.9 b), decay only during transit to the press. External coefficients k are own PHITS effective-dose-rate values (ICRP 116 ROT) for 10 × 10 × 3 m and 45 × 45 × 3 m sludge masses, receptor at 2 m — never replace them with point-source Γ, and never claim they cover the infinite slab NUREG prescribes (Lu-177 L45 captures 73–75 % of it). Inhalation uses ICRP 119 G.1 adult PUBLIC coefficients (Lu-177 type M, I-131 type F). The dose criterion is user-defined; do not attribute a regulatory basis to it. The workbook's I-131 shortcut (NUREG B.7 factor rescaled by dry mass only) is replaced by the explicit model and kept only as an indicative cross-check.
+Effluent page (`effluent.html`): Scenarios 1 (sewer inspector) and 2 (STP sludge operator) are DIFFERENT receptors — never add their doses. Scenario 1 source term has no catchment fraction (all excreta assumed through the facility's connection, as the reference workbook) and dilution is the facility's annual water volume; its PHITS k (600 × 200 × 50 cm water slab, receptor at 1 m) is photon-only, bremsstrahlung not bounded. A nuclide without a Scenario 2 coefficient (F-18) is "not evaluated", never zero. Scenario 2: screening model, all discharged activity retained in one year of sludge (C = Q/S, SRS-19 §4.9 b), decay only during transit to the press. External coefficients k are own PHITS effective-dose-rate values (ICRP 116 ROT) for 10 × 10 × 3 m and 45 × 45 × 3 m sludge masses, receptor at 2 m — never replace them with point-source Γ, and never claim they cover the infinite slab NUREG prescribes (Lu-177 L45 captures 73–75 % of it). Inhalation uses ICRP 119 G.1 adult PUBLIC coefficients (Lu-177/Lu-177m/Tc-99m/F-18 type M, I-131 type F). The dose criterion is user-defined; do not attribute a regulatory basis to it. The workbook's I-131 shortcut (NUREG B.7 factor rescaled by dry mass only) is replaced by the explicit model and kept only as an indicative cross-check.
 
 ## UI / Styling Guidelines
 

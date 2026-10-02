@@ -41,12 +41,12 @@ Target users: medical physicists and radiation protection specialists.
   - Crystal lens calculation with both limits displayed
 - CSV export includes dose rates at both selected distance and 1 m reference
 
-### Liquid effluent — STP sludge operator (`effluent.html`)
-- Screening dose to a sewage-treatment-plant worker who operates sludge dewatering equipment: **NUREG/CR-5814 Scenario No. 2** with the IAEA SRS-19 §4.9 / §6.6 screening philosophy (all discharged activity retained in one year of sludge)
-- **Lu-177 and I-131** with the same explicit model: external exposure to dewatered sludge (own PHITS effective-dose-rate coefficients, ICRP 116 ROT, for 10 × 10 × 3 m and 45 × 45 × 3 m sludge masses) + inhalation of resuspended dry sludge (ICRP 119 Table G.1, adult public)
-- Algorithm and defaults reproduce the reference workbook `IRA-xxxx_Lu-177_dosis_en_escenario2_v1.xlsx`; doses per nuclide are summed linearly against a user-defined criterion
+### Liquid effluent — sewer and STP workers (`effluent.html`)
+- Screening doses from patient excreta for two NUREG/CR-5814 receptors, reported separately and never added together: **Scenario 1**, sewer system inspector (immersion in the facility's wastewater + aerosol inhalation), and **Scenario 2**, STP sludge process operator (dewatered sludge + resuspended dust; IAEA SRS-19 §4.9 / §6.6 screening philosophy)
+- **Lu-177, I-131, Lu-177m, Tc-99m and F-18**: own PHITS effective-dose-rate coefficients (ICRP 116 ROT) for the geometry of each scenario + ICRP 119 Table G.1 adult-public inhalation coefficients; F-18 has no Scenario 2 coefficient
+- Algorithms and defaults reproduce the reference workbooks; per-scenario linear sum over nuclides against a user-defined criterion
 - Not a complete discharge assessment: the IS-28 Annex II II.A.4 conditions and mixture clearance are evaluated separately
-- Indicative cross-check of I-131 against NUREG/CR-5814 Table B.7 and IAEA SRS-19 Table I–IV; 📄 Report / PDF and CSV export
+- Indicative cross-check against NUREG/CR-5814 Tables A.21 and B.7 and IAEA SRS-19 Table I–IV; 📄 Report / PDF and CSV export
 
 ### Extended database — ICRP 107 (`index.html`)
 - Main database contains 40 curated radionuclides. For any other nuclide, the Properties page offers fallback search in **ICRP Publication 107** (1252 nuclides)
@@ -183,7 +183,7 @@ Works on desktop and mobile browsers. Loads from `file://`, `content://` (Androi
 index.html              Properties page (with ICRP 107 extended search)
 decay.html              Decay calculator
 dose.html               Dose estimator (with Y-90 Zanzonico, distance-aware output)
-effluent.html           Liquid effluent screening — NUREG/CR-5814 Scenario 2 STP sludge operator
+effluent.html           Liquid effluent screening — NUREG/CR-5814 Scenarios 1 (sewer) and 2 (STP sludge)
 about.html              In-app guide, licensing and third-party notices
 
 assets/icons/           Favicon, Apple Touch and PWA install icons
@@ -198,20 +198,20 @@ js/icrp107-loader.js    ICRP107 module — extended DB search, dose calculation,
 js/ui.js                UI module — dark mode, print, keyboard, history
 js/utils.js             Formatting, escaping, dates and CSV helpers
 js/report.js            Printable traceable calculation reports
-js/effluent.js          EFFLUENT module — Scenario 2 data loading, unit conversion and cross-checks
+js/effluent.js          EFFLUENT module — Scenario 1/2 data loading, unit conversion and cross-checks
 
 data/nuclides.json      Radionuclide database (directly editable, source of truth)
 data/nuclides-data.js   Auto-generated from nuclides.json (for file:// compatibility)
 data/icrp107-index.json Extended database JSON (1252 nuclides with photon emissions)
 data/icrp107-data.js    Embedded ICRP 107 data (for file:// compatibility)
-data/effluent-scenario2.json     Scenario 2 parameters, PHITS coefficients and inhalation coefficients (source of truth)
-data/effluent-scenario2-data.js  Auto-generated from effluent-scenario2.json (for file:// compatibility)
+data/effluent-scenarios.json     Effluent Scenarios 1 and 2: parameters, PHITS coefficients and inhalation coefficients (source of truth)
+data/effluent-scenarios-data.js  Auto-generated from effluent-scenarios.json (for file:// compatibility)
 
 data/sources/icrp107/   ICRP 107 raw files — LOCAL ONLY, gitignored (© ICRP; download free from icrp.org, verify SHA256 in icrp107-index.json)
 
 tools/parse-icrp107.js  NDX/RAD/BET parser (FORTRAN fixed-width, generates icrp107-index.json)
 tools/recalc-gamma.js   Recalculates Γ from photons using ICRU 57 / ICRP 74
-tools/generate-data.js  Wraps nuclides.json and effluent-scenario2.json as JS for offline compatibility
+tools/generate-data.js  Wraps nuclides.json and effluent-scenarios.json as JS for offline compatibility
 tools/add-max-energy.js Adds max_photon_energy_keV to ICRP 107 nuclides
 
 references/             Open-license sources only (BOE legal texts, CC BY Oumano 2025); copyrighted PDFs (Cornejo, Zanzonico, ICRP) kept locally, gitignored

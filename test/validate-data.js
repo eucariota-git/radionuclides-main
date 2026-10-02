@@ -305,52 +305,92 @@ else console.log(`  ✗ ${effluentBad} of ${effluentOk + effluentBad} effluent l
 console.log();
 
 // ============================================================================
-// Effluent Scenario 2 data (data/effluent-scenario2.json)
+// Effluent Scenarios 1 and 2 data (data/effluent-scenarios.json)
 // ============================================================================
-console.log('TEST: Effluent Scenario 2 coefficients vs their sources');
+console.log('TEST: Effluent Scenario 1 and 2 coefficients vs their sources');
 {
-  const eff = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/effluent-scenario2.json'), 'utf8'));
+  const eff = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/effluent-scenarios.json'), 'utf8'));
   // Hand-entered from the primary sources, independent of the data file:
-  //  - ICRP Publication 119 (2012) Table G.1, adult, verified CSV in the
-  //    professional library (40_datos_y_herramientas): Lu-177 type M 1.1E-9,
-  //    I-131 type F 7.4E-9 Sv/Bq.
-  //  - Own PHITS reports: Lu-177 k_A = 2.828210E-6, k_B = 4.117874E-6 (report
-  //    approved 2026-07-30, §7.2); I-131 L10 = 3.401E-5, L45 = 4.800E-5
-  //    (INF-I131-S2-RESULTADOS-1.1.0, §VII.3 and §X.5), (nSv/h)/(Bq/m³).
+  //  - e(inh): ICRP Publication 119 (2012) Table G.1, adult column, verified CSV
+  //    in the professional library (40_datos_y_herramientas).
+  //  - k1 (Scenario 1): own PHITS report 'Escenario 1 del NUREG/CR-5814 ·
+  //    Lu-177, Lu-177m, Tc-99m, I-131 y F-18', 2026-08-20, Table 7.
+  //  - k2 (Scenario 2): Lu-177 / Lu-177m report approved 2026-07-30 §7.2;
+  //    INF-I131-S2-RESULTADOS-1.1.0 §VII.3 / §X.5; Tc-99m Scenario 2 report.
+  //    F-18 has no Scenario 2 coefficient.
+  //  All k in (nSv/h)/(Bq/m³).
   const REF = {
-    'Lu-177': { e_inh: 1.1e-9, type: 'M', L10: 2.828210e-6, L45: 4.117874e-6 },
-    'I-131':  { e_inh: 7.4e-9, type: 'F', L10: 3.401e-5,   L45: 4.800e-5 },
+    'Lu-177':  { e_inh: 1.1e-9,  type: 'M', k1: 2.295e-6, L10: 2.828210e-6, L45: 4.117874e-6 },
+    'I-131':   { e_inh: 7.4e-9,  type: 'F', k1: 2.709e-5, L10: 3.401e-5,    L45: 4.800e-5 },
+    'Lu-177m': { e_inh: 1.3e-8,  type: 'M', k1: 6.810e-5, L10: 8.409831e-5, L45: 1.206727e-4 },
+    'Tc-99m':  { e_inh: 1.9e-11, type: 'M', k1: 8.306e-6, L10: 1.0265e-5,   L45: 1.496e-5 },
+    'F-18':    { e_inh: 5.6e-11, type: 'M', k1: 7.197e-5, L10: null,        L45: null },
   };
   for (const [id, ref] of Object.entries(REF)) {
     const nd = eff.nuclides.find(n => n.id === id);
-    if (!nd) { totalTests++; failedTests++; console.log(`  ✗ ${id} missing from effluent-scenario2.json`); continue; }
+    if (!nd) { totalTests++; failedTests++; console.log(`  ✗ ${id} missing from effluent-scenarios.json`); continue; }
     test(`${id} e(inh) = ICRP 119 G.1 adult type ${ref.type}`, nd.e_inh.value, ref.e_inh, 0);
     totalTests++;
     if (nd.e_inh.type === ref.type) { passedTests++; console.log(`  ✓ ${id} absorption type ${ref.type}`); }
     else { failedTests++; console.log(`  ✗ ${id} absorption type ${nd.e_inh.type} ≠ ${ref.type}`); }
-    test(`${id} k L10 = PHITS report value`, nd.k_ext.L10.value, ref.L10, 0);
-    test(`${id} k L45 = PHITS report value`, nd.k_ext.L45.value, ref.L45, 0);
-    // The model needs the half-life from the app database to agree with ICRP 107.
-    const app = nuclides.find(n => n.id === id);
+    test(`${id} k Scenario 1 = PHITS report value`, nd.k_ext.s1.value, ref.k1, 0);
+    if (ref.L10 === null) {
+      totalTests++;
+      if (nd.k_ext.s2 === null) { passedTests++; console.log(`  ✓ ${id} has no Scenario 2 coefficient (null, not 0)`); }
+      else { failedTests++; console.log(`  ✗ ${id} Scenario 2 coefficient should be null`); }
+    } else {
+      test(`${id} k Scenario 2 L10 = PHITS report value`, nd.k_ext.s2.L10.value, ref.L10, 0);
+      test(`${id} k Scenario 2 L45 = PHITS report value`, nd.k_ext.s2.L45.value, ref.L45, 0);
+    }
+    // Half-life used by the model vs ICRP 107. Tolerance 0.2 %: the curated
+    // Tc-99m value (6.007 h, also used by the workbook) is 0.14 % below ICRP
+    // 107 (6.015 h); every other nuclide agrees within 0.08 %.
     const icrp = icrp107Index.find(n => n.id === id);
-    test(`${id} app half-life within 0.1 % of ICRP 107`, app.half_life_s, icrp.half_life_s, 0.001);
-  }
-  // Workbook defaults (cells D10–D41) are the documented starting point.
-  const P = eff.parameters;
-  const DEFAULTS = { catchment_pct: 40, wet_sludge_t_per_y: 5090, solids_fraction: 0.25, wet_density_kg_m3: 1200,
-    dust_loading_kg_m3: 1e-7, respirable_fraction: 0.2, sludge_fraction: 1, breathing_rate_m3_h: 1.2,
-    t_external_h_y: 1500, t_inhalation_h_y: 300, geometry_factor: 1, transit_d: 3, dose_criterion_mSv_y: 1 };
-  let defBad = 0;
-  for (const [k, v] of Object.entries(DEFAULTS)) {
-    if (!P[k] || P[k].value !== v) { defBad++; console.log(`  ✗ parameter ${k} default ${P[k] && P[k].value} ≠ workbook ${v}`); }
-  }
-  for (const [k, p] of Object.entries(P)) {
-    if (!(p.value >= (p.min ?? 0) && (p.max === undefined || p.value <= p.max)) || !p.source || !p.unit) {
-      defBad++; console.log(`  ✗ parameter ${k} outside its own range or missing unit/source`);
+    const app = nuclides.find(n => n.id === id);
+    if (app) {
+      test(`${id} app half-life within 0.2 % of ICRP 107`, app.half_life_s, icrp.half_life_s, 0.002);
+    } else {
+      test(`${id} (not curated) fallback half-life = ICRP 107`, nd.half_life_s_fallback, icrp.half_life_s, 0);
     }
   }
+  // NUREG/CR-5814 Table A.21 GENII factors (Sv/y per Bq/m³), read from the
+  // rendered PDF pages A.54–A.56: 'STP WKR' (Sc. 2) and 'SEWER MAINT' (Sc. 1).
+  const A21 = { 'I-131': [3.82e-10, 8.79e-11], 'F-18': [1.07e-09, 2.30e-10], 'Tc-99m': [6.68e-11, 2.02e-11] };
+  for (const [id, [stp, sewer]] of Object.entries(A21)) {
+    const a = (eff.nuclides.find(n => n.id === id) || {}).nureg_table_A21 || {};
+    test(`${id} NUREG Table A.21 STP WKR = ${stp}`, a.stp_wkr_Sv_y_per_Bq_m3, stp, 0);
+    test(`${id} NUREG Table A.21 SEWER MAINT = ${sewer}`, a.sewer_maint_Sv_y_per_Bq_m3, sewer, 0);
+  }
+  // Defaults equal the reference workbooks (Scenario 2: IRA-xxxx...v1.xlsx;
+  // Scenario 1: 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx').
+  const P = eff.parameters;
+  const DEFAULTS = {
+    common: { breathing_rate_m3_h: 1.2, dose_criterion_mSv_y: 1 },
+    s1: { water_volume_m3_y: 20000, water_density_kg_m3: 1000, aerosol_loading_kg_m3: 1e-7, respirable_fraction: 0.2,
+          t_external_h_y: 100, t_inhalation_h_y: 20, geometry_factor: 1, transit_h: 0.2 },
+    s2: { catchment_pct: 40, wet_sludge_t_per_y: 5090, solids_fraction: 0.25, wet_density_kg_m3: 1200,
+          dust_loading_kg_m3: 1e-7, respirable_fraction: 0.2, sludge_fraction: 1,
+          t_external_h_y: 1500, t_inhalation_h_y: 300, geometry_factor: 1, transit_d: 3 },
+  };
+  let defBad = 0;
+  for (const [g, vals] of Object.entries(DEFAULTS)) {
+    for (const [k, v] of Object.entries(vals)) {
+      if (!P[g] || !P[g][k] || P[g][k].value !== v) { defBad++; console.log(`  ✗ parameter ${g}.${k} default ${P[g] && P[g][k] && P[g][k].value} ≠ workbook ${v}`); }
+    }
+    for (const [k, p] of Object.entries(P[g] || {})) {
+      if (!(k in vals)) { defBad++; console.log(`  ✗ parameter ${g}.${k} has no checked default`); }
+      if (!(p.value >= (p.min ?? 0) && (p.max === undefined || p.value <= p.max)) || !p.source || !p.unit) {
+        defBad++; console.log(`  ✗ parameter ${g}.${k} outside its own range or missing unit/source`);
+      }
+    }
+  }
+  // Workbook 0.008333 d is the 0.2 h of NUREG §5.2.1, rounded
+  if (Math.abs(P.s1.transit_h.value / 24 - 0.008333) > 1e-6) { defBad++; console.log('  ✗ Scenario 1 transit ≠ workbook 0.008333 d'); }
+  if (eff.facility_presets.hospital.water_volume_m3_y !== 20000 || eff.facility_presets.clinic.water_volume_m3_y !== 3650) {
+    defBad++; console.log('  ✗ facility presets ≠ workbook (hospital 20 000, clinic 3650 m³/y)');
+  }
   totalTests++;
-  if (defBad === 0) { passedTests++; console.log('  ✓ effluent defaults equal the workbook and carry unit, range and source'); }
+  if (defBad === 0) { passedTests++; console.log('  ✓ effluent defaults equal the workbooks and carry unit, range and source'); }
   else failedTests++;
 }
 console.log();

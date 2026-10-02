@@ -8,7 +8,7 @@
  * fetch() is unavailable). This script does NOT modify data — it only wraps it.
  *
  *   data/nuclides.json            → data/nuclides-data.js            (NUCLIDE_DATA)
- *   data/effluent-scenario2.json  → data/effluent-scenario2-data.js  (EFFLUENT_S2_DATA)
+ *   data/effluent-scenarios.json  → data/effluent-scenarios-data.js  (EFFLUENT_DATA)
  *
  * Usage:
  *   node tools/generate-data.js
@@ -25,8 +25,8 @@ const TARGETS = [
     summary: d => `Nuclides: ${d.nuclides.length}`,
   },
   {
-    json: 'effluent-scenario2.json', js: 'effluent-scenario2-data.js', constName: 'EFFLUENT_S2_DATA',
-    summary: d => `Scenario 2 nuclides: ${d.nuclides.map(n => n.id).join(', ')}`,
+    json: 'effluent-scenarios.json', js: 'effluent-scenarios-data.js', constName: 'EFFLUENT_DATA',
+    summary: d => `Effluent nuclides: ${d.nuclides.map(n => n.id).join(', ')}`,
   },
 ];
 

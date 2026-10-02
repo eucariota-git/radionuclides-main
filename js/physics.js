@@ -305,6 +305,71 @@ const CALC = (() => {
     return _spectrumThickness_cm(attenuation, [[E_MeV * 1000, 1]], material);
   }
 
+  // Shared input validation for the effluent scenario functions below.
+  function _checkScenarioInputs(fn, p, nonNeg, fractions, positive) {
+    for (const key of nonNeg.concat(fractions, positive)) {
+      if (typeof p[key] !== 'number' || !Number.isFinite(p[key]) || p[key] < 0) {
+        throw new RangeError(`${fn}: ${key} must be a finite number ≥ 0`);
+      }
+    }
+    for (const key of positive) {
+      if (p[key] === 0) throw new RangeError(`${fn}: ${key} must be > 0`);
+    }
+    for (const key of fractions) {
+      if (p[key] > 1) throw new RangeError(`${fn}: ${key} must be ≤ 1`);
+    }
+  }
+
+  /**
+   * NUREG/CR-5814 Scenario No. 1 — sewer system inspector.
+   *
+   * The licensee's annual discharge is diluted in the annual water volume of
+   * the facility (not in the STP flow) and reaches the inspector in the
+   * interceptor after a short transit (≈ 0.2 h). Two pathways:
+   *   C_water    [Bq/m³] = A · DF / V
+   *   C_water_kg [Bq/kg] = C_water / ρ_water
+   *   C_air      [Bq/m³] = C_water_kg · aerosol loading · f_resp
+   *   E_ext      [Sv/y]  = C_water · k · t_ext · g
+   *   E_inh      [Sv/y]  = C_air · BR · t_inh · e_inh
+   * with DF = exp(−λ·t_transit). Algorithm reproduced from the workbook
+   * 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx' (sheet Escenario-1).
+   * k must be the effective-dose-rate coefficient for the Scenario 1 water
+   * slab (600 × 200 × 50 cm, receptor at 1 m) — not a point-source Γ.
+   *
+   * All inputs and outputs in SI.
+   * @param {object} p
+   * @param {number} p.lambda_s, p.transit_s, p.A_Bq_per_y
+   * @param {number} p.water_volume_m3_per_y   annual water discharged by the facility [m³/y]
+   * @param {number} p.water_density_kg_m3     [kg/m³]
+   * @param {number} p.aerosol_kg_m3           aerosol (water) loading in air [kg/m³]
+   * @param {number} p.respirable_fraction, p.geometry_factor   [–]
+   * @param {number} p.breathing_m3_s, p.t_ext_s, p.t_inh_s
+   * @param {number} p.k_Sv_m3_per_Bq_s, p.e_inh_Sv_per_Bq
+   * @returns {{DF:number, C_water:number, C_water_kg:number, C_air:number,
+   *            E_ext:number, E_inh:number, E:number, FD_Sv_per_Bq:number,
+   *            dominant:'external'|'inhalation'}}
+   */
+  function sewerInspectorScenario1(p) {
+    _checkScenarioInputs('sewerInspectorScenario1', p,
+      ['lambda_s', 'transit_s', 'A_Bq_per_y', 'aerosol_kg_m3', 'breathing_m3_s', 't_ext_s', 't_inh_s',
+       'k_Sv_m3_per_Bq_s', 'e_inh_Sv_per_Bq'],
+      ['respirable_fraction', 'geometry_factor'],
+      ['water_volume_m3_per_y', 'water_density_kg_m3']);
+
+    const DF = Math.exp(-p.lambda_s * p.transit_s);
+    const C_water = p.A_Bq_per_y * DF / p.water_volume_m3_per_y;               // Bq/m³
+    const C_water_kg = C_water / p.water_density_kg_m3;                         // Bq/kg
+    const C_air = C_water_kg * p.aerosol_kg_m3 * p.respirable_fraction;         // Bq/m³
+    const E_ext = C_water * p.k_Sv_m3_per_Bq_s * p.t_ext_s * p.geometry_factor; // Sv/y
+    const E_inh = C_air * p.breathing_m3_s * p.t_inh_s * p.e_inh_Sv_per_Bq;     // Sv/y
+    const E = E_ext + E_inh;
+    return {
+      DF, C_water, C_water_kg, C_air, E_ext, E_inh, E,
+      FD_Sv_per_Bq: p.A_Bq_per_y > 0 ? E / p.A_Bq_per_y : NaN,
+      dominant: E_ext >= E_inh ? 'external' : 'inhalation',
+    };
+  }
+
   /**
    * NUREG/CR-5814 Scenario No. 2 — sewage-treatment-plant sludge process operator.
    *
@@ -322,7 +387,7 @@ const CALC = (() => {
    * No decay during the exposure year is modelled: the sludge is continuously
    * renewed, so the annual-average concentration is the steady-state one.
    * k must be an effective-dose-rate coefficient for the SAME sludge geometry
-   * (see data/effluent-scenario2.json) — it is not a point-source Γ.
+   * (see data/effluent-scenarios.json) — it is not a point-source Γ.
    *
    * All inputs and outputs in SI.
    * @param {object} p
@@ -346,21 +411,12 @@ const CALC = (() => {
    *            dominant:'external'|'inhalation'}}
    */
   function sludgeOperatorScenario2(p) {
-    const nonNeg = ['lambda_s', 'transit_s', 'A_Bq_per_y', 'wet_density_kg_m3', 'dust_kg_m3',
-      'breathing_m3_s', 't_ext_s', 't_inh_s', 'k_Sv_m3_per_Bq_s', 'e_inh_Sv_per_Bq'];
-    const fractions = ['respirable_fraction', 'sludge_fraction', 'geometry_factor'];
-    const positive = ['wet_sludge_kg_per_y', 'solids_fraction'];
-    for (const key of nonNeg.concat(fractions, positive)) {
-      if (typeof p[key] !== 'number' || !Number.isFinite(p[key]) || p[key] < 0) {
-        throw new RangeError(`sludgeOperatorScenario2: ${key} must be a finite number ≥ 0`);
-      }
-    }
-    for (const key of positive) {
-      if (p[key] === 0) throw new RangeError(`sludgeOperatorScenario2: ${key} must be > 0`);
-    }
-    for (const key of fractions.concat('solids_fraction')) {
-      if (p[key] > 1) throw new RangeError(`sludgeOperatorScenario2: ${key} must be ≤ 1`);
-    }
+    _checkScenarioInputs('sludgeOperatorScenario2', p,
+      ['lambda_s', 'transit_s', 'A_Bq_per_y', 'wet_density_kg_m3', 'dust_kg_m3',
+       'breathing_m3_s', 't_ext_s', 't_inh_s', 'k_Sv_m3_per_Bq_s', 'e_inh_Sv_per_Bq'],
+      ['respirable_fraction', 'sludge_fraction', 'geometry_factor'],
+      ['wet_sludge_kg_per_y', 'solids_fraction']);
+    if (p.solids_fraction > 1) throw new RangeError('sludgeOperatorScenario2: solids_fraction must be ≤ 1');
 
     const DF = Math.exp(-p.lambda_s * p.transit_s);
     const retained = p.A_Bq_per_y * p.sludge_fraction * DF;                      // Bq per year of sludge
@@ -435,6 +491,7 @@ const CALC = (() => {
     cumulativeDose,
     hvlTvl,
     thicknessForAttenuation,
+    sewerInspectorScenario1,
     sludgeOperatorScenario2,
     convertActivity,
     formatDose,

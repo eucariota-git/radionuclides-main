@@ -36,7 +36,7 @@
   <!-- docs/USER_GUIDE.md is the canonical source for this synchronized HTML copy. -->
   <article class="card about-content" id="user-guide">
     <h2>NM Radionuclide Planner — User Guide</h2>
-    <p>A web application for nuclear medicine radionuclide properties, decay calculations, external dose estimation and liquid-effluent screening.</p>
+    <p>A web application for nuclear medicine radionuclide properties, decay calculations, external dose estimation and liquid-effluent screening (sewer and STP workers).</p>
     <p><strong>Local distribution:</strong> Keep the supplied folder intact and open <code>index.html</code> in a modern web browser.</p>
 
     <hr>
@@ -233,44 +233,53 @@
     </ul>
 
     <hr>
-    <h4>4. Liquid Effluent — STP Sludge Operator (<code>effluent.html</code>)</h4>
-    <p><strong>Purpose</strong>: Screening estimate of the annual effective dose to a sewage-treatment-plant (STP / EDAR) worker who operates sludge dewatering equipment (centrifuge, sludge press), from Lu-177 and I-131 excreted by patients at home. Implements Scenario No. 2 of NUREG/CR-5814 (1992) with the screening philosophy of IAEA SRS-19 (2001) §4.9 and §6.6.</p>
+    <h4>4. Liquid Effluent — Sewer and STP Workers (<code>effluent.html</code>)</h4>
+    <p><strong>Purpose</strong>: Screening estimate of the annual effective dose from Lu-177, I-131, Lu-177m, Tc-99m and F-18 excreted by nuclear-medicine patients, for two workers of NUREG/CR-5814 (1992) who are members of the public with respect to the licensee:</p>
+    <ul>
+      <li><strong>Scenario 1 — sewer system inspector</strong> (§5.2.1): external immersion in the facility's wastewater (water slab at 1 m) and inhalation of aerosol in the interceptor</li>
+      <li><strong>Scenario 2 — STP / EDAR sludge process operator</strong> (§5.2.2): external exposure to dewatered sludge and inhalation of resuspended dry sludge, with the screening philosophy of IAEA SRS-19 (2001) §4.9 and §6.6</li>
+    </ul>
+    <p>The two scenarios concern <strong>different receptors: each total is compared with the criterion on its own and they are never added together</strong>.</p>
     <p><strong>How to use</strong>:</p>
     <ol>
-      <li><strong>Source term</strong> (one row per nuclide; untick <em>Include</em> to leave one out):
+      <li><strong>Source term</strong> (one row per nuclide; tick <em>Include</em> — only Lu-177 and I-131 are included by default): patients/year × cycles/patient × activity per cycle × fraction reaching the sewer
         <ul>
-          <li>Lu-177: patients/year × cycles/patient × administered activity per cycle × fraction reaching the sewer</li>
-          <li>I-131: patients/year × activity at hospital discharge × fraction excreted at home (always one treatment per patient)</li>
-          <li><em>Patients living in the STP catchment</em> (%) applies to both</li>
+          <li>I-131: activity at hospital discharge, always one treatment per patient</li>
+          <li>Lu-177m: impurity of carrier-added Lu-177 (default 0.01 % of 7.4 GBq per cycle)</li>
+          <li>Tc-99m: no default in the reference workbooks — enter the facility's data</li>
+          <li><strong>Scenario 1</strong> assumes that all of this activity passes through the facility's own sewer connection (conservative: activity excreted at home does not); <strong>Scenario 2</strong> further multiplies by the fraction of patients living in the STP catchment</li>
         </ul>
       </li>
-      <li><strong>Treatment plant and sludge</strong>: wet (dewatered) sludge production — plant-specific, from PRTR-España, waste code LER 19 08 05 —, solids fraction, wet density, fraction retained in sludge, transit time to the press, dust loading and respirable fraction</li>
-      <li><strong>Exposure</strong>: breathing rate, external and inhalation times, geometry/shielding factor, and a <strong>user-defined</strong> dose criterion (the app attributes no regulatory basis to it)</li>
-      <li><strong>External coefficient geometry</strong>: <em>up to 100 m²</em> (10 × 10 × 3 m) or <em>up to 2000 m²</em> (45 × 45 × 3 m, default)</li>
+      <li><strong>Scenario 1</strong>: facility type (hospital 20 000 m³/y, clinic 3650 m³/y, or the licensee's figure — consumption ≈ discharge), water density, aerosol loading, respirable fraction, exposure times, geometry factor and transit time (≈ 0.2 h)</li>
+      <li><strong>Scenario 2</strong>: wet (dewatered) sludge production — plant-specific, from PRTR-España, waste code LER 19 08 05 —, solids fraction, wet density, fraction retained in sludge, transit time to the press (≈ 3 d), dust loading, respirable fraction, exposure times, geometry factor and the external-coefficient geometry (<em>up to 100 m²</em>, 10 × 10 × 3 m, or <em>up to 2000 m²</em>, 45 × 45 × 3 m, default)</li>
+      <li><strong>Common</strong>: breathing rate and a <strong>user-defined</strong> dose criterion (default 1 mSv/y; the app attributes no regulatory basis to it)</li>
     </ol>
-    <p>Results update as you type: decay factor, sludge and air concentrations and dose factor per GBq discharged; annual external, inhalation and total dose per nuclide; linear sum and percentage of the criterion. <strong>📄 Report / PDF</strong> and <strong>⬇ Export CSV</strong> record every input and coefficient.</p>
+    <p>Results update as you type: per scenario, decay factor, concentrations and dose factor per GBq discharged; annual external, inhalation and total dose per nuclide; per-scenario sum and percentage of the criterion. <strong>📄 Report / PDF</strong> and <strong>⬇ Export CSV</strong> record every input and coefficient.</p>
     <p><strong>Model</strong> (per nuclide, A = activity reaching the sewer in one year, DF = exp(−λ·t_transit)):</p>
     <ul>
-      <li>C_dry [Bq/kg] = A · f_sludge · DF / (M_wet · f_solids)</li>
-      <li>C_wet [Bq/m³] = A · f_sludge · DF · ρ_wet / M_wet</li>
-      <li>C_air [Bq/m³] = C_dry · dust loading · f_resp</li>
-      <li>E_ext = C_wet · k · t_ext · f_geom; E_inh = C_air · BR · t_inh · e(inh)</li>
+      <li>Scenario 1: C_water [Bq/m³] = A · DF / V; C_air = (C_water / ρ_water) · aerosol loading · f_resp; E_ext = C_water · k₁ · t_ext · g; E_inh = C_air · BR · t_inh · e(inh)</li>
+      <li>Scenario 2: C_dry [Bq/kg] = A · f_sludge · DF / (M_wet · f_solids); C_wet [Bq/m³] = A · f_sludge · DF · ρ_wet / M_wet; C_air = C_dry · dust loading · f_resp; E_ext = C_wet · k₂ · t_ext · f_geom; E_inh = C_air · BR · t_inh · e(inh)</li>
     </ul>
     <p><strong>Data</strong>:</p>
     <ul>
-      <li><strong>k</strong> (external): effective-dose-rate coefficients (ICRP 116, rotational geometry) calculated with PHITS for a uniform 3 m deep sludge source, receptor 2 m above its centre. They are <strong>not</strong> point-source Γ constants and apply only to that geometry</li>
-      <li><strong>e(inh)</strong>: ICRP 119 Table G.1, adult member of the public — Lu-177 type M, 1.1×10⁻⁹ Sv/Bq; I-131 type F, 7.4×10⁻⁹ Sv/Bq (the most conservative type)</li>
-      <li>Half-lives from the app database</li>
+      <li><strong>k₁, k₂</strong> (external): effective-dose-rate coefficients (ICRP 116, rotational geometry) calculated with PHITS — Scenario 1 for a 600 × 200 × 50 cm water slab with the receptor at 1 m, Scenario 2 for a uniform 3 m deep sludge source with the receptor at 2 m. They are <strong>not</strong> point-source Γ constants and apply only to those geometries. F-18 has no Scenario 2 coefficient and is shown as <em>not evaluated</em>, not as zero</li>
+      <li><strong>e(inh)</strong>: ICRP 119 Table G.1, adult member of the public — Lu-177 M 1.1×10⁻⁹, Lu-177m M 1.3×10⁻⁸, I-131 F 7.4×10⁻⁹, Tc-99m M 1.9×10⁻¹¹, F-18 M 5.6×10⁻¹¹ Sv/Bq</li>
+      <li>Half-lives from the app database; Lu-177m, which is not a curated entry, from ICRP 107 (160.4 d)</li>
     </ul>
     <p><strong>Limitations</strong>:</p>
     <ul>
-      <li>Screening model: all discharged activity is retained in one year of sludge, with no decay during the exposure year</li>
-      <li>NUREG/CR-5814 prescribes an infinite slab, which neither coefficient covers. For Lu-177 the PHITS study measured that the 2000 m² coefficient captures 73–75 % of the infinite slab</li>
-      <li>Inhalation uses public dose coefficients: the STP worker is not an exposed worker of the licensee</li>
+      <li>Screening models; no decay during the exposure year (continuous discharge, steady-state concentrations)</li>
+      <li>Scenario 1 coefficients are photon-only: bremsstrahlung from beta and positron emission is not included and has not been bounded for this geometry — the limitation is larger for F-18 and I-131</li>
+      <li>NUREG/CR-5814 prescribes an infinite slab for Scenario 2, which neither coefficient covers. For Lu-177 the PHITS study measured that the 2000 m² coefficient captures 73–75 % of the infinite slab</li>
+      <li>Inhalation uses public dose coefficients: neither worker is an exposed worker of the licensee</li>
       <li><strong>Not a complete discharge assessment.</strong> The IS-28 Annex II II.A.4 sewer conditions (per-nuclide level, sum of fractions, annual activity limits) and mixture clearance are evaluated separately</li>
-      <li>A collapsible panel compares the I-131 result with NUREG/CR-5814 Table B.7 (rescaled to the plant) and IAEA SRS-19 Table I–IV. Both are indicative only: SRS-19 Annex I uses an occupancy of 0.288 where 2000/8760 = 0.228</li>
+      <li>A collapsible panel compares the coefficients with the GENII-1990 factors of NUREG/CR-5814 Table A.21 (I-131, F-18, Tc-99m; the PHITS Scenario 1 coefficients are 2.7–3.6 times higher, a difference that has not been investigated) and the I-131 Scenario 2 result with NUREG/CR-5814 Table B.7 and IAEA SRS-19 Table I–IV. All are indicative only; SRS-19 Annex I uses an occupancy of 0.288 where 2000/8760 = 0.228</li>
     </ul>
-    <p><strong>Example</strong> (default values, 2000 m² geometry): Lu-177 75 patients × 6 cycles × 7.4 GBq × 0.55 × 40 % = 732.6 GBq/y → 1.065 µSv/GBq → 0.780 mSv/y; I-131 50 × 0.8 GBq × 0.5 × 40 % = 8 GBq/y → 13.10 µSv/GBq → 0.105 mSv/y; total 0.885 mSv/y.</p>
+    <p><strong>Example</strong> (default values, Lu-177 and I-131 included, 2000 m² geometry):</p>
+    <ul>
+      <li>Scenario 1: Lu-177 75 patients × 6 cycles × 7.4 GBq × 0.55 = 1831.5 GBq/y → 0.0115 µSv/GBq → 0.0210 mSv/y; I-131 50 × 0.8 GBq × 0.5 = 20 GBq/y → 0.135 µSv/GBq → 0.0027 mSv/y; total 0.0237 mSv/y</li>
+      <li>Scenario 2 (× 40 % catchment): Lu-177 732.6 GBq/y → 1.065 µSv/GBq → 0.780 mSv/y; I-131 8 GBq/y → 13.10 µSv/GBq → 0.105 mSv/y; total 0.885 mSv/y</li>
+    </ul>
 
     <hr>
     <h4>5. ICRP 107 data integrity</h4>
@@ -376,7 +385,7 @@
       <li><strong>ICRP Publication 119</strong> (2012). “Compendium of Dose Coefficients based on ICRP Publication 60.”</li>
       <li><strong>ICRP Publication 116</strong> (2010). “Conversion Coefficients for Radiological Protection Quantities for External Radiation Exposures.” With the corrigenda in ICRP Publication 129 (2015).</li>
       <li><strong>IAEA Safety Reports Series No. 19</strong> (2001). “Generic Models for Use in Assessing the Impact of Discharges of Radioactive Substances to the Environment.” §4.9 and §6.6.</li>
-      <li><strong>Kennedy W.E. Jr., Parkhurst M.A., Aaberg R.L., Rhoads K.C., Hill R.L., Martin J.B.</strong> (1992). <em>Evaluation of Exposure Pathways to Man From Disposal of Radioactive Materials Into Sanitary Sewer Systems</em>. NUREG/CR-5814 / PNL-7892, U.S. NRC. §5.2.2, Tables A.16, A.21, B.7.</li>
+      <li><strong>Kennedy W.E. Jr., Parkhurst M.A., Aaberg R.L., Rhoads K.C., Hill R.L., Martin J.B.</strong> (1992). <em>Evaluation of Exposure Pathways to Man From Disposal of Radioactive Materials Into Sanitary Sewer Systems</em>. NUREG/CR-5814 / PNL-7892, U.S. NRC. §5.2.1, §5.2.2, Tables A.16, A.20, A.21, B.7.</li>
       <li><strong>ICRU Report 57</strong> (1998). “Conversion Coefficients for use in Radiological Protection against External Radiation.”</li>
       <li><strong>Instrucción IS-28</strong> (CSN, 22 September 2010). “Especificaciones técnicas de funcionamiento que deben cumplir las instalaciones radiactivas de segunda y tercera categoría.” BOE nº 246, 11 October 2010 (BOE-A-2010-15594).</li>
       <li><strong><a href="https://www.boe.es/buscar/act.php?id=BOE-A-2022-21682">Real Decreto 1029/2022</a></strong>, de 20 de diciembre, por el que se aprueba el Reglamento sobre protección de la salud contra los riesgos derivados de la exposición a las radiaciones ionizantes. BOE-A-2022-21682.</li>
@@ -829,12 +838,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     <h4>NUREG/CR-5740 · ANSI/ANS-6.4.3 — exposure buildup factors</h4>
     <p>The <code>BUILDUP_*</code> tables in <code>js/data.js</code> (Table 3 point-isotropic exposure buildup factors for lead, elemental iron and concrete). Numeric values transcribed from Trubey, D.K., NUREG/CR-5740 / ORNL/RSIC-49/R1 (1991), an NRC/ORNL report released for unlimited distribution. The underlying ANSI/ANS-6.4.3 standard is © American Nuclear Society and is <strong>not</strong> redistributed here (only the numeric Table 3 values are used).</p>
 
-    <h4>Effluent Scenario 2 — dose coefficients and model parameters</h4>
-    <p>Files: <code>data/effluent-scenario2.json</code>, <code>data/effluent-scenario2-data.js</code>.</p>
+    <h4>Effluent Scenarios 1 and 2 — dose coefficients and model parameters</h4>
+    <p>Files: <code>data/effluent-scenarios.json</code>, <code>data/effluent-scenarios-data.js</code>.</p>
     <ul>
-      <li>Inhalation dose coefficients for Lu-177 and I-131 (adult members of the public): ICRP Publication 119 (2012), Table G.1, © ICRP. Two numeric values cited with attribution; the publication is not redistributed.</li>
-      <li>Model structure and default parameter values (sludge density, dust loading, respirable fraction, exposure times, transit time): Kennedy W.E. Jr. et al., NUREG/CR-5814 / PNL-7892 (1992), U.S. NRC; and IAEA Safety Reports Series No. 19 (2001), © IAEA. Numeric values cited with attribution; neither report is included in the distribution package.</li>
-      <li>External dose-rate coefficients k: own PHITS calculations by the project author (not third-party data).</li>
+      <li>Inhalation dose coefficients for Lu-177, Lu-177m, I-131, Tc-99m and F-18 (adult members of the public): ICRP Publication 119 (2012), Table G.1, © ICRP. Five numeric values cited with attribution; the publication is not redistributed.</li>
+      <li>Model structure and default parameter values (sludge density, dust loading, respirable fraction, exposure times, transit time) and the GENII factors of Table A.21 used in the indicative cross-check: Kennedy W.E. Jr. et al., NUREG/CR-5814 / PNL-7892 (1992), U.S. NRC; and IAEA Safety Reports Series No. 19 (2001), © IAEA. Numeric values cited with attribution; neither report is included in the distribution package.</li>
+      <li>External dose-rate coefficients k for both scenarios: own PHITS calculations by the project author (not third-party data).</li>
     </ul>
 
     <h4>BOE — Spanish legal texts</h4>

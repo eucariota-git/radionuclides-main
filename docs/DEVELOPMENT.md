@@ -56,9 +56,10 @@ Each module (PHYSICS, CALC, DB, ICRP107, UI) is an IIFE returning public API. No
 - `print(spec)` — builds a print-only calculation report (timestamp, DB version, inputs, results, method, sources, disclaimer, sign-off) and opens the print dialog
 
 ### `EFFLUENT` (`js/effluent.js`)
-- `load()` — `data/effluent-scenario2.json` by fetch, falling back to the embedded `EFFLUENT_S2_DATA` (same coherence rule as `DB.load()`)
-- `evaluate(input)` — converts page inputs (display units) to SI, calls the pure `CALC.sludgeOperatorScenario2` per nuclide, returns per-GBq factors, annual doses and the linear sum
-- `crossChecks(nuclide, half_life_s, plant)` — NUREG/CR-5814 Table B.7 rescaled to the plant and IAEA SRS-19 Table I–IV (indicative only, never used in the result)
+- `load()` — `data/effluent-scenarios.json` by fetch, falling back to the embedded `EFFLUENT_DATA` (same coherence rule as `DB.load()`)
+- `evaluate(input)` — converts page inputs (display units) to SI, calls the pure `CALC.sewerInspectorScenario1` and `CALC.sludgeOperatorScenario2` per nuclide, returns per-GBq factors, annual doses and the per-scenario linear sum (the two scenarios are never added). Nuclides without a Scenario 2 coefficient return `no_coefficient: true`
+- `defaultInput(data, halfLife, geometry)` — the data-file defaults in the shape `evaluate()` takes; `halfLifeOf(nd, dbRecord)` — app database first, then the file's ICRP 107 fallback (Lu-177m)
+- `crossChecks(nuclide, half_life_s, plant)` — NUREG/CR-5814 Table B.7 rescaled to the plant and IAEA SRS-19 Table I–IV; `nuregComparison(nuclide, geometry)` — PHITS k vs NUREG Table A.21 GENII factors (indicative only, never used in the result)
 - No DOM access. Half-lives come from `nuclides.json`, not from the effluent data file
 
 ### PWA (`manifest.json`, `sw.js`, `assets/icons/`)
@@ -73,11 +74,11 @@ Each module (PHYSICS, CALC, DB, ICRP107, UI) is an IIFE returning public API. No
 - Includes metadata: generation timestamp, SHA256 hash of source ICRP files
 - Stores Cornejo published values in `cornejo_validation` for traceability
 
-**`data/effluent-scenario2.json`** — source of truth for the effluent page: parameter defaults with unit, range and source; per-nuclide PHITS coefficients (L10 / L45) with uncertainty and report id; ICRP 119 inhalation coefficients; default source terms and cross-check factors
+**`data/effluent-scenarios.json`** — source of truth for the effluent page: parameter defaults (groups `common`, `s1`, `s2`) with unit, range and source; facility presets; per-nuclide PHITS coefficients (`k_ext.s1`, `k_ext.s2.L10/L45` or `null`) with uncertainty and report id; ICRP 119 inhalation coefficients; default source terms; cross-check factors
 
 **Auto-generated:**
 - `nuclides-data.js` — JavaScript wrapper for file:// compatibility
-- `effluent-scenario2-data.js` — JavaScript wrapper of `effluent-scenario2.json`
+- `effluent-scenarios-data.js` — JavaScript wrapper of `effluent-scenarios.json`
 - `icrp107-index.json` — 1252 nuclides with photon emissions
 - `icrp107-data.js` — Embedded for offline use
 
@@ -88,7 +89,7 @@ Each module (PHYSICS, CALC, DB, ICRP107, UI) is an IIFE returning public API. No
 ### Regenerating Data
 
 ```bash
-# Wrap nuclides.json and effluent-scenario2.json as JS
+# Wrap nuclides.json and effluent-scenarios.json as JS
 node tools/generate-data.js
 
 # Parse ICRP 107 (generates icrp107-index.json + icrp107-data.js)
@@ -225,7 +226,7 @@ script — keep both in sync) is:
 - `css/`
 - `js/` (includes the locally bundled `chart.umd.min.js`)
 - `data/nuclides.json`, `data/nuclides-data.js`
-- `data/effluent-scenario2.json`, `data/effluent-scenario2-data.js`
+- `data/effluent-scenarios.json`, `data/effluent-scenarios-data.js`
 - `data/icrp107-index.json`, `data/icrp107-data.js`
 - `assets/icons/`
 - `manifest.json`, `sw.js`
