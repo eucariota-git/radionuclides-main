@@ -69,6 +69,7 @@ Each module (PHYSICS, CALC, DB, ICRP107, UI) is an IIFE returning public API. No
 
 ### PWA (`manifest.json`, `sw.js`, `assets/icons/`)
 - Cache-first service worker; registered on HTTP(S) only (`file://` unaffected)
+- Activation deletes only this app's own old caches (prefix `nm-planner-`), and lookups use only the current version's cache — other applications on the same origin are left alone (audit 2026-10-03, H-10)
 - **Bump `CACHE_VERSION` in `sw.js`** whenever data files or app logic change
 
 ---

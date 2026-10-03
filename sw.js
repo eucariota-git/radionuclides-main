@@ -12,6 +12,7 @@
 
 'use strict';
 
+const CACHE_PREFIX = 'nm-planner-';
 const CACHE_VERSION = 'nm-planner-v34';
 
 const ASSETS = [
@@ -53,10 +54,15 @@ self.addEventListener('install', (event) => {
   );
 });
 
+// Only this application's OWN old caches are deleted. Other applications
+// served from the same origin keep theirs (audit 2026-10-03, H-10: the former
+// filter deleted every cache whose name was not the current version).
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE_VERSION).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys
+        .filter((k) => k.startsWith(CACHE_PREFIX) && k !== CACHE_VERSION)
+        .map((k) => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
@@ -69,7 +75,9 @@ self.addEventListener('fetch', (event) => {
     // query-sensitive match missed those offline reloads and the navigation
     // fallback silently served index.html instead, losing the page AND the
     // selection (audit 2026-07-16, H-04). No precached asset varies by query.
-    caches.match(event.request, { ignoreSearch: true }).then((cached) => {
+    // Look up only in THIS version's cache, never across every cache of the
+    // origin (another app could hold a same-URL entry) — audit 2026-10-03, H-10.
+    caches.open(CACHE_VERSION).then((cache) => cache.match(event.request, { ignoreSearch: true })).then((cached) => {
       if (cached) return cached;
 
       // Deliberately uncached resources (notably data/nuclides.json) use the
@@ -77,7 +85,7 @@ self.addEventListener('fetch', (event) => {
       // embedded fallback without respondWith ever resolving to undefined.
       return fetch(event.request).catch(async () => {
         if (event.request.mode === 'navigate') {
-          const appShell = await caches.match('./index.html');
+          const appShell = await (await caches.open(CACHE_VERSION)).match('./index.html');
           if (appShell) return appShell;
         }
         return new Response('Offline — resource is not available in this app version.', {

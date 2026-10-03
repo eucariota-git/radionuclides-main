@@ -148,7 +148,8 @@ async function main() {
   console.log('Test 6: service-worker cache and offline behavior');
   const swJs = read('sw.js');
   const handlers = {};
-  const scenario = { cached: null, navigationFallback: null, fetchResponse: null, fetchError: null, fetchCalls: 0 };
+  const scenario = { cached: null, navigationFallback: null, fetchResponse: null, fetchError: null, fetchCalls: 0,
+    openedCaches: [], cacheKeys: [], deleted: [] };
   const swCtx = vm.createContext({
     URL,
     Response,
@@ -159,17 +160,23 @@ async function main() {
       addEventListener: (type, handler) => { handlers[type] = handler; },
     },
     caches: {
-      // Query-sensitive like the real Cache API: a request URL carrying a query
-      // string only matches the precache when the SW passes ignoreSearch (H-04).
-      match: async (request, opts) => {
-        if (request === './index.html') return scenario.navigationFallback;
-        const url = typeof request === 'string' ? request : request.url;
-        if (url.includes('?') && !(opts && opts.ignoreSearch)) return undefined;
-        return scenario.cached;
-      },
-      open: async () => ({ addAll: async () => {} }),
-      keys: async () => [],
-      delete: async () => true,
+      // Origin-wide lookup: must NOT be used by the SW (H-10) — it returns a
+      // foreign response so that any use shows up in the checks below.
+      match: async () => new Response('FOREIGN cache entry', { status: 200 }),
+      // Per-cache lookup, query-sensitive like the real Cache API: a request URL
+      // carrying a query string only matches when the SW passes ignoreSearch (H-04).
+      open: async (name) => ({
+        addAll: async () => {},
+        match: async (request, opts) => {
+          scenario.openedCaches.push(name);
+          if (request === './index.html') return scenario.navigationFallback;
+          const url = typeof request === 'string' ? request : request.url;
+          if (url.includes('?') && !(opts && opts.ignoreSearch)) return undefined;
+          return scenario.cached;
+        },
+      }),
+      keys: async () => scenario.cacheKeys,
+      delete: async (k) => { scenario.deleted.push(k); return true; },
     },
     fetch: async () => {
       scenario.fetchCalls++;
@@ -210,6 +217,17 @@ async function main() {
     (await queryNavigation.text()) === 'precached dose page' && scenario.fetchCalls === 0);
   check('service worker matches the precache ignoring query strings',
     /ignoreSearch:\s*true/.test(swJs));
+  // H-10: activation deletes only this app's old caches; lookups use only the current cache
+  const swVersionNow = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
+  scenario.cacheKeys = ['nm-planner-v1', 'nm-planner-v33', swVersionNow, 'otra-app-v1', 'workbox-precache'];
+  scenario.deleted = [];
+  let activatePromise;
+  handlers.activate({ waitUntil: p => { activatePromise = p; } });
+  await activatePromise;
+  check("activation deletes only this app's old caches; other apps on the origin keep theirs (H-10)",
+    scenario.deleted.sort().join() === 'nm-planner-v1,nm-planner-v33');
+  check("fetch looks up only the current version's cache, never the whole origin (H-10)",
+    scenario.openedCaches.length > 0 && scenario.openedCaches.every(n => n === swVersionNow));
   check('service worker no longer writes piecemeal runtime updates into the versioned cache',
     !/cache\.put\(/.test(swJs) && !/stale-while-revalidate/.test(swJs));
   console.log();
