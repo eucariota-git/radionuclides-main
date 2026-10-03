@@ -113,7 +113,7 @@
             <option value="kg">kg</option>
           </select>
         </div>
-        <div class="form-hint">For clearance check (RD&nbsp;1217/2024 Annex IV Table A.1)</div>
+        <div class="form-hint">For the clearance (Table&nbsp;A1) and moderate-quantity exemption (Table&nbsp;B, &le;&nbsp;1000&nbsp;kg) checks &mdash; RD&nbsp;1217/2024 Annex&nbsp;IV</div>
       </div>
     </div>
 
@@ -136,8 +136,15 @@
     <!-- Clearance assessment -->
     <div id="clearanceSection" class="hidden">
       <hr class="divider">
-      <h3 class="card-title">&#9855; Clearance assessment &mdash; RD 1217/2024, Annex IV Table A.1</h3>
+      <h3 class="card-title">&#9855; Clearance assessment &mdash; RD 1217/2024, Annex IV Table A1</h3>
       <div id="clearanceContent"></div>
+    </div>
+
+    <!-- Exemption assessment (Table B) -->
+    <div id="exemptionSection" class="hidden">
+      <hr class="divider">
+      <h3 class="card-title">&#9878; Exemption assessment &mdash; RD 1217/2024, Annex IV Table B</h3>
+      <div id="exemptionContent"></div>
     </div>
 
     <!-- Decay curve chart -->
@@ -186,6 +193,8 @@
 <script src="js/icrp107-loader.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/report.js"></script>
+<script src="data/regulatory-data.js"></script>
+<script src="js/regulatory.js"></script>
 <script>
 (async () => {
   // ---- UI initialization ----
@@ -200,6 +209,20 @@
     return;
   }
   await ICRP107._ensureLoaded().catch(err => console.warn('ICRP107 not available:', err));
+  await REGULATORY.load().catch(err => console.warn('Regulatory data not available:', err));
+
+  // RD 1217/2024 Table A1 clearance level of the selected entry, for curated AND
+  // extended nuclides, resolved through the parent of composite entries
+  // (audit 2026-10-03, findings 2 and 3). null = not tabulated in A1.
+  const clearanceOf = n => REGULATORY.clearanceA1(n.id);
+  const clearanceLevelOf = n => { const c = clearanceOf(n); return c.status === 'listed' ? c.rows[0].kBq_kg : null; };
+  // Table B columns as text for the CSV (two rows possible, e.g. U-240 with/without (b))
+  const exemptionColsOf = n => {
+    const b = REGULATORY.exemptionB(n.id);
+    if (b.status !== 'listed') return { col2: '', col3: '' };
+    const tag = r => (r.note ? ` (${r.note})` : '');
+    return { col2: b.rows.map(r => `${r.conc_kBq_kg}${tag(r)}`).join(' | '), col3: b.rows.map(r => `${r.activity_Bq}${tag(r)}`).join(' | ') };
+  };
 
   // ---- Nuclide resolution function ----
   function resolveNuclide(id) {
@@ -564,7 +587,7 @@
     const showConcentration = weight_kg !== null;
     let tMax_h = Math.max(t_h * 2, T_half_h * 5);
     if (showConcentration) {
-      const clearLevel = n.clearance_a1_kBq_per_kg ?? null;
+      const clearLevel = clearanceLevelOf(n);
       if (clearLevel !== null) {
         const specA0_kBq = CALC.convertActivity(A0_MBq, 'MBq', 'kBq') / weight_kg;
         if (specA0_kBq > clearLevel) {
@@ -652,7 +675,7 @@
 
     // Add clearance level line + intersection marker if showing concentration
     if (showConcentration) {
-      const clearLevel = n.clearance_a1_kBq_per_kg ?? null;
+      const clearLevel = clearanceLevelOf(n);
       if (clearLevel !== null) {
         datasets.push({
           _themeRole: 'danger',
@@ -790,13 +813,16 @@
         'Reference_datetime', 'Target_datetime',
         'Vial_weight_input', 'Vial_weight_unit',
         'Clearance_level_kBq_per_kg',
+        'Exemption_TableB_col2_kBq_per_kg', 'Exemption_TableB_col3_Bq',
       ];
       const commonValues = [
         UTILS.APP_VERSION, UTILS.APP_BUILD, dbMeta.version || '', exportedUtc,
         n.id, T_half_h, A0raw, A0unit, A0_MBq,
         referenceDateTime, targetDateTime,
         showConcentration ? vialWeightRaw : '', showConcentration ? vialWeightUnit : '',
-        n.clearance_a1_kBq_per_kg ?? '',
+        clearanceLevelOf(n) ?? '',
+        exemptionColsOf(n).col2,
+        exemptionColsOf(n).col3,
       ];
       const csvCell = value => {
         const str = String(value ?? '');
@@ -838,7 +864,7 @@
       setTimeout(() => URL.revokeObjectURL(url), 0);
     };
 
-    // ---- Clearance assessment (RD 1217/2024 Annex IV Table A.1) ----
+    // ---- Clearance assessment (RD 1217/2024 Annex IV Table A1) ----
     const clearSec       = document.getElementById('clearanceSection');
     const clearContent   = document.getElementById('clearanceContent');
 
@@ -847,7 +873,7 @@
     } else {
       const A0_kBq     = CALC.convertActivity(A0_MBq, 'MBq', 'kBq');
       const At_kBq     = CALC.convertActivity(At_MBq, 'MBq', 'kBq');
-      const clearLevel = n.clearance_a1_kBq_per_kg ?? null;
+      const clearLevel = clearanceLevelOf(n);
       const specA0     = A0_kBq / weight_kg;  // kBq/kg at t=0
       const specAt     = At_kBq / weight_kg;  // kBq/kg at t=t_h
 
@@ -874,12 +900,13 @@
             <div class="prop-val">${fmtSpec(specAt)}</div>
           </div>`;
 
+      const clr = clearanceOf(n);
       if (clearLevel === null) {
         clearHtml += `
           <div class="prop-item">
-            <div class="prop-key">Table A.1 clearance level</div>
-            <div class="prop-val" style="color:var(--warning-text);">Not listed</div>
-            <div class="prop-note">${n.symbol} not in RD 1217/2024 Table A.1</div>
+            <div class="prop-key">Table A1 clearance level</div>
+            <div class="prop-val" style="color:var(--warning-text);">Not tabulated in Table A1</div>
+            <div class="prop-note">${UTILS.escapeHtml(clr.text)}${clr.natural_text ? ' ' + UTILS.escapeHtml(clr.natural_text) : ''}</div>
           </div>`;
       } else {
         const ratio0 = specA0 / clearLevel;
@@ -918,9 +945,9 @@
 
         clearHtml += `
           <div class="prop-item">
-            <div class="prop-key">Table A.1 clearance level (RD 1217/2024)</div>
+            <div class="prop-key">Table A1 clearance level (RD 1217/2024)</div>
             <div class="prop-val">${fmtSpec(clearLevel)}</div>
-            <div class="prop-note">${n.symbol} solid material threshold; source: Annex IV Table A.1</div>
+            <div class="prop-note">${UTILS.escapeHtml(clr.id)}${clr.rows[0].note ? ` (${clr.rows[0].note})` : ''}: any quantity, any type of solid material; Annex IV Table A1${clr.rows[0].progeny.length ? `. ${UTILS.escapeHtml(clr.rows[0].note_text || '')} Progeny: ${UTILS.escapeHtml(clr.rows[0].progeny.join(', '))}` : ''}${clr.rows[0].source_inconsistency ? ` ⚠ ${UTILS.escapeHtml(clr.rows[0].source_inconsistency)}` : ''}</div>
           </div>
           <div class="prop-item">
             <div class="prop-key">Status at t = 0</div>
@@ -937,13 +964,74 @@
 
       clearHtml += `</div>
         <div class="alert alert-warning mt-1" style="font-size:.82rem;">
-          Table A.1 (RD 1217/2024 Annex IV): activity concentration thresholds for clearance from regulatory control of solid materials
-          (any quantity, any solid material type). Values in kBq/kg. Compliance requires both this criterion and any applicable
-          absolute activity limits. Consult the CSN before disposal.
+          Table A1 (RD 1217/2024 Annex IV): activity concentration values for clearance of solid materials, applicable by default to
+          any quantity and any type of solid material. Values in kBq/kg. <strong>Individual level for one nuclide:</strong> for mixtures,
+          Annex III.1.a requires &Sigma;(C&#7522;/L&#7522;) &le; 1, which is not evaluated here. For parent entries marked (a), the value refers to the
+          parent's activity and already accounts for the listed progeny. Clearance of materials from authorised practices is
+          subject to the conditions of Annex III; consult the CSN.
         </div>`;
 
       clearContent.innerHTML = clearHtml;
       clearSec.classList.remove('hidden');
+    }
+
+    // ---- Exemption assessment (RD 1217/2024 Annex IV Table B; Annex II A.1) ----
+    // Two DIFFERENT criteria (Annex II A.1): a) a source — total activity vs
+    // column 3; b) material in moderate quantity (≤ 1000 kg) — activity per unit
+    // mass vs column 2. Above 1000 kg, c) applies: Table A1 (clearance block).
+    {
+      const exSec = document.getElementById('exemptionSection');
+      const exContent = document.getElementById('exemptionContent');
+      const ex = REGULATORY.exemptionB(n.id);
+      const tReach = (start, limit) => (start > limit && T_half_h > 0 && isFinite(T_half_h))
+        ? (T_half_h / Math.LN2) * Math.log(start / limit) : null;
+      const fmtT = h => h === null ? '' : h >= 8760 ? `${UTILS.fmt(h / 8760)} y` : h >= 24 ? `${UTILS.fmt(h / 24)} d` : h >= 1 ? `${UTILS.fmt(h)} h` : `${UTILS.fmt(h * 60)} min`;
+      const status = (val, lim) => {
+        const ok = val <= lim;
+        return `<span style="color:${ok ? 'var(--green-700)' : 'var(--danger)'};">${ok ? '&#10003; Not above' : '&#9888; Above'}</span> (${UTILS.fmtRatio(val / lim)} &times; value)`;
+      };
+      let html = '';
+      if (ex.status !== 'listed') {
+        html = `<div class="alert alert-info">${UTILS.escapeHtml(ex.text)}</div>`;
+      } else {
+        const A0_Bq = A0_MBq * 1e6, At_Bq = At_MBq * 1e6;
+        html = ex.rows.map(row => {
+          const tag = row.note ? ` (${UTILS.escapeHtml(row.note)})` : '';
+          const tA = tReach(A0_Bq, row.activity_Bq);
+          let crit = `<div class="prop-grid">
+            <div class="prop-item"><div class="prop-key">a) Total activity &mdash; column 3${tag}</div>
+              <div class="prop-val">${UTILS.fmt(row.activity_Bq)} Bq</div>
+              <div class="prop-note">t = 0: ${status(A0_Bq, row.activity_Bq)}<br>t = ${UTILS.fmt(t_h)} h: ${status(At_Bq, row.activity_Bq)}${tA ? `<br>Reached after &#126; ${fmtT(tA)}` : ''}</div></div>`;
+          if (weight_kg === null) {
+            crit += `<div class="prop-item"><div class="prop-key">b) Moderate quantity &mdash; column 2${tag}</div>
+              <div class="prop-val">${UTILS.fmt(row.conc_kBq_kg)} kBq/kg</div>
+              <div class="prop-note">Enter the material weight to evaluate this criterion.</div></div>`;
+          } else if (weight_kg > 1000) {
+            crit += `<div class="prop-item"><div class="prop-key">b) Moderate quantity &mdash; column 2${tag}</div>
+              <div class="prop-val">Not applicable</div>
+              <div class="prop-note">Mass above 1000 kg: Annex II A.1.c applies (Table A1 values, see the clearance block).</div></div>`;
+          } else {
+            const c0 = A0_MBq * 1e3 / weight_kg, ct = At_MBq * 1e3 / weight_kg;   // kBq/kg
+            const tC = tReach(c0, row.conc_kBq_kg);
+            crit += `<div class="prop-item"><div class="prop-key">b) Moderate quantity &mdash; column 2${tag}</div>
+              <div class="prop-val">${UTILS.fmt(row.conc_kBq_kg)} kBq/kg</div>
+              <div class="prop-note">t = 0: ${status(c0, row.conc_kBq_kg)}<br>t = ${UTILS.fmt(t_h)} h: ${status(ct, row.conc_kBq_kg)}${tC ? `<br>Reached after &#126; ${fmtT(tC)}` : ''}</div></div>`;
+          }
+          crit += '</div>';
+          const extra = [row.note_text, row.progeny.length ? `Progeny: ${row.progeny.join(', ')}` : '', row.source_inconsistency ? `⚠ ${row.source_inconsistency}` : '']
+            .filter(Boolean).map(t => UTILS.escapeHtml(t)).join(' ');
+          return (ex.rows.length > 1 ? `<p class="text-sm"><strong>${UTILS.escapeHtml(row.id)}${tag}</strong></p>` : '') + crit +
+            (extra ? `<div class="form-hint">${extra}</div>` : '');
+        }).join('');
+        html += `<div class="alert alert-warning mt-1" style="font-size:.82rem;">
+          Annex II A.1 of RD 1217/2024 sets <strong>separate</strong> exemption criteria: a) radioactive sources — total activity not above
+          column 3 of Table B (for several sources, &Sigma; A&#7522;/limit&#7522; &le; 1); b) materials in moderate quantity (&le; 1000 kg) — activity
+          per unit mass not above column 2; c) unlimited quantity — Table A1. <strong>Individual values for one nuclide</strong>; sums over sources or
+          mixtures are not evaluated. Exemption also requires the practice to be justified.
+        </div>`;
+      }
+      exContent.innerHTML = html;
+      exSec.classList.remove('hidden');
     }
 
     // Snapshot for the printable report (derived values recomputed there)
@@ -993,7 +1081,7 @@
     const sources = [];
 
     if (!isNaN(r.vialWeightRaw) && r.vialWeightRaw > 0 && r.weight_kg) {
-      const clearLevel = r.n.clearance_a1_kBq_per_kg ?? null;
+      const clearLevel = clearanceLevelOf(r.n);
       const specA0 = CALC.convertActivity(r.A0_MBq, 'MBq', 'kBq') / r.weight_kg;
       const specAt = CALC.convertActivity(r.At_MBq, 'MBq', 'kBq') / r.weight_kg;
       const rows = [
@@ -1001,10 +1089,12 @@
         ['Specific activity at t = 0', `${UTILS.fmt(specA0)} kBq/kg`],
         [`Specific activity at t = ${UTILS.fmt(r.t_h)} h`, `${UTILS.fmt(specAt)} kBq/kg`],
       ];
+      const clrR = clearanceOf(r.n);
       if (clearLevel === null) {
-        rows.push(['Clearance level (Table A.1)', `${r.n.id} not listed in RD 1217/2024 Annex IV Table A.1`]);
+        rows.push(['Clearance level (Table A1)', `${clrR.id}: ${clrR.text}${clrR.natural_text ? ' ' + clrR.natural_text : ''}`]);
       } else {
-        rows.push(['Clearance level (Table A.1)', `${UTILS.fmt(clearLevel)} kBq/kg`]);
+        const rowA1 = clrR.rows[0];
+        rows.push(['Clearance level (Table A1)', `${UTILS.fmt(clearLevel)} kBq/kg (${clrR.id}${rowA1.note ? `, note (${rowA1.note}); progeny ${rowA1.progeny.join(', ') || 'none listed'}` : ''})${rowA1.source_inconsistency ? ' — ' + rowA1.source_inconsistency : ''}`]);
         rows.push(['Status at t = 0', `${specA0 <= clearLevel ? 'BELOW' : 'ABOVE'} clearance (${UTILS.fmtRatio(specA0 / clearLevel)} × level)`]);
         rows.push([`Status at t = ${UTILS.fmt(r.t_h)} h`, `${specAt <= clearLevel ? 'BELOW' : 'ABOVE'} clearance (${UTILS.fmtRatio(specAt / clearLevel)} × level)`]);
         if (specA0 > clearLevel) {
@@ -1012,9 +1102,31 @@
           rows.push(['Clearance level reached after', `≈ ${UTILS.fmt(t_clear_h)} h = ${UTILS.fmt(t_clear_h / 24)} d`]);
         }
       }
-      sections.push({ heading: 'Clearance assessment — RD 1217/2024 Annex IV Table A.1', rows });
-      notes.push('Clearance comparison addresses the activity-concentration criterion only; absolute activity limits and CSN consultation may also apply before disposal.');
-      sources.push('RD 1217/2024, Anexo IV Tabla A.1 (BOE-A-2024-25205) — clearance levels for solid materials.');
+      sections.push({ heading: 'Clearance assessment — RD 1217/2024 Annex IV Table A1', rows });
+      notes.push('Clearance: individual Table A1 level for one nuclide (any quantity, any solid material); the mixture rule Σ(Cᵢ/Lᵢ) ≤ 1 of Annex III.1.a is not evaluated.');
+    }
+    {
+      const ex = REGULATORY.exemptionB(r.n.id);
+      const rows = [];
+      if (ex.status !== 'listed') {
+        rows.push(['Table B', `${ex.id}: ${ex.text}`]);
+      } else {
+        for (const row of ex.rows) {
+          const tag = row.note ? ` (${row.note})` : '';
+          const A0_Bq = r.A0_MBq * 1e6, At_Bq = r.At_MBq * 1e6;
+          rows.push([`a) Total activity, column 3${tag}`, `${UTILS.fmt(row.activity_Bq)} Bq; t = 0: ${UTILS.fmtRatio(A0_Bq / row.activity_Bq)} × value; t = ${UTILS.fmt(r.t_h)} h: ${UTILS.fmtRatio(At_Bq / row.activity_Bq)} × value`]);
+          if (r.weight_kg && r.weight_kg <= 1000) {
+            const c0 = r.A0_MBq * 1e3 / r.weight_kg, ct = r.At_MBq * 1e3 / r.weight_kg;
+            rows.push([`b) Moderate quantity (≤ 1000 kg), column 2${tag}`, `${UTILS.fmt(row.conc_kBq_kg)} kBq/kg; t = 0: ${UTILS.fmtRatio(c0 / row.conc_kBq_kg)} × value; t = ${UTILS.fmt(r.t_h)} h: ${UTILS.fmtRatio(ct / row.conc_kBq_kg)} × value`]);
+          } else {
+            rows.push([`b) Moderate quantity, column 2${tag}`, r.weight_kg ? 'not applicable: mass above 1000 kg (Annex II A.1.c — Table A1)' : 'not evaluated: no material weight entered']);
+          }
+          if (row.progeny.length || row.source_inconsistency) rows.push(['Note', [row.note_text, row.progeny.length ? `progeny ${row.progeny.join(', ')}` : '', row.source_inconsistency].filter(Boolean).join(' ')]);
+        }
+      }
+      sections.push({ heading: 'Exemption assessment — RD 1217/2024 Annex IV Table B (Annex II A.1 a and b)', rows });
+      notes.push('Exemption: Annex II A.1 criteria a) total activity (column 3) and b) activity per unit mass for ≤ 1000 kg (column 2) are separate criteria, shown for one nuclide; sums over several sources or mixtures are not evaluated.');
+      sources.push('RD 1217/2024, Anexo IV Tablas A1 y B y Anexos II y III (BOE-A-2024-25205).');
     }
     if (r.n._icrp107) notes.push('ICRP 107 extended entry: decay data not manually validated. Verify against primary sources before regulatory use.');
     if (r.n.chain_members) notes.push('Chain entry: dose constants include progeny in secular equilibrium; the decay calculation follows the parent half-life (valid once equilibrium is established, i.e. aged ≳ 10 daughter half-lives).');

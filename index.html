@@ -68,7 +68,7 @@
             <th class="has-tooltip" tabindex="0" aria-label="Gamma H prime 0.07. Directional dose equivalent rate constant for area monitoring and skin or extremity indication, in microsievert per hour per GBq per square metre." data-tooltip="Directional dose equivalent rate constant at 0.07 mm depth (area monitoring; skin/extremity indicator). Units: μSv·h⁻¹·GBq⁻¹·m².">&#915;<sup>H'(0.07)</sup><span class="th-unit">μSv·h⁻¹·GBq⁻¹·m²</span></th>
             <th>Rep. energy<span class="th-unit">keV</span></th>
             <th class="has-tooltip" tabindex="0" aria-label="Liquid effluent individual concentration level in becquerel per litre. One of several IS-28 II.A.4 conditions: a complete assessment also requires the mixture sum, the annual activity limits, an express discharge authorisation and soluble or dispersible material." data-tooltip="Individual concentration level per nuclide, (1 mSv / e(g)) / 600 L — ONE of the IS-28 Annex II II.A.4 conditions. A complete discharge assessment must also verify the mixture sum of fractions Σ(Cᵢ/Lᵢ) ≤ 1 and the annual activity limits (10 GBq H-3, 1 GBq C-14, < 1 GBq the rest combined) — neither evaluated by this app — plus the II.A.4 preconditions: express authorisation of the discharge and soluble or readily dispersible material. The facility's own authorisation conditions prevail. Units: Bq/L.">Liquid effluent<span class="th-unit">Bq/L</span></th>
-            <th class="has-tooltip" tabindex="0" aria-label="Activity concentration value for exemption of practices or clearance of materials under RD 1217/2024 Annex IV Table A.1, in kilobecquerel per kilogram." data-tooltip="Activity concentration value for exemption of practices or clearance of materials (RD 1217/2024, Annex IV, Table A.1). The Decay calculator applies it specifically to clearance of material. Units: kBq/kg (= Bq/g).">Exemption /<br>clearance<span class="th-unit">kBq/kg</span></th>
+            <th class="has-tooltip" tabindex="0" aria-label="Activity concentration value for exemption of practices or clearance of materials under RD 1217/2024 Annex IV Table A1, in kilobecquerel per kilogram." data-tooltip="Activity concentration value for exemption of practices or clearance of materials (RD 1217/2024, Annex IV, Table A1). The Decay calculator applies it specifically to clearance of material. Units: kBq/kg (= Bq/g).">Exemption /<br>clearance<span class="th-unit">kBq/kg</span></th>
             <th class="has-tooltip" tabindex="0" aria-label="Source of the dose rate constants Gamma K-air, Gamma H star 10 and Gamma H prime 0.07." data-tooltip="Provenance of the three dose-rate constant columns only. Liquid-effluent and exemption/clearance values have their own regulatory sources.">&#915; source</th>
           </tr>
         </thead>
@@ -115,8 +115,8 @@
       <li><strong>Y-90:</strong> pure β⁻ emitter; photon dose-rate constants are not applicable on this page. Dose offers a separate, explicitly experimental container-dependent bremsstrahlung scenario.</li>
       <li><strong>6 therapy/imaging additions (2026):</strong> Zr-89, Cu-67, Tb-161, Ho-166, <strong>Ra-223+daughters</strong> and <strong>Ac-225+daughters</strong> — calculated from ICRP 107 photon data (ICRU 57 coefficients). For the two alpha-therapy chains the constants <em>include progeny in secular equilibrium</em> (standard for aged sources; equilibrium within hours). Ra-223+progeny agrees within 6% with the published conservative constant (~50 &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;).</li>
       <li><strong>H*(10) and H'(0.07)</strong> are both AREA-monitoring operational quantities and are always shown side by side: H*(10) estimates effective dose, H'(0.07) indicates skin/extremity dose. Neither is selected automatically from distance, and neither bounds the other (H*(10) is <em>not</em> always the higher figure — Pd-103 is 40% lower). Personal dosimetry quantities are Hp(10) / Hp(0.07) / Hp(3); limit comparisons in the dose page are indicative screening only.</li>
-      <li><strong>Exemption / clearance values</strong>: activity-concentration values for exemption of practices or clearance of materials under RD 1217/2024 Annex IV Table A.1. In Decay they are used specifically for a single-nuclide clearance estimate.</li>
-      <li><strong>Liquid effluent column</strong>: individual concentration level per nuclide, calculated from IS-28 Annex II II.A.4 using ICRP 119 Annex F adult ingestion coefficients: (1 mSv / e(g)) / 600 L. This is one condition of II.A.4. A complete discharge assessment must also verify the mixture sum of fractions &le; 1 and the annual activity limits (10 GBq H-3, 1 GBq C-14, &lt; 1 GBq the rest combined), which this app does not evaluate. II.A.4 additionally requires an express authorisation of the discharge and that the material be soluble or readily dispersible in water; the specific conditions of the facility's authorisation prevail over these generic levels.</li>
+      <li><strong>Exemption / clearance values</strong>: activity-concentration values for exemption of practices or clearance of materials under RD 1217/2024 Annex IV Table A1, applicable to any quantity and any type of solid material. The full table (257 entries, with the progeny of entries marked (a)) is available for every nuclide in the detail panel, together with Table B (exemption of moderate quantities, ≤ 1000 kg: concentration and total activity). Nuclides not in Table A1: Annex III.1.b refers to the European Commission's "Radiation Protection 122 Part 1". In Decay they are used for single-nuclide clearance and exemption estimates.</li>
+      <li><strong>Liquid effluent column</strong>: individual concentration level per nuclide, calculated from IS-28 Annex II II.A.4 with the adult ingestion coefficients of RD 783/2001 Annex III table a), adult (&gt; 17 y), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1): (1 mSv / e(g)) / 600 L. When several chemical forms are tabulated, the most restrictive (largest e(g)) is used. Levels for nuclides outside the curated table are shown in the detail panel. This is one condition of II.A.4. A complete discharge assessment must also verify the mixture sum of fractions &le; 1 and the annual activity limits (10 GBq H-3, 1 GBq C-14, &lt; 1 GBq the rest combined), which this app does not evaluate. II.A.4 additionally requires an express authorisation of the discharge and that the material be soluble or readily dispersible in water; the specific conditions of the facility's authorisation prevail over these generic levels.</li>
       <li>The JSON database (<code>data/nuclides.json</code>) can be edited directly to update or add values.</li>
     </ul>
   </div>
@@ -138,8 +138,81 @@
 <script src="js/ui.js"></script>
 <script src="js/icrp107-loader.js"></script>
 <script src="js/utils.js"></script>
+<script src="data/regulatory-data.js"></script>
+<script src="js/regulatory.js"></script>
 <script>
 (async () => {
+  // ---- Regulatory values for any nuclide (curated or ICRP 107 extended) ----
+  // RD 1217/2024 Annex IV Tables A1 and B, and the adult public e(g) with its
+  // IS-28 individual discharge level. Explicit "not tabulated" states (audit
+  // 2026-10-03): an absent value is never shown as if the nuclide were exempt.
+  const fmt3 = v => (Number.isFinite(v) ? Number(v.toPrecision(3)).toLocaleString('en-US', { maximumSignificantDigits: 3 }) : '—');
+  function regulatoryItemsHtml(id, { withIngestion }) {
+    const esc = UTILS.escapeHtml;
+    const a1 = REGULATORY.clearanceA1(id);
+    const b = REGULATORY.exemptionB(id);
+    const tag = r => (r.note ? ` (${esc(r.note)})` : '');
+    let html = a1.status === 'listed'
+      ? `<div class="prop-item"><div class="prop-key">Clearance / exemption, Table A1</div>
+           <div class="prop-val">${a1.rows[0].kBq_kg}${tag(a1.rows[0])}</div>
+           <div class="prop-note">kBq/kg · RD 1217/2024 Annex IV Table A1${a1.rows[0].progeny.length ? ` · progeny ${esc(a1.rows[0].progeny.join(', '))}` : ''}</div></div>`
+      : `<div class="prop-item"><div class="prop-key">Clearance / exemption, Table A1</div>
+           <div class="prop-val">Not tabulated</div>
+           <div class="prop-note">Annex III.1.b: RP 122 Part 1${a1.natural ? ' · natural: Table A2' : ''}</div></div>`;
+    html += b.status === 'listed'
+      ? b.rows.map(r => `<div class="prop-item"><div class="prop-key">Exemption ≤ 1000 kg, Table B${b.rows.length > 1 ? tag(r) : ''}</div>
+           <div class="prop-val">${r.conc_kBq_kg} kBq/kg · ${UTILS.fmt(r.activity_Bq)} Bq</div>
+           <div class="prop-note">column 2 (concentration) · column 3 (total activity)${b.rows.length > 1 ? '' : tag(r)}</div></div>`).join('')
+      : `<div class="prop-item"><div class="prop-key">Exemption ≤ 1000 kg, Table B</div>
+           <div class="prop-val">Not tabulated</div>
+           <div class="prop-note">Annex II A.3.a: CSN values</div></div>`;
+    if (withIngestion) {
+      const ing = REGULATORY.ingestionAdult(id);
+      const lvl = REGULATORY.dischargeLevel(id);
+      html += ing.status === 'listed'
+        ? `<div class="prop-item"><div class="prop-key">Adult ingestion e(g)</div>
+             <div class="prop-val">${ing.governing.e_Sv_per_Bq.toExponential(1)}</div>
+             <div class="prop-note">Sv/Bq · RD 783/2001 Annex III table a)${ing.rows.length > 1 ? ` · most restrictive of ${ing.rows.length} forms` : ''}</div></div>
+           <div class="prop-item"><div class="prop-key">Liquid effluent level</div>
+             <div class="prop-val">${fmt3(lvl.Bq_per_L)}</div>
+             <div class="prop-note">Bq/L · IS-28 II.A.4 individual level</div></div>`
+        : `<div class="prop-item"><div class="prop-key">Adult ingestion e(g)</div>
+             <div class="prop-val">Not tabulated</div>
+             <div class="prop-note">No public ingestion coefficient (e.g. noble gas)</div></div>`;
+    }
+    return html;
+  }
+  // Notes that qualify the regulatory values (progeny, source inconsistencies, forms)
+  function regulatoryNotes(id, { withIngestion }) {
+    const esc = UTILS.escapeHtml;
+    const out = [];
+    const a1 = REGULATORY.clearanceA1(id);
+    if (a1.status === 'listed') {
+      const r = a1.rows[0];
+      if (r.note_text) out.push(`Table A1 ${esc(r.id)} (${esc(r.note)}): ${esc(r.note_text)} Progeny: ${esc(r.progeny.join(', ') || 'none listed')}.`);
+      if (r.source_inconsistency) out.push(`&#9888; Table A1 ${esc(r.id)}: ${esc(r.source_inconsistency)}`);
+    } else {
+      out.push(esc(a1.text) + (a1.natural_text ? ' ' + esc(a1.natural_text) : ''));
+    }
+    const b = REGULATORY.exemptionB(id);
+    if (b.status === 'listed') {
+      for (const r of b.rows) {
+        if (r.note_text) out.push(`Table B ${esc(r.id)}${r.note ? ` (${esc(r.note)})` : ''}: ${esc(r.note_text)}${r.progeny.length ? ` Progeny: ${esc(r.progeny.join(', '))}.` : ''}`);
+        if (r.source_inconsistency) out.push(`&#9888; Table B ${esc(r.id)}: ${esc(r.source_inconsistency)}`);
+      }
+      out.push('Table B: Annex II A.1 sets separate criteria — a) sources: total activity ≤ column 3; b) material ≤ 1000 kg: concentration ≤ column 2; c) unlimited quantity: Table A1.');
+    } else {
+      out.push(esc(b.text));
+    }
+    if (withIngestion) {
+      const ing = REGULATORY.ingestionAdult(id);
+      if (ing.status === 'listed') {
+        const forms = ing.rows.map(r => `${r.e_Sv_per_Bq.toExponential(1)} Sv/Bq${r.compound ? ' (' + esc(r.compound) + ')' : ''}, f1 ${r.f1}`).join('; ');
+        out.push(`Adult ingestion e(g): RD 783/2001 Annex III table a), adult (&gt; 17 y), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1).${ing.rows.length > 1 ? ' Tabulated forms: ' + forms + '. The most restrictive governs the level shown.' : ''} Liquid effluent level = (1 mSv / e(g)) / 600 L: one of the three numeric conditions of IS-28 Annex II II.A.4 (sum of fractions and annual activity limits are evaluated separately).`);
+      }
+    }
+    return out;
+  }
   // ---- UI initialization ----
   UI.initDarkMode();
   UI.initPrint();
@@ -149,6 +222,7 @@
   let nuclides = [];
   try {
     nuclides = await DB.load();
+    await REGULATORY.load().catch(err => console.warn('Regulatory data not available:', err));
     // Load ICRP 107 extended database
     await ICRP107._ensureLoaded().catch(err => console.warn('ICRP 107 index not available:', err));
   } catch (e) {
@@ -466,24 +540,9 @@
         `;
       }
 
-      // Show ingestion dose and effluent limit for ICRP 107
-      if (n.dose_ingestion_Sv_per_Bq) {
-        const ingestionCoeff = fmtNumber(n.dose_ingestion_Sv_per_Bq);
-        const effluentLimitCalc = ICRP107.calcEffluentLimit ? ICRP107.calcEffluentLimit(n.id) : null;
-        const effluentHtml = effluentLimitCalc !== null
-          ? `<div class="prop-item"><div class="prop-key">Liquid effluent limit</div><div class="prop-val">${fmtNumber(effluentLimitCalc)}</div><div class="prop-note">Bq/L (calculated)</div></div>`
-          : '';
-        document.getElementById('detailProps').innerHTML += `
-          <div style="margin-top:1rem;">
-            <div class="prop-item">
-              <div class="prop-key">Adult ingestion e(g)</div>
-              <div class="prop-val">${ingestionCoeff}</div>
-              <div class="prop-note">Sv/Bq, ICRP 107</div>
-            </div>
-            ${effluentHtml}
-          </div>
-        `;
-      }
+      // Regulatory values (RD 1217/2024 A1/B; RD 783/2001 e(g) and IS-28 level).
+      // The ICRP 107 index carries no dose coefficients, so they come from REGULATORY.
+      document.getElementById('detailProps').innerHTML += regulatoryItemsHtml(n.id, { withIngestion: true });
     } else {
       // Standard nuclide from main database
       const decayStr = (n.decay_modes || []).map(d =>
@@ -537,13 +596,7 @@
           <div class="prop-val">${n.gamma_H007 !== null ? n.gamma_H007 : '—'}</div>
           <div class="prop-note">&#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;${n.H007_from_cornejo ? ' &#9888;' : ''}</div>
         </div>
-        ${n.clearance_a1_kBq_per_kg != null
-          ? `<div class="prop-item">
-               <div class="prop-key">Clearance level</div>
-               <div class="prop-val">${n.clearance_a1_kBq_per_kg}</div>
-               <div class="prop-note">kBq/kg · RD 1217/2024 Tabla A.1</div>
-             </div>`
-          : ''}
+        ${regulatoryItemsHtml(n.id, { withIngestion: false })}
         <div class="prop-item">
           <div class="prop-key">Liquid effluent limit</div>
           <div class="prop-val">${effluentLimit}</div>
@@ -620,10 +673,11 @@
     } else if (n.H007_from_cornejo) {
       notes.push('H\'(0.07) value from Cornejo et al.: applies when all photon energies < 300 keV and H\'(0.07) > H*(10). Used instead of H*(10) for extremity dose estimation.');
     }
+    // e(g) citation and chemical forms for every entry with a coefficient
+    // (composite entries such as Mo-99+Tc-99m are assessed by component).
+    notes.push(...regulatoryNotes(n.id, { withIngestion: !(n.effluent_liquid_components && n.effluent_liquid_components.length) }));
     if (n.effluent_liquid_note) {
       notes.push(UTILS.escapeHtml(n.effluent_liquid_note));
-    } else if (n.effluent_liquid_limit_source && !n._icrp107) {
-      notes.push('Liquid effluent limit source: ' + UTILS.escapeHtml(n.effluent_liquid_limit_source) + '. Calculated as (1 mSv / e(g)) / 600 L.');
     }
     if (notes.length) {
       noteEl.innerHTML = notes.map(note => note).join('<br>');
@@ -662,7 +716,8 @@
                      'gamma_Kair', 'gamma_H10', 'gamma_H007', 'representative_energy_keV',
                      'ingestion_dose_coeff_adult_Sv_per_Bq', 'effluent_liquid_limit_Bq_per_L',
                      'effluent_liquid_limit_source', 'clearance_a1_kBq_per_kg',
-                     'clearance_a1_source', 'gamma_source'];
+                     'clearance_a1_source', 'exemption_B_col2_kBq_per_kg', 'exemption_B_col3_Bq',
+                     'gamma_source'];
     const rows = currentData.map(n => [
       n.id,
       n.symbol,
@@ -678,7 +733,9 @@
       n.effluent_liquid_limit_Bq_per_L ?? '',
       n.effluent_liquid_limit_source ?? '',
       n.clearance_a1_kBq_per_kg ?? '',
-      n.clearance_a1_kBq_per_kg != null ? 'RD 1217/2024 Annex IV Table A.1' : '',
+      n.clearance_a1_kBq_per_kg != null ? 'RD 1217/2024 Annex IV Table A1' : 'not tabulated in Table A1 (Annex III.1.b: RP 122 Part 1)',
+      (() => { const b = REGULATORY.exemptionB(n.id); return b.status === 'listed' ? b.rows.map(r => r.conc_kBq_kg + (r.note ? ` (${r.note})` : '')).join(' | ') : ''; })(),
+      (() => { const b = REGULATORY.exemptionB(n.id); return b.status === 'listed' ? b.rows.map(r => r.activity_Bq + (r.note ? ` (${r.note})` : '')).join(' | ') : ''; })(),
       n.source || ''
     ].map(v => {
       const str = String(v);

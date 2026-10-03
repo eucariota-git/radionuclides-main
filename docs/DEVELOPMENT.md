@@ -62,6 +62,11 @@ Each module (PHYSICS, CALC, DB, ICRP107, UI) is an IIFE returning public API. No
 - `crossChecks(nuclide, half_life_s, plant)` — NUREG/CR-5814 Table B.7 rescaled to the plant and IAEA SRS-19 Table I–IV; `nuregComparison(nuclide, geometry)` — PHITS k vs NUREG Table A.21 GENII factors (indicative only, never used in the result)
 - No DOM access. Half-lives come from `nuclides.json`, not from the effluent data file
 
+### `REGULATORY` (`js/regulatory.js`)
+- `clearanceA1(id)`, `exemptionB(id)` — RD 1217/2024 Annex IV; return `{status: 'listed', rows}` or `{status: 'not_tabulated', text}`; composite entries resolve to their parent (`Mo-99+Tc-99m` → `Mo-99`)
+- `ingestionAdult(id)` — all chemical-form rows and the governing (largest) e(g); `dischargeLevel(id)` — IS-28 II.A.4 individual level, unrounded
+- No DOM access; `load()` uses fetch with the embedded `REGULATORY_DATA` as fallback
+
 ### PWA (`manifest.json`, `sw.js`, `assets/icons/`)
 - Cache-first service worker; registered on HTTP(S) only (`file://` unaffected)
 - **Bump `CACHE_VERSION` in `sw.js`** whenever data files or app logic change
@@ -75,6 +80,8 @@ Each module (PHYSICS, CALC, DB, ICRP107, UI) is an IIFE returning public API. No
 - Stores Cornejo published values in `cornejo_validation` for traceability
 
 **`data/effluent-scenarios.json`** — source of truth for the effluent page: parameter defaults (groups `common`, `s1`, `s2`) with unit, range and source; facility presets; per-nuclide PHITS coefficients (`k_ext.s1`, `k_ext.s2.L10/L45` or `null`) with uncertainty and report id; ICRP 119 inhalation coefficients; default source terms; cross-check factors
+
+**`data/regulatory.json`** — built by `tools/build-regulatory-data.js` from the verified CSVs of the professional library (RD 1217/2024 Annex IV values and progeny; ICRP 119 F.1) plus the extraction of the BOE consolidated HTML, which keeps the notes per table (the library CSV merges them). Every value must match both sources or the build aborts. Kept as printed and flagged: four note/progeny inconsistencies of the BOE (A1 Ce-144, U-231; B Ag-108m, U-230). Added by hand, checked on the rendered page: A1 progeny `Es-254m → Fm-254`, missing from the library CSV.
 
 **Auto-generated:**
 - `nuclides-data.js` — JavaScript wrapper for file:// compatibility
@@ -227,6 +234,7 @@ script — keep both in sync) is:
 - `js/` (includes the locally bundled `chart.umd.min.js`)
 - `data/nuclides.json`, `data/nuclides-data.js`
 - `data/effluent-scenarios.json`, `data/effluent-scenarios-data.js`
+- `data/regulatory.json`, `data/regulatory-data.js`
 - `data/icrp107-index.json`, `data/icrp107-data.js`
 - `assets/icons/`
 - `manifest.json`, `sw.js`

@@ -289,7 +289,7 @@ const EFFLUENT_DATA = {
         "value": 7.4e-9,
         "unit": "Sv/Bq",
         "type": "F",
-        "source": "ICRP Publication 119 (2012), Table G.1, adult member of the public, absorption type F (types M and S give 2.4E-9 and 1.6E-9 Sv/Bq; F is the most conservative and the type used by IAEA SRS-19 Table XVI)."
+        "source": "RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1), absorption type F (types M and S give 2.4E-9 and 1.6E-9 Sv/Bq; F is the most conservative and the type used by IAEA SRS-19 Table XVI)."
       },
       "source_term": {
         "patients_per_y": 50,
@@ -357,7 +357,7 @@ const EFFLUENT_DATA = {
         "value": 1.3e-8,
         "unit": "Sv/Bq",
         "type": "M",
-        "source": "ICRP Publication 119 (2012), Table G.1, adult member of the public, absorption type M (lutetium is tabulated for types M and S only)."
+        "source": "RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1), absorption type M (lutetium is tabulated for types M and S only)."
       },
       "source_term": {
         "patients_per_y": 75,
@@ -404,7 +404,7 @@ const EFFLUENT_DATA = {
         "value": 1.9e-11,
         "unit": "Sv/Bq",
         "type": "M",
-        "source": "ICRP Publication 119 (2012), Table G.1, adult member of the public, absorption type M (workbook choice; types F and S give 1.2E-11 and 2.0E-11 Sv/Bq)."
+        "source": "RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1), absorption type M (workbook choice; types F and S give 1.2E-11 and 2.0E-11 Sv/Bq)."
       },
       "source_term": {
         "patients_per_y": 0,
@@ -439,7 +439,7 @@ const EFFLUENT_DATA = {
         "value": 5.6e-11,
         "unit": "Sv/Bq",
         "type": "M",
-        "source": "ICRP Publication 119 (2012), Table G.1, adult member of the public, absorption type M (workbook choice; type S gives 5.9E-11 Sv/Bq, F 2.8E-11)."
+        "source": "RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1), absorption type M (workbook choice; type S gives 5.9E-11 Sv/Bq, F 2.8E-11)."
       },
       "source_term": {
         "patients_per_y": 2500,

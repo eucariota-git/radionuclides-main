@@ -9,6 +9,8 @@
  *
  *   data/nuclides.json            → data/nuclides-data.js            (NUCLIDE_DATA)
  *   data/effluent-scenarios.json  → data/effluent-scenarios-data.js  (EFFLUENT_DATA)
+ *   data/regulatory.json          → data/regulatory-data.js          (REGULATORY_DATA)
+ *     (regulatory.json itself is built by tools/build-regulatory-data.js)
  *
  * Usage:
  *   node tools/generate-data.js
@@ -27,6 +29,10 @@ const TARGETS = [
   {
     json: 'effluent-scenarios.json', js: 'effluent-scenarios-data.js', constName: 'EFFLUENT_DATA',
     summary: d => `Effluent nuclides: ${d.nuclides.map(n => n.id).join(', ')}`,
+  },
+  {
+    json: 'regulatory.json', js: 'regulatory-data.js', constName: 'REGULATORY_DATA',
+    summary: d => `RD 1217/2024 A1 ${d.rd1217_annex4.a1.length} rows, B ${d.rd1217_annex4.b.length} rows; e(g) adult ${d.ingestion_public_adult.rows.length} rows`,
   },
 ];
 

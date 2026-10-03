@@ -3,7 +3,7 @@
 /**
  * validate-data.js — Data source validation
  * Validates: ICRU 57 published values, NIST XCOM data, nuclide half-lives,
- * clearance limits (RD 1217/2024 Anexo IV Tabla A.1), Cornejo et al. constants
+ * clearance limits (RD 1217/2024 Anexo IV Tabla A1), Cornejo et al. constants
  */
 
 const fs = require('fs');
@@ -214,20 +214,20 @@ console.log('Test 5: Material density constants');
 }
 console.log();
 
-// Test 6: Clearance levels — RD 1217/2024 Anexo IV Tabla A.1
+// Test 6: Clearance levels — RD 1217/2024 Anexo IV Tabla A1
 // (equivalent to EU BSS 2013/59/Euratom Annex VII Table A, values in Bq/g = kBq/kg)
 // Lu-177, Sm-153, Ho-166 and Tm-170 = 100 visually confirmed against the official
 // PDF (references/RD 1217 de 2024..., p. 96) on 2026-06-11.
-console.log('Test 6: Clearance levels (RD 1217/2024 Anexo IV Tabla A.1)');
+console.log('Test 6: Clearance levels (RD 1217/2024 Anexo IV Tabla A1)');
 
 const clearanceReferences = {
-  'Tc-99m': { A1_kBq: 100, source: 'RD 1217/2024 Tabla A.1 (1E+02 Bq/g)' },
-  'I-131':  { A1_kBq: 10,  source: 'RD 1217/2024 Tabla A.1 (1E+01 Bq/g)' },
-  'F-18':   { A1_kBq: 10,  source: 'RD 1217/2024 Tabla A.1 (1E+01 Bq/g)' },
-  'Lu-177': { A1_kBq: 100, source: 'RD 1217/2024 Tabla A.1 (1E+02 Bq/g, PDF p. 96)' },
-  'Sm-153': { A1_kBq: 100, source: 'RD 1217/2024 Tabla A.1 (1E+02 Bq/g, PDF p. 96)' },
-  'Ho-166': { A1_kBq: 100, source: 'RD 1217/2024 Tabla A.1 (1E+02 Bq/g, PDF p. 96)' },
-  'Tm-170': { A1_kBq: 100, source: 'RD 1217/2024 Tabla A.1 (1E+02 Bq/g, PDF p. 96)' },
+  'Tc-99m': { A1_kBq: 100, source: 'RD 1217/2024 Tabla A1 (1E+02 Bq/g)' },
+  'I-131':  { A1_kBq: 10,  source: 'RD 1217/2024 Tabla A1 (1E+01 Bq/g)' },
+  'F-18':   { A1_kBq: 10,  source: 'RD 1217/2024 Tabla A1 (1E+01 Bq/g)' },
+  'Lu-177': { A1_kBq: 100, source: 'RD 1217/2024 Tabla A1 (1E+02 Bq/g, PDF p. 96)' },
+  'Sm-153': { A1_kBq: 100, source: 'RD 1217/2024 Tabla A1 (1E+02 Bq/g, PDF p. 96)' },
+  'Ho-166': { A1_kBq: 100, source: 'RD 1217/2024 Tabla A1 (1E+02 Bq/g, PDF p. 96)' },
+  'Tm-170': { A1_kBq: 100, source: 'RD 1217/2024 Tabla A1 (1E+02 Bq/g, PDF p. 96)' },
 };
 
 for (const [nuclideId, ref] of Object.entries(clearanceReferences)) {
@@ -401,6 +401,65 @@ console.log('TEST: Effluent Scenario 1 and 2 coefficients vs their sources');
   totalTests++;
   if (defBad === 0) { passedTests++; console.log('  ✓ effluent defaults equal the workbooks and carry unit, range and source'); }
   else failedTests++;
+}
+console.log();
+
+// ============================================================================
+// Regulatory data (data/regulatory.json): RD 1217/2024 Annex IV A1/B and the
+// adult public e(g) of RD 783/2001 Annex III table a) (audit 2026-10-03)
+// ============================================================================
+console.log('TEST: RD 1217/2024 Annex IV and adult public e(g) vs the BOE');
+{
+  const reg = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/regulatory.json'), 'utf8'));
+  const A1 = reg.rd1217_annex4.a1, B = reg.rd1217_annex4.b, F1 = reg.ingestion_public_adult.rows;
+  const eq = (name, ok) => { totalTests++; if (ok) { passedTests++; console.log(`  ✓ ${name}`); } else { failedTests++; console.log(`  ✗ ${name}`); } };
+  // Counts (BOE; audit 2026-10-03; ICRP 119 F.1 catalogue)
+  eq('Table A1 has 257 rows, one per nuclide', A1.length === 257 && new Set(A1.map(r => r.id)).size === 257);
+  eq('Table B has 297 rows and 296 distinct nuclides (U-240 twice)', B.length === 297 && new Set(B.map(r => r.id)).size === 296);
+  eq('ICRP 119 F.1 adult column: 759 rows, 737 nuclides', F1.length === 759 && new Set(F1.map(r => r.id)).size === 737);
+  eq('Table A1 carries 36 (a) notes and Table B 27 (b) notes plus K-40 note (1)',
+    A1.filter(r => r.note === 'a').length === 36 && B.filter(r => r.note === 'b').length === 27 &&
+    B.filter(r => r.note === '1').map(r => r.id).join() === 'K-40');
+  // Hand-entered values read from the BOE (RD 1217/2024 Annex IV, BOE-A-2024-25205)
+  const a1 = id => A1.find(r => r.id === id);
+  const A1REF = [['H-3', 100, null], ['Na-22', 0.1, null], ['I-129', 0.01, null], ['Co-60', 0.1, null],
+    ['Fm-254', 10000, null], ['Sr-90', 1, 'a'], ['Mo-99', 10, 'a'], ['Lu-177', 100, null], ['Cs-137', 0.1, 'a'], ['Es-254m', 10, 'a']];
+  for (const [id, v, note] of A1REF) eq(`A1 ${id} = ${v} kBq/kg${note ? ` (${note})` : ''}`, a1(id) && a1(id).kBq_kg === v && a1(id).note === note);
+  eq('A1 Sr-90 progeny Y-90; Mo-99 progeny Tc-99m; Es-254m progeny Fm-254 (continued on BOE p. 164687)',
+    a1('Sr-90').progeny.join() === 'Y-90' && a1('Mo-99').progeny.join() === 'Tc-99m' && a1('Es-254m').progeny.join() === 'Fm-254');
+  eq('A1 has no row for C-11, Ga-68, Ra-223, K-40 or Nb-98m', ['C-11', 'Ga-68', 'Ra-223', 'K-40', 'Nb-98m'].every(id => !a1(id)));
+  const b = id => B.filter(r => r.id === id);
+  eq('B Mo-99 = 100 kBq/kg / 1E6 Bq, no note', b('Mo-99').length === 1 && b('Mo-99')[0].conc_kBq_kg === 100 && b('Mo-99')[0].activity_Bq === 1e6 && b('Mo-99')[0].note === null);
+  eq('B U-240: (b) 10 kBq/kg / 1E6 Bq and unmarked 1000 kBq/kg / 1E7 Bq',
+    b('U-240').some(r => r.note === 'b' && r.conc_kBq_kg === 10 && r.activity_Bq === 1e6) &&
+    b('U-240').some(r => r.note === null && r.conc_kBq_kg === 1000 && r.activity_Bq === 1e7));
+  eq('B K-40 note (1) 100 kBq/kg / 1E6 Bq', b('K-40').length === 1 && b('K-40')[0].note === '1' && b('K-40')[0].conc_kBq_kg === 100 && b('K-40')[0].activity_Bq === 1e6);
+  eq('B O-15, Xe-133 and Ra-223 are tabulated (they are not in A1)', ['O-15', 'Xe-133', 'Ra-223'].every(id => b(id).length === 1));
+  // Inconsistencies of the BOE itself, kept as printed and flagged
+  const flagged = A1.filter(r => r.source_inconsistency).map(r => 'A1 ' + r.id)
+    .concat(B.filter(r => r.source_inconsistency).map(r => 'B ' + r.id)).sort().join(', ');
+  eq('exactly the four BOE note/progeny inconsistencies are flagged (A1 Ce-144, U-231; B Ag-108m, U-230)',
+    flagged === 'A1 Ce-144, A1 U-231, B Ag-108m, B U-230');
+  // e(g) adult (RD 783/2001 Annex III table a) = ICRP 119 F.1)
+  const f = id => F1.filter(r => r.id === id).map(r => r.e_Sv_per_Bq).sort();
+  eq('F.1 Cr-51 has two forms: 3.7E-11 and 3.8E-11 Sv/Bq', f('Cr-51').join() === [3.7e-11, 3.8e-11].join());
+  eq('F.1 Lu-177 5.3E-10, I-131 2.2E-8, Tc-99m 2.2E-11, Na-22 3.2E-9 Sv/Bq',
+    f('Lu-177').join() === '5.3e-10' && f('I-131').join() === '2.2e-8' && f('Tc-99m').join() === '2.2e-11' && f('Na-22').join() === '3.2e-9');
+  eq('F.1 H-3 has two forms (OBT 4.2E-11, HTO 1.8E-11)', f('H-3').join() === [1.8e-11, 4.2e-11].join());
+  // Curated fields agree with the regulatory table (single source of truth checked)
+  let bad = 0;
+  for (const n of nuclides) {
+    const pid = n.id.split('+')[0];
+    const row = a1(pid);
+    if ((row ? row.kBq_kg : null) !== (n.clearance_a1_kBq_per_kg ?? null)) { bad++; console.log(`  ✗ ${n.id} clearance ${n.clearance_a1_kBq_per_kg} ≠ A1 ${row && row.kBq_kg}`); }
+    if (n.ingestion_dose_coeff_adult_Sv_per_Bq != null && !(n.effluent_liquid_components && n.effluent_liquid_components.length)) {
+      const max = Math.max(...F1.filter(r => r.id === pid).map(r => r.e_Sv_per_Bq));
+      if (max !== n.ingestion_dose_coeff_adult_Sv_per_Bq) { bad++; console.log(`  ✗ ${n.id} e(g) ${n.ingestion_dose_coeff_adult_Sv_per_Bq} ≠ governing F.1 ${max}`); }
+    }
+  }
+  eq('the 40 curated entries agree with Table A1 and with the governing F.1 e(g)', bad === 0);
+  eq('no citation in the curated data names ICRP 119 Annex F without RD 783/2001',
+    !/ICRP 119 Annex F/.test(JSON.stringify(nuclideData)));
 }
 console.log();
 

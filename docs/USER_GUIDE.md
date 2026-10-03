@@ -38,8 +38,11 @@ The application has no installation or authentication. It can be used in either 
      - **Γ^H\*(10)**: Ambient dose equivalent rate constant (area monitoring; effective-dose estimator) — μSv·h⁻¹·GBq⁻¹·m²
      - **Γ^H'(0.07)**: Directional dose equivalent rate constant (area monitoring; skin/extremity indicator) — μSv·h⁻¹·GBq⁻¹·m²
    - Representative photon energy
-   - Liquid effluent individual concentration level (one of the IS-28 II.A.4 conditions for controlled sewer discharge; a complete assessment must also verify the mixture sum Σ(Cᵢ/Lᵢ) ≤ 1 and the annual activity limits — 10 GBq H-3, 1 GBq C-14 and < 1 GBq the rest combined — which this application does not evaluate)
-   - RD 1217/2024 Table A.1 activity-concentration value for exemption of practices or clearance of materials; the Decay calculator applies it specifically to single-nuclide clearance
+   - Liquid effluent individual concentration level, (1 mSv / e(g)) / 600 L with the adult ingestion coefficient of RD 783/2001 Annex III table a), adult (> 17 y), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1); when several chemical forms are tabulated, the most restrictive governs (one of the IS-28 II.A.4 conditions for controlled sewer discharge; a complete assessment must also verify the mixture sum Σ(Cᵢ/Lᵢ) ≤ 1 and the annual activity limits — 10 GBq H-3, 1 GBq C-14 and < 1 GBq the rest combined — which this application does not evaluate)
+   - RD 1217/2024 Annex IV, for **every** nuclide in the detail panel (curated and ICRP 107 extended):
+     - **Table A1** (257 entries) — activity-concentration value for exemption of practices or clearance of materials, any quantity and any type of solid material; entries marked (a) refer to the parent and already account for the listed progeny. Nuclides not in A1 are shown as *not tabulated*: Annex III.1.b refers to the European Commission's "Radiation Protection 122 Part 1" (not included); natural radionuclides fall under Table A2 (not implemented)
+     - **Table B** (297 rows) — exemption of moderate quantities (≤ 1000 kg): column 2 concentration (kBq/kg) and column 3 total activity (Bq). Not tabulated: Annex II A.3.a refers to the CSN values
+     - Four note/progeny inconsistencies of the BOE itself (A1 Ce-144, U-231; B Ag-108m, U-230) are shown as printed, with a warning
 3. **Clinical use**: See modality and intended clinical applications
 4. **Export**: Download the table as CSV
 
@@ -97,6 +100,9 @@ The application includes an **extended database of 1,252 radionuclides** from IC
    - Use slider or input field
    - Units: seconds, minutes, hours, days, years
 5. View **Decay Curve**: Interactive chart shows A(t) = A₀ · e^(−λt)
+6. **Clearance and exemption** (RD 1217/2024 Annex IV, single nuclide; mixtures and sums over sources are not evaluated):
+   - **Clearance, Table A1**: enter the material weight; A/m is compared with the A1 value at t = 0 and at t, with the time needed to reach it. Works for curated and extended entries; Mo-99 gives the same result from either entry
+   - **Exemption, Table B** — Annex II A.1 sets *separate* criteria: a) a source — total activity vs column 3; b) material in moderate quantity (≤ 1000 kg) — A/m vs column 2. Above 1000 kg, c) applies: Table A1
 
 **Example**:
 - Initial: 1000 MBq Tc-99m
@@ -184,7 +190,7 @@ Results update as you type: per scenario, decay factor, concentrations and dose 
 
 **Data**:
 - **k₁, k₂** (external): effective-dose-rate coefficients (ICRP 116, rotational geometry) calculated with PHITS — Scenario 1 for a 600 × 200 × 50 cm water slab with the receptor at 1 m, Scenario 2 for a uniform 3 m deep sludge source with the receptor at 2 m. They are **not** point-source Γ constants and apply only to those geometries. F-18 has no Scenario 2 coefficient and is shown as *not evaluated*, not as zero
-- **e(inh)**: ICRP 119 Table G.1, adult member of the public — Lu-177 M 1.1×10⁻⁹, Lu-177m M 1.3×10⁻⁸, I-131 F 7.4×10⁻⁹, Tc-99m M 1.9×10⁻¹¹, F-18 M 5.6×10⁻¹¹ Sv/Bq
+- **e(inh)**: RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table G.1) — Lu-177 M 1.1×10⁻⁹, Lu-177m M 1.3×10⁻⁸, I-131 F 7.4×10⁻⁹, Tc-99m M 1.9×10⁻¹¹, F-18 M 5.6×10⁻¹¹ Sv/Bq
 - Half-lives from the app database; Lu-177m, which is not a curated entry, from ICRP 107 (160.4 d)
 
 **Limitations**:
@@ -293,7 +299,8 @@ Toggle dark/light mode using the **moon icon** (🌙) in the top-right corner. P
 - **Cornejo Díaz N., Brosed Serreta A., Ruiz Manzano P.** (2015). "Constantes de tasa de kerma en aire y de tasa de equivalente de dosis ambiental de algunos radionucleidos utilizados en aplicaciones médicas." *Radioprotección* (SEPR), Nº 83, 39–42.
 - **ICRP Publication 74** (1996). "Conversion Coefficients for Use in Radiological Protection against External Radiation." International Commission on Radiological Protection.
 - **ICRP Publication 107** (2008). "Nuclear Decay Data for Dosimetric Calculations." Endo & Eckerman.
-- **ICRP Publication 119** (2012). "Compendium of Dose Coefficients based on ICRP Publication 60."
+- **ICRP Publication 119** (2012). "Compendium of Dose Coefficients based on ICRP Publication 60." Used as the numerical transcription of RD 783/2001 Annex III tables a) and b).
+- **Real Decreto 783/2001**, Anexo III, tablas a) y b) (public dose coefficients). RD 783/2001 was repealed by RD 1029/2022, whose third transitional provision — and the CSN Resolution of 3 April 2024 — keep these coefficients in force for members of the public.
 - **ICRP Publication 116** (2010). "Conversion Coefficients for Radiological Protection Quantities for External Radiation Exposures." With the corrigenda in ICRP Publication 129 (2015).
 - **IAEA Safety Reports Series No. 19** (2001). "Generic Models for Use in Assessing the Impact of Discharges of Radioactive Substances to the Environment." §4.9 and §6.6.
 - **Kennedy W.E. Jr., Parkhurst M.A., Aaberg R.L., Rhoads K.C., Hill R.L., Martin J.B.** (1992). *Evaluation of Exposure Pathways to Man From Disposal of Radioactive Materials Into Sanitary Sewer Systems*. NUREG/CR-5814 / PNL-7892, U.S. NRC. §5.2.1, §5.2.2, Tables A.16, A.20, A.21, B.7.

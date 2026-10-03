@@ -12,7 +12,7 @@
 
 'use strict';
 
-const CACHE_VERSION = 'nm-planner-v31';
+const CACHE_VERSION = 'nm-planner-v32';
 
 const ASSETS = [
   './',
@@ -35,6 +35,7 @@ const ASSETS = [
   './js/icrp107-loader.js',
   './js/physics.js',
   './js/report.js',
+  './js/regulatory.js',
   './js/ui.js',
   './js/utils.js',
   // The .json twins of the two databases are NOT precached: every page loads
@@ -43,6 +44,7 @@ const ASSETS = [
   './data/nuclides-data.js',
   './data/icrp107-data.js',
   './data/effluent-scenarios-data.js',
+  './data/regulatory-data.js',
 ];
 
 self.addEventListener('install', (event) => {

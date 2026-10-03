@@ -50,7 +50,7 @@ const E_G_ADULT = {
 };
 
 const NEW_IDS = new Set(['Zr-89', 'Cu-67', 'Tb-161', 'Ho-166', 'Ra-223', 'Ac-225']);
-const SOURCE = 'IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion';
+const SOURCE = 'IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)';
 
 // 3 significant figures, matching the existing curated effluent values
 function sig3(x) {

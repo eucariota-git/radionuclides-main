@@ -298,7 +298,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v31');
+    swVersion === 'nm-planner-v32');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -437,6 +437,33 @@ async function main() {
     /spec\.disclaimer \|\| DISCLAIMER/.test(reportJs) && /spec\.headerRows/.test(reportJs));
   check('effluent page states it is not a complete discharge assessment and uses public inhalation coefficients',
     /not a complete discharge assessment/.test(effluentHtml) && /members of the public/.test(effluentHtml));
+
+  console.log();
+
+  console.log('Test 12: regulatory values wiring (audit 2026-10-03)');
+  const regulatoryJs = read('js/regulatory.js');
+  const indexHtml2 = read('index.html');
+  const regCtx = vm.createContext({});
+  vm.runInContext(read('data/regulatory-data.js') + ';this.__R = REGULATORY_DATA;', regCtx);
+  check('regulatory-data.js is the exact twin of regulatory.json',
+    JSON.stringify(regCtx.__R) === JSON.stringify(JSON.parse(read('data/regulatory.json'))));
+  check('decay.html resolves Table A1 through REGULATORY for curated and extended entries',
+    /REGULATORY\.clearanceA1\(n\.id\)/.test(decayHtml) && !/n\.clearance_a1_kBq_per_kg/.test(decayHtml) &&
+    !/not in RD 1217\/2024 Table A\.1/.test(decayHtml) && !/Table A\.1/.test(decayHtml));
+  check('decay.html evaluates the Table B exemption criteria a) and b) separately, b) only up to 1000 kg',
+    /REGULATORY\.exemptionB\(n\.id\)/.test(decayHtml) && /weight_kg > 1000/.test(decayHtml) &&
+    /a\) Total activity/.test(decayHtml) && /b\) Moderate quantity/.test(decayHtml));
+  check('index.html shows A1, B and e(g) from REGULATORY and no longer labels e(g) as ICRP 107',
+    /REGULATORY\.clearanceA1\(id\)/.test(indexHtml2) && /REGULATORY\.exemptionB\(id\)/.test(indexHtml2) &&
+    /REGULATORY\.dischargeLevel\(id\)/.test(indexHtml2) && !/Sv\/Bq, ICRP 107/.test(indexHtml2) &&
+    !/calcEffluentLimit/.test(indexHtml2 + read('js/icrp107-loader.js')));
+  check('regulatory module has no DOM access and keeps the not-tabulated texts in the data file',
+    !/document\./.test(regulatoryJs) && /not_tabulated_a1/.test(regulatoryJs));
+  check('service worker precaches the regulatory module and data; package allowlist includes the data',
+    ["./js/regulatory.js", "./data/regulatory-data.js"].every(a => swJs.includes(`'${a}'`)) &&
+    (!hasTools || /'data\/regulatory\.json', 'data\/regulatory-data\.js'/.test(buildPackageJs)));
+  check('no user-facing page cites ICRP 119 Annex F for the discharge levels',
+    ![indexHtml2, decayHtml, effluentHtml, aboutHtml].some(t => /ICRP 119 Annex F/.test(t)));
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);
   process.exitCode = failed === 0 ? 0 : 1;

@@ -10,16 +10,16 @@ const NUCLIDE_DATA = {
     "gamma_H007_units": "μSv·h⁻¹·GBq⁻¹·m²",
     "H007_note": "H'(0.07) directional dose equivalent rate constant, computed for every photon emitter from the full ICRP 107 spectrum with the ICRU 57 h'(0.07) coefficients. Both H*(10) and H'(0.07) are AREA-monitoring quantities and are always reported side by side; neither bounds the other (H*(10) is not always the larger — Pd-103 is ~40% lower). The former gate that stored H'(0.07) only when all energies were < 300 keV and H'(0.07) > H*(10), substituting H*(10) otherwise as 'conservative', was removed in 2026-07: it had no normative basis and was wrong for 36 of 39 nuclides.",
     "Y90_note": "Y-90 is a pure β⁻ emitter with negligible photon emissions (no gamma rays or X-rays ≥20 keV). Dose constants gamma_Kair, gamma_H10, gamma_H007 are null (not measured/not applicable). External dose from Y-90 sources comes from bremsstrahlung radiation in container material. PHYSICS.Y90_CONTAINERS holds container-specific estimates following the bremsstrahlung formalism of Zanzonico et al. 1999; that publication tabulates soft-tissue/bone constants, not container values — verify against a primary source before regulatory use.",
-    "clearance_a1_kBq_per_kg_note": "Activity-concentration value for exemption of practices or clearance of materials containing artificial radionuclides under RD 1217/2024 Annex IV Table A.1. Units: kBq/kg (= Bq/g). null means the radionuclide is not listed in Table A.1; another table, a complementary value or a specific authorization may still apply.",
+    "clearance_a1_kBq_per_kg_note": "Activity-concentration value for exemption of practices or clearance of materials containing artificial radionuclides under RD 1217/2024 Annex IV Table A1. Units: kBq/kg (= Bq/g). null means the radionuclide is not listed in Table A1; another table, a complementary value or a specific authorization may still apply.",
     "half_life_s_units": "seconds",
     "ingestion_dose_coeff_adult_units": "Sv/Bq",
     "effluent_liquid_limit_units": "Bq/L",
-    "effluent_liquid_limit_note": "Calculated as (1 mSv / adult ingestion dose coefficient) / 600 L, using IS-28 Annex II II.A.4 and ICRP 119 Annex F Table F.1 adult ingestion coefficients.",
+    "effluent_liquid_limit_note": "Calculated as (1 mSv / adult ingestion dose coefficient) / 600 L, using IS-28 Annex II II.A.4 and the adult (> 17 y) ingestion coefficients of RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1).",
     "generated_at": "2026-06-10T19:31:59.145Z",
     "generated_by_script": "tools/recalc-gamma.js",
     "generated_at_note": "generated_at/generated_by_script record when the gamma constants themselves were last recomputed. The file is NOT the product of a single script: other tools and hand edits touch it afterwards, so last_modified_at below is the one to read for freshness.",
     "icrp107_index_sha256": "3845347ee2fb71e18b84a844905e44dab9d2d8a12939173575040b7b9b6707f2",
-    "clearance_note": "clearance_a1_kBq_per_kg values verified 2026-06 against RD 1217/2024 Anexo IV Tabla A.1 (BOE-A-2024-25205, consolidated HTML). Nuclides not listed in Tabla A.1 carry null (e.g. Ga-67, Yb-169, Ra-223 — the latter appears only in Tabla B for moderate quantities ≤1000 kg).",
+    "clearance_note": "clearance_a1_kBq_per_kg values verified 2026-06 against RD 1217/2024 Anexo IV Tabla A1 (BOE-A-2024-25205, consolidated HTML). Nuclides not listed in Tabla A1 carry null (e.g. Ga-67, Yb-169, Ra-223 — the latter appears only in Tabla B for moderate quantities ≤1000 kg).",
     "last_modified_at": "2026-07-15T13:35:24.406Z",
     "last_modified_by_script": "tools/add-shielding-spectra.js"
   },
@@ -54,7 +54,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": null,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 2.4e-11,
       "effluent_liquid_limit_Bq_per_L": 69400,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "e_max_beta_MeV": 0.9,
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 139,
@@ -104,7 +104,7 @@ const NUCLIDE_DATA = {
       "ingestion_dose_coeff_adult_Sv_per_Bq": null,
       "effluent_liquid_limit_Bq_per_L": null,
       "effluent_liquid_limit_source": null,
-      "effluent_liquid_note": "No adult liquid-ingestion coefficient found in ICRP 119 Annex F; gaseous/inert-gas pathways should be assessed separately.",
+      "effluent_liquid_note": "No adult ingestion coefficient in RD 783/2001 Annex III table a) (ICRP 119 Table F.1); gaseous/inert-gas pathways should be assessed separately.",
       "e_max_beta_MeV": 1.1,
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 140,
@@ -154,7 +154,7 @@ const NUCLIDE_DATA = {
       "ingestion_dose_coeff_adult_Sv_per_Bq": null,
       "effluent_liquid_limit_Bq_per_L": null,
       "effluent_liquid_limit_source": null,
-      "effluent_liquid_note": "No adult liquid-ingestion coefficient found in ICRP 119 Annex F; gaseous/inert-gas pathways should be assessed separately.",
+      "effluent_liquid_note": "No adult ingestion coefficient in RD 783/2001 Annex III table a) (ICRP 119 Table F.1); gaseous/inert-gas pathways should be assessed separately.",
       "e_max_beta_MeV": 1.6,
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 140,
@@ -224,7 +224,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": 10,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 4.9e-11,
       "effluent_liquid_limit_Bq_per_L": 34000,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "e_max_beta_MeV": 0.6,
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 135,
@@ -273,7 +273,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": 1,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 4.3e-10,
       "effluent_liquid_limit_Bq_per_L": 3880,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "e_max_beta_MeV": 4,
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 435,
@@ -338,7 +338,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": 100,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 4.3e-10,
       "effluent_liquid_limit_Bq_per_L": 3880,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "e_max_beta_MeV": 3.2,
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 32.4,
@@ -427,7 +427,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": 100,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 3.8e-11,
       "effluent_liquid_limit_Bq_per_L": 43900,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 4.19,
         "gamma_H10_Cornejo": 5.44,
@@ -475,7 +475,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": 1,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 2.1e-10,
       "effluent_liquid_limit_Bq_per_L": 7940,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 13.2,
         "gamma_H10_Cornejo": 20.7,
@@ -551,7 +551,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": 1,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 7.4e-10,
       "effluent_liquid_limit_Bq_per_L": 2250,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "e_max_beta_MeV": 1.2,
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 130,
@@ -624,7 +624,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": 1,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 1.8e-9,
       "effluent_liquid_limit_Bq_per_L": 926,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "e_max_beta_MeV": 1.5,
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 148,
@@ -721,7 +721,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": 0.1,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 3.4e-9,
       "effluent_liquid_limit_Bq_per_L": 490,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "e_max_beta_MeV": 1.4,
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 307,
@@ -786,7 +786,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": 100,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 1.2e-10,
       "effluent_liquid_limit_Bq_per_L": 13900,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "e_max_beta_MeV": 0.65,
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 25.3,
@@ -843,7 +843,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": null,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 1.9e-10,
       "effluent_liquid_limit_Bq_per_L": 8770,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 21,
         "gamma_H10_Cornejo": 29,
@@ -967,7 +967,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": null,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 1e-10,
       "effluent_liquid_limit_Bq_per_L": 16700,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "e_max_beta_MeV": 1.8,
       "max_photon_energy_keV": 1883.2,
       "e_mean_electron_MeV": 0.73794,
@@ -1050,7 +1050,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": 1,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 2.6e-9,
       "effluent_liquid_limit_Bq_per_L": 641,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 51,
         "gamma_H10_Cornejo": 69.3,
@@ -1203,7 +1203,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": 100,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 2.2e-11,
       "effluent_liquid_limit_Bq_per_L": 75800,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "e_max_beta_MeV": 0.4,
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 14.6,
@@ -1292,19 +1292,19 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": 10,
       "ingestion_dose_coeff_adult_Sv_per_Bq": null,
       "effluent_liquid_limit_Bq_per_L": null,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "effluent_liquid_components": [
         {
           "id": "Mo-99",
           "ingestion_dose_coeff_adult_Sv_per_Bq": 6e-10,
           "effluent_liquid_limit_Bq_per_L": 2780,
-          "source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
+          "source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)"
         },
         {
           "id": "Tc-99m",
           "ingestion_dose_coeff_adult_Sv_per_Bq": 2.2e-11,
           "effluent_liquid_limit_Bq_per_L": 75800,
-          "source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion"
+          "source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)"
         }
       ],
       "effluent_liquid_note": "Assess generator effluents as a mixture of Mo-99 and Tc-99m components.",
@@ -1538,7 +1538,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": 1000,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 1.9e-10,
       "effluent_liquid_limit_Bq_per_L": 8770,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 35.9,
         "gamma_H10_Cornejo": 23.1,
@@ -1650,7 +1650,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": 10,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 2.9e-10,
       "effluent_liquid_limit_Bq_per_L": 5750,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 76.7,
         "gamma_H10_Cornejo": 89.9,
@@ -1770,7 +1770,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": 100,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 2.1e-10,
       "effluent_liquid_limit_Bq_per_L": 7940,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 38.5,
         "gamma_H10_Cornejo": 46.4,
@@ -2010,7 +2010,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": 100,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 1.5e-8,
       "effluent_liquid_limit_Bq_per_L": 111,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 34.5,
         "gamma_H10_Cornejo": 35.3,
@@ -2171,7 +2171,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": 10,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 2.2e-8,
       "effluent_liquid_limit_Bq_per_L": 75.8,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "e_max_beta_MeV": 0.8,
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 52,
@@ -2374,7 +2374,7 @@ const NUCLIDE_DATA = {
       "ingestion_dose_coeff_adult_Sv_per_Bq": null,
       "effluent_liquid_limit_Bq_per_L": null,
       "effluent_liquid_limit_source": null,
-      "effluent_liquid_note": "No adult liquid-ingestion coefficient found in ICRP 119 Annex F; gaseous/inert-gas pathways should be assessed separately.",
+      "effluent_liquid_note": "No adult ingestion coefficient in RD 783/2001 Annex III table a) (ICRP 119 Table F.1); gaseous/inert-gas pathways should be assessed separately.",
       "e_max_beta_MeV": 0.32,
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 12.5,
@@ -2519,7 +2519,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": 0.1,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 1.3e-8,
       "effluent_liquid_limit_Bq_per_L": 128,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "max_photon_energy_keV": null,
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 77.5,
@@ -2630,7 +2630,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": 100,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 7.4e-10,
       "effluent_liquid_limit_Bq_per_L": 2250,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "e_max_beta_MeV": 0.8,
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 10.6,
@@ -2887,7 +2887,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": null,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 7.1e-10,
       "effluent_liquid_limit_Bq_per_L": 2350,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 43,
         "gamma_H10_Cornejo": 66.8,
@@ -3215,7 +3215,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": 100,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 1.3e-9,
       "effluent_liquid_limit_Bq_per_L": 1280,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "e_max_beta_MeV": 0.9,
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 0.563,
@@ -3361,7 +3361,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": 100,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 5.3e-10,
       "effluent_liquid_limit_Bq_per_L": 3140,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "e_max_beta_MeV": 0.45,
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 4.09,
@@ -3518,7 +3518,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": 1000,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 1.5e-9,
       "effluent_liquid_limit_Bq_per_L": 1110,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "e_max_beta_MeV": 1,
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 2.42,
@@ -3719,7 +3719,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": 100,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 1.4e-9,
       "effluent_liquid_limit_Bq_per_L": 1190,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "e_max_beta_MeV": 2,
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 7.08,
@@ -4028,7 +4028,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": 1,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 1.4e-9,
       "effluent_liquid_limit_Bq_per_L": 1190,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "e_max_beta_MeV": 0.65,
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 109,
@@ -4381,7 +4381,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": 10,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 1e-9,
       "effluent_liquid_limit_Bq_per_L": 1670,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "e_max_beta_MeV": 1.3,
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 54.6,
@@ -4502,7 +4502,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": 100,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 9.5e-11,
       "effluent_liquid_limit_Bq_per_L": 17500,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "cornejo_validation": {
         "gamma_Kair_Cornejo": 10.4,
         "gamma_H10_Cornejo": 17.4,
@@ -4678,7 +4678,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": 1000,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 2.7e-9,
       "effluent_liquid_limit_Bq_per_L": 617,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "max_photon_energy_keV": null
     },
     {
@@ -4707,7 +4707,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": null,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 7.9e-10,
       "effluent_liquid_limit_Bq_per_L": 2110,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "e_max_beta_MeV": 0.9,
       "max_photon_energy_keV": 1744.5,
       "shielding_spectrum": [
@@ -4789,7 +4789,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": null,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 3.4e-10,
       "effluent_liquid_limit_Bq_per_L": 4900,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "e_max_beta_MeV": 0.55,
       "max_photon_energy_keV": 393.5,
       "shielding_spectrum": [
@@ -4871,7 +4871,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": null,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 7.2e-10,
       "effluent_liquid_limit_Bq_per_L": 2310,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "e_max_beta_MeV": 0.55,
       "max_photon_energy_keV": 550.2,
       "shielding_spectrum": [
@@ -5113,7 +5113,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": 100,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 1.4e-9,
       "effluent_liquid_limit_Bq_per_L": 1190,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "e_max_beta_MeV": 1.8,
       "max_photon_energy_keV": 1749.9,
       "shielding_spectrum": [
@@ -5284,7 +5284,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": null,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 1e-7,
       "effluent_liquid_limit_Bq_per_L": 16.7,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "e_max_beta_MeV": 1.4,
       "max_photon_energy_keV": 1196.3,
       "chain_members": [
@@ -6317,7 +6317,7 @@ const NUCLIDE_DATA = {
       "clearance_a1_kBq_per_kg": null,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 2.4e-8,
       "effluent_liquid_limit_Bq_per_L": 69.4,
-      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; ICRP 119 Annex F Table F.1 adult ingestion",
+      "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "e_max_beta_MeV": 1.8,
       "max_photon_energy_keV": 1567.1,
       "chain_members": [

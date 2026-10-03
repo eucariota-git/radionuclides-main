@@ -141,24 +141,11 @@ const ICRP107 = (function() {
     }
   }
 
-  /**
-   * Calculate liquid effluent limit from ingestion dose coefficient
-   * Formula: C_liq [Bq/L] = (1 mSv/year) / (dose_coeff [Sv/Bq] × 600 L/year)
-   *                        = 0.001 / (dose_coeff × 600)
-   *                        = 1.667e-6 / dose_coeff
-   */
-  function calcEffluentLimit(id) {
-    const nuclide = get(id);
-    if (!nuclide) return null;
-
-    const doseCoeff = nuclide.dose_ingestion_Sv_per_Bq;
-    if (!doseCoeff || doseCoeff <= 0) {
-      return null; // No coefficient available (e.g., noble gases)
-    }
-
-    const limit = 0.001 / (doseCoeff * 600);
-    return Math.round(limit * 10) / 10; // Round to 1 decimal place
-  }
+  // Liquid-effluent levels are no longer derived here: the ICRP 107 index has
+  // no dose coefficients (dose_ingestion_Sv_per_Bq is null for every entry), and
+  // the old helper rounded to one decimal. Use REGULATORY.dischargeLevel (js/
+  // regulatory.js), which takes e(g) from RD 783/2001 Annex III table a)
+  // (audit 2026-10-03).
 
   /**
    * Check if data is loaded
@@ -175,7 +162,6 @@ const ICRP107 = (function() {
     get,
     normalize,
     calcConstants,
-    calcEffluentLimit,
     isReady,
     // For testing:
     _ensureLoaded: ensureLoaded,

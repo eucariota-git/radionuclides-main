@@ -41,6 +41,11 @@ Target users: medical physicists and radiation protection specialists.
   - Crystal lens calculation with both limits displayed
 - CSV export includes dose rates at both selected distance and 1 m reference
 
+### Regulatory values (all nuclides)
+- **RD 1217/2024 Annex IV Table A1** (all 257 entries, with the progeny of entries marked (a)) and **Table B** (297 rows, exemption of moderate quantities) for curated AND ICRP 107 extended entries; explicit *not tabulated* states (Annex III.1.b → RP 122 Part 1; Annex II A.3.a → CSN values)
+- Decay: single-nuclide clearance (A1) and exemption (B, criteria a and b of Annex II A.1 evaluated separately)
+- Adult public ingestion coefficients from RD 783/2001 Annex III table a) (kept in force by the CSN Resolution of 3 April 2024; numerical transcription ICRP 119 F.1) and the IS-28 individual discharge level for every nuclide with a coefficient
+
 ### Liquid effluent — sewer and STP workers (`effluent.html`)
 - Screening doses from patient excreta for two NUREG/CR-5814 receptors, reported separately and never added together: **Scenario 1**, sewer system inspector (immersion in the facility's wastewater + aerosol inhalation), and **Scenario 2**, STP sludge process operator (dewatered sludge + resuspended dust; IAEA SRS-19 §4.9 / §6.6 screening philosophy)
 - **Lu-177, I-131, Lu-177m, Tc-99m and F-18**: own PHITS effective-dose-rate coefficients (ICRP 116 ROT) for the geometry of each scenario + ICRP 119 Table G.1 adult-public inhalation coefficients; F-18 has no Scenario 2 coefficient
@@ -199,6 +204,7 @@ js/ui.js                UI module — dark mode, print, keyboard, history
 js/utils.js             Formatting, escaping, dates and CSV helpers
 js/report.js            Printable traceable calculation reports
 js/effluent.js          EFFLUENT module — Scenario 1/2 data loading, unit conversion and cross-checks
+js/regulatory.js        REGULATORY module — RD 1217/2024 Tables A1/B, RD 783/2001 e(g), IS-28 individual levels
 
 data/nuclides.json      Radionuclide database (directly editable, source of truth)
 data/nuclides-data.js   Auto-generated from nuclides.json (for file:// compatibility)
@@ -206,12 +212,15 @@ data/icrp107-index.json Extended database JSON (1252 nuclides with photon emissi
 data/icrp107-data.js    Embedded ICRP 107 data (for file:// compatibility)
 data/effluent-scenarios.json     Effluent Scenarios 1 and 2: parameters, PHITS coefficients and inhalation coefficients (source of truth)
 data/effluent-scenarios-data.js  Auto-generated from effluent-scenarios.json (for file:// compatibility)
+data/regulatory.json             RD 1217/2024 Annex IV A1 (257) and B (297 rows) with notes and progeny; adult public e(g) (759 rows)
+data/regulatory-data.js          Auto-generated from regulatory.json
 
 data/sources/icrp107/   ICRP 107 raw files — LOCAL ONLY, gitignored (© ICRP; download free from icrp.org, verify SHA256 in icrp107-index.json)
 
 tools/parse-icrp107.js  NDX/RAD/BET parser (FORTRAN fixed-width, generates icrp107-index.json)
 tools/recalc-gamma.js   Recalculates Γ from photons using ICRU 57 / ICRP 74
-tools/generate-data.js  Wraps nuclides.json and effluent-scenarios.json as JS for offline compatibility
+tools/generate-data.js  Wraps nuclides.json, effluent-scenarios.json and regulatory.json as JS for offline compatibility
+tools/build-regulatory-data.js  Builds regulatory.json from the verified library CSVs + the BOE HTML extraction
 tools/add-max-energy.js Adds max_photon_energy_keV to ICRP 107 nuclides
 
 references/             Open-license sources only (BOE legal texts, CC BY Oumano 2025); copyrighted PDFs (Cornejo, Zanzonico, ICRP) kept locally, gitignored

@@ -135,6 +135,17 @@ Files: `data/effluent-scenarios.json`, `data/effluent-scenarios-data.js`.
 - External dose-rate coefficients k for both scenarios: own PHITS
   calculations by the project author (not third-party data).
 
+### RD 1217/2024 Annex IV and RD 783/2001 Annex III — regulatory values
+Files: `data/regulatory.json`, `data/regulatory-data.js`.
+- RD 1217/2024 Annex IV Tables A1 and B, their notes and progeny lists, and
+  RD 783/2001 Annex III table a) adult public ingestion coefficients: legal
+  provisions published in the BOE, excluded from intellectual property under
+  art. 13 of the Spanish Intellectual Property Law (LPI).
+- The ingestion coefficients are transcribed from ICRP Publication 119 (2012)
+  Table F.1, © ICRP, which reproduces the same values; the chemical-form labels
+  come from that publication. Cited with attribution; the publication is not
+  redistributed.
+
 ### BOE — Spanish legal texts
 `references/RD 1029 de 2022 …`, `references/RD 1217 de 2024 …`. Legal and
 regulatory provisions are excluded from intellectual property under art. 13 of

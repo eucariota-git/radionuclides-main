@@ -884,6 +884,38 @@ console.log('TEST 13: Effluent Scenarios 1 and 2 (CALC.sewerInspectorScenario1, 
 }
 console.log();
 
+// ---------------------------------------------------------------------------
+// TEST 14: REGULATORY lookups (RD 1217/2024 A1/B; IS-28 individual level)
+// ---------------------------------------------------------------------------
+console.log('TEST 14: REGULATORY lookups (js/regulatory.js)');
+{
+  const rctx = vm.createContext({ console, fetch: async () => { throw new Error('offline test'); } });
+  vm.runInContext(fs.readFileSync(path.join(__dirname, '../data/regulatory-data.js'), 'utf8') + ';' +
+    fs.readFileSync(path.join(__dirname, '../js/regulatory.js'), 'utf8') + ';this.__R = REGULATORY;', rctx);
+  const R = rctx.__R;
+  const ok = (name, cond) => { totalTests++; if (cond) { passedTests++; console.log(`  ✓ ${name}`); } else { failedTests++; console.log(`  ✗ ${name}`); } };
+  // IS-28 II.A.4 individual level: C = 1e-3 Sv / (e × 0.600 m³), Bq/L = C / 1000
+  test('discharge level Lu-177 = 1e-3 / (5.3e-10 × 0.6) / 1000 = 3144.65 Bq/L', R.dischargeLevel('Lu-177').Bq_per_L, 1e-3 / (5.3e-10 * 0.6) / 1000, 1e-12);
+  test('discharge level Cr-51 uses the most restrictive form (3.8E-11)', R.dischargeLevel('Cr-51').e_Sv_per_Bq, 3.8e-11, 0);
+  test('discharge level Na-22 (extended entry) = 1e-3 / (3.2e-9 × 0.6) / 1000 = 520.83 Bq/L', R.dischargeLevel('Na-22').Bq_per_L, 1e-3 / (3.2e-9 * 0.6) / 1000, 1e-12);
+  ok('no discharge level for a noble gas without e(g) (Xe-133)', R.dischargeLevel('Xe-133') === null);
+  // Clearance: statuses and composite entries
+  ok('Mo-99 and Mo-99+Tc-99m give the same Table A1 result (10 kBq/kg, note a, progeny Tc-99m)',
+    JSON.stringify(R.clearanceA1('Mo-99')) === JSON.stringify(R.clearanceA1('Mo-99+Tc-99m')) &&
+    R.clearanceA1('Mo-99').rows[0].kBq_kg === 10 && R.clearanceA1('Mo-99').rows[0].progeny.join() === 'Tc-99m');
+  ok('H-3, Na-22 and Sr-90 (extended entries) are listed in Table A1',
+    ['H-3', 'Na-22', 'Sr-90'].every(id => R.clearanceA1(id).status === 'listed'));
+  ok('C-11 is not tabulated in A1 and the text refers to RP 122 Part 1 (Annex III.1.b)',
+    R.clearanceA1('C-11').status === 'not_tabulated' && /Radiation Protection 122 Part 1/.test(R.clearanceA1('C-11').text));
+  ok('K-40 is not in A1, flagged as natural (Table A2), and is in Table B with note (1)',
+    R.clearanceA1('K-40').status === 'not_tabulated' && R.clearanceA1('K-40').natural &&
+    R.exemptionB('K-40').status === 'listed' && R.exemptionB('K-40').rows[0].note === '1');
+  ok('C-11 is not in Table B and the text refers to the CSN values (Annex II A.3.a)',
+    R.exemptionB('C-11').status === 'not_tabulated' && /Consejo de Seguridad Nuclear/.test(R.exemptionB('C-11').text));
+  ok('U-240 returns its two Table B rows', R.exemptionB('U-240').rows.length === 2);
+}
+console.log();
+
 // Summary
 console.log('\n=== SUMMARY ===');
 console.log(`Total: ${passedTests} passed, ${failedTests} failed (out of ${totalTests} tests)`);

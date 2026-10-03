@@ -29,10 +29,12 @@ js/physics.js     CALC module — decay, dose, Archer/spectrum/narrow-beam shiel
 js/db.js          DB module — nuclide database, search/filter
 js/report.js      REPORT module — printable calculation reports with traceability
 js/effluent.js    EFFLUENT module — Scenario 1/2 data loading, unit conversion, cross-checks (no DOM)
+js/regulatory.js  REGULATORY module — RD 1217/2024 A1/B, RD 783/2001 e(g), IS-28 levels (no DOM)
 
 data/nuclides.json        Main radionuclide database (40 entries — source of truth)
 data/nuclides-data.js     Auto-generated from nuclides.json for file:// compatibility
 data/effluent-scenarios.json / -data.js  Effluent Scenario 1 and 2 parameters and coefficients (+ generated twin)
+data/regulatory.json / -data.js  RD 1217/2024 Annex IV A1/B + adult public e(g) (built by tools/build-regulatory-data.js)
 
 manifest.json / sw.js                 PWA manifest and cache-first service worker
 assets/icons/                         Favicon, Apple Touch and install icons
@@ -73,6 +75,8 @@ When editing calculator logic (decay, dose, clearance), always verify that cumul
 ## Domain Knowledge
 
 Regulatory references use RD 1029/2022 (not RD 783/2001). Dose limits: effective dose 20 mSv/year, lens of eye — both conditions must be satisfied: 50 mSv/y max annual AND 100 mSv over any consecutive 5-year period (current regime since 22 Jun 2024), skin 500 mSv/year.
+
+RD 1217/2024 Annex IV: Table A1 (clearance; exemption of unlimited quantities) and Table B (exemption ≤ 1000 kg: column 2 concentration, column 3 total activity) are DIFFERENT criteria (Annex II A.1 a/b/c) — never fill one with the other, never treat B's columns as simultaneous conditions. Look values up through REGULATORY for any nuclide (curated or extended); a missing row is "not tabulated" (A1 → Annex III.1.b, RP 122 Part 1; B → Annex II A.3.a, CSN values), never "exempt". Public dose coefficients: cite RD 783/2001 Annex III tables a)/b), kept in force by RD 1029/2022 DT 3ª and the CSN Resolution of 3 April 2024; ICRP 119 F.1/G.1 is only their numerical transcription.
 
 IS-28 Anexo II II.A.4 (liquid discharges to public sewer) has THREE numeric conditions. The app implements only the per-nuclide concentration level (1 mSv / e(g))/600 L. It does not evaluate the mixture sum of fractions Σ(Cᵢ/Lᵢ) ≤ 1 or the annual activity limits (≤ 10 GBq H-3, ≤ 1 GBq C-14, strictly < 1 GBq the sum of the rest). RD 1217/2024 clearance is implemented only for a single nuclide; mixture clearance must be evaluated separately. Always present single-nuclide values as "individual level", not as a complete discharge/clearance assessment.
 

@@ -32,6 +32,8 @@ data/sources/
 
 # Local audit working reports (the remediation plan remains versioned in docs/).
 docs/AUDIT_*.md
+# Local audit evidence folders (e.g. output/auditoria-rd1217-2026-10-03/).
+output/
 
 # Local working copy of the acceptance sheet (partially filled evidence).
 # The tracked docs/ACCEPTANCE_TEST.md must stay a clean template.

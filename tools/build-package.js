@@ -46,6 +46,7 @@ const ALLOWLIST = [
   'js/',
   'data/nuclides.json', 'data/nuclides-data.js',
   'data/effluent-scenarios.json', 'data/effluent-scenarios-data.js',
+  'data/regulatory.json', 'data/regulatory-data.js',
   'data/icrp107-index.json', 'data/icrp107-data.js',
   'assets/icons/',
   'manifest.json', 'sw.js',
