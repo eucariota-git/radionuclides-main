@@ -82,6 +82,9 @@ for (const n of nuclideData.nuclides) {
   const h10 = round2(g.gammaH10), h007 = round2(g.gammaH007);
   rows.push({ id: n.id, action: n.chain_members ? 'chain' : 'single', old10: n.gamma_H10, h10, old007: n.gamma_H007, h007 });
   if (WRITE) {
+    // gamma_Kair is NOT recalculated here: its provenance is kept per value in
+    // gamma_Kair_source (published Cornejo value for 32 entries), and `source`
+    // describes H*(10) and H'(0.07) only (copy audit 2026-10-03, T07).
     n.gamma_H10 = h10;
     n.gamma_H007 = h007;
     n.source = n.chain_members ? SRC_CHAIN : SRC_SINGLE;

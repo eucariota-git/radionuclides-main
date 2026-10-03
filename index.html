@@ -62,14 +62,14 @@
             <th>Nuclide</th>
             <th>T&#189;</th>
             <th>Decay</th>
-            <th>Modality</th>
+            <th class="has-tooltip" tabindex="0" aria-label="Modality or origin. Curated entries show their modality; extended results show their origin (ICRP 107 or regulatory tables only) and have no modality classification." data-tooltip="Curated entries: modality. Extended results: origin of the record (ICRP 107, or regulatory tables only) — they have no modality classification.">Modality / origin</th>
             <th class="has-tooltip" tabindex="0" aria-label="Gamma K-air. Air kerma rate constant at 1 metre from 1 GBq, in microgray per hour per GBq per square metre." data-tooltip="Air kerma rate constant. Photon field intensity at 1 m from 1 GBq. Units: μGy·h⁻¹·GBq⁻¹·m². See the Γ source column for provenance.">&#915;<sup>K-air</sup><span class="th-unit">μGy·h⁻¹·GBq⁻¹·m²</span></th>
             <th class="has-tooltip" tabindex="0" aria-label="Gamma H star 10. Ambient dose equivalent rate constant for area monitoring and effective-dose estimation, in microsievert per hour per GBq per square metre." data-tooltip="Ambient dose equivalent rate constant (area monitoring; effective-dose estimator). Derived from ICRP 74 Table A.21. Units: μSv·h⁻¹·GBq⁻¹·m².">&#915;<sup>H*(10)</sup><span class="th-unit">μSv·h⁻¹·GBq⁻¹·m²</span></th>
             <th class="has-tooltip" tabindex="0" aria-label="Gamma H prime 0.07. Directional dose equivalent rate constant for area monitoring and skin or extremity indication, in microsievert per hour per GBq per square metre." data-tooltip="Directional dose equivalent rate constant at 0.07 mm depth (area monitoring; skin/extremity indicator). Units: μSv·h⁻¹·GBq⁻¹·m².">&#915;<sup>H'(0.07)</sup><span class="th-unit">μSv·h⁻¹·GBq⁻¹·m²</span></th>
             <th>Rep. energy<span class="th-unit">keV</span></th>
             <th class="has-tooltip" tabindex="0" aria-label="Liquid effluent individual concentration level in becquerel per litre. One of several IS-28 II.A.4 conditions: a complete assessment also requires the mixture sum, the annual activity limits, an express discharge authorisation and soluble or dispersible material." data-tooltip="Individual concentration level per nuclide, (1 mSv / e(g)) / 600 L — ONE of the IS-28 Annex II II.A.4 conditions. A complete discharge assessment must also verify the mixture sum of fractions Σ(Cᵢ/Lᵢ) ≤ 1 and the annual activity limits (10 GBq H-3, 1 GBq C-14, < 1 GBq the rest combined) — neither evaluated by this app — plus the II.A.4 preconditions: express authorisation of the discharge and soluble or readily dispersible material. The facility's own authorisation conditions prevail. Units: Bq/L.">Liquid effluent<span class="th-unit">Bq/L</span></th>
             <th class="has-tooltip" tabindex="0" aria-label="Activity concentration value for exemption of practices or clearance of materials under RD 1217/2024 Annex IV Table A1, in kilobecquerel per kilogram." data-tooltip="Activity concentration value for exemption of practices or clearance of materials (RD 1217/2024, Annex IV, Table A1). The Decay calculator applies it specifically to clearance of material. Units: kBq/kg (= Bq/g).">Exemption /<br>clearance<span class="th-unit">kBq/kg</span></th>
-            <th class="has-tooltip" tabindex="0" aria-label="Source of the dose rate constants Gamma K-air, Gamma H star 10 and Gamma H prime 0.07." data-tooltip="Provenance of the three dose-rate constant columns only. Liquid-effluent and exemption/clearance values have their own regulatory sources.">&#915; source</th>
+            <th class="has-tooltip" tabindex="0" aria-label="Source of the dose rate constants Gamma K-air, Gamma H star 10 and Gamma H prime 0.07." data-tooltip="Provenance of the three dose-rate constant columns, stated per quantity: K-air may be a published value while H*(10) and H'(0.07) are recalculated. Liquid-effluent and exemption/clearance values have their own regulatory sources.">&#915; source</th>
           </tr>
         </thead>
         <tbody id="nuclideBody">
@@ -110,14 +110,14 @@
   <div class="card mt-2">
     <h2 class="card-title">Reference & Data Notes</h2>
     <ul class="text-sm ref-list" id="refList">
-      <li><strong>32 nuclides:</strong> Cornejo et al. (2015) provides published comparison values. Operational constants may differ because they use more recent ICRP 107 nuclear decay data and ICRP 74 Table A.21 conversion coefficients.</li>
+      <li><strong>32 nuclides:</strong> Cornejo et al. (2015) provides published comparison values, and its air-kerma constants are the ones shown in the K-air column. H*(10) and H'(0.07) are recalculated using the stated nuclear data (ICRP 107, 2008) and conversion coefficients (ICRP 74, 1996, Table A.21); where they differ from the published values, the difference has not been reconciled.</li>
       <li><strong>Ga-68:</strong> addition beyond Cornejo et al., calculated using ICRP 107 photon data and ICRP 74 Table A.21 coefficients.</li>
-      <li><strong>Y-90:</strong> pure β⁻ emitter; photon dose-rate constants are not applicable on this page. Dose offers a separate, explicitly experimental container-dependent bremsstrahlung scenario.</li>
-      <li><strong>6 therapy/imaging additions (2026):</strong> Zr-89, Cu-67, Tb-161, Ho-166, <strong>Ra-223+daughters</strong> and <strong>Ac-225+daughters</strong> — calculated from ICRP 107 photon data (ICRP 74 Table A.21 coefficients). For the two alpha-therapy chains the constants <em>include progeny in secular equilibrium</em> (standard for aged sources; equilibrium within hours). Ra-223+progeny agrees within 6% with the published conservative constant (~50 &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;).</li>
-      <li><strong>H*(10) and H'(0.07)</strong> are both AREA-monitoring operational quantities and are always shown side by side: H*(10) estimates effective dose, H'(0.07) indicates skin/extremity dose. Neither is selected automatically from distance, and neither bounds the other (H*(10) is <em>not</em> always the higher figure — Pd-103 is 40% lower). Personal dosimetry quantities are Hp(10) / Hp(0.07) / Hp(3); limit comparisons in the dose page are indicative screening only.</li>
+      <li><strong>Y-90:</strong> predominantly a β⁻ emitter with no photon line passing the filter; photon dose-rate constants are not applicable on this page. Dose offers a separate, explicitly experimental container-dependent bremsstrahlung scenario; direct beta dose is not calculated.</li>
+      <li><strong>6 therapy/imaging additions (2026):</strong> Zr-89, Cu-67, Tb-161, Ho-166, <strong>Ra-223+daughters</strong> and <strong>Ac-225+daughters</strong> — calculated from ICRP 107 photon data (ICRP 74 Table A.21 coefficients). For the two alpha-therapy chains the constants <em>assume that all progeny are retained in the source and in secular equilibrium with the parent</em>; this is a hypothesis of the entry, to be checked for the actual source (preparation time, loss of gaseous progeny).</li>
+      <li><strong>H*(10) and H'(0.07)</strong> are both AREA-monitoring operational quantities and are always shown side by side: H*(10) estimates effective dose, H'(0.07) indicates skin/extremity dose. Neither is selected automatically from distance, and neither bounds the other (H*(10) is <em>not</em> always the higher figure — for Pd-103 the stored &#915;<sup>H*(10)</sup> is about 40% below &#915;<sup>H'(0.07)</sup>). Personal dosimetry quantities are Hp(10) / Hp(0.07) / Hp(3); limit comparisons in the dose page are indicative screening only.</li>
       <li><strong>Exemption / clearance values</strong>: activity-concentration values for exemption of practices or clearance of materials under RD 1217/2024 Annex IV Table A1, applicable to any quantity and any type of solid material. The full table (257 entries, with the progeny of entries marked (a)) is available for every nuclide in the detail panel, together with Table B (exemption of moderate quantities, ≤ 1000 kg: concentration and total activity). Nuclides not in Table A1: Annex III.1.b refers to the European Commission's "Radiation Protection 122 Part 1". In Decay they are used for single-nuclide clearance and exemption estimates.</li>
-      <li><strong>Liquid effluent column</strong>: individual concentration level per nuclide, calculated from IS-28 Annex II II.A.4 with the adult ingestion coefficients of RD 783/2001 Annex III table a), adult (&gt; 17 y), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1): (1 mSv / e(g)) / 600 L. When several chemical forms are tabulated, the most restrictive (largest e(g)) is used. Levels for nuclides outside the curated table are shown in the detail panel. This is one condition of II.A.4. A complete discharge assessment must also verify the mixture sum of fractions &le; 1 and the annual activity limits (10 GBq H-3, 1 GBq C-14, &lt; 1 GBq the rest combined), which this app does not evaluate. II.A.4 additionally requires an express authorisation of the discharge and that the material be soluble or readily dispersible in water; the specific conditions of the facility's authorisation prevail over these generic levels.</li>
-      <li>The JSON database (<code>data/nuclides.json</code>) can be edited directly to update or add values.</li>
+      <li><strong>Liquid effluent column</strong> (individual discharge concentration level): individual concentration level per nuclide, calculated from IS-28 Annex II II.A.4 with the adult ingestion coefficients of RD 783/2001 Annex III table a), adult (&gt; 17 y), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1): (1 mSv / e(g)) / 600 L. When several chemical forms are tabulated, the most restrictive (largest e(g)) is used. Levels for nuclides outside the curated table are calculated in the same way from the same table. This is one condition of II.A.4. A complete discharge assessment must also verify the mixture sum of fractions &le; 1 and the annual activity limits (10 GBq H-3, 1 GBq C-14, &lt; 1 GBq the rest combined), which this app does not evaluate. II.A.4 additionally requires an express authorisation of the discharge and that the material be soluble or readily dispersible in water; the specific conditions of the facility's authorisation prevail over these generic levels.</li>
+      <li><strong>Example applications</strong> shown for the curated nuclides are illustrative. They mix current, historical and research uses and do not indicate marketing authorisation, clinical status or availability in Spain.</li>
     </ul>
   </div>
 </main>
@@ -173,7 +173,7 @@
         ? `<div class="prop-item"><div class="prop-key">Adult ingestion e(g)</div>
              <div class="prop-val">${ing.governing.e_Sv_per_Bq.toExponential(1)}</div>
              <div class="prop-note">Sv/Bq · RD 783/2001 Annex III table a)${ing.rows.length > 1 ? ` · most restrictive of ${ing.rows.length} forms` : ''}</div></div>
-           <div class="prop-item"><div class="prop-key">Liquid effluent level</div>
+           <div class="prop-item"><div class="prop-key">Individual discharge concentration level</div>
              <div class="prop-val">${fmt3(lvl.Bq_per_L)}</div>
              <div class="prop-note">Bq/L · IS-28 II.A.4 individual level</div></div>`
         : `<div class="prop-item"><div class="prop-key">Adult ingestion e(g)</div>
@@ -208,7 +208,7 @@
       const ing = REGULATORY.ingestionAdult(id);
       if (ing.status === 'listed') {
         const forms = ing.rows.map(r => `${r.e_Sv_per_Bq.toExponential(1)} Sv/Bq${r.compound ? ' (' + esc(r.compound) + ')' : ''}, f1 ${r.f1}`).join('; ');
-        out.push(`Adult ingestion e(g): RD 783/2001 Annex III table a), adult (&gt; 17 y), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1).${ing.rows.length > 1 ? ' Tabulated forms: ' + forms + '. The most restrictive governs the level shown.' : ''} Liquid effluent level = (1 mSv / e(g)) / 600 L: one of the three numeric conditions of IS-28 Annex II II.A.4 (sum of fractions and annual activity limits are evaluated separately).`);
+        out.push(`Adult ingestion e(g): RD 783/2001 Annex III table a), adult (&gt; 17 y), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1).${ing.rows.length > 1 ? ' Tabulated forms: ' + forms + '. The most restrictive governs the level shown.' : ''} Individual discharge concentration level = (1 mSv / e(g)) / 600 L: one of the three numeric conditions of IS-28 Annex II II.A.4 (sum of fractions and annual activity limits are evaluated separately).`);
       }
     }
     return out;
@@ -244,7 +244,7 @@
   }
 
   function fmtGamma(val) {
-    if (val === null || val === undefined) return '<span class="text-muted">—</span>';
+    if (val === null || val === undefined) return '<span class="text-muted text-sm">Not applicable</span>';
     return `<span class="mono">${val}</span>`;
   }
 
@@ -255,11 +255,41 @@
     if (pub == null || n.gamma_H10 == null) return '';
     const dev = (n.gamma_H10 - pub) / pub * 100;
     if (Math.abs(dev) <= 5) return '';
-    return ` <span title="Recalculated from ICRP 107 photon data; differs ${dev > 0 ? '+' : ''}${dev.toFixed(1)}% from the published Cornejo et al. (2015) value (${pub})" style="cursor:help;color:var(--warning-text)">&#9888;</span>`;
+    return ` <span title="Recalculated using the stated nuclear data and conversion coefficients; difference not reconciled: ${dev > 0 ? '+' : ''}${dev.toFixed(1)}% from the published Cornejo et al. (2015) value (${pub})" style="cursor:help;color:var(--warning-text)">&#9888;</span>`;
   }
 
   function fmtNumber(val) {
     return UTILS.fmt(val);
+  }
+
+  // Provenance of the three dose-rate constants, PER QUANTITY (copy audit
+  // 2026-10-03, T07): since the 2026-10 regeneration H*(10) and H'(0.07) are
+  // recalculated, while Γ K-air of the 32 Cornejo entries is still the value
+  // published in Cornejo et al. (2015), recorded in gamma_Kair_source.
+  const SRC_CALC = 'ICRP 107 (2008) + ICRP 74 (1996), A.21';
+  function gammaSourceLabel(n) {
+    if (n.id === 'Y-90') return 'Not applicable';
+    if (!n.source) return 'Not recorded';
+    if (n.source.startsWith('Cornejo')) return 'K-air, H*, H′: Cornejo (2015)';
+    const kair = n.gamma_Kair_source || '';
+    const hs = n.chain_members ? `${SRC_CALC}, incl. progeny` : SRC_CALC;
+    if (kair.startsWith('Cornejo')) return `K-air: Cornejo (2015); H*/H′: ${hs}`;
+    if (kair.startsWith('Calculated')) return `K-air, H*, H′: ${hs}`;
+    return `K-air: source not recorded; H*/H′: ${hs}`;
+  }
+
+  // Regulatory values for rows without curated fields (ICRP 107 extended
+  // results), so a dash never has to stand for "look in the detail panel" (T14).
+  const cellStatus = text => `<span class="text-muted text-sm">${text}</span>`;
+  function extendedClearanceCell(id) {
+    if (typeof REGULATORY === 'undefined') return cellStatus('See details');
+    const c = REGULATORY.clearanceA1(id);
+    return c.status === 'listed' ? `<span class="mono">${c.rows[0].kBq_kg}</span>` : cellStatus('Not tabulated');
+  }
+  function extendedDischargeCell(id) {
+    if (typeof REGULATORY === 'undefined') return cellStatus('See details');
+    const lvl = REGULATORY.dischargeLevel(id);
+    return lvl ? `<span class="mono">${fmtNumber(lvl.Bq_per_L)}</span>` : cellStatus('Not tabulated');
   }
 
   function fmtEffluentLimit(n) {
@@ -267,7 +297,7 @@
       return '<span class="text-muted" title="Assess mixture components separately">mixture</span>';
     }
     if (n.effluent_liquid_limit_Bq_per_L === null || n.effluent_liquid_limit_Bq_per_L === undefined) {
-      return '<span class="text-muted">—</span>';
+      return cellStatus('Not tabulated');
     }
     return `<span class="mono">${fmtNumber(n.effluent_liquid_limit_Bq_per_L)}</span>`;
   }
@@ -289,7 +319,7 @@
       symbol: icrpDisplaySymbol(n.id),
       name: n.id,
       decay_modes: n.decay_modes || [],
-      representative_energy_keV: '—',
+      representative_energy_keV: null,
       gamma_H10: constants ? Number(constants.gammaH10.toPrecision(4)) : null,
       gamma_H007: constants ? Number(constants.gammaH007.toPrecision(4)) : null,
       source: 'ICRP 107',
@@ -316,7 +346,9 @@
     }
 
     currentData = data;
-    document.getElementById('rowCount').textContent = `${data.length} nuclide${data.length !== 1 ? 's' : ''}`;
+    const extendedShown = data.some(n => n._icrp107 || n._regOnly);
+    document.getElementById('rowCount').textContent = `${data.length} nuclide${data.length !== 1 ? 's' : ''}` +
+      (extendedShown && activeModality !== 'all' ? ' — Extended results have no modality classification; the modality filter is not applied to them' : '');
 
     const rows = data.map(n => {
       if (n._regOnly) return regulatoryOnlyRow(n.id);
@@ -331,13 +363,13 @@
           <td>${UTILS.escapeHtml(n.half_life_display)}</td>
           <td class="text-sm">${UTILS.escapeHtml(decayStr)}</td>
           <td>${icrpBadge}</td>
-          <td class="num text-muted">—</td>
-          <td class="num">${fmtGamma(n.gamma_H10)}</td>
-          <td class="num">${fmtGamma(n.gamma_H007)}</td>
-          <td class="num text-muted">—</td>
-          <td class="num text-muted">—</td>
-          <td class="num text-muted">—</td>
-          <td class="text-sm">${n.source}</td>
+          <td class="num">${cellStatus('Not calculated')}</td>
+          <td class="num">${n.gamma_H10 == null ? cellStatus('No selected photon line') : fmtGamma(n.gamma_H10)}</td>
+          <td class="num">${n.gamma_H007 == null ? cellStatus('No selected photon line') : fmtGamma(n.gamma_H007)}</td>
+          <td class="num">${cellStatus('See details')}</td>
+          <td class="num">${extendedDischargeCell(n.id)}</td>
+          <td class="num">${extendedClearanceCell(n.id)}</td>
+          <td class="text-sm">H*/H′: ${SRC_CALC} (not manually validated)</td>
         </tr>`;
       }
 
@@ -352,17 +384,10 @@
         <td class="num">${fmtGamma(n.gamma_Kair)}</td>
         <td class="num">${fmtGamma(n.gamma_H10)}${cornejoDeviationNote(n)}</td>
         <td class="num">${fmtGamma(n.gamma_H007)}${h007note}</td>
-        <td class="num">${n.representative_energy_keV ?? '—'}</td>
+        <td class="num">${n.representative_energy_keV ?? cellStatus('No selected photon line')}</td>
         <td class="num">${fmtEffluentLimit(n)}</td>
-        <td class="num">${n.clearance_a1_kBq_per_kg != null ? n.clearance_a1_kBq_per_kg : '—'}</td>
-        <td class="text-sm">${
-          n.id === 'Y-90' ? 'Not applicable'
-          : !n.source ? '—'
-          : n.source.startsWith('Cornejo') ? 'Cornejo 2015'
-          : n.source.startsWith('Zanzonico') ? 'Zanzonico 1999 (est.)'
-          : n.source.startsWith('ICRP 107') ? 'ICRP 107'
-          : 'Calc.'
-        }</td>
+        <td class="num">${n.clearance_a1_kBq_per_kg != null ? n.clearance_a1_kBq_per_kg : cellStatus('Not tabulated')}</td>
+        <td class="text-sm">${UTILS.escapeHtml(gammaSourceLabel(n))}</td>
       </tr>`;
     }).join('');
 
@@ -400,10 +425,10 @@
     const sel = id === selectedId ? 'selected' : '';
     return `<tr class="${sel}" data-id="${UTILS.escapeHtml(id)}" style="opacity:0.85;">
       <td class="sym">${UTILS.escapeHtml(id)}</td>
-      <td class="text-muted">—</td><td class="text-muted">—</td>
+      <td>${cellStatus('No nuclear data')}</td><td>${cellStatus('No nuclear data')}</td>
       <td><span class="tag tag-other" style="font-size:0.85em;">Regulatory only</span></td>
-      <td class="num text-muted">—</td><td class="num text-muted">—</td><td class="num text-muted">—</td>
-      <td class="num text-muted">—</td><td class="num text-muted">—</td><td class="num text-muted">—</td>
+      <td class="num">${cellStatus('Not calculated')}</td><td class="num">${cellStatus('Not calculated')}</td><td class="num">${cellStatus('Not calculated')}</td>
+      <td class="num">${cellStatus('No nuclear data')}</td><td class="num">${extendedDischargeCell(id)}</td><td class="num">${extendedClearanceCell(id)}</td>
       <td class="text-sm">RD 1217/2024 / RD 783/2001 tables only — no nuclear data</td>
     </tr>`;
   }
@@ -442,13 +467,13 @@
         <td>${UTILS.escapeHtml(n.half_life_display)}</td>
         <td class="text-sm">${UTILS.escapeHtml(decayStr)}</td>
         <td>${icrpBadge}</td>
-        <td class="num text-muted">—</td>
-        <td class="num">${fmtGamma(n.gamma_H10)}</td>
-        <td class="num">${fmtGamma(n.gamma_H007)}</td>
-        <td class="num text-muted">—</td>
-        <td class="num text-muted">—</td>
-        <td class="num text-muted">—</td>
-        <td class="text-sm">${UTILS.escapeHtml(n.source)}</td>
+        <td class="num">${cellStatus('Not calculated')}</td>
+        <td class="num">${n.gamma_H10 == null ? cellStatus('No selected photon line') : fmtGamma(n.gamma_H10)}</td>
+        <td class="num">${n.gamma_H007 == null ? cellStatus('No selected photon line') : fmtGamma(n.gamma_H007)}</td>
+        <td class="num">${cellStatus('See details')}</td>
+        <td class="num">${extendedDischargeCell(n.id)}</td>
+        <td class="num">${extendedClearanceCell(n.id)}</td>
+        <td class="text-sm">H*/H′: ${SRC_CALC} (not manually validated)</td>
       </tr>`;
     }).join('');
 
@@ -505,7 +530,7 @@
     document.getElementById('detailTitle').textContent = n.id;
     document.getElementById('detailSymbol').textContent = n.symbol;
     document.getElementById('detailName').textContent   = n.id;
-    document.getElementById('detailUse').textContent    = n.clinical_use || '—';
+    document.getElementById('detailUse').textContent    = n.clinical_use ? 'Example applications: ' + n.clinical_use : (n._icrp107 ? 'ICRP 107 extended entry — no application data' : '—');
 
     // For ICRP 107 nuclides, show info with calculated dose constants
     if (n._icrp107) {
@@ -516,8 +541,8 @@
 
       const photonCount = n.photon_count_filtered || 0;
       const photonNote = photonCount > 0
-        ? `${photonCount} G/X ray${photonCount !== 1 ? 's' : ''} (E≥20keV, yield≥0.01%)`
-        : 'No significant G/X/AQ photons';
+        ? `${photonCount} selected photon line${photonCount !== 1 ? 's' : ''} (γ, X, annihilation; E ≥ 20 keV, yield ≥ 0.01%)`
+        : 'No photon line passes the filter (E ≥ 20 keV, yield ≥ 0.01%)';
 
       // Calculate dose constants from photons
       let gammaH10 = '—', gammaH007 = '—', gammaKair = '—';
@@ -560,12 +585,12 @@
         <div class="prop-item">
           <div class="prop-key">Γ<sup>H*(10)</sup></div>
           <div class="prop-val" style="font-family:monospace;">${gammaH10}</div>
-          <div class="prop-note">Calculated from photons</div>
+          <div class="prop-note">&#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178; — ambient dose-equivalent rate constant, calculated from the selected photon lines</div>
         </div>
         <div class="prop-item">
           <div class="prop-key">Γ<sup>H'(0.07)</sup></div>
           <div class="prop-val" style="font-family:monospace;">${gammaH007}</div>
-          <div class="prop-note">Extremity dose constant</div>
+          <div class="prop-note">&#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178; — directional dose-equivalent rate constant</div>
         </div>
       `;
 
@@ -594,6 +619,7 @@
                 <tbody>${photonRows}</tbody>
               </table>
             </div>
+            <div class="form-hint">Type — G: gamma; X: X-ray; AQ: annihilation photons. Yield: photons emitted per 100 decays.</div>
           </div>
         `;
       }
@@ -635,7 +661,7 @@
         </div>
         ${betaEnergyHtml}
         <div class="prop-item">
-          <div class="prop-key">Representative &#947; energy</div>
+          <div class="prop-key">Representative photon energy</div>
           <div class="prop-val">${n.representative_energy_keV ?? '—'}</div>
           <div class="prop-note">keV</div>
         </div>
@@ -656,9 +682,9 @@
         </div>
         ${regulatoryItemsHtml(n.id, { withIngestion: false })}
         <div class="prop-item">
-          <div class="prop-key">Liquid effluent limit</div>
+          <div class="prop-key">Individual discharge concentration level</div>
           <div class="prop-val">${effluentLimit}</div>
-          <div class="prop-note">${effluentNote}</div>
+          <div class="prop-note">${effluentNote} — one of the IS-28 II.A.4 conditions (see the notes below)</div>
         </div>
       `;
 
@@ -677,7 +703,7 @@
           `).join('');
           photonTable = `
             <div style="margin-top:1rem;">
-              <div style="font-weight:600;margin-bottom:0.5rem;">Photon spectrum (E≥20keV, yield≥0.01%):</div>
+              <div style="font-weight:600;margin-bottom:0.5rem;">${n.chain_members ? 'Parent-only photon spectrum; dose constants include the stated progeny' : 'Photon spectrum'} (E ≥ 20 keV, yield ≥ 0.01%):</div>
               <div class="overflow-x-auto" style="max-height:200px;overflow-y:auto;">
                 <table style="font-size:0.9em;width:100%;">
                   <thead style="position:sticky;top:0;background:var(--bg-elevated);border-bottom:1px solid var(--border);">
@@ -690,8 +716,11 @@
                   <tbody>${photonRows}</tbody>
                 </table>
               </div>
+              <div class="form-hint">Type — G: gamma; X: X-ray; AQ: annihilation photons. Yield: photons emitted per 100 decays.</div>
             </div>
           `;
+        } else if (n.id.includes('+')) {
+          photonTable = `<div class="form-hint" style="margin-top:1rem;">No combined photon spectrum is shown for this composite entry; see its components (${UTILS.escapeHtml(n.id.split('+').join(', '))}).</div>`;
         }
       }
       if (photonTable) {
@@ -720,12 +749,12 @@
     if (pubH10 != null && n.gamma_H10 != null) {
       const dev = (n.gamma_H10 - pubH10) / pubH10 * 100;
       if (Math.abs(dev) > 5) {
-        notes.push(`&#9888; &#915;<sup>H*(10)</sup> recalculated from ICRP 107 differs ${dev > 0 ? '+' : ''}${dev.toFixed(1)}% from the published Cornejo et al. (2015) value (${pubH10} &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;).`);
+        notes.push(`&#9888; &#915;<sup>H*(10)</sup> recalculated (ICRP 107 (2008) photon data, ICRP 74 (1996) Table A.21) differs ${dev > 0 ? '+' : ''}${dev.toFixed(1)}% from the published Cornejo et al. (2015) value (${pubH10} &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;).`);
       }
     }
 
     if (n.id === 'Y-90') {
-      notes.push('Pure β⁻ emitter: photon dose-rate constants are not applicable. The Dose page provides a separate experimental bremsstrahlung scenario whose estimates depend on container material; they are not primary-source container constants and must not be used for regulatory conclusions.');
+      notes.push('Predominantly β⁻ emitter with no photon line passing the filter: photon dose-rate constants are not applicable, and direct beta dose is not calculated by this app. The Dose page provides a separate experimental bremsstrahlung scenario whose estimates depend on container material; they are not primary-source container constants and must not be used for regulatory conclusions.');
     } else if (n.source && !n.source.startsWith('Cornejo') && !n._icrp107) {
       notes.push('Source: ' + UTILS.escapeHtml(n.source));
     } else if (n.H007_from_cornejo) {
@@ -775,26 +804,34 @@
                      'ingestion_dose_coeff_adult_Sv_per_Bq', 'effluent_liquid_limit_Bq_per_L',
                      'effluent_liquid_limit_source', 'clearance_a1_kBq_per_kg',
                      'clearance_a1_source', 'exemption_B_col2_kBq_per_kg', 'exemption_B_col3_Bq',
-                     'gamma_source'];
+                     'gamma_source', 'gamma_Kair_source', 'record_origin'];
+    // Empty cells are accompanied by their state (copy audit 2026-10-03, T14)
+    const origin = n => n._regOnly ? 'regulatory tables only (no nuclear data)' : n._icrp107 ? 'ICRP 107 extended (not manually validated)' : 'curated';
+    const a1Of = n => { if (n.clearance_a1_kBq_per_kg != null) return n.clearance_a1_kBq_per_kg;
+      const c = REGULATORY.clearanceA1(n.id); return c.status === 'listed' && !DB.getById(n.id) ? c.rows[0].kBq_kg : ''; };
+    const dischargeOf = n => { if (n.effluent_liquid_limit_Bq_per_L != null) return n.effluent_liquid_limit_Bq_per_L;
+      if (DB.getById(n.id)) return ''; const l = REGULATORY.dischargeLevel(n.id); return l ? Number(l.Bq_per_L.toPrecision(3)) : ''; };
     const rows = currentData.map(n => [
       n.id,
       n.symbol,
       n.name,
       n.half_life_display,
       (n.decay_modes || []).map(d => d.mode).join('; '),
-      n.modality,
-      n.gamma_Kair ?? '',
+      n.modality ?? '',
+      n.gamma_Kair ?? (n._icrp107 ? 'not calculated' : ''),
       n.gamma_H10 ?? '',
       n.gamma_H007 ?? '',
-      n.representative_energy_keV ?? '',
+      typeof n.representative_energy_keV === 'number' ? n.representative_energy_keV : '',
       n.ingestion_dose_coeff_adult_Sv_per_Bq ?? '',
-      n.effluent_liquid_limit_Bq_per_L ?? '',
+      dischargeOf(n) === '' ? 'not tabulated' : dischargeOf(n),
       n.effluent_liquid_limit_source ?? '',
-      n.clearance_a1_kBq_per_kg ?? '',
-      n.clearance_a1_kBq_per_kg != null ? 'RD 1217/2024 Annex IV Table A1' : 'not tabulated in Table A1 (Annex III.1.b: RP 122 Part 1)',
+      a1Of(n),
+      a1Of(n) !== '' ? 'RD 1217/2024 Annex IV Table A1' : 'not tabulated in Table A1 (Annex III.1.b: RP 122 Part 1)',
       (() => { const b = REGULATORY.exemptionB(n.id); return b.status === 'listed' ? b.rows.map(r => r.conc_kBq_kg + (r.note ? ` (${r.note})` : '')).join(' | ') : ''; })(),
       (() => { const b = REGULATORY.exemptionB(n.id); return b.status === 'listed' ? b.rows.map(r => r.activity_Bq + (r.note ? ` (${r.note})` : '')).join(' | ') : ''; })(),
-      n.source || ''
+      n._regOnly ? '' : n._icrp107 ? `H*/H′: ${SRC_CALC}` : gammaSourceLabel(n),
+      n.gamma_Kair_source || '',
+      origin(n)
     ].map(v => {
       const str = String(v);
       const safe = /^[=+\-@\t\r]/.test(str) ? "'" + str : str;

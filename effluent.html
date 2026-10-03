@@ -32,10 +32,10 @@
 <main class="page-body" id="main-content">
   <h1 class="page-title">Liquid Effluent — Sewer and STP Workers</h1>
   <div class="page-subtitle">
-    Annual effective dose from activity excreted by nuclear-medicine patients, NUREG/CR-5814:
-    <strong>Scenario 1</strong> — sewer system inspector in the interceptor (external immersion in the wastewater + inhalation of aerosol);
+    Annual effective dose from activity excreted by nuclear-medicine patients, adapted from NUREG/CR-5814 (1992):
+    <strong>Scenario 1</strong> — sewer system inspector in the interceptor (external irradiation from wastewater — water slab, receptor 1 m above its surface — plus aerosol inhalation);
     <strong>Scenario 2</strong> — sewage-treatment-plant (STP / EDAR) operator of sludge dewatering equipment
-    (external exposure to dewatered sludge + inhalation of resuspended dry sludge, all discharged activity retained in one year of sludge — IAEA SRS-19 §4.9).
+    (external exposure to dewatered sludge + inhalation of resuspended dry sludge; retained fraction as entered (default: 100%), annual discharge / annual sludge-production screening model with transit decay only — IAEA SRS-19 (2001) §4.9).
   </div>
 
   <div class="alert alert-warning mb-1">
@@ -79,7 +79,11 @@
       patients living in the STP catchment.
     </div>
     <div class="form-hint mt-1" id="tankStatus"></div>
-    <ul class="text-sm mt-1" id="sourceNotes"></ul>
+    <ul class="text-sm mt-1" id="sourceWarnings"></ul>
+    <details class="mt-1">
+      <summary><strong>Sources and assumptions of the default source term</strong></summary>
+      <ul class="text-sm mt-1" id="sourceNotes"></ul>
+    </details>
   </div>
 
   <!-- B. Scenario 1 -->
@@ -119,6 +123,10 @@
   <div class="card mt-2">
     <h2 class="card-title">&#9881; D. Common parameters</h2>
     <div class="form-grid" id="commonGrid"></div>
+    <details class="mt-2">
+      <summary><strong>Sources and assumptions of the parameters</strong></summary>
+      <ul class="text-sm ref-list mt-1" id="paramSources"></ul>
+    </details>
   </div>
 
   <!-- Results -->
@@ -137,8 +145,8 @@
               <th class="text-right">DF (transit decay)</th>
               <th class="text-right">C wastewater (Bq/m³ per GBq)</th>
               <th class="text-right">C air (Bq/m³ per GBq)</th>
-              <th class="text-right">FD (µSv/GBq)</th>
-              <th class="text-right">To sewer (GBq/y)</th>
+              <th class="text-right" title="Dose per unit activity discharged in one year, under the parameters entered">FD (µSv/GBq)</th>
+              <th class="text-right" title="Activity leaving the hospital in one year">Leaving hospital (GBq/y)</th>
               <th class="text-right">External (mSv/y)</th>
               <th class="text-right">Inhalation (mSv/y)</th>
               <th class="text-right">E (mSv/y)</th>
@@ -157,8 +165,8 @@
               <th class="text-right">DF (transit decay)</th>
               <th class="text-right">C dry sludge (Bq/kg per GBq)</th>
               <th class="text-right">C wet sludge (Bq/m³ per GBq)</th>
-              <th class="text-right">FD (µSv/GBq)</th>
-              <th class="text-right">To sewer (GBq/y)</th>
+              <th class="text-right" title="Dose per unit activity reaching the plant in one year, under the parameters entered">FD (µSv/GBq)</th>
+              <th class="text-right" title="Hospital discharge plus the activity excreted at home in the catchment">Activity reaching STP (GBq/y)</th>
               <th class="text-right">External (mSv/y)</th>
               <th class="text-right">Inhalation (mSv/y)</th>
               <th class="text-right">E (mSv/y)</th>
@@ -192,9 +200,9 @@
                 <th class="text-right">T½ (d)</th>
                 <th class="text-right">k Sc. 1 ((nSv/h)/(Bq/m³))</th>
                 <th class="text-right">k Sc. 2 ((nSv/h)/(Bq/m³))</th>
-                <th>Uncertainty (k = 1) / envelope</th>
+                <th>Relative Monte Carlo standard uncertainty (coverage factor 1) / envelope</th>
                 <th class="text-right">e(inh) (Sv/Bq)</th>
-                <th>Type</th>
+                <th title="Lung absorption type — F: fast; M: moderate absorption">Type (F/M)</th>
               </tr>
             </thead>
             <tbody id="coeffBody"></tbody>
@@ -231,12 +239,17 @@
         <li>C<sub>air</sub> [Bq/m³] = C<sub>dry</sub> · dust loading · f<sub>resp</sub></li>
         <li>E<sub>ext</sub> = C<sub>wet</sub> · k<sub>2</sub> · t<sub>ext</sub> · f<sub>geom</sub>; E<sub>inh</sub> = C<sub>air</sub> · BR · t<sub>inh</sub> · e(inh)</li>
       </ul>
-      <p>No decay during the exposure year is applied: the discharge is continuous, so annual-average concentrations
-      are steady-state ones. k<sub>1</sub> and k<sub>2</sub> are effective-dose-rate coefficients (ICRP 116, ROT)
+      <p>No decay during the exposure year is applied. The concentration is the annual discharge divided by the annual
+      water volume (Scenario 1) or by the annual sludge production (Scenario 2), with transit decay only; this is a
+      screening assumption — a continuous discharge does not by itself demonstrate mixing or steady state.
+      f<sub>sludge</sub> is the retained fraction as entered (default: 100%).
+      k<sub>1</sub> and k<sub>2</sub> are effective-dose-rate coefficients (ICRP Publication 116 (2010), ROT)
       calculated with PHITS for the geometry of each scenario — they are <strong>not</strong> point-source Γ
       constants and only apply to that geometry.</p>
-      <p>Algorithms and defaults reproduce the reference workbooks <em>IRA-xxxx_Lu-177_dosis_en_escenario2_v1.xlsx</em>
-      (Scenario 2) and <em>Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx</em> (Scenario 1). Half-lives are taken from the
+      <p>Algorithms and defaults are adapted from the reference workbooks <em>IRA-xxxx_Lu-177_dosis_en_escenario2_v1.xlsx</em>
+      (Scenario 2) and <em>Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx</em> (Scenario 1). <span id="adaptationNote"></span> Inhalation coefficients are those for adult members of
+      the public (RD 783/2001 Annex III table b), kept by the CSN Resolution of 3 April 2024; transcription: ICRP Publication 119 (2012),
+      Table G.1), lung absorption type F (fast) or M (moderate). Half-lives are taken from the
       app database (Lu-177m, not a curated entry, from ICRP 107).</p>
     </div>
   </div>
@@ -296,10 +309,17 @@
       return `<div class="form-group">
         <label class="form-label" for="${s}_${key}">${esc(p.label)} (${esc(p.unit)})</label>
         <input type="number" class="form-input" id="${s}_${key}" value="${p.value}" ${attrs} step="any" title="${UTILS.safeAttr(p.label)}">
-        <div class="form-hint">${esc(p.source)}</div>
+        <div class="form-hint">${esc(p.hint || p.source)}</div>
       </div>`;
     }).join('');
   }
+  // Provenance (workbook cells, report sections) is kept for traceability, apart
+  // from the entry instructions (copy audit 2026-10-03, T30).
+  const SCEN_NAME = { common: 'Common', s1: 'Scenario 1', s2: 'Scenario 2' };
+  document.getElementById('paramSources').innerHTML = SCEN.map(s => Object.values(PG[s]).map(p =>
+    `<li><strong>${esc(SCEN_NAME[s])} — ${esc(p.label)}</strong> (default ${esc(String(p.value))} ${esc(p.unit)}): ${esc(p.source)}</li>`).join('')).join('') +
+    `<li><strong>Facility presets</strong>: ${esc(data.facility_presets.source)}</li>`;
+  document.getElementById('adaptationNote').textContent = data.meta.adaptation_note;
 
   // Facility presets fill the water volume; any manual edit switches to Custom.
   const facSel = document.getElementById('facility');
@@ -313,7 +333,7 @@
     facSel.value = match || 'custom';
   };
   syncFacility();
-  document.getElementById('facilityHint').textContent = presets.source;
+  document.getElementById('facilityHint').textContent = 'Generic annual water volumes; use the licensee\'s figure when available.';
   facSel.addEventListener('change', () => {
     if (facSel.value !== 'custom') volInput.value = presets[facSel.value].water_volume_m3_y;
     render();
@@ -339,9 +359,11 @@
       <td class="num" id="st_${i}_A2">—</td>
     </tr>`;
   }).join('');
+  // Warnings stay visible; provenance goes to the collapsible block (T30)
+  document.getElementById('sourceWarnings').innerHTML = nuclides.filter(({ nd }) => nd.source_term.activity_warning || nd.s2_note).map(({ nd }) =>
+    `<li><strong>${esc(nd.id)}</strong>: ${nd.source_term.activity_warning ? `<span style="color:var(--warning-text);">&#9888; ${esc(nd.source_term.activity_warning)}</span>` : ''}${nd.s2_note ? ' ' + esc(nd.s2_note) : ''}</li>`).join('');
   document.getElementById('sourceNotes').innerHTML = nuclides.map(({ nd }) =>
-    `<li><strong>${esc(nd.id)}</strong>: ${esc(nd.source_term.source)}${nd.s2_note ? ' ' + esc(nd.s2_note) : ''}` +
-    `${nd.source_term.activity_warning ? `<br><span style="color:var(--warning-text);">&#9888; ${esc(nd.source_term.activity_warning)}</span>` : ''}</li>`).join('');
+    `<li><strong>${esc(nd.id)}</strong>: ${esc(nd.source_term.source)}</li>`).join('');
 
   const geoSel = document.getElementById('geometry');
   geoSel.innerHTML = ['L10', 'L45'].map(g =>
@@ -382,6 +404,9 @@
 
   // 4 significant figures; exponent notation outside [1e-3, 1e5) so small
   // inhalation terms do not render as long strings of zeros.
+  // DF in fixed notation while it is readable; scientific when small, so that a
+  // tiny non-zero factor (F-18 after 3 d) is never printed as 0.0000 (T29)
+  const fmtDF = v => (v >= 0.001 ? v.toFixed(4) : v.toExponential(2));
   const sci = v => {
     if (!Number.isFinite(v)) return '—';
     if (v === 0) return '0';
@@ -428,7 +453,7 @@
 
     document.getElementById('s1Body').innerHTML = out.s1.rows.map(r => `<tr>
       <td class="sym">${esc(r.id)}</td>
-      <td class="num">${r.DF.toFixed(4)}</td>
+      <td class="num">${fmtDF(r.DF)}</td>
       <td class="num">${sci(r.per_GBq.C_water_Bq_m3)}</td>
       <td class="num">${sci(r.per_GBq.C_air_Bq_m3)}</td>
       <td class="num">${sci(r.per_GBq.FD_uSv)}</td>
@@ -442,7 +467,7 @@
     // "n/a" (not a zero dose), row and scenario flagged partial (audit H-06).
     document.getElementById('s2Body').innerHTML = out.s2.rows.map(r => `<tr>
       <td class="sym">${esc(r.id)}${r.partial ? ' <span class="text-sm" title="No external coefficient for Scenario 2">(partial)</span>' : ''}</td>
-      <td class="num">${r.DF.toFixed(4)}</td>
+      <td class="num">${fmtDF(r.DF)}</td>
       <td class="num">${sci(r.per_GBq.C_dry_Bq_kg)}</td>
       <td class="num">${sci(r.per_GBq.C_wet_Bq_m3)}</td>
       <td class="num">${r.partial ? '≥ ' : ''}${sci(r.per_GBq.FD_uSv)}</td>
@@ -540,8 +565,8 @@
     const { input, out } = last;
     const geo = input.geometry;
     const scenarioRows = (res, extra) => res.rows.map(r => r.partial
-      ? [`${r.id} (PARTIAL)`, `${sci(r.A_GBq_y)} GBq/y; DF ${r.DF.toFixed(4)}; external: not available (no Scenario 2 coefficient — not a zero dose); inhalation ${sci(r.per_GBq.D_inh_uSv)} µSv/GBq; E ≥ ${sci(r.E_mSv_y)} mSv/y (inhalation only)${extra(r)}`]
-      : [r.id, `${sci(r.A_GBq_y)} GBq/y; DF ${r.DF.toFixed(4)}; FD ${sci(r.per_GBq.FD_uSv)} µSv/GBq (external ${sci(r.per_GBq.D_ext_uSv)}, inhalation ${sci(r.per_GBq.D_inh_uSv)}); E = ${sci(r.E_mSv_y)} mSv/y${extra(r)}`])
+      ? [`${r.id} (PARTIAL)`, `${sci(r.A_GBq_y)} GBq/y; DF ${fmtDF(r.DF)}; external: not available (no Scenario 2 coefficient — not a zero dose); inhalation ${sci(r.per_GBq.D_inh_uSv)} µSv/GBq; E ≥ ${sci(r.E_mSv_y)} mSv/y (inhalation only)${extra(r)}`]
+      : [r.id, `${sci(r.A_GBq_y)} GBq/y; DF ${fmtDF(r.DF)}; FD ${sci(r.per_GBq.FD_uSv)} µSv/GBq (external ${sci(r.per_GBq.D_ext_uSv)}, inhalation ${sci(r.per_GBq.D_inh_uSv)}); E = ${sci(r.E_mSv_y)} mSv/y${extra(r)}`])
       .concat([[res.complete ? 'Total (linear sum over included nuclides)' : 'PARTIAL SUM (pathways missing: ' + res.missing.join(', ') + ')',
         `${res.complete ? '' : '≥ '}${sci(res.total_mSv_y)} mSv/y` + (out.comparison === 'none'
           ? ' — no comparison (criterion ≤ 0)'
@@ -578,9 +603,9 @@
       notes: [
         'The two scenarios concern different receptors; their totals are not added together.',
         'All administered activity is assumed to be excreted. Scenario 1 receives the activity leaving the hospital (excreted in hospital, or the share of the decay-tank discharge for controlled nuclides), diluted in the facility\'s annual water volume. Scenario 2 receives that activity plus the activity excreted at home by the patients living in the STP catchment.',
-        'Scenario 2 screening model: all discharged activity retained in one year of sludge (IAEA SRS-19 §4.9 case b; NUREG/CR-5814 §5.1). Steady-state concentrations, no decay during the exposure year.',
+        'Scenario 2 screening model: retained fraction as entered (default: 100%) of the activity reaching the plant, in one year of sludge (IAEA SRS-19 (2001) §4.9 case b; NUREG/CR-5814 (1992) §5.1). Annual discharge / annual sludge production, with transit decay only; no decay during the exposure year.',
         'Not a complete discharge assessment: IS-28 Annex II II.A.4 conditions and mixture clearance are evaluated separately.',
-        'Inhalation dose coefficients for adult members of the public (ICRP 119 Table G.1).',
+        'Inhalation dose coefficients for adult members of the public: RD 783/2001 Annex III table b), kept by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1). Absorption type F: fast; M: moderate.',
         data.scenario1_geometry.note,
         data.geometries.infinite_slab_warning,
         'The criterion is user-defined; the app attributes no regulatory basis to it.',

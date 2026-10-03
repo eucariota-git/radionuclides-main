@@ -464,6 +464,45 @@ async function main() {
       /Z \(UTC\); local: /.test(reportJs) && /no published comparison is recorded in this app/.test(reportJs) &&
       /difference not reconciled/.test(reportJs) && !/reflects updated ICRP 107 decay data/.test(reportJs));
   }
+  {
+    // Copy audit 2026-10-03, phase 3 (T07-T15, T26-T30)
+    const nuc = require(path.join(ROOT, 'data/nuclides.json')).nuclides;
+    const eff = require(path.join(ROOT, 'data/effluent-scenarios.json'));
+    const indexHtml3 = read('index.html');
+    check('every curated K-air constant states its own source, and "Cornejo" only where it equals the published value (T07)',
+      nuc.every(n => (n.gamma_Kair == null) === (n.gamma_Kair_source == null)) &&
+      nuc.filter(n => /^Cornejo/.test(n.gamma_Kair_source || '')).length === 32 &&
+      nuc.filter(n => /^Cornejo/.test(n.gamma_Kair_source || '')).every(n => n.cornejo_validation.gamma_Kair_Cornejo === n.gamma_Kair) &&
+      /function gammaSourceLabel\(n\)/.test(indexHtml3) && /'gamma_Kair_source', 'record_origin'/.test(indexHtml3));
+    check('properties: levels, photon lines and constants carry their real names and units (T08-T10)',
+      !/Liquid effluent limit|Liquid effluent level|Extremity dose constant|G\/X ray|No significant G\/X\/AQ|Representative &#947; energy/.test(indexHtml3) &&
+      /Individual discharge concentration level/.test(indexHtml3) && /Representative photon energy/.test(indexHtml3) &&
+      /Parent-only photon spectrum; dose constants include the stated progeny/.test(indexHtml3) &&
+      /G: gamma; X: X-ray; AQ: annihilation photons/.test(indexHtml3));
+    check('properties: no unsupported claims in the notes; no invitation to edit the JSON; uses are "example applications" (T11-T13, T15)',
+      !/more recent ICRP 107|equilibrium within hours|published conservative constant|can be edited directly|pure β⁻ emitter/.test(indexHtml3) &&
+      /Example applications/.test(indexHtml3) && /do not indicate marketing authorisation/.test(indexHtml3) &&
+      !/^SPECT: red cell/.test(nuc.find(n => n.id === 'Cr-51').clinical_use) &&
+      !/MIBG therapy$/.test(nuc.find(n => n.id === 'I-131').clinical_use));
+    check('properties: an empty cell states why (not tabulated / not calculated / see details) (T14)',
+      /cellStatus\('Not tabulated'\)/.test(indexHtml3) && /cellStatus\('Not calculated'\)/.test(indexHtml3) &&
+      /Extended results have no modality classification/.test(indexHtml3) &&
+      !/<td class="num text-muted">—<\/td>\s*<td class="num">\$\{fmtGamma\(n\.gamma_H10\)\}/.test(indexHtml3));
+    const params = Object.values(eff.parameters).flatMap(g => Object.values(g));
+    check('effluent: every parameter has a short hint; provenance is listed apart (T30)',
+      params.length === 22 && params.every(q => typeof q.hint === 'string' && q.hint.length > 10 && !/cell [A-Z]\d/.test(q.hint)) &&
+      /p\.hint \|\| p\.source/.test(effluentHtml) && /id="paramSources"/.test(effluentHtml) && /id="sourceWarnings"/.test(effluentHtml));
+    check('effluent: receptor, geometries and retained fraction are described as modelled (T26-T28)',
+      !/external immersion/.test(effluentHtml + JSON.stringify(eff)) && !/[Uu]p to \d+ m²|Covers real Spanish/.test(JSON.stringify(eff.geometries)) &&
+      /^Model geometry: 10 × 10 × 3 m/.test(eff.geometries.L10.label) && /^Model geometry: 45 × 45 × 3 m/.test(eff.geometries.L45.label) &&
+      /retained fraction as entered \(default: 100%\)/i.test(effluentHtml) &&
+      !/reproduce the reference workbooks|so annual-average concentrations\s+are steady-state/.test(effluentHtml) &&
+      !/Always one treatment/.test(JSON.stringify(eff)));
+    check('effluent: STP activity is not called "to sewer", a small DF is never 0.0000, k is not also a coverage factor (T29)',
+      !/To sewer/.test(effluentHtml) && /Activity reaching STP/.test(effluentHtml) && !/DF\.toFixed\(4\)/.test(effluentHtml) &&
+      /const fmtDF = v => \(v >= 0\.001 \? v\.toFixed\(4\) : v\.toExponential\(2\)\)/.test(effluentHtml) &&
+      !/k = 1/.test(effluentHtml + JSON.stringify(eff)) && /coverage factor 1/.test(effluentHtml));
+  }
   check('decay names the denominator as mass of material, never "vial weight" (copy audit T04)',
     /Mass of material being assessed/.test(decayHtml) && !/Vial \/ container weight|Vial_weight/.test(decayHtml) &&
     /identify whether the container is included/.test(decayHtml));
