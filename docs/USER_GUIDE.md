@@ -175,7 +175,7 @@ The two scenarios concern **different receptors: each total is compared with the
    - The fraction excreted in hospital leaves through the facility's sewer connection. For nuclides controlled in decay tanks only the annual tank discharge leaves (common parameter, default 1 GBq/y for the sum of controlled nuclides — the IS-28 Annex II II.A.4 annual limit), shared among them in proportion to the activity excreted into the tanks; when that activity is below the limit, all of it is assumed discharged (no decay credit)
    - The rest is excreted at home
    - **Scenario 1** receives only the activity leaving the hospital; **Scenario 2** receives the activity leaving the hospital plus the activity excreted at home by the patients living in the STP catchment
-   - I-131: always one treatment per patient (default 0.8 GBq, the workbook value)
+   - I-131: always one treatment per patient; the default 0.8 GBq is the workbook's activity at hospital DISCHARGE, not the administered activity — replace it with the administered activity and a justified in-hospital fraction
    - Lu-177m: impurity of carrier-added Lu-177 (default 0.01 % of 7.4 GBq per cycle)
    - Tc-99m: no default in the reference workbooks — enter the facility's data
 2. **Scenario 1**: facility type (hospital 20 000 m³/y, clinic 3650 m³/y, or the licensee's figure — consumption ≈ discharge), water density, aerosol loading, respirable fraction, exposure times, geometry factor and transit time (≈ 0.2 h)
@@ -189,12 +189,15 @@ Results update as you type: per scenario, decay factor, concentrations and dose 
 - Scenario 2: C_dry [Bq/kg] = A · f_sludge · DF / (M_wet · f_solids); C_wet [Bq/m³] = A · f_sludge · DF · ρ_wet / M_wet; C_air = C_dry · dust loading · f_resp; E_ext = C_wet · k₂ · t_ext · f_geom; E_inh = C_air · BR · t_inh · e(inh)
 
 **Data**:
-- **k₁, k₂** (external): effective-dose-rate coefficients (ICRP 116, rotational geometry) calculated with PHITS — Scenario 1 for a 600 × 200 × 50 cm water slab with the receptor at 1 m, Scenario 2 for a uniform 3 m deep sludge source with the receptor at 2 m. They are **not** point-source Γ constants and apply only to those geometries. F-18 has no Scenario 2 coefficient and is shown as *not evaluated*, not as zero
+- **k₁, k₂** (external): effective-dose-rate coefficients (ICRP 116, rotational geometry) calculated with PHITS — Scenario 1 for a 600 × 200 × 50 cm water slab with the receptor at 1 m, Scenario 2 for a uniform 3 m deep sludge source with the receptor at 2 m. They are **not** point-source Γ constants and apply only to those geometries. F-18 has no Scenario 2 external coefficient: its external pathway is shown as *n/a* (not zero), its inhalation is still computed, and the Scenario 2 total is labelled a **partial sum** (≥) on screen, in the report and in the CSV
 - **e(inh)**: RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table G.1) — Lu-177 M 1.1×10⁻⁹, Lu-177m M 1.3×10⁻⁸, I-131 F 7.4×10⁻⁹, Tc-99m M 1.9×10⁻¹¹, F-18 M 5.6×10⁻¹¹ Sv/Bq
 - Half-lives from the app database; Lu-177m, which is not a curated entry, from ICRP 107 (160.4 d)
 
 **Limitations**:
 - Screening models; no decay during the exposure year (continuous discharge, steady-state concentrations)
+- Site hypotheses, not regulatory values: the 25 % solids fraction (reference workbook; no 20–25 % range found in the PEMAR it cites; NUREG uses 30 %; it only affects inhalation), the 5090 t/y sludge production (workbook value, not verified against the PRTR declaration) and the 1 GBq/y tank discharge (equal to the IS-28 boundary, which requires strictly less)
+- Adaptations of NUREG/CR-5814, not reproductions. The PHITS coefficients carry the path and SHA-256 of their original reports
+- Densities, volumes and masses must be greater than zero; with a criterion ≤ 0 the totals are not compared
 - Scenario 1 coefficients are photon-only: bremsstrahlung from beta and positron emission is not included and has not been bounded for this geometry — the limitation is larger for F-18 and I-131
 - NUREG/CR-5814 prescribes an infinite slab for Scenario 2, which neither coefficient covers. For Lu-177 the PHITS study measured that the 2000 m² coefficient captures 73–75 % of the infinite slab
 - Inhalation uses public dose coefficients: neither worker is an exposed worker of the licensee

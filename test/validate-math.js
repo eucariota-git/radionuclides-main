@@ -838,13 +838,41 @@ console.log('TEST 13: Effluent Scenarios 1 and 2 (CALC.sewerInspectorScenario1, 
     test('tanks: excreted into tanks below the limit (0.8 GBq/y) is discharged in full', row(o2.s1, 'I-131').A_GBq_y, 0.8, 1e-12);
     test('tanks: an uncontrolled nuclide is unaffected by the tank limit', row(o2.s1, 'Lu-177').A_GBq_y, 1498.5, 1e-12);
   }
-  // F-18 has no Scenario 2 coefficient: flagged, not zero, not in the total
-  totalTests++;
-  if (row(l45.s2, 'F-18').no_coefficient === true && !('E_mSv_y' in row(l45.s2, 'F-18'))) {
-    passedTests++; console.log('  ✓ app Sc.2 F-18 is flagged as "no coefficient", not computed as zero');
-  } else { failedTests++; console.log('  ✗ app Sc.2 F-18 should be flagged as "no coefficient"'); }
-  test('app Sc.2 total is the sum of the rows that have a coefficient', l45.s2.total_mSv_y,
-    l45.s2.rows.filter(r => !r.no_coefficient).reduce((a, r) => a + r.E_mSv_y, 0), 1e-12);
+  // F-18 has no Scenario 2 external coefficient (audit 2026-10-03, H-06): its
+  // external pathway is null (not zero), its inhalation IS computed and added,
+  // and the scenario is flagged as a partial sum.
+  {
+    const f = row(l45.s2, 'F-18');
+    totalTests++;
+    if (f.partial === true && f.external_available === false && f.E_ext_mSv_y === null && f.E_inh_mSv_y > 0 &&
+        l45.s2.complete === false && l45.s2.missing.join() === 'F-18 external' && l45.s1.complete === true) {
+      passedTests++; console.log('  ✓ app Sc.2 F-18: external not available (null), inhalation computed, scenario flagged partial');
+    } else { failedTests++; console.log('  ✗ app Sc.2 F-18 partial-pathway handling wrong'); }
+    const inpF = defaults('L45');
+    inpF.nuclides.forEach(n => { n.include = n.id === 'F-18'; });
+    const oF = EFF.evaluate(inpF);
+    totalTests++;
+    if (oF.s2.total_mSv_y > 0 && oF.s2.complete === false) {
+      passedTests++; console.log('  ✓ only F-18 selected: Scenario 2 total is a non-zero PARTIAL sum (was 0 before)');
+    } else { failedTests++; console.log('  ✗ only F-18 selected: Scenario 2 should be a non-zero partial sum'); }
+  }
+  test('app Sc.2 total is the sum of all rows (partial rows contribute their inhalation)', l45.s2.total_mSv_y,
+    l45.s2.rows.reduce((a, r) => a + r.E_mSv_y, 0), 1e-12);
+  // H-05: zero density rejected; criterion ≤ 0 → no comparison (not NaN)
+  {
+    let threw = 0;
+    for (const [g, k] of [['s2', 'wet_density_kg_m3'], ['s1', 'water_density_kg_m3'], ['s1', 'water_volume_m3_y']]) {
+      const inp = defaults('L45'); inp[g][k] = 0;
+      try { EFF.evaluate(inp); } catch (e) { if (e.name === 'RangeError') threw++; }
+    }
+    test('zero sludge density, water density or water volume are rejected', threw, 3, 0);
+    const inp = defaults('L45'); inp.common.dose_criterion_mSv_y = 0;
+    const o = EFF.evaluate(inp);
+    totalTests++;
+    if (o.comparison === 'none' && o.s1.fraction_of_criterion === null && o.s2.fraction_of_criterion === null) {
+      passedTests++; console.log('  ✓ criterion 0 → comparison "none", fractions null (no NaN)');
+    } else { failedTests++; console.log('  ✗ criterion 0 should give comparison "none"'); }
+  }
 
   // 13f: every input changes the result in the expected direction / proportion
   const ratio = (scen, group, key, factor) => {

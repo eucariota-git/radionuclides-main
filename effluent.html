@@ -340,7 +340,8 @@
     </tr>`;
   }).join('');
   document.getElementById('sourceNotes').innerHTML = nuclides.map(({ nd }) =>
-    `<li><strong>${esc(nd.id)}</strong>: ${esc(nd.source_term.source)}${nd.s2_note ? ' ' + esc(nd.s2_note) : ''}</li>`).join('');
+    `<li><strong>${esc(nd.id)}</strong>: ${esc(nd.source_term.source)}${nd.s2_note ? ' ' + esc(nd.s2_note) : ''}` +
+    `${nd.source_term.activity_warning ? `<br><span style="color:var(--warning-text);">&#9888; ${esc(nd.source_term.activity_warning)}</span>` : ''}</li>`).join('');
 
   const geoSel = document.getElementById('geometry');
   geoSel.innerHTML = ['L10', 'L45'].map(g =>
@@ -358,7 +359,10 @@
     const input = { geometry };
     for (const s of SCEN) {
       input[s] = {};
-      for (const key of Object.keys(PG[s])) input[s][key] = readNumber(document.getElementById(`${s}_${key}`));
+      for (const key of Object.keys(PG[s])) {
+        input[s][key] = readNumber(document.getElementById(`${s}_${key}`));
+        if (PG[s][key].positive && !(input[s][key] > 0)) throw new RangeError(`"${PG[s][key].label}" must be greater than 0`);
+      }
     }
     input.nuclides = nuclides.map(({ nd, T }, i) => ({
       id: nd.id,
@@ -434,26 +438,32 @@
       <td class="num"><strong>${sci(r.E_mSv_y)}</strong></td>
     </tr>`).join('') || '<tr><td colspan="9">No nuclide included.</td></tr>';
 
-    document.getElementById('s2Body').innerHTML = out.s2.rows.map(r => r.no_coefficient
-      ? `<tr><td class="sym">${esc(r.id)}</td><td colspan="8">No Scenario 2 coefficient available — not evaluated (not a zero dose).</td></tr>`
-      : `<tr>
-      <td class="sym">${esc(r.id)}</td>
+    // Rows without a Scenario 2 external coefficient: inhalation only, external
+    // "n/a" (not a zero dose), row and scenario flagged partial (audit H-06).
+    document.getElementById('s2Body').innerHTML = out.s2.rows.map(r => `<tr>
+      <td class="sym">${esc(r.id)}${r.partial ? ' <span class="text-sm" title="No external coefficient for Scenario 2">(partial)</span>' : ''}</td>
       <td class="num">${r.DF.toFixed(4)}</td>
       <td class="num">${sci(r.per_GBq.C_dry_Bq_kg)}</td>
       <td class="num">${sci(r.per_GBq.C_wet_Bq_m3)}</td>
-      <td class="num">${sci(r.per_GBq.FD_uSv)}</td>
+      <td class="num">${r.partial ? '≥ ' : ''}${sci(r.per_GBq.FD_uSv)}</td>
       <td class="num">${sci(r.A_GBq_y)}</td>
-      <td class="num">${sci(r.E_ext_mSv_y)}</td>
+      <td class="num">${r.partial ? 'n/a — no coefficient (not zero)' : sci(r.E_ext_mSv_y)}</td>
       <td class="num">${sci(r.E_inh_mSv_y)}</td>
-      <td class="num"><strong>${sci(r.E_mSv_y)}</strong></td>
+      <td class="num"><strong>${r.partial ? '≥ ' : ''}${sci(r.E_mSv_y)}</strong></td>
     </tr>`).join('') || '<tr><td colspan="9">No nuclide included.</td></tr>';
 
-    document.getElementById('s1Total').textContent = sci(out.s1.total_mSv_y);
-    document.getElementById('s2Total').textContent = sci(out.s2.total_mSv_y);
-    document.getElementById('s1Pct').textContent = `mSv/y — ${pct(out.s1.fraction_of_criterion)} % of the criterion`;
-    document.getElementById('s2Pct').textContent = `mSv/y — ${pct(out.s2.fraction_of_criterion)} % of the criterion`;
-    document.getElementById('criterionNote').textContent =
-      `Criterion: ${out.criterion_mSv_y} mSv/y, user-defined — the app attributes no regulatory basis to it.`;
+    const totalText = res => (res.complete ? '' : '≥ ') + sci(res.total_mSv_y);
+    const pctText = res => out.comparison === 'none'
+      ? 'mSv/y — no comparison (criterion ≤ 0)'
+      : `mSv/y — ${res.complete ? '' : 'at least '}${pct(res.fraction_of_criterion)} % of the criterion`;
+    document.getElementById('s1Total').textContent = totalText(out.s1);
+    document.getElementById('s2Total').textContent = totalText(out.s2);
+    document.getElementById('s1Pct').textContent = pctText(out.s1);
+    document.getElementById('s2Pct').textContent = pctText(out.s2) +
+      (out.s2.complete ? '' : ` — PARTIAL SUM, missing: ${out.s2.missing.join(', ')}`);
+    document.getElementById('criterionNote').textContent = out.comparison === 'none'
+      ? 'No positive criterion entered: totals are not compared.'
+      : `Criterion: ${out.criterion_mSv_y} mSv/y, user-defined — the app attributes no regulatory basis to it.`;
 
     document.getElementById('coeffBody').innerHTML = nuclides.map(({ nd, T }) => {
       const k1 = nd.k_ext.s1, k2 = nd.k_ext.s2 ? nd.k_ext.s2[geo] : null;
@@ -470,7 +480,9 @@
     }).join('');
     document.getElementById('coeffSources').innerHTML = nuclides.map(({ nd }) =>
       `<li><strong>${esc(nd.id)}</strong> — k Sc. 1: ${esc(nd.k_ext.s1.source)}` +
-      (nd.k_ext.s2 ? ` k Sc. 2: ${esc(nd.k_ext.s2.quantity)} ${esc(nd.k_ext.s2.source)}` : '') +
+      (nd.k_ext.s1.report_file ? ` [report: ${esc(nd.k_ext.s1.report_file.file)}, SHA-256 ${esc(nd.k_ext.s1.report_file.sha256.slice(0, 12))}…]` : '') +
+      (nd.k_ext.s2 ? ` k Sc. 2: ${esc(nd.k_ext.s2.quantity)} ${esc(nd.k_ext.s2.source)}` +
+        (nd.k_ext.s2.report_file ? ` [report: ${esc(nd.k_ext.s2.report_file.file)}, SHA-256 ${esc(nd.k_ext.s2.report_file.sha256.slice(0, 12))}…]` : '') : '') +
       ` e(inh): ${esc(nd.e_inh.source)}${nd.half_life_source ? ' Half-life: ' + esc(nd.half_life_source) : ''}</li>`).join('');
 
     const ccHtml = nuclides.map(({ nd, T }) => {
@@ -527,10 +539,13 @@
     if (!last) { alert('Correct the input errors first.'); return; }
     const { input, out } = last;
     const geo = input.geometry;
-    const scenarioRows = (res, extra) => res.rows.map(r => r.no_coefficient
-      ? [r.id, 'no Scenario 2 coefficient — not evaluated']
+    const scenarioRows = (res, extra) => res.rows.map(r => r.partial
+      ? [`${r.id} (PARTIAL)`, `${sci(r.A_GBq_y)} GBq/y; DF ${r.DF.toFixed(4)}; external: not available (no Scenario 2 coefficient — not a zero dose); inhalation ${sci(r.per_GBq.D_inh_uSv)} µSv/GBq; E ≥ ${sci(r.E_mSv_y)} mSv/y (inhalation only)${extra(r)}`]
       : [r.id, `${sci(r.A_GBq_y)} GBq/y; DF ${r.DF.toFixed(4)}; FD ${sci(r.per_GBq.FD_uSv)} µSv/GBq (external ${sci(r.per_GBq.D_ext_uSv)}, inhalation ${sci(r.per_GBq.D_inh_uSv)}); E = ${sci(r.E_mSv_y)} mSv/y${extra(r)}`])
-      .concat([['Total (linear sum over included nuclides)', `${sci(res.total_mSv_y)} mSv/y = ${pct(res.fraction_of_criterion)} % of the user-defined criterion of ${out.criterion_mSv_y} mSv/y`]]);
+      .concat([[res.complete ? 'Total (linear sum over included nuclides)' : 'PARTIAL SUM (pathways missing: ' + res.missing.join(', ') + ')',
+        `${res.complete ? '' : '≥ '}${sci(res.total_mSv_y)} mSv/y` + (out.comparison === 'none'
+          ? ' — no comparison (criterion ≤ 0)'
+          : ` = ${res.complete ? '' : 'at least '}${pct(res.fraction_of_criterion)} % of the user-defined criterion of ${out.criterion_mSv_y} mSv/y`)]]);
     REPORT.print({
       title: 'Liquid Effluent — Sewer and STP Workers (NUREG/CR-5814 Scenarios 1 and 2)',
       headerRows: [
@@ -580,28 +595,36 @@
   document.getElementById('btnCsv').addEventListener('click', () => {
     if (!last) { alert('Correct the input errors first.'); return; }
     const { input, out } = last;
-    const p6 = v => (typeof v === 'number' ? v.toPrecision(6) : v);
-    const rows = [
-      ['Scenario', 'Nuclide', 'Activity_to_sewer_GBq_per_y', 'DF', 'C_medium_per_GBq', 'C_medium_unit', 'C_air_Bq_per_m3_per_GBq',
-       'D_ext_uSv_per_GBq', 'D_inh_uSv_per_GBq', 'FD_uSv_per_GBq', 'E_ext_mSv_per_y', 'E_inh_mSv_per_y', 'E_mSv_per_y',
-       'k_nSv_h_per_Bq_m3', 'e_inh_Sv_per_Bq'],
-    ];
-    for (const [s, res] of [['1', out.s1], ['2', out.s2]]) {
+    // Rectangular, self-describing CSV (audit 2026-10-03, H-09): identity,
+    // versions and completeness repeated on every row, as the Decay export.
+    const p6 = v => (typeof v === 'number' && Number.isFinite(v) ? v.toPrecision(6) : (v ?? ''));
+    const meta = DB.getMeta ? DB.getMeta() : {};
+    const exportedUtc = new Date().toISOString();
+    const head = ['App_version', 'App_build', 'Database_version', 'Effluent_data_version', 'Exported_UTC',
+      'Scenario', 'Row_type', 'Nuclide', 'Activity_to_sewer_GBq_per_y', 'DF',
+      'C_medium_per_GBq', 'C_medium_unit', 'C_air_Bq_per_m3_per_GBq',
+      'D_ext_uSv_per_GBq', 'D_inh_uSv_per_GBq', 'FD_uSv_per_GBq', 'E_ext_mSv_per_y', 'E_inh_mSv_per_y', 'E_mSv_per_y',
+      'External_pathway', 'k_nSv_h_per_Bq_m3', 'e_inh_Sv_per_Bq', 'Scenario_complete', 'Missing_pathways',
+      'Criterion_mSv_per_y', 'Fraction_of_criterion', 'Geometry_Sc2', 'Assumptions'];
+    const assumptions = SCEN.map(sc => Object.keys(PG[sc]).map(k => `${sc}.${k}=${input[sc][k]}`).join('; ')).join('; ') + '; ' +
+      input.nuclides.map(n => `${n.id}: include=${n.include}, T½=${n.half_life_s} s, ${n.patients_per_y} pat × ${n.cycles_per_patient} cyc × ${n.activity_per_cycle_GBq} GBq, f_hosp=${n.fraction_in_hospital}, tanks=${n.controlled}`).join('; ');
+    const common = [UTILS.APP_VERSION, UTILS.APP_BUILD, meta.version || '', data.meta.version, exportedUtc];
+    const rows = [head];
+    for (const [sc, res] of [['1', out.s1], ['2', out.s2]]) {
+      const tail = [res.complete ? 'yes' : 'no', res.missing.join(' | '), out.comparison === 'none' ? '' : out.criterion_mSv_y,
+        res.fraction_of_criterion === null ? '' : p6(res.fraction_of_criterion), input.geometry, assumptions];
       for (const r of res.rows) {
         const n = input.nuclides.find(x => x.id === r.id);
-        if (r.no_coefficient) { rows.push([s, r.id, p6(r.A_GBq_y), 'no coefficient']); continue; }
-        rows.push([s, r.id, r.A_GBq_y, r.DF,
-          s === '1' ? r.per_GBq.C_water_Bq_m3 : r.per_GBq.C_wet_Bq_m3, s === '1' ? 'Bq/m3 wastewater' : 'Bq/m3 wet sludge',
-          r.per_GBq.C_air_Bq_m3, r.per_GBq.D_ext_uSv, r.per_GBq.D_inh_uSv, r.per_GBq.FD_uSv,
-          r.E_ext_mSv_y, r.E_inh_mSv_y, r.E_mSv_y,
-          s === '1' ? n.k1_nSv_h_per_Bq_m3 : n.k2_nSv_h_per_Bq_m3, n.e_inh_Sv_per_Bq].map(p6));
+        rows.push([...common, sc, r.partial ? 'nuclide (partial)' : 'nuclide', r.id, p6(r.A_GBq_y), p6(r.DF),
+          p6(sc === '1' ? r.per_GBq.C_water_Bq_m3 : r.per_GBq.C_wet_Bq_m3), sc === '1' ? 'Bq/m3 wastewater' : 'Bq/m3 wet sludge',
+          p6(r.per_GBq.C_air_Bq_m3), p6(r.per_GBq.D_ext_uSv), p6(r.per_GBq.D_inh_uSv), p6(r.per_GBq.FD_uSv),
+          p6(r.E_ext_mSv_y), p6(r.E_inh_mSv_y), p6(r.E_mSv_y),
+          r.partial ? 'not available' : 'computed',
+          p6(sc === '1' ? n.k1_nSv_h_per_Bq_m3 : n.k2_nSv_h_per_Bq_m3), p6(n.e_inh_Sv_per_Bq), ...tail]);
       }
-      rows.push([s, 'Total (not to be added across scenarios)', '', '', '', '', '', '', '', '', '', '', p6(res.total_mSv_y)]);
+      rows.push([...common, sc, res.complete ? 'scenario total' : 'scenario PARTIAL sum', '', '', '', '', '', '', '', '', '', '', '',
+        p6(res.total_mSv_y), '', '', '', ...tail]);
     }
-    // Every assumption, so the CSV alone reproduces the scenario.
-    rows.push(['Assumptions', `geometry ${input.geometry}; ` +
-      SCEN.map(s => Object.keys(PG[s]).map(k => `${s}.${k}=${input[s][k]}`).join('; ')).join('; ') + '; ' +
-      input.nuclides.map(n => `${n.id}: include=${n.include}, T½=${n.half_life_s} s, ${n.patients_per_y} pat × ${n.cycles_per_patient} cyc × ${n.activity_per_cycle_GBq} GBq, f_hosp=${n.fraction_in_hospital}, tanks=${n.controlled}`).join('; ')]);
     const csv = rows.map(r => r.map(v => {
       const str = String(v);
       const safe = /^[=+\-@\t\r]/.test(str) ? "'" + str : str;
@@ -611,7 +634,7 @@
     const a = document.createElement('a');
     const url = URL.createObjectURL(blob);
     a.href = url;
-    a.download = `effluent_scenarios_${input.geometry}_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `effluent_scenarios_${input.geometry}_${exportedUtc.slice(0, 10)}.csv`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 0);
   });

@@ -415,10 +415,12 @@ const CALC = (() => {
    */
   function sludgeOperatorScenario2(p) {
     _checkScenarioInputs('sludgeOperatorScenario2', p,
-      ['lambda_s', 'transit_s', 'A_Bq_per_y', 'wet_density_kg_m3', 'dust_kg_m3',
+      ['lambda_s', 'transit_s', 'A_Bq_per_y', 'dust_kg_m3',
        'breathing_m3_s', 't_ext_s', 't_inh_s', 'k_Sv_m3_per_Bq_s', 'e_inh_Sv_per_Bq'],
       ['respirable_fraction', 'sludge_fraction', 'geometry_factor'],
-      ['wet_sludge_kg_per_y', 'solids_fraction']);
+      // densities, masses and volumes must be strictly positive: a zero density
+      // silently removed the external pathway (audit 2026-10-03, H-05)
+      ['wet_sludge_kg_per_y', 'solids_fraction', 'wet_density_kg_m3']);
     if (p.solids_fraction > 1) throw new RangeError('sludgeOperatorScenario2: solids_fraction must be ≤ 1');
 
     const DF = Math.exp(-p.lambda_s * p.transit_s);

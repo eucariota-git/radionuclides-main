@@ -147,8 +147,11 @@ const EFFLUENT = (() => {
    *             s1: {rows, total_mSv_y, fraction_of_criterion},
    *             s2: {rows, total_mSv_y, fraction_of_criterion},
    *             criterion_mSv_y: number }}
-   *   Scenario 2 rows of nuclides without a coefficient carry `no_coefficient: true`
-   *   and do not contribute to the total.
+   *   Scenario 2 rows of nuclides without an external coefficient carry
+   *   `no_coefficient: true, partial: true`: their inhalation dose IS computed and
+   *   added, the external pathway is null, and the scenario gets `complete: false`
+   *   with the list of omitted pathways in `missing`. `fraction_of_criterion` is
+   *   null and `comparison: 'none'` when the criterion is not a positive number.
    */
   function evaluate(input) {
     const c = input.common, p1 = input.s1, p2 = input.s2;
@@ -158,6 +161,7 @@ const EFFLUENT = (() => {
 
     const st = sourceTerms(input.nuclides, c.tank_limit_GBq_y, catchment);
     const s1rows = [], s2rows = [];
+    const missing2 = [];
     let t1 = 0, t2 = 0;
     for (const n of input.nuclides) {
       if (!n.include) continue;
@@ -186,10 +190,11 @@ const EFFLUENT = (() => {
         dominant: u1.dominant,
       });
 
-      if (n.k2_nSv_h_per_Bq_m3 === null || n.k2_nSv_h_per_Bq_m3 === undefined) {
-        s2rows.push({ id: n.id, A_GBq_y: A2_GBq_y, no_coefficient: true });
-        continue;
-      }
+      // No Scenario 2 external coefficient (F-18): the inhalation pathway is still
+      // computed (its e(inh) exists), the external pathway is reported as NOT
+      // AVAILABLE and the scenario total becomes a partial sum — never a silent
+      // zero (audit 2026-10-03, H-06).
+      const noK2 = n.k2_nSv_h_per_Bq_m3 === null || n.k2_nSv_h_per_Bq_m3 === undefined;
       const s2params = A => ({
         lambda_s, transit_s: p2.transit_d * S_PER_D, A_Bq_per_y: A,
         wet_sludge_kg_per_y: p2.wet_sludge_t_per_y * 1000, solids_fraction: p2.solids_fraction,
@@ -197,26 +202,31 @@ const EFFLUENT = (() => {
         respirable_fraction: p2.respirable_fraction, sludge_fraction: p2.sludge_fraction,
         breathing_m3_s, t_ext_s: p2.t_external_h_y * S_PER_H, t_inh_s: p2.t_inhalation_h_y * S_PER_H,
         geometry_factor: p2.geometry_factor,
-        k_Sv_m3_per_Bq_s: n.k2_nSv_h_per_Bq_m3 * NSV_H_TO_SV_S, e_inh_Sv_per_Bq: n.e_inh_Sv_per_Bq,
+        k_Sv_m3_per_Bq_s: noK2 ? 0 : n.k2_nSv_h_per_Bq_m3 * NSV_H_TO_SV_S, e_inh_Sv_per_Bq: n.e_inh_Sv_per_Bq,
       });
       const r2 = CALC.sludgeOperatorScenario2(s2params(A2_GBq_y * 1e9));
       const u2 = CALC.sludgeOperatorScenario2(s2params(1e9));
       t2 += r2.E * 1e3;
+      if (noK2) missing2.push(`${n.id} external`);
       s2rows.push({
         id: n.id, A_GBq_y: A2_GBq_y, DF: r2.DF,
+        external_available: !noK2, no_coefficient: noK2, partial: noK2,
         per_GBq: { C_dry_Bq_kg: u2.C_dry, C_wet_Bq_m3: u2.C_wet, C_air_Bq_m3: u2.C_air,
-                   D_ext_uSv: u2.E_ext * 1e6, D_inh_uSv: u2.E_inh * 1e6, FD_uSv: u2.E * 1e6 },
-        E_ext_mSv_y: r2.E_ext * 1e3, E_inh_mSv_y: r2.E_inh * 1e3, E_mSv_y: r2.E * 1e3,
-        dominant: u2.dominant,
+                   D_ext_uSv: noK2 ? null : u2.E_ext * 1e6, D_inh_uSv: u2.E_inh * 1e6, FD_uSv: u2.E * 1e6 },
+        E_ext_mSv_y: noK2 ? null : r2.E_ext * 1e3, E_inh_mSv_y: r2.E_inh * 1e3, E_mSv_y: r2.E * 1e3,
+        dominant: noK2 ? 'inhalation (external not available)' : u2.dominant,
       });
     }
+    // Criterion ≤ 0 (or not a number) → no comparison, never NaN (audit H-05).
     const crit = c.dose_criterion_mSv_y;
-    const frac = t => (crit > 0 ? t / crit : NaN);
+    const comparable = Number.isFinite(crit) && crit > 0;
+    const frac = t => (comparable ? t / crit : null);
     return {
       source: st,
-      s1: { rows: s1rows, total_mSv_y: t1, fraction_of_criterion: frac(t1) },
-      s2: { rows: s2rows, total_mSv_y: t2, fraction_of_criterion: frac(t2) },
+      s1: { rows: s1rows, total_mSv_y: t1, fraction_of_criterion: frac(t1), complete: true, missing: [] },
+      s2: { rows: s2rows, total_mSv_y: t2, fraction_of_criterion: frac(t2), complete: missing2.length === 0, missing: missing2 },
       criterion_mSv_y: crit,
+      comparison: comparable ? 'criterion' : 'none',
     };
   }
 

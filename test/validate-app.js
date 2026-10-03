@@ -414,7 +414,8 @@ async function main() {
     /CALC\.sewerInspectorScenario1/.test(effluentJs) && /CALC\.sludgeOperatorScenario2/.test(effluentJs) &&
     !/document\./.test(effluentJs));
   check('effluent page reads every data-file parameter of all groups, both coefficients and locks I-131 cycles',
-    /for \(const key of Object\.keys\(PG\[s\]\)\) input\[s\]\[key\] = readNumber/.test(effluentHtml) &&
+    /for \(const key of Object\.keys\(PG\[s\]\)\) \{\s*input\[s\]\[key\] = readNumber/.test(effluentHtml) &&
+    /PG\[s\]\[key\]\.positive && !\(input\[s\]\[key\] > 0\)/.test(effluentHtml) &&
     /const SCEN = \['common', 's1', 's2'\]/.test(effluentHtml) &&
     /k1_nSv_h_per_Bq_m3: nd\.k_ext\.s1\.value/.test(effluentHtml) &&
     /k2_nSv_h_per_Bq_m3: nd\.k_ext\.s2 \? nd\.k_ext\.s2\[geometry\]\.value : null/.test(effluentHtml) &&
@@ -430,8 +431,12 @@ async function main() {
   check('the two scenarios are reported separately and never added together',
     /never added together/.test(effluentHtml) && /not added together/.test(effluentHtml) &&
     !/s1\.total_mSv_y\s*\+\s*[^;]*s2\.total_mSv_y/.test(effluentHtml + effluentJs));
-  check('a nuclide without a Scenario 2 coefficient is shown as not evaluated, not as zero',
-    /no_coefficient: true/.test(effluentJs) && /not a zero dose/.test(effluentHtml));
+  check('a nuclide without a Scenario 2 coefficient keeps its inhalation, shows external n/a (not zero) and makes the total partial',
+    /partial: noK2/.test(effluentJs) && /complete: missing2\.length === 0/.test(effluentJs) &&
+    /not zero/.test(effluentHtml) && /PARTIAL SUM/.test(effluentHtml));
+  check('effluent CSV is rectangular and self-describing (versions, completeness on every row)',
+    /'App_version', 'App_build', 'Database_version', 'Effluent_data_version', 'Exported_UTC'/.test(effluentHtml) &&
+    /'Scenario_complete', 'Missing_pathways'/.test(effluentHtml));
   check('effluent report overrides the point-source disclaimer and nuclide header',
     /disclaimer: 'Generic screening estimate/.test(effluentHtml) && /headerRows:/.test(effluentHtml) &&
     /spec\.disclaimer \|\| DISCLAIMER/.test(reportJs) && /spec\.headerRows/.test(reportJs));
