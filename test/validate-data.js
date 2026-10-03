@@ -365,7 +365,7 @@ console.log('TEST: Effluent Scenario 1 and 2 coefficients vs their sources');
   // Scenario 1: 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx').
   const P = eff.parameters;
   const DEFAULTS = {
-    common: { breathing_rate_m3_h: 1.2, dose_criterion_mSv_y: 1 },
+    common: { breathing_rate_m3_h: 1.2, dose_criterion_mSv_y: 1, tank_limit_GBq_y: 1 },
     s1: { water_volume_m3_y: 20000, water_density_kg_m3: 1000, aerosol_loading_kg_m3: 1e-7, respirable_fraction: 0.2,
           t_external_h_y: 100, t_inhalation_h_y: 20, geometry_factor: 1, transit_h: 0.2 },
     s2: { catchment_pct: 40, wet_sludge_t_per_y: 5090, solids_fraction: 0.25, wet_density_kg_m3: 1200,
@@ -388,6 +388,15 @@ console.log('TEST: Effluent Scenario 1 and 2 coefficients vs their sources');
   if (Math.abs(P.s1.transit_h.value / 24 - 0.008333) > 1e-6) { defBad++; console.log('  ✗ Scenario 1 transit ≠ workbook 0.008333 d'); }
   if (eff.facility_presets.hospital.water_volume_m3_y !== 20000 || eff.facility_presets.clinic.water_volume_m3_y !== 3650) {
     defBad++; console.log('  ✗ facility presets ≠ workbook (hospital 20 000, clinic 3650 m³/y)');
+  }
+  // Fraction excreted in hospital = 1 − the workbook's fraction to the sewer
+  // (user decision 2026-10-03): Lu-177/Lu-177m/Tc-99m/F-18 1 − 0.55, I-131 1 − 0.5.
+  const FHOSP = { 'Lu-177': 0.45, 'Lu-177m': 0.45, 'Tc-99m': 0.45, 'F-18': 0.45, 'I-131': 0.5 };
+  for (const [id, f] of Object.entries(FHOSP)) {
+    const st = (eff.nuclides.find(n => n.id === id) || {}).source_term || {};
+    if (st.fraction_in_hospital !== f || st.controlled_default !== false) {
+      defBad++; console.log(`  ✗ ${id} fraction in hospital ${st.fraction_in_hospital} ≠ ${f} or controlled by default`);
+    }
   }
   totalTests++;
   if (defBad === 0) { passedTests++; console.log('  ✓ effluent defaults equal the workbooks and carry unit, range and source'); }

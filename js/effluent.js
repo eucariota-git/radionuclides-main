@@ -91,6 +91,7 @@ const EFFLUENT = (() => {
       nuclides: data.nuclides.map(nd => Object.assign({
         id: nd.id,
         include: nd.include_default,
+        controlled: nd.source_term.controlled_default,
         half_life_s: halfLife(nd),
         k1_nSv_h_per_Bq_m3: nd.k_ext.s1.value,
         k2_nSv_h_per_Bq_m3: nd.k_ext.s2 ? nd.k_ext.s2[geometry].value : null,
@@ -100,15 +101,50 @@ const EFFLUENT = (() => {
   }
 
   function checkSourceTerm(n) {
-    for (const key of ['patients_per_y', 'cycles_per_patient', 'activity_per_cycle_GBq', 'fraction_to_sewer']) {
+    for (const key of ['patients_per_y', 'cycles_per_patient', 'activity_per_cycle_GBq', 'fraction_in_hospital']) {
       if (!Number.isFinite(n[key]) || n[key] < 0) throw new RangeError(`${n.id}: ${key} must be a finite number ≥ 0`);
     }
-    if (n.fraction_to_sewer > 1) throw new RangeError(`${n.id}: fraction reaching the sewer must be ≤ 1`);
+    if (n.fraction_in_hospital > 1) throw new RangeError(`${n.id}: fraction excreted in hospital must be ≤ 1`);
+  }
+
+  /**
+   * Source term per included nuclide (GBq/y).
+   *   A_adm  = patients × cycles × administered activity per cycle
+   *   e_hosp = A_adm × fraction excreted in hospital
+   *   A_hosp = activity leaving the hospital: e_hosp, or, for nuclides
+   *            controlled in decay tanks, e_hosp × min(1, L / Σ e_hosp of the
+   *            controlled nuclides) — the annual tank discharge L is shared in
+   *            proportion to the activity excreted into the tanks, with no decay
+   *            credit when Σ e_hosp < L.
+   *   A_home = A_adm × (1 − fraction in hospital): all administered activity is
+   *            assumed to be excreted.
+   * Scenario 1 receives A_hosp; Scenario 2 receives A_hosp + A_home × catchment.
+   */
+  function sourceTerms(nuclides, tankLimit_GBq_y, catchment) {
+    if (!(Number.isFinite(tankLimit_GBq_y) && tankLimit_GBq_y >= 0)) {
+      throw new RangeError('Annual discharge from decay tanks must be a finite number ≥ 0');
+    }
+    const inc = nuclides.filter(n => n.include);
+    inc.forEach(checkSourceTerm);
+    const eHosp = n => n.patients_per_y * n.cycles_per_patient * n.activity_per_cycle_GBq * n.fraction_in_hospital;
+    const sumControlled = inc.filter(n => n.controlled).reduce((a, n) => a + eHosp(n), 0);
+    const tankFactor = sumControlled > tankLimit_GBq_y ? tankLimit_GBq_y / sumControlled : 1;
+    const out = {};
+    for (const n of inc) {
+      const A_adm = n.patients_per_y * n.cycles_per_patient * n.activity_per_cycle_GBq;
+      const e_hosp = eHosp(n);
+      const A_hosp = n.controlled ? e_hosp * tankFactor : e_hosp;
+      const A_home = A_adm * (1 - n.fraction_in_hospital);
+      out[n.id] = { A_adm, e_hosp, A_hosp, A_home, controlled: !!n.controlled,
+                    A1: A_hosp, A2: A_hosp + A_home * catchment };
+    }
+    return { byId: out, sumControlled_GBq_y: sumControlled, tankFactor, tankLimit_GBq_y };
   }
 
   /**
    * @param {object} input - see defaultInput()
-   * @returns {{ s1: {rows, total_mSv_y, fraction_of_criterion},
+   * @returns {{ source: object (see sourceTerms),
+   *             s1: {rows, total_mSv_y, fraction_of_criterion},
    *             s2: {rows, total_mSv_y, fraction_of_criterion},
    *             criterion_mSv_y: number }}
    *   Scenario 2 rows of nuclides without a coefficient carry `no_coefficient: true`
@@ -120,17 +156,14 @@ const EFFLUENT = (() => {
     if (!(catchment >= 0 && catchment <= 1)) throw new RangeError('Catchment fraction must be between 0 and 100 %');
     const breathing_m3_s = c.breathing_rate_m3_h / S_PER_H;
 
+    const st = sourceTerms(input.nuclides, c.tank_limit_GBq_y, catchment);
     const s1rows = [], s2rows = [];
     let t1 = 0, t2 = 0;
     for (const n of input.nuclides) {
       if (!n.include) continue;
-      checkSourceTerm(n);
       const lambda_s = Math.LN2 / n.half_life_s;
-      // Activity reaching the sewer. Scenario 1 (as the reference workbook):
-      // all of it passes through the facility's own connection — no catchment
-      // fraction. Scenario 2: only the patients living in the STP catchment.
-      const A1_GBq_y = n.patients_per_y * n.cycles_per_patient * n.activity_per_cycle_GBq * n.fraction_to_sewer;
-      const A2_GBq_y = A1_GBq_y * catchment;
+      const A1_GBq_y = st.byId[n.id].A1;
+      const A2_GBq_y = st.byId[n.id].A2;
 
       const s1params = A => ({
         lambda_s, transit_s: p1.transit_h * S_PER_H, A_Bq_per_y: A,
@@ -180,6 +213,7 @@ const EFFLUENT = (() => {
     const crit = c.dose_criterion_mSv_y;
     const frac = t => (crit > 0 ? t / crit : NaN);
     return {
+      source: st,
       s1: { rows: s1rows, total_mSv_y: t1, fraction_of_criterion: frac(t1) },
       s2: { rows: s2rows, total_mSv_y: t2, fraction_of_criterion: frac(t2) },
       criterion_mSv_y: crit,
@@ -245,6 +279,6 @@ const EFFLUENT = (() => {
     };
   }
 
-  return { load, getData, halfLifeOf, defaultInput, evaluate, crossChecks, nuregComparison, isValidData };
+  return { load, getData, halfLifeOf, defaultInput, sourceTerms, evaluate, crossChecks, nuregComparison, isValidData };
 
 })();

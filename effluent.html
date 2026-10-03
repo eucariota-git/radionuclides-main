@@ -58,21 +58,27 @@
             <th>Nuclide</th>
             <th>Patients / y</th>
             <th>Cycles / patient</th>
-            <th>Activity per cycle (GBq)</th>
-            <th>Fraction to sewer</th>
-            <th class="text-right">To sewer, Sc. 1 (GBq/y)</th>
-            <th class="text-right">To sewer, Sc. 2 (GBq/y)</th>
+            <th title="Administered activity per cycle">A admin. / cycle (GBq)</th>
+            <th title="Fraction of the administered activity excreted in hospital">In-hospital fraction</th>
+            <th title="Controlled in hospital decay tanks">Tanks</th>
+            <th class="text-right" title="Activity leaving the hospital — Scenario 1">Sc. 1 (GBq/y)</th>
+            <th class="text-right" title="Activity reaching the STP — Scenario 2">Sc. 2 (GBq/y)</th>
           </tr>
         </thead>
         <tbody id="sourceBody"></tbody>
       </table>
     </div>
     <div class="alert alert-info mt-1">
-      Activity to sewer = patients × cycles × activity per cycle × fraction.
-      <strong>Scenario 1</strong> assumes, like the reference workbook, that all of it passes through the
-      facility's own sewer connection (conservative: activity excreted at home does not).
-      <strong>Scenario 2</strong> further multiplies by the fraction of patients living in the STP catchment.
+      A<sub>adm</sub> = patients × cycles × administered activity per cycle; all of it is assumed to be excreted.
+      The fraction excreted <strong>in hospital</strong> leaves through the facility's sewer connection — or, for a nuclide
+      controlled in <strong>decay tanks</strong>, only its share of the annual tank discharge (shared among the controlled
+      nuclides in proportion to the activity excreted into the tanks; no decay credit when their sum is below it).
+      The rest is excreted at home.
+      <strong>Scenario 1</strong> receives only the activity leaving the hospital.
+      <strong>Scenario 2</strong> receives the activity leaving the hospital plus the activity excreted at home by the
+      patients living in the STP catchment.
     </div>
+    <div class="form-hint mt-1" id="tankStatus"></div>
     <ul class="text-sm mt-1" id="sourceNotes"></ul>
   </div>
 
@@ -327,7 +333,8 @@
       <td>${cell('patients_per_y', st.patients_per_y)}</td>
       <td>${cell('cycles_per_patient', st.cycles_per_patient, st.cycles_locked ? 'disabled' : '')}</td>
       <td>${cell('activity_per_cycle_GBq', st.activity_per_cycle_GBq)}<div class="form-hint">${esc(st.activity_label)}</div></td>
-      <td>${cell('fraction_to_sewer', st.fraction_to_sewer, 'max="1"')}<div class="form-hint">${esc(st.fraction_label)}</div></td>
+      <td>${cell('fraction_in_hospital', st.fraction_in_hospital, 'max="1"')}</td>
+      <td><input type="checkbox" id="st_${i}_controlled" ${st.controlled_default ? 'checked' : ''} aria-label="${UTILS.safeAttr(nd.id)} controlled in decay tanks"></td>
       <td class="num" id="st_${i}_A1">—</td>
       <td class="num" id="st_${i}_A2">—</td>
     </tr>`;
@@ -356,11 +363,12 @@
     input.nuclides = nuclides.map(({ nd, T }, i) => ({
       id: nd.id,
       include: document.getElementById(`st_${i}_include`).checked,
+      controlled: document.getElementById(`st_${i}_controlled`).checked,
       half_life_s: T,
       patients_per_y: readNumber(document.getElementById(`st_${i}_patients_per_y`)),
       cycles_per_patient: nd.source_term.cycles_locked ? 1 : readNumber(document.getElementById(`st_${i}_cycles_per_patient`)),
       activity_per_cycle_GBq: readNumber(document.getElementById(`st_${i}_activity_per_cycle_GBq`)),
-      fraction_to_sewer: readNumber(document.getElementById(`st_${i}_fraction_to_sewer`)),
+      fraction_in_hospital: readNumber(document.getElementById(`st_${i}_fraction_in_hospital`)),
       k1_nSv_h_per_Bq_m3: nd.k_ext.s1.value,
       k2_nSv_h_per_Bq_m3: nd.k_ext.s2 ? nd.k_ext.s2[geometry].value : null,
       e_inh_Sv_per_Bq: nd.e_inh.value,
@@ -405,6 +413,14 @@
       document.getElementById(`st_${i}_A1`).textContent = r1 ? sci(r1.A_GBq_y) : 'excluded';
       document.getElementById(`st_${i}_A2`).textContent = r2 ? sci(r2.A_GBq_y) : 'excluded';
     });
+    const src = out.source;
+    document.getElementById('tankStatus').textContent = src.sumControlled_GBq_y > 0
+      ? (src.tankFactor < 1
+          ? `Decay tanks: ${sci(src.sumControlled_GBq_y)} GBq/y excreted into the tanks by the controlled nuclides; ` +
+            `${src.tankLimit_GBq_y} GBq/y discharged, shared in proportion (factor ${sci(src.tankFactor)}).`
+          : `Decay tanks: ${sci(src.sumControlled_GBq_y)} GBq/y excreted into the tanks, below the ${src.tankLimit_GBq_y} GBq/y ` +
+            'discharge — all of it is assumed discharged (no decay credit).')
+      : 'No included nuclide is controlled in decay tanks.';
 
     document.getElementById('s1Body').innerHTML = out.s1.rows.map(r => `<tr>
       <td class="sym">${esc(r.id)}</td>
@@ -495,7 +511,8 @@
     nuclides.forEach(({ nd }, i) => {
       const st = nd.source_term;
       document.getElementById(`st_${i}_include`).checked = nd.include_default;
-      for (const f of ['patients_per_y', 'cycles_per_patient', 'activity_per_cycle_GBq', 'fraction_to_sewer']) {
+      document.getElementById(`st_${i}_controlled`).checked = st.controlled_default;
+      for (const f of ['patients_per_y', 'cycles_per_patient', 'activity_per_cycle_GBq', 'fraction_in_hospital']) {
         document.getElementById(`st_${i}_${f}`).value = st[f];
       }
     });
@@ -522,8 +539,15 @@
       ],
       sections: [
         { heading: 'Source term', rows: input.nuclides.map(n => [n.id, n.include
-          ? `${n.patients_per_y} patients/y × ${n.cycles_per_patient} cycles × ${n.activity_per_cycle_GBq} GBq × ${n.fraction_to_sewer}; Scenario 2 also × ${input.s2.catchment_pct} % catchment`
+          ? (() => { const t = out.source.byId[n.id];
+              return `A_adm = ${n.patients_per_y} patients/y × ${n.cycles_per_patient} cycles × ${n.activity_per_cycle_GBq} GBq = ${sci(t.A_adm)} GBq/y; ` +
+                `excreted in hospital ${n.fraction_in_hospital} → ${sci(t.e_hosp)} GBq/y${t.controlled ? ' into decay tanks' : ''}; ` +
+                `leaves hospital ${sci(t.A_hosp)} GBq/y (Scenario 1); at home ${sci(t.A_home)} GBq/y × ${input.s2.catchment_pct} % catchment; ` +
+                `to STP ${sci(t.A2)} GBq/y (Scenario 2)`; })()
           : 'excluded']) },
+        { heading: 'Decay tanks', rows: [['Controlled nuclides', input.nuclides.filter(n => n.include && n.controlled).map(n => n.id).join(', ') || 'none'],
+          ['Excreted into the tanks', `${sci(out.source.sumControlled_GBq_y)} GBq/y`],
+          ['Annual tank discharge (shared)', `${out.source.tankLimit_GBq_y} GBq/y; sharing factor ${sci(out.source.tankFactor)}`]] },
         { heading: 'Scenario 1 parameters', rows: paramRows(input, 's1') },
         { heading: 'Scenario 2 parameters', rows: paramRows(input, 's2').concat([['External coefficient geometry', data.geometries[geo].label]]) },
         { heading: 'Common parameters', rows: paramRows(input, 'common') },
@@ -538,7 +562,7 @@
       ],
       notes: [
         'The two scenarios concern different receptors; their totals are not added together.',
-        'Scenario 1 assumes that all the excreted activity passes through the facility\'s own sewer connection, diluted in its annual water volume (conservative).',
+        'All administered activity is assumed to be excreted. Scenario 1 receives the activity leaving the hospital (excreted in hospital, or the share of the decay-tank discharge for controlled nuclides), diluted in the facility\'s annual water volume. Scenario 2 receives that activity plus the activity excreted at home by the patients living in the STP catchment.',
         'Scenario 2 screening model: all discharged activity retained in one year of sludge (IAEA SRS-19 §4.9 case b; NUREG/CR-5814 §5.1). Steady-state concentrations, no decay during the exposure year.',
         'Not a complete discharge assessment: IS-28 Annex II II.A.4 conditions and mixture clearance are evaluated separately.',
         'Inhalation dose coefficients for adult members of the public (ICRP 119 Table G.1).',
@@ -577,7 +601,7 @@
     // Every assumption, so the CSV alone reproduces the scenario.
     rows.push(['Assumptions', `geometry ${input.geometry}; ` +
       SCEN.map(s => Object.keys(PG[s]).map(k => `${s}.${k}=${input[s][k]}`).join('; ')).join('; ') + '; ' +
-      input.nuclides.map(n => `${n.id}: include=${n.include}, T½=${n.half_life_s} s, ${n.patients_per_y} pat × ${n.cycles_per_patient} cyc × ${n.activity_per_cycle_GBq} GBq × ${n.fraction_to_sewer}`).join('; ')]);
+      input.nuclides.map(n => `${n.id}: include=${n.include}, T½=${n.half_life_s} s, ${n.patients_per_y} pat × ${n.cycles_per_patient} cyc × ${n.activity_per_cycle_GBq} GBq, f_hosp=${n.fraction_in_hospital}, tanks=${n.controlled}`).join('; ')]);
     const csv = rows.map(r => r.map(v => {
       const str = String(v);
       const safe = /^[=+\-@\t\r]/.test(str) ? "'" + str : str;

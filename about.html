@@ -242,17 +242,19 @@
     <p>The two scenarios concern <strong>different receptors: each total is compared with the criterion on its own and they are never added together</strong>.</p>
     <p><strong>How to use</strong>:</p>
     <ol>
-      <li><strong>Source term</strong> (one row per nuclide; tick <em>Include</em> — only Lu-177 and I-131 are included by default): patients/year × cycles/patient × activity per cycle × fraction reaching the sewer
+      <li><strong>Source term</strong> (one row per nuclide; tick <em>Include</em> — only Lu-177 and I-131 are included by default): A_adm = patients/year × cycles/patient × administered activity per cycle, all of it assumed to be excreted; <em>fraction excreted in hospital</em>; <em>decay tanks</em> if the nuclide is controlled in hospital decay tanks
         <ul>
-          <li>I-131: activity at hospital discharge, always one treatment per patient</li>
+          <li>The fraction excreted in hospital leaves through the facility's sewer connection. For nuclides controlled in decay tanks only the annual tank discharge leaves (common parameter, default 1 GBq/y for the sum of controlled nuclides — the IS-28 Annex II II.A.4 annual limit), shared among them in proportion to the activity excreted into the tanks; when that activity is below the limit, all of it is assumed discharged (no decay credit)</li>
+          <li>The rest is excreted at home</li>
+          <li><strong>Scenario 1</strong> receives only the activity leaving the hospital; <strong>Scenario 2</strong> receives the activity leaving the hospital plus the activity excreted at home by the patients living in the STP catchment</li>
+          <li>I-131: always one treatment per patient (default 0.8 GBq, the workbook value)</li>
           <li>Lu-177m: impurity of carrier-added Lu-177 (default 0.01 % of 7.4 GBq per cycle)</li>
           <li>Tc-99m: no default in the reference workbooks — enter the facility's data</li>
-          <li><strong>Scenario 1</strong> assumes that all of this activity passes through the facility's own sewer connection (conservative: activity excreted at home does not); <strong>Scenario 2</strong> further multiplies by the fraction of patients living in the STP catchment</li>
         </ul>
       </li>
       <li><strong>Scenario 1</strong>: facility type (hospital 20 000 m³/y, clinic 3650 m³/y, or the licensee's figure — consumption ≈ discharge), water density, aerosol loading, respirable fraction, exposure times, geometry factor and transit time (≈ 0.2 h)</li>
       <li><strong>Scenario 2</strong>: wet (dewatered) sludge production — plant-specific, from PRTR-España, waste code LER 19 08 05 —, solids fraction, wet density, fraction retained in sludge, transit time to the press (≈ 3 d), dust loading, respirable fraction, exposure times, geometry factor and the external-coefficient geometry (<em>up to 100 m²</em>, 10 × 10 × 3 m, or <em>up to 2000 m²</em>, 45 × 45 × 3 m, default)</li>
-      <li><strong>Common</strong>: breathing rate and a <strong>user-defined</strong> dose criterion (default 1 mSv/y; the app attributes no regulatory basis to it)</li>
+      <li><strong>Common</strong>: breathing rate, annual discharge from decay tanks and a <strong>user-defined</strong> dose criterion (default 1 mSv/y; the app attributes no regulatory basis to it)</li>
     </ol>
     <p>Results update as you type: per scenario, decay factor, concentrations and dose factor per GBq discharged; annual external, inhalation and total dose per nuclide; per-scenario sum and percentage of the criterion. <strong>📄 Report / PDF</strong> and <strong>⬇ Export CSV</strong> record every input and coefficient.</p>
     <p><strong>Model</strong> (per nuclide, A = activity reaching the sewer in one year, DF = exp(−λ·t_transit)):</p>
@@ -275,10 +277,13 @@
       <li><strong>Not a complete discharge assessment.</strong> The IS-28 Annex II II.A.4 sewer conditions (per-nuclide level, sum of fractions, annual activity limits) and mixture clearance are evaluated separately</li>
       <li>A collapsible panel compares the coefficients with the GENII-1990 factors of NUREG/CR-5814 Table A.21 (I-131, F-18, Tc-99m; the PHITS Scenario 1 coefficients are 2.7–3.6 times higher, a difference that has not been investigated) and the I-131 Scenario 2 result with NUREG/CR-5814 Table B.7 and IAEA SRS-19 Table I–IV. All are indicative only; SRS-19 Annex I uses an occupancy of 0.288 where 2000/8760 = 0.228</li>
     </ul>
-    <p><strong>Example</strong> (default values, Lu-177 and I-131 included, 2000 m² geometry):</p>
+    <p><strong>Example</strong> (default values, Lu-177 and I-131 included, no decay tanks, 2000 m² geometry):</p>
     <ul>
-      <li>Scenario 1: Lu-177 75 patients × 6 cycles × 7.4 GBq × 0.55 = 1831.5 GBq/y → 0.0115 µSv/GBq → 0.0210 mSv/y; I-131 50 × 0.8 GBq × 0.5 = 20 GBq/y → 0.135 µSv/GBq → 0.0027 mSv/y; total 0.0237 mSv/y</li>
-      <li>Scenario 2 (× 40 % catchment): Lu-177 732.6 GBq/y → 1.065 µSv/GBq → 0.780 mSv/y; I-131 8 GBq/y → 13.10 µSv/GBq → 0.105 mSv/y; total 0.885 mSv/y</li>
+      <li>Lu-177: A_adm = 75 patients × 6 cycles × 7.4 GBq = 3330 GBq/y; 45 % excreted in hospital = 1498.5 GBq/y; at home 1831.5 GBq/y</li>
+      <li>I-131: A_adm = 50 × 0.8 GBq = 40 GBq/y; 50 % excreted in hospital = 20 GBq/y; at home 20 GBq/y</li>
+      <li>Scenario 1: Lu-177 1498.5 GBq/y → 0.0115 µSv/GBq → 0.0172 mSv/y; I-131 20 GBq/y → 0.135 µSv/GBq → 0.0027 mSv/y; total 0.0199 mSv/y</li>
+      <li>Scenario 2 (home part × 40 % catchment): Lu-177 1498.5 + 732.6 = 2231.1 GBq/y → 1.065 µSv/GBq → 2.38 mSv/y; I-131 20 + 8 = 28 GBq/y → 13.10 µSv/GBq → 0.367 mSv/y; total 2.74 mSv/y</li>
+      <li>With both nuclides in decay tanks, 1 GBq/y leaves the hospital in total (Lu-177 0.987, I-131 0.013 GBq/y) and Scenario 2 falls to 0.886 mSv/y</li>
     </ul>
 
     <hr>

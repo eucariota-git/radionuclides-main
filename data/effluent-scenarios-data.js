@@ -2,11 +2,12 @@
 const EFFLUENT_DATA = {
   "meta": {
     "id": "effluent-scenarios",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "date": "2026-10-03",
     "title": "Liquid effluent to sewer — NUREG/CR-5814 Scenarios No. 1 (sewer inspector) and No. 2 (STP sludge process operator)",
     "description": "Screening doses to two workers who are members of the public with respect to the licensee: (1) a sewer system inspector exposed to the facility's wastewater in the interceptor — external immersion in a water slab at 1 m plus inhalation of aerosol; (2) a sewage-treatment-plant (EDAR) operator of sludge dewatering equipment — external exposure to dewatered sludge plus inhalation of resuspended dry sludge. Scenario 1 reproduces the workbook 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx' (sheet Escenario-1); Scenario 2 reproduces IRA-xxxx_Lu-177_dosis_en_escenario2_v1.xlsx (sheet Escenario-2). Screening philosophy of IAEA SRS-19 §4.9 and §6.6.",
-    "units_note": "Values in this file are in the display units stated in each 'unit' field; the CALC functions work in SI and EFFLUENT.evaluate converts."
+    "units_note": "Values in this file are in the display units stated in each 'unit' field; the CALC functions work in SI and EFFLUENT.evaluate converts.",
+    "source_term_model": "A_adm = patients × cycles × administered activity per cycle; e_hosp = A_adm × fraction excreted in hospital. Activity leaving the hospital: e_hosp, or, for nuclides controlled in decay tanks, e_hosp × min(1, L / Σ e_hosp of controlled nuclides) with L the annual tank discharge (no decay credit when Σ e_hosp < L). Scenario 1: activity leaving the hospital. Scenario 2: activity leaving the hospital + A_adm × (1 − fraction in hospital) × catchment fraction (all administered activity assumed excreted)."
   },
   "parameters": {
     "common": {
@@ -23,6 +24,13 @@ const EFFLUENT_DATA = {
         "unit": "mSv/y",
         "min": 0,
         "source": "User-defined. Workbook default (cell D60). No regulatory basis is attributed by the app."
+      },
+      "tank_limit_GBq_y": {
+        "label": "Annual discharge from decay tanks (sum of controlled nuclides)",
+        "value": 1,
+        "unit": "GBq/y",
+        "min": 0,
+        "source": "IS-28 Annex II II.A.4: annual discharge strictly below 1 GBq for the sum of nuclides other than H-3 and C-14 (the facility's authorisation prevails). Shared among the controlled nuclides in proportion to the activity excreted into the tanks."
       }
     },
     "s1": {
@@ -94,7 +102,7 @@ const EFFLUENT_DATA = {
         "unit": "%",
         "min": 0,
         "max": 100,
-        "source": "Site-specific. Workbook default (cell D10)."
+        "source": "Site-specific; applies only to the activity excreted at home (the hospital discharges to this STP). Workbook default (cell D10)."
       },
       "wet_sludge_t_per_y": {
         "label": "Wet (dewatered) sludge production",
@@ -243,10 +251,10 @@ const EFFLUENT_DATA = {
         "cycles_per_patient": 6,
         "cycles_locked": false,
         "activity_per_cycle_GBq": 7.4,
-        "fraction_to_sewer": 0.55,
         "activity_label": "Administered activity per cycle",
-        "fraction_label": "Fraction reaching the sewer",
-        "source": "Workbook defaults (cells D9, D11, D12, D14). Site-specific."
+        "source": "Workbook defaults (cells D9, D11, D12); fraction excreted in hospital = 1 − 0.55 (workbook f_san, cell D14). Site-specific.",
+        "fraction_in_hospital": 0.45,
+        "controlled_default": false
       }
     },
     {
@@ -288,10 +296,10 @@ const EFFLUENT_DATA = {
         "cycles_per_patient": 1,
         "cycles_locked": true,
         "activity_per_cycle_GBq": 0.8,
-        "fraction_to_sewer": 0.5,
-        "activity_label": "Activity at hospital discharge",
-        "fraction_label": "Fraction excreted (workbook: at home)",
-        "source": "Workbook I-131 estimate (cells G6, G56): patients leave hospital with 0.8 GBq and excrete half of it at home. Always one treatment per patient. Site-specific."
+        "activity_label": "Activity per treatment (workbook value: activity at hospital discharge)",
+        "source": "Workbook I-131 estimate (cells G6, G56): 0.8 GBq per patient, half of it excreted at home; the fraction excreted in hospital is 1 − 0.5. Always one treatment per patient. Site-specific.",
+        "fraction_in_hospital": 0.5,
+        "controlled_default": false
       },
       "cross_checks": {
         "nureg_table_B7": {
@@ -356,10 +364,10 @@ const EFFLUENT_DATA = {
         "cycles_per_patient": 6,
         "cycles_locked": false,
         "activity_per_cycle_GBq": 0.00074,
-        "fraction_to_sewer": 0.55,
         "activity_label": "Lu-177m impurity per cycle",
-        "fraction_label": "Fraction reaching the sewer",
-        "source": "Impurity of carrier-added Lu-177: 0.01 % of 7.4 GBq per cycle (Workbook 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx', sheet Escenario-2, cell D11). Site-specific."
+        "source": "Impurity of carrier-added Lu-177: 0.01 % of 7.4 GBq per cycle (Workbook 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx', sheet Escenario-2, cell D11). Fraction excreted in hospital = 1 − 0.55. Site-specific.",
+        "fraction_in_hospital": 0.45,
+        "controlled_default": false
       },
       "half_life_s_fallback": 13858560,
       "half_life_source": "ICRP Publication 107 (2008), 160.4 d (not in the curated database)."
@@ -403,10 +411,10 @@ const EFFLUENT_DATA = {
         "cycles_per_patient": 1,
         "cycles_locked": false,
         "activity_per_cycle_GBq": 0,
-        "fraction_to_sewer": 0.55,
         "activity_label": "Administered activity per study",
-        "fraction_label": "Fraction reaching the sewer",
-        "source": "No default in the workbooks: enter the facility's data. Fraction 0.55 is the workbook's generic value."
+        "source": "No default in the workbooks: enter the facility's data. Fraction excreted in hospital 0.45 = 1 − the workbook's generic 0.55.",
+        "fraction_in_hospital": 0.45,
+        "controlled_default": false
       },
       "nureg_table_A21": {
         "stp_wkr_Sv_y_per_Bq_m3": 6.68e-11,
@@ -438,10 +446,10 @@ const EFFLUENT_DATA = {
         "cycles_per_patient": 1,
         "cycles_locked": false,
         "activity_per_cycle_GBq": 0.3,
-        "fraction_to_sewer": 0.55,
         "activity_label": "Administered activity per study",
-        "fraction_label": "Fraction reaching the sewer",
-        "source": "Workbook 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx', sheet Escenario-1 (cells D9–D13). Site-specific."
+        "source": "Workbook 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx', sheet Escenario-1 (cells D9–D13). Fraction excreted in hospital = 1 − 0.55. Site-specific.",
+        "fraction_in_hospital": 0.45,
+        "controlled_default": false
       },
       "s2_note": "No Scenario 2 coefficient has been calculated (the workbook's 0 means 'not calculated'); after 3 d of transit the F-18 decay factor is about 1E-12.",
       "nureg_table_A21": {

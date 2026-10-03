@@ -783,29 +783,51 @@ console.log('TEST 13: Effluent Scenarios 1 and 2 (CALC.sewerInspectorScenario1, 
   };
   const l45 = EFF.evaluate(defaults('L45')), l10 = EFF.evaluate(defaults('L10'));
   const row = (res, id) => res.rows.find(r => r.id === id);
-  // Scenario 2 — unchanged from v1.3.0
-  test('app Sc.2 L45 Lu-177 activity to sewer = 732.6 GBq/y', row(l45.s2, 'Lu-177').A_GBq_y, 732.6, 1e-9);
-  test('app Sc.2 L45 Lu-177 FD = 1.06479 µSv/GBq', row(l45.s2, 'Lu-177').per_GBq.FD_uSv, 1.064791672, 1e-6);
-  test('app Sc.2 L45 Lu-177 E = 0.780066 mSv/y', row(l45.s2, 'Lu-177').E_mSv_y, 0.7800663790, 1e-6);
-  test('app Sc.2 L45 I-131 activity to sewer = 8 GBq/y (50 × 1 × 0.8 × 0.5 × 40 %)', row(l45.s2, 'I-131').A_GBq_y, 8, 1e-9);
-  test('app Sc.2 L45 I-131 DF = 0.771688', row(l45.s2, 'I-131').DF, 0.7716876942, 1e-6);
-  test('app Sc.2 L45 I-131 FD = 13.0990 µSv/GBq', row(l45.s2, 'I-131').per_GBq.FD_uSv, 13.09901400, 1e-6);
-  test('app Sc.2 L45 I-131 E = 0.104792 mSv/y', row(l45.s2, 'I-131').E_mSv_y, 0.1047921120, 1e-6);
-  test('app Sc.2 L10 Lu-177 E = 0.535761 mSv/y', row(l10.s2, 'Lu-177').E_mSv_y, 0.5357608886, 1e-6);
-  test('app Sc.2 L10 I-131 E = 0.0742497 mSv/y', row(l10.s2, 'I-131').E_mSv_y, 0.07424965301, 1e-6);
-  // Scenario 1 — source term without catchment fraction
-  test('app Sc.1 Lu-177 activity to sewer = 1831.5 GBq/y (no catchment)', row(l45.s1, 'Lu-177').A_GBq_y, 1831.5, 1e-9);
+  // Source term (v1.4.1): A_adm = patients × cycles × administered activity;
+  // in-hospital fraction leaves through the facility (Scenario 1 and 2); the rest
+  // is excreted at home and reaches the STP × catchment (Scenario 2 only).
+  // Defaults: Lu-177 75 × 6 × 7.4 GBq, f_hosp 0.45; I-131 50 × 1 × 0.8 GBq, f_hosp 0.5;
+  // catchment 40 %; no nuclide in decay tanks. Expected activities computed by hand;
+  // doses = activity × the per-GBq factors verified above (Sc. 2 FD unchanged).
+  test('app Sc.1 Lu-177 leaves hospital = 3330 × 0.45 = 1498.5 GBq/y', row(l45.s1, 'Lu-177').A_GBq_y, 1498.5, 1e-9);
   test('app Sc.1 Lu-177 FD = 0.0114651 µSv/GBq', row(l45.s1, 'Lu-177').per_GBq.FD_uSv, 0.01146505198, 1e-6);
-  test('app Sc.1 Lu-177 E = 0.0209982 mSv/y', row(l45.s1, 'Lu-177').E_mSv_y, 0.02099824270, 1e-6);
-  test('app Sc.1 I-131 activity to sewer = 20 GBq/y', row(l45.s1, 'I-131').A_GBq_y, 20, 1e-9);
+  test('app Sc.1 Lu-177 E = 0.0171804 mSv/y', row(l45.s1, 'Lu-177').E_mSv_y, 0.01718038039, 1e-6);
+  test('app Sc.1 I-131 leaves hospital = 40 × 0.5 = 20 GBq/y', row(l45.s1, 'I-131').A_GBq_y, 20, 1e-9);
   test('app Sc.1 I-131 FD = 0.135353 µSv/GBq', row(l45.s1, 'I-131').per_GBq.FD_uSv, 0.1353527017, 1e-6);
-  test('app Sc.1 I-131 E = 0.00270705 mSv/y', row(l45.s1, 'I-131').E_mSv_y, 0.002707054035, 1e-6);
+  test('app Sc.1 I-131 E = 0.00270705 mSv/y', row(l45.s1, 'I-131').E_mSv_y, 0.002707054034, 1e-6);
   test('app Sc.1 Lu-177m (ICRP 107 T½) FD = 0.340488 µSv/GBq', row(l45.s1, 'Lu-177m').per_GBq.FD_uSv, 0.3404880508, 1e-6);
-  test('app Sc.1 Lu-177m E = 6.23604E-5 mSv/y', row(l45.s1, 'Lu-177m').E_mSv_y, 6.236038651e-05, 1e-6);
-  test('app Sc.1 F-18 with the workbook source term = 0.137606 mSv/y', row(l45.s1, 'F-18').E_mSv_y, 0.1376063, 1e-5);
+  test('app Sc.1 Lu-177m E = 5.10221E-5 mSv/y', row(l45.s1, 'Lu-177m').E_mSv_y, 5.102213441e-05, 1e-6);
+  test('app Sc.1 F-18 FD equals the workbook factor (0.333591 µSv/GBq)', row(l45.s1, 'F-18').per_GBq.FD_uSv, 0.333590987210136, 1e-5);   // app transit 0.2 h vs workbook 0.008333 d
   test('app Sc.1 Tc-99m default source term is zero (no workbook default)', row(l45.s1, 'Tc-99m').E_mSv_y, 0, 0);
+  test('app Sc.2 Lu-177 to STP = 1498.5 + 3330 × 0.55 × 0.40 = 2231.1 GBq/y', row(l45.s2, 'Lu-177').A_GBq_y, 2231.1, 1e-9);
+  test('app Sc.2 L45 Lu-177 FD = 1.06479 µSv/GBq (unchanged)', row(l45.s2, 'Lu-177').per_GBq.FD_uSv, 1.064791672, 1e-6);
+  test('app Sc.2 L45 Lu-177 E = 2.37566 mSv/y', row(l45.s2, 'Lu-177').E_mSv_y, 2.375656699, 1e-6);
+  test('app Sc.2 I-131 to STP = 20 + 40 × 0.5 × 0.40 = 28 GBq/y', row(l45.s2, 'I-131').A_GBq_y, 28, 1e-9);
+  test('app Sc.2 L45 I-131 DF = 0.771688', row(l45.s2, 'I-131').DF, 0.7716876942, 1e-6);
+  test('app Sc.2 L45 I-131 FD = 13.0990 µSv/GBq (unchanged)', row(l45.s2, 'I-131').per_GBq.FD_uSv, 13.09901400, 1e-6);
+  test('app Sc.2 L45 I-131 E = 0.366772 mSv/y', row(l45.s2, 'I-131').E_mSv_y, 0.366772392, 1e-6);
+  test('app Sc.2 L10 Lu-177 E = 1.63164 mSv/y', row(l10.s2, 'Lu-177').E_mSv_y, 1.631635434, 1e-6);
+  test('app Sc.2 L10 I-131 E = 0.259874 mSv/y', row(l10.s2, 'I-131').E_mSv_y, 0.2598737855, 1e-6);
   test('app Sc.1 total is the sum of its rows', l45.s1.total_mSv_y,
     l45.s1.rows.reduce((a, r) => a + r.E_mSv_y, 0), 1e-12);
+  // Decay tanks: Lu-177 and I-131 controlled share the 1 GBq/y discharge in
+  // proportion to the activity excreted into the tanks (1498.5 + 20 = 1518.5 GBq/y).
+  {
+    const inp = defaults('L45');
+    inp.nuclides.forEach(n => { n.include = ['Lu-177', 'I-131'].includes(n.id); n.controlled = n.include; });
+    const o = EFF.evaluate(inp);
+    test('tanks: Σ excreted into tanks = 1518.5 GBq/y', o.source.sumControlled_GBq_y, 1518.5, 1e-12);
+    test('tanks: Lu-177 leaves hospital = 1 × 1498.5 / 1518.5 GBq/y', row(o.s1, 'Lu-177').A_GBq_y, 1498.5 / 1518.5, 1e-12);
+    test('tanks: I-131 leaves hospital = 1 × 20 / 1518.5 GBq/y', row(o.s1, 'I-131').A_GBq_y, 20 / 1518.5, 1e-12);
+    test('tanks: controlled discharges add up to the 1 GBq/y limit',
+      row(o.s1, 'Lu-177').A_GBq_y + row(o.s1, 'I-131').A_GBq_y, 1, 1e-12);
+    test('tanks: Lu-177 to STP = tank share + home part 732.6 GBq/y', row(o.s2, 'Lu-177').A_GBq_y, 1498.5 / 1518.5 + 732.6, 1e-12);
+    // only I-131 controlled, below the limit after scaling patients down: no decay credit
+    inp.nuclides.forEach(n => { n.controlled = n.id === 'I-131'; if (n.id === 'I-131') n.patients_per_y = 2; });
+    const o2 = EFF.evaluate(inp);
+    test('tanks: excreted into tanks below the limit (0.8 GBq/y) is discharged in full', row(o2.s1, 'I-131').A_GBq_y, 0.8, 1e-12);
+    test('tanks: an uncontrolled nuclide is unaffected by the tank limit', row(o2.s1, 'Lu-177').A_GBq_y, 1498.5, 1e-12);
+  }
   // F-18 has no Scenario 2 coefficient: flagged, not zero, not in the total
   totalTests++;
   if (row(l45.s2, 'F-18').no_coefficient === true && !('E_mSv_y' in row(l45.s2, 'F-18'))) {
@@ -820,7 +842,12 @@ console.log('TEST 13: Effluent Scenarios 1 and 2 (CALC.sewerInspectorScenario1, 
     inp[group][key] *= factor;
     return EFF.evaluate(inp)[scen].total_mSv_y / l45[scen].total_mSv_y;
   };
-  test('Sc.2: catchment × 0.5 halves the total', ratio('s2', 's2', 'catchment_pct', 0.5), 0.5, 1e-12);
+  {
+    const inp = defaults('L45');
+    inp.s2.catchment_pct = 20;
+    test('Sc.2: catchment 40 → 20 % halves only the home part (Lu-177 1498.5 + 366.3 GBq/y)',
+      row(EFF.evaluate(inp).s2, 'Lu-177').A_GBq_y, 1498.5 + 3330 * 0.55 * 0.2, 1e-12);
+  }
   test('Sc.1: catchment has no effect', ratio('s1', 's2', 'catchment_pct', 0.5), 1, 1e-12);
   test('Sc.2: wet sludge mass × 2 halves the total', ratio('s2', 's2', 'wet_sludge_t_per_y', 2), 0.5, 1e-9);
   test('Sc.2: external time × 2 ≈ doubles the total (external dominant)', ratio('s2', 's2', 't_external_h_y', 2), 2, 1e-4);

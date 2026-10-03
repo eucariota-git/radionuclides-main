@@ -298,7 +298,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v30');
+    swVersion === 'nm-planner-v31');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -419,6 +419,11 @@ async function main() {
     /k1_nSv_h_per_Bq_m3: nd\.k_ext\.s1\.value/.test(effluentHtml) &&
     /k2_nSv_h_per_Bq_m3: nd\.k_ext\.s2 \? nd\.k_ext\.s2\[geometry\]\.value : null/.test(effluentHtml) &&
     /cycles_locked \? 1 :/.test(effluentHtml));
+  check('source term reads the in-hospital fraction and the decay-tank flag of every nuclide',
+    /fraction_in_hospital: readNumber\(document\.getElementById\(`st_\$\{i\}_fraction_in_hospital`\)\)/.test(effluentHtml) &&
+    /controlled: document\.getElementById\(`st_\$\{i\}_controlled`\)\.checked/.test(effluentHtml) &&
+    !/fraction_to_sewer/.test(effluentHtml + effluentJs) &&
+    /tank_limit_GBq_y/.test(effluentJs));
   check('facility selector fills the Scenario 1 water volume and a manual edit switches it to Custom',
     /volInput\.value = presets\[facSel\.value\]\.water_volume_m3_y/.test(effluentHtml) &&
     /facSel\.value = match \|\| 'custom'/.test(effluentHtml));
