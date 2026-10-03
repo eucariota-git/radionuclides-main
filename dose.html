@@ -652,6 +652,7 @@
     notes.push('H*(10) and H\'(0.07) are area-monitoring quantities; compliance with dose limits is assessed with personal dosimetry (Hp(10), Hp(0.07), Hp(3)). The limit screening in this report is indicative only.');
     if (r.n._icrp107) notes.push('ICRP 107 extended entry: constants computed automatically, NOT manually validated. Verify against primary sources before regulatory use.');
     if (r.patientTx !== undefined && r.patientTx < 1) notes.push(`Patient attenuation applied: transmission ${UTILS.fmt(r.patientTx * 100)}%.`);
+    if (r.shieldWarnings && r.shieldWarnings.length) notes.push('⚠ Shielding out of validated range: ' + r.shieldWarnings.join('; ') + '.');
 
     // Only the sources the calculation actually used (audit 2026-07-16, H-06;
     // re-audit R-02): a Y-90 report must not cite conversion coefficients, the
@@ -662,7 +663,7 @@
     if (r.isY90) {
       sources.push('Zanzonico et al. (1999) J Nucl Med 40(6):1024–1028 — bremsstrahlung dose-rate methodology (the container constants used here are estimates, not tabulated in that publication).');
     } else {
-      sources.push('ICRU Report 57 / ICRP Publication 74 (1996) — Conversion coefficients H*(10), H\'(0.07).');
+      sources.push('ICRP Publication 74 (1996), Table A.21 — conversion coefficients h*(10), h\'(0.07,0°) per unit fluence.');
       sources.push('Cornejo Díaz N., Brosed Serreta A., Ruiz Manzano P. (2015) — Constantes de tasa de kerma en aire y de dosis. Radioprotección Nº 83.');
       if (r.method === 'archer') {
         sources.push('Oumano et al. (2025) J Appl Clin Med Phys — Archer broad-beam shielding parameters.');
@@ -679,8 +680,13 @@
       sections: [
         { heading: 'Input parameters', rows: [
           ['Activity A₀', `${r.A0raw} ${r.A0unit} (${UTILS.fmt(r.A0_GBq)} GBq)`],
-          ['Distance', `${r.d_m.toFixed(2)} m`],
+          // As entered plus metres to 4 significant figures: toFixed(2) printed
+          // 0.004 m as "0.00 m" (audit 2026-10-03, H-08)
+          ['Distance', `${r.distRaw} ${r.distUnit} (${Number(r.d_m.toPrecision(4))} m)`],
           ['Shielding', r.isY90 ? `Y-90 bremsstrahlung container: ${r.containerName || '—'}` : r.mat && r.mat !== 'none' ? `${r.mat}, ${r.thick} cm` : 'none'],
+          ['Shielding validity', r.shieldWarnings && r.shieldWarnings.length
+            ? 'OUT OF VALIDATED RANGE — ' + r.shieldWarnings.join('; ') + '. Treat the shielding result as an extrapolation.'
+            : (r.method === 'archer' ? 'Archer fit (its own published validity range)' : r.method === 'unshielded' ? 'no shielding' : 'within the tabulated attenuation and build-up ranges')],
           ['Exposure time per administration', `${UTILS.fmt(r.t_h)} h`],
           ['Administrations per year', String(r.nAdmin)],
           ['Decay during exposure', r.withDecay === undefined ? '—' : r.withDecay ? 'integrated A(t)' : 'no (constant activity, worst case)'],
@@ -702,21 +708,31 @@
 
   document.getElementById('btnExportDoseCsv').onclick = () => {
     if (!lastCalcResult) { alert('Calculate dose first.'); return; }
-    const { useH007, gammaExt, gammaWB, nAdmin, H_WB_cum, H_Ext_cum, Hdot_WB, Hdot_WB_t, Hdot_Ext, Hdot_Ext_t, Hdot_WB_1m, Hdot_WB_t_1m, Hdot_Ext_1m, Hdot_Ext_t_1m, n, A0raw, A0unit, d_m, t_h, mat, thick, withDecay, patientTx, containerName, isY90 } = lastCalcResult;
-    const date = new Date().toISOString().slice(0, 10);
+    const { useH007, gammaExt, gammaWB, nAdmin, H_WB_cum, H_Ext_cum, Hdot_WB, Hdot_WB_t, Hdot_Ext, Hdot_Ext_t, Hdot_WB_1m, Hdot_WB_t_1m, Hdot_Ext_1m, Hdot_Ext_t_1m, n, A0raw, A0unit, A0_GBq, d_m, distRaw, distUnit, shieldWarnings, t_h, mat, thick, withDecay, patientTx, containerName, isY90, method } = lastCalcResult;
+    // Rectangular, self-describing CSV (audit 2026-10-03, H-09): identity,
+    // versions, inputs and validity repeated on every row, as the Decay export.
+    const meta = (typeof DB !== 'undefined' && DB.getMeta) ? DB.getMeta() : {};
+    const exportedUtc = new Date().toISOString();
     const extLabel = useH007 ? "H'(0.07) skin/extremity indicator" : "H'(0.07) row (H*(10) value — no H'(0.07) constant)";
-    const rows = [
-      ['Quantity', `Dose_rate_t0_at_${d_m.toFixed(2)}m_μSv/h`, `Dose_rate_at_${d_m.toFixed(2)}m_after_decay_μSv/h`, 'Dose_rate_t0_at_1m_reference_μSv/h', 'Dose_rate_at_1m_after_decay_μSv/h', 'Annual_dose_per_year_μSv', 'Notes'],
-      [isY90 ? 'Y-90 H*(10) whole body' : 'H*(10) whole body', Hdot_WB.toPrecision(5), Hdot_WB_t.toPrecision(5), Hdot_WB_1m.toPrecision(5), Hdot_WB_t_1m.toPrecision(5), (H_WB_cum * nAdmin).toPrecision(5),
-       `γ=${gammaWB} μSv·h⁻¹·GBq⁻¹·m²`],
-      [isY90 ? `Y-90 ${extLabel}` : extLabel, Hdot_Ext.toPrecision(5), Hdot_Ext_t.toPrecision(5), Hdot_Ext_1m.toPrecision(5), Hdot_Ext_t_1m.toPrecision(5), (H_Ext_cum * nAdmin).toPrecision(5),
-       `γ=${gammaExt} μSv·h⁻¹·GBq⁻¹·m²${useH007 ? '' : ' (H*(10) value — no H\'(0.07) constant)'}`],
-      // Every assumption behind the numbers, so the CSV alone reproduces the
-      // scenario (audit 2026-07-16, H-06).
-      ['Assumptions', '', '', '', '', '',
-       `exposure ${t_h} h × ${nAdmin} admin/y; decay during exposure: ${withDecay === undefined ? '—' : withDecay ? 'integrated A(t)' : 'no (constant activity, worst case)'}; ` +
-       `shielding: ${isY90 ? `Y-90 bremsstrahlung container: ${containerName || '—'}` : mat && mat !== 'none' ? `${mat}, ${thick} cm` : 'none'}; ` +
-       `patient transmission: ${patientTx !== undefined && patientTx < 1 ? (patientTx * 100) + '%' : 'none'}`],
+    const head = ['App_version', 'App_build', 'Database_version', 'Exported_UTC', 'Nuclide',
+      'Activity_input', 'Activity_unit', 'Activity_GBq', 'Distance_input', 'Distance_unit', 'Distance_m',
+      'Exposure_per_administration_h', 'Administrations_per_y', 'Decay_during_exposure',
+      'Shielding', 'Shielding_method', 'Shielding_validity', 'Patient_transmission',
+      'Quantity', 'Gamma_uSv_h_GBq_m2', 'Dose_rate_t0_at_d_uSv_h', 'Dose_rate_after_decay_at_d_uSv_h',
+      'Dose_rate_t0_at_1m_uSv_h', 'Dose_rate_after_decay_at_1m_uSv_h', 'Annual_dose_uSv_per_y', 'Note'];
+    const common = [UTILS.APP_VERSION, UTILS.APP_BUILD, meta.version || '', exportedUtc, n.id,
+      A0raw, A0unit, Number(A0_GBq.toPrecision(6)), distRaw, distUnit, Number(d_m.toPrecision(6)),
+      t_h, nAdmin, withDecay === undefined ? '' : withDecay ? 'integrated A(t)' : 'no (constant activity, worst case)',
+      isY90 ? `Y-90 bremsstrahlung container: ${containerName || '—'}` : mat && mat !== 'none' ? `${mat}, ${thick} cm` : 'none',
+      isY90 ? 'Y-90 container estimate' : (method || ''),
+      shieldWarnings && shieldWarnings.length ? 'OUT OF VALIDATED RANGE: ' + shieldWarnings.join(' | ') : 'within range',
+      patientTx !== undefined && patientTx < 1 ? patientTx : 1];
+    const rows = [head,
+      [...common, isY90 ? 'Y-90 H*(10) whole body' : 'H*(10) whole body', gammaWB,
+        Hdot_WB.toPrecision(5), Hdot_WB_t.toPrecision(5), Hdot_WB_1m.toPrecision(5), Hdot_WB_t_1m.toPrecision(5), (H_WB_cum * nAdmin).toPrecision(5), ''],
+      [...common, isY90 ? `Y-90 ${extLabel}` : extLabel, gammaExt,
+        Hdot_Ext.toPrecision(5), Hdot_Ext_t.toPrecision(5), Hdot_Ext_1m.toPrecision(5), Hdot_Ext_t_1m.toPrecision(5), (H_Ext_cum * nAdmin).toPrecision(5),
+        useH007 ? '' : "H*(10) value — no H'(0.07) constant"],
     ];
     const csv = rows.map(r => r.map(v => {
       const str = String(v);
@@ -727,7 +743,7 @@
     const a = document.createElement('a');
     const url = URL.createObjectURL(blob);
     a.href = url;
-    a.download = `dose_${UTILS.safeFilename(n.id)}_${A0raw}${A0unit}_${d_m.toFixed(2)}m_${date}.csv`;
+    a.download = `dose_${UTILS.safeFilename(n.id)}_${A0raw}${A0unit}_${distRaw}${distUnit}_${exportedUtc.slice(0, 10)}.csv`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 0);
   };
@@ -762,6 +778,8 @@
     }
     const distUnit = document.getElementById('distUnit').value;
     const d_m      = distUnit === 'cm' ? distRaw / 100 : distRaw;
+    // Shielding-range warnings of this calculation, exported with the result (H-07)
+    let shieldWarnings = [];
 
     const mat          = document.getElementById('shieldMaterial').value;
     const parsedThick  = parseFloat(document.getElementById('shieldThickness').value);
@@ -973,6 +991,9 @@
           A0unit: A0unit,
           A0_GBq: A0_GBq,
           d_m: d_m,
+          distRaw: distRaw,
+          distUnit: distUnit,
+          shieldWarnings: [],
           t_h: t_h,
           // Full scenario assumptions, so the printed report and the CSV can
           // reproduce the calculation (audit 2026-07-16, H-06): container,
@@ -1118,8 +1139,8 @@
     }
 
     // Update column headers to show distance
-    document.getElementById('doseRate0Header').textContent = `D'(0) at ${d_m.toFixed(2)} m`;
-    document.getElementById('doseRateAtTimeHeader').textContent = `D'(t) at ${d_m.toFixed(2)} m`;
+    document.getElementById('doseRate0Header').textContent = `D'(0) at ${Number(d_m.toPrecision(3))} m`;
+    document.getElementById('doseRateAtTimeHeader').textContent = `D'(t) at ${Number(d_m.toPrecision(3))} m`;
 
     document.getElementById('resultsBody').innerHTML = `
       <tr>
@@ -1209,6 +1230,7 @@
       // warning at all (audit 2026-07-15).
       const warnEl = document.getElementById('shieldRangeWarn');
       warnEl.innerHTML = '';
+      shieldWarnings = [];
       if (method !== 'archer') {
         const range = PHYSICS.getShieldingRange(mat);
         const lines = sp || [[E_MeV * 1000, 1]];
@@ -1229,8 +1251,11 @@
           msgs.push(`${pct(wOverMfp)}% of the dose weight exceeds ${range.buildup_mfp_max} mean free paths (deepest line: ${UTILS.fmt(mfpMax)} mfp); the build-up factor is clamped and <strong>underestimates</strong> the transmitted dose`);
         if (wUnderE > 0)
           msgs.push(`${pct(wUnderE)}% of the dose weight lies below ${UTILS.fmt(range.buildup_E_min_MeV * 1000)} keV, where the ${matLabel(mat)} build-up table starts; B is held at its lowest tabulated energy`);
-        if (msgs.length)
+        if (msgs.length) {
           warnEl.innerHTML = `<div class="alert alert-warning alert-lg mt-1">⚠️ Out of validated range: ${msgs.join('; ')}. Treat the shielding result as an extrapolation.</div>`;
+          // Persist the same warnings in the exportable result (audit 2026-10-03, H-07)
+          shieldWarnings = msgs.map(m => m.replace(/<[^>]+>/g, ''));
+        }
       }
     } else {
       shieldEl.classList.add('hidden');
@@ -1290,7 +1315,7 @@
             borderWidth: 2, pointRadius: 0, pointStyle: 'line', fill: false, tension: 0.1, borderDash: [5,3],
           },
           {
-            label: `d = ${d_m.toFixed(2)} m`,
+            label: `d = ${Number(d_m.toPrecision(3))} m`,
             data: orangeMarkWB,
             borderColor: chartTheme.orange,
             backgroundColor: chartTheme.orange,
@@ -1374,6 +1399,7 @@
     `;
 
     lastCalcResult = { useH007, gammaExt, gammaWB, nAdmin, H_WB_cum, H_Ext_cum, Hdot_WB, Hdot_WB_t, Hdot_Ext, Hdot_Ext_t, Hdot_WB_1m, Hdot_WB_t_1m, Hdot_Ext_1m, Hdot_Ext_t_1m, n, A0raw, A0unit, A0_GBq, d_m, t_h,
+      distRaw, distUnit, shieldWarnings: shieldWarnings.slice(),
       mat, thick, patientTx, withDecay,
       method: mat === 'none' || thick <= 0 ? 'unshielded' : ap ? 'archer' : sp ? 'narrow_beam_spectrum' : 'narrow_beam',
       spectrumLines: sp ? sp.length : 0 };

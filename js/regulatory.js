@@ -137,12 +137,22 @@ const REGULATORY = (() => {
     };
   }
 
+  /** Every identifier of Tables A1, B and of the adult e(g) table, sorted. Used by
+   *  Properties to reach entries that have no nuclear data in the app (e.g. Nb-98,
+   *  audit 2026-10-03, H-11). Identifiers are kept AS PRINTED: Nb-98 is not mapped
+   *  to Nb-98m, nor to the 'Nb-98s' printed in ICRP 119. */
+  function allIds() {
+    const d = data();
+    return [...new Set([...d.rd1217_annex4.a1.map(r => r.id), ...d.rd1217_annex4.b.map(r => r.id),
+      ...d.ingestion_public_adult.rows.map(r => r.id)])].sort();
+  }
+
   function sources() {
     const d = data();
     return { annex4: d.rd1217_annex4.source, ingestion: d.ingestion_public_adult.source,
              criteria: d.rd1217_annex4.criteria, governing_rule: d.ingestion_public_adult.governing_rule };
   }
 
-  return { load, parentId, clearanceA1, exemptionB, ingestionAdult, dischargeLevel, sources, isValid };
+  return { load, parentId, clearanceA1, exemptionB, ingestionAdult, dischargeLevel, allIds, sources, isValid };
 
 })();

@@ -354,11 +354,20 @@ async function main() {
   check('Y-90 report keeps its scenario snapshot and cites only scenario sources (no auto ICRU 57/Cornejo)',
     /containerName: container\.name/.test(doseHtml) &&
     /patientTx: patientTx,\s*\n\s*withDecay: withDecay/.test(doseHtml) &&
-    doseHtml.includes("['Assumptions', '', '', '', '', ''") &&
+    /'Shielding', 'Shielding_method', 'Shielding_validity', 'Patient_transmission'/.test(doseHtml) &&
     !/ICRU Report 57/.test(reportJs) &&
     /if \(r\.isY90\) \{/.test(doseHtml));
   check('Y-90 report does not create an empty assumptions list item when no method text exists',
     /const notes = methodText \? \[methodText\] : \[\];/.test(doseHtml));
+  check('dose: shielding out-of-range warnings are kept in the result and exported (audit 2026-10-03, H-07)',
+    /shieldWarnings = msgs\.map/.test(doseHtml) && /shieldWarnings: shieldWarnings\.slice\(\)/.test(doseHtml) &&
+    /'Shielding validity'/.test(doseHtml) && /'Shielding_validity'/.test(doseHtml));
+  check('dose: the exported distance keeps the entered value and unit, never toFixed(2) metres (H-08)',
+    !/d_m\.toFixed\(2\)/.test(doseHtml) && /\$\{r\.distRaw\} \$\{r\.distUnit\}/.test(doseHtml) &&
+    /'Distance_input', 'Distance_unit', 'Distance_m'/.test(doseHtml));
+  check('dose CSV is rectangular and self-describing: versions, nuclide and activity on every row (H-09)',
+    /'App_version', 'App_build', 'Database_version', 'Exported_UTC', 'Nuclide',/.test(doseHtml) &&
+    /'Activity_input', 'Activity_unit', 'Activity_GBq'/.test(doseHtml));
   check('printed reports identify the application build',
     /<tr><td>Application<\/td>/.test(reportJs) && /APP_BUILD/.test(reportJs));
   check('decay validates the vial weight before any result is rendered',
@@ -467,6 +476,10 @@ async function main() {
   check('service worker precaches the regulatory module and data; package allowlist includes the data',
     ["./js/regulatory.js", "./data/regulatory-data.js"].every(a => swJs.includes(`'${a}'`)) &&
     (!hasTools || /'data\/regulatory\.json', 'data\/regulatory-data\.js'/.test(buildPackageJs)));
+  check('Properties reaches identifiers that exist only in the regulatory tables (Nb-98), calculators disabled (H-11)',
+    /function allIds\(\)/.test(regulatoryJs) && /function regulatoryOnlyMatches\(query\)/.test(indexHtml2) &&
+    /function showRegulatoryOnly\(id\)/.test(indexHtml2) && /btnDecay'\)\.parentElement\.classList\.add\('hidden'\)/.test(indexHtml2) &&
+    /_regOnly: true/.test(indexHtml2));
   check('no user-facing page cites ICRP 119 Annex F for the discharge levels',
     ![indexHtml2, decayHtml, effluentHtml, aboutHtml].some(t => /ICRP 119 Annex F/.test(t)));
 

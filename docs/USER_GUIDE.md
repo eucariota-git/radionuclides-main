@@ -18,6 +18,7 @@ The application has no installation or authentication. It can be used in either 
 - **Offline**: Works entirely offline when opened from `file://`; a copy first loaded over HTTP(S) can also work offline from its local cache
 - **Install as app (PWA)**: when served through `localhost` or HTTPS, a compatible browser can offer "Install" / "Add to Home screen" — the app then runs standalone with its own icon and a service worker keeps all assets cached for fully offline use
 - **Reports**: the Decay, Dose and Effluent calculators include a **📄 Report / PDF** button that generates a printable calculation report (timestamp, database version, inputs, results, method, data sources, disclaimer and sign-off line) — use the browser's "Save as PDF" destination to archive it
+- **CSV exports**: Decay, Dose and Effluent CSVs are rectangular and self-describing — every row repeats the application version and build, database version, export time (UTC), nuclide and the inputs needed to reproduce the result; the Effluent CSV also states whether each scenario total is complete or a partial sum
 
 ---
 
@@ -43,6 +44,7 @@ The application has no installation or authentication. It can be used in either 
      - **Table A1** (257 entries) — activity-concentration value for exemption of practices or clearance of materials, any quantity and any type of solid material; entries marked (a) refer to the parent and already account for the listed progeny. Nuclides not in A1 are shown as *not tabulated*: Annex III.1.b refers to the European Commission's "Radiation Protection 122 Part 1" (not included); natural radionuclides fall under Table A2 (not implemented)
      - **Table B** (297 rows) — exemption of moderate quantities (≤ 1000 kg): column 2 concentration (kBq/kg) and column 3 total activity (Bq). Not tabulated: Annex II A.3.a refers to the CSN values
      - Four note/progeny inconsistencies of the BOE itself (A1 Ce-144, U-231; B Ag-108m, U-230) are shown as printed, with a warning
+     - Identifiers that appear only in these regulatory tables and have no nuclear data in the app (e.g. Nb-98) can be searched and show their regulatory values only; Decay and Dose are disabled for them. They are not mapped to similar identifiers (Nb-98 ≠ Nb-98m ≠ the "Nb-98s" printed in ICRP 119)
 3. **Clinical use**: See modality and intended clinical applications
 4. **Export**: Download the table as CSV
 
@@ -159,6 +161,7 @@ The application includes an **extended database of 1,252 radionuclides** from IC
 - 200 administrations/year with 5mm lead: ~1.6 mSv/year (Safe)
 
 - Y-90 scenarios are clearly marked experimental and are excluded from regulatory conclusions
+- The Dose report and CSV record the distance as entered (value and unit) and the shielding validity: when part of the dose weight falls outside the tabulated attenuation or build-up range (e.g. beyond 40 mean free paths, where B is clamped), the warning shown on screen is also printed and exported
 
 ---
 

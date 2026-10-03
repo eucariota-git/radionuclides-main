@@ -6,7 +6,7 @@ const REGULATORY_DATA = {
     "built": "2026-10-03",
     "sources": {
       "annex_iv_csv_sha256": "0f4adfcb9c6a10dd8b0b392aa43ee02d0cadbd44df07eb9f0a7db5b5bacd705f",
-      "progeny_csv_sha256": "d1e502a7a2aa082285b61cfc36d17222e2032249379d1f79a2966e84dfa8ee5f",
+      "progeny_csv_sha256": "2fa4c18b9385d2327b5884628e31dbaac93c68d93c5dcb4d6298751f57c54771",
       "icrp119_f1_csv_sha256": "b05f4db8216b456bea51c6b1bb754d3822402fbaa2d9c56d3e8d29678167ac90",
       "html_extraction_sha256": "35a6d3f4c983e8edcfa45db12cffa8e002b4288fd5b215c277f542b80f1f81de",
       "html_source_sha256": "05cf3f8bd074d5da1cd456389c9b507e93b15da7a94e5991e3ed2f75e9a799cd"
@@ -1507,7 +1507,7 @@ const REGULATORY_DATA = {
         "note": "a",
         "kBq_kg": 0.1,
         "progeny": [
-          "Np-238. BOE-A-2024-25205"
+          "Np-238"
         ]
       },
       {

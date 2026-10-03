@@ -438,6 +438,11 @@ console.log('TEST: RD 1217/2024 Annex IV and adult public e(g) vs the BOE');
   for (const [id, v, note] of A1REF) eq(`A1 ${id} = ${v} kBq/kg${note ? ` (${note})` : ''}`, a1(id) && a1(id).kBq_kg === v && a1(id).note === note);
   eq('A1 Sr-90 progeny Y-90; Mo-99 progeny Tc-99m; Es-254m progeny Fm-254 (continued on BOE p. 164687)',
     a1('Sr-90').progeny.join() === 'Y-90' && a1('Mo-99').progeny.join() === 'Tc-99m' && a1('Es-254m').progeny.join() === 'Fm-254');
+  // H-12: every progeny item is a nuclide id with an optional branching fraction
+  const ITEM = /^[A-Z][a-z]?-\d{1,3}m?( \(\d+(,\d+)?\))?$/;
+  const badProg = A1.concat(B).flatMap(r => r.progeny.filter(x => !ITEM.test(x)).map(x => `${r.id}: ${x}`));
+  eq('all progeny items are nuclide identifiers (no BOE margin text; Am-242m → Np-238)',
+    badProg.length === 0 && a1('Am-242m').progeny.join() === 'Np-238');
   eq('A1 has no row for C-11, Ga-68, Ra-223, K-40 or Nb-98m', ['C-11', 'Ga-68', 'Ra-223', 'K-40', 'Nb-98m'].every(id => !a1(id)));
   const b = id => B.filter(r => r.id === id);
   eq('B Mo-99 = 100 kBq/kg / 1E6 Bq, no note', b('Mo-99').length === 1 && b('Mo-99')[0].conc_kBq_kg === 100 && b('Mo-99')[0].activity_Bq === 1e6 && b('Mo-99')[0].note === null);

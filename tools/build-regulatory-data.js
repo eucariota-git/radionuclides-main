@@ -93,7 +93,17 @@ const splitProgeny = s => s.split(';').map(x => x.trim().replace(/\.$/, '')).fil
 
 // ---- progeny (library + the missing continuation line) ----
 const progeny = { A1: {}, B: {} };
-for (const r of readCsv(F_PROG)) progeny[r.tabla][normId(r.padre)] = splitProgeny(r.progenie);
+// Every progeny item must be a nuclide identifier with an optional branching
+// fraction, e.g. 'Tl-208 (0,36)'. Anything else — such as the BOE margin text
+// 'BOE-A-2024-25205' that once leaked into Am-242m — aborts the build
+// (audit 2026-10-03, H-12).
+const PROGENY_ITEM = /^[A-Z][a-z]?-\d{1,3}m?( \(\d+(,\d+)?\))?$/;
+for (const r of readCsv(F_PROG)) {
+  const items = splitProgeny(r.progenie);
+  const bad = items.filter(x => !PROGENY_ITEM.test(x));
+  if (bad.length) fail(`progeny of ${r.tabla} ${r.padre}: invalid item(s) ${JSON.stringify(bad)}`);
+  progeny[r.tabla][normId(r.padre)] = items;
+}
 if (progeny.A1['Es-254m']) fail('library progeny now contains Es-254m — remove the manual addition');
 progeny.A1['Es-254m'] = ['Fm-254'];
 

@@ -308,8 +308,10 @@
       // If no DB results and we have a search query, try ICRP 107
       if (data.length === 0 && ICRP107 && ICRP107.isReady()) {
         const icrpResults = ICRP107.search(activeSearch);
-        // Add ICRP 107 results as synthetic entries (not filtered by modality, no clinical data)
-        data = icrpResults.map(enrichIcrpNuclide);
+        // Add ICRP 107 results as synthetic entries (not filtered by modality, no clinical data),
+        // plus identifiers that exist only in the regulatory tables (H-11)
+        data = icrpResults.map(enrichIcrpNuclide)
+          .concat(regulatoryOnlyMatches(activeSearch).map(id => ({ id, symbol: id, _regOnly: true })));
       }
     }
 
@@ -317,6 +319,7 @@
     document.getElementById('rowCount').textContent = `${data.length} nuclide${data.length !== 1 ? 's' : ''}`;
 
     const rows = data.map(n => {
+      if (n._regOnly) return regulatoryOnlyRow(n.id);
       const sel = n.id === selectedId ? 'selected' : '';
       const decayStr = (n.decay_modes || []).map(d => d.mode || d.daughter ? `${d.mode || 'decay'}` : d.mode).join(', ');
 
@@ -382,6 +385,29 @@
     });
   }
 
+  // Identifiers present only in the regulatory tables (RD 1217/2024 A1/B, adult
+  // e(g)) and in neither the curated database nor ICRP 107 — e.g. Nb-98. They are
+  // shown with their regulatory values only (audit 2026-10-03, H-11).
+  function regulatoryOnlyMatches(query) {
+    if (typeof REGULATORY === 'undefined') return [];
+    const q = String(query || '').toLowerCase().replace(/[\s-]/g, '');
+    if (!q) return [];
+    return REGULATORY.allIds().filter(id =>
+      !DB.getById(id) && !(ICRP107 && ICRP107.isReady() && ICRP107.get(id)) &&
+      id.toLowerCase().replace(/[\s-]/g, '').includes(q));
+  }
+  function regulatoryOnlyRow(id) {
+    const sel = id === selectedId ? 'selected' : '';
+    return `<tr class="${sel}" data-id="${UTILS.escapeHtml(id)}" style="opacity:0.85;">
+      <td class="sym">${UTILS.escapeHtml(id)}</td>
+      <td class="text-muted">—</td><td class="text-muted">—</td>
+      <td><span class="tag tag-other" style="font-size:0.85em;">Regulatory only</span></td>
+      <td class="num text-muted">—</td><td class="num text-muted">—</td><td class="num text-muted">—</td>
+      <td class="num text-muted">—</td><td class="num text-muted">—</td><td class="num text-muted">—</td>
+      <td class="text-sm">RD 1217/2024 / RD 783/2001 tables only — no nuclear data</td>
+    </tr>`;
+  }
+
   // Search in ICRP 107 database
   function searchIcrp107() {
     if (!ICRP107 || !ICRP107.isReady()) {
@@ -390,11 +416,17 @@
     }
 
     const icrpResults = ICRP107.search(activeSearch);
+    const regOnlyExtra = regulatoryOnlyMatches(activeSearch);
     if (icrpResults.length === 0) {
-      document.getElementById('nuclideBody').innerHTML =
-        `<tr><td colspan="11" class="text-muted text-sm" style="padding:1rem;">
+      const regOnly = regOnlyExtra;
+      document.getElementById('nuclideBody').innerHTML = regOnly.length
+        ? regOnly.map(regulatoryOnlyRow).join('')
+        : `<tr><td colspan="11" class="text-muted text-sm" style="padding:1rem;">
           No results found in ICRP 107 either. Try a different search term.
         </td></tr>`;
+      document.querySelectorAll('#nuclideBody tr[data-id]').forEach(tr => {
+        tr.addEventListener('click', () => selectNuclide(tr.dataset.id));
+      });
       return;
     }
 
@@ -420,10 +452,32 @@
       </tr>`;
     }).join('');
 
-    document.getElementById('nuclideBody').innerHTML = rows;
+    document.getElementById('nuclideBody').innerHTML = rows + regOnlyExtra.map(regulatoryOnlyRow).join('');
     document.querySelectorAll('#nuclideBody tr[data-id]').forEach(tr => {
       tr.addEventListener('click', () => selectNuclide(tr.dataset.id));
     });
+  }
+
+  // Detail panel for an identifier that exists only in the regulatory tables:
+  // values shown, calculators disabled with the reason (audit 2026-10-03, H-11).
+  function showRegulatoryOnly(id) {
+    const panel = document.getElementById('detailPanel');
+    panel.classList.add('visible');
+    document.getElementById('detailTitle').textContent = id;
+    document.getElementById('detailSymbol').textContent = id;
+    document.getElementById('detailName').textContent = id;
+    document.getElementById('detailUse').textContent = 'Regulatory values only';
+    document.getElementById('detailProps').innerHTML = regulatoryItemsHtml(id, { withIngestion: true });
+    document.getElementById('btnDecay').parentElement.classList.add('hidden');
+    const noteEl = document.getElementById('detailNotes');
+    const notes = ['&#9888; ' + UTILS.escapeHtml(id) + ' appears in the regulatory tables (RD 1217/2024 Annex IV and/or RD 783/2001 Annex III table a)) ' +
+      'but has no nuclear data in this app (neither the curated database nor ICRP 107): half-life, emissions and dose-rate constants are ' +
+      'not available, so the Decay and Dose calculators are disabled for it. The identifier is shown as printed and is not mapped to a ' +
+      'similar one (e.g. Nb-98 is not treated as Nb-98m or as the "Nb-98s" printed in ICRP 119).'];
+    notes.push(...regulatoryNotes(id, { withIngestion: true }));
+    noteEl.innerHTML = notes.join('<br>');
+    noteEl.classList.remove('hidden');
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
   // ---- Detail panel ----
@@ -438,6 +492,10 @@
         n._icrp107 = true;
         n.symbol = icrpDisplaySymbol(n.id);
       }
+    }
+    if (!n && typeof REGULATORY !== 'undefined' && REGULATORY.allIds().includes(id)) {
+      showRegulatoryOnly(id);
+      return;
     }
     if (!n) return;
 
