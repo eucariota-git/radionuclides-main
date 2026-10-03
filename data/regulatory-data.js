@@ -5,7 +5,7 @@ const REGULATORY_DATA = {
     "version": "1.0.0",
     "built": "2026-10-03",
     "sources": {
-      "annex_iv_csv_sha256": "4b9d24749beb637bbe62bfa1da6f1c81f779b4c5a1bfb92a4cd9b84f9ada9552",
+      "annex_iv_csv_sha256": "0f4adfcb9c6a10dd8b0b392aa43ee02d0cadbd44df07eb9f0a7db5b5bacd705f",
       "progeny_csv_sha256": "d1e502a7a2aa082285b61cfc36d17222e2032249379d1f79a2966e84dfa8ee5f",
       "icrp119_f1_csv_sha256": "b05f4db8216b456bea51c6b1bb754d3822402fbaa2d9c56d3e8d29678167ac90",
       "html_extraction_sha256": "35a6d3f4c983e8edcfa45db12cffa8e002b4288fd5b215c277f542b80f1f81de",

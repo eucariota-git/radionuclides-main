@@ -81,7 +81,7 @@ Each module (PHYSICS, CALC, DB, ICRP107, UI) is an IIFE returning public API. No
 
 **`data/effluent-scenarios.json`** — source of truth for the effluent page: parameter defaults (groups `common`, `s1`, `s2`) with unit, range and source; facility presets; per-nuclide PHITS coefficients (`k_ext.s1`, `k_ext.s2.L10/L45` or `null`) with uncertainty and report id; ICRP 119 inhalation coefficients; default source terms; cross-check factors
 
-**`data/regulatory.json`** — built by `tools/build-regulatory-data.js` from the verified CSVs of the professional library (RD 1217/2024 Annex IV values and progeny; ICRP 119 F.1) plus the extraction of the BOE consolidated HTML, which keeps the notes per table (the library CSV merges them). Every value must match both sources or the build aborts. Kept as printed and flagged: four note/progeny inconsistencies of the BOE (A1 Ce-144, U-231; B Ag-108m, U-230). Added by hand, checked on the rendered page: A1 progeny `Es-254m → Fm-254`, missing from the library CSV.
+**`data/regulatory.json`** — built by `tools/build-regulatory-data.js` from the verified CSVs of the professional library (RD 1217/2024 Annex IV values and progeny; ICRP 119 F.1) plus the extraction of the BOE consolidated HTML. The library CSV has per-table note columns (`nota_A1`, `nota_B`) since its 2026-10-03 correction; every id, note and value must match in both extractions or the build aborts. Kept as printed and flagged: four note/progeny inconsistencies of the BOE (A1 Ce-144, U-231; B Ag-108m, U-230). Added by hand, checked on the rendered page: A1 progeny `Es-254m → Fm-254`, missing from the library CSV.
 
 **Auto-generated:**
 - `nuclides-data.js` — JavaScript wrapper for file:// compatibility

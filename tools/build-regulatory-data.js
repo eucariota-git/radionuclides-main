@@ -22,12 +22,11 @@
  *                     notes kept PER TABLE (output/auditoria-rd1217-2026-10-03/
  *                     cotejo.json, cross-checked there against the PDF text layer).
  *
- * Why two sources. The library CSV stores ONE 'nota' column for A1 and B on the
- * same row, so per-table notes are lost: Mo-99 carries A1's '(a)' although its
- * B row has no note, and U-240's B '(b)' row is merged with the A1 '(a)' row.
- * Notes and row structure are therefore taken from the HTML extraction, and
- * EVERY value is required to match the library CSV exactly (the build aborts on
- * any difference). Progeny comes from the library CSV plus the one line it
+ * Two independent extractions. The library CSV (PDF text layer, columns
+ * 'nota_A1' and 'nota_B' since its 2026-10-03 correction — before that a single
+ * 'nota' column hid the Table B note of merged rows) and the BOE HTML
+ * extraction must agree on EVERY id, per-table note and value; the build aborts
+ * on any difference. The library CSV must have the per-table note columns. Progeny comes from the library CSV plus the one line it
  * misses (A1 'Es-254 m → Fm-254', continued on BOE p. 164687; checked against
  * the rendered page on 2026-10-03).
  *
@@ -101,8 +100,12 @@ progeny.A1['Es-254m'] = ['Fm-254'];
 // ---- HTML extraction: structure and per-table notes ----
 const html = JSON.parse(fs.readFileSync(HTML, 'utf8'));
 const lib = readCsv(F_ANNEX);
-const libA1 = lib.filter(r => r.conc_A1_kBq_kg !== '').map(r => ({ id: r.nucleido, v: Number(r.conc_A1_kBq_kg) }));
-const libB = lib.filter(r => r.conc_B_kBq_kg !== '').map(r => ({ id: r.nucleido, c: Number(r.conc_B_kBq_kg), a: Number(r.actividad_B_Bq) }));
+if (!lib.length || !('nota_A1' in lib[0]) || !('nota_B' in lib[0])) {
+  fail('library Annex IV CSV lacks the per-table note columns nota_A1 / nota_B (pre-2026-10-03 version?)');
+}
+const strip = s => (s || '').replace(/[()]/g, '');
+const libA1 = lib.filter(r => r.conc_A1_kBq_kg !== '').map(r => ({ id: r.nucleido, note: strip(r.nota_A1), v: Number(r.conc_A1_kBq_kg) }));
+const libB = lib.filter(r => r.conc_B_kBq_kg !== '').map(r => ({ id: r.nucleido, note: strip(r.nota_B), c: Number(r.conc_B_kBq_kg), a: Number(r.actividad_B_Bq) }));
 
 if (html.A1.length !== libA1.length) fail(`A1 rows: HTML ${html.A1.length} ≠ library ${libA1.length}`);
 if (html.B.length !== libB.length) fail(`B rows: HTML ${html.B.length} ≠ library ${libB.length}`);
@@ -118,7 +121,9 @@ function consistency(table, id, note) {
 
 const a1 = html.A1.map((r, i) => {
   const l = libA1[i];
-  if (r.id !== l.id || r.values.length !== 1 || r.values[0] !== l.v) fail(`A1 row ${i}: HTML ${r.id} ${r.values} ≠ library ${l.id} ${l.v}`);
+  if (r.id !== l.id || r.note !== l.note || r.values.length !== 1 || r.values[0] !== l.v) {
+    fail(`A1 row ${i}: HTML ${r.id} (${r.note}) ${r.values} ≠ library ${l.id} (${l.note}) ${l.v}`);
+  }
   const note = r.note || null;
   const row = { id: r.id, note, kBq_kg: r.values[0], progeny: (note === 'a' || progeny.A1[r.id]) ? (progeny.A1[r.id] || []) : [] };
   const inc = consistency('A1', r.id, note);
@@ -129,8 +134,8 @@ const a1 = html.A1.map((r, i) => {
 const libBPool = libB.slice();
 const b = html.B.map((r, i) => {
   const [c, a] = r.values;
-  const k = libBPool.findIndex(x => x.id === r.id && x.c === c && x.a === a);
-  if (k < 0) fail(`B row ${i}: HTML ${r.id} ${c} / ${a} has no identical library row`);
+  const k = libBPool.findIndex(x => x.id === r.id && x.note === r.note && x.c === c && x.a === a);
+  if (k < 0) fail(`B row ${i}: HTML ${r.id} (${r.note}) ${c} / ${a} has no identical library row`);
   libBPool.splice(k, 1);
   const note = r.note || null;
   // A nuclide printed twice (U-240: with and without (b)) — the unmarked twin is
