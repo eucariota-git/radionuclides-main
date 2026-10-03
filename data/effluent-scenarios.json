@@ -135,7 +135,7 @@
         "unit": "–",
         "min": 0,
         "max": 1,
-        "source": "Site hypothesis: value of the reference workbook, which cites PEMAR 2025-2035; no 20–25 % solids range has been found in the PEMAR (audit 2026-10-03, H15). NUREG/CR-5814 uses 0.30. Only the inhalation pathway depends on it (the external pathway uses the wet-sludge concentration).",
+        "source": "Site hypothesis: value of the reference workbook, which cites PEMAR 2025-2035; no 20–25 % solids range has been found in the PEMAR. NUREG/CR-5814 uses 0.30. Only the inhalation pathway depends on it (the external pathway uses the wet-sludge concentration).",
         "positive": true
       },
       "wet_density_kg_m3": {
@@ -348,7 +348,7 @@
         "source": "Workbook I-131 estimate (cells G6, G56): 0.8 GBq per patient, half of it excreted at home; the fraction excreted in hospital is 1 − 0.5. One treatment per patient is an assumption of this scenario, not a clinical rule. Site-specific.",
         "fraction_in_hospital": 0.5,
         "controlled_default": false,
-        "activity_warning": "The 0.8 GBq default is the activity with which patients leave hospital in the reference workbook (cells G6, G56), entered here in the administered-activity field: the in-hospital excretion of the administered activity is therefore not represented by this default. Replace it with the administered activity and an in-hospital fraction justified for the facility (audit 2026-10-03, H-13)."
+        "activity_warning": "The 0.8 GBq default is the activity with which patients leave hospital in the reference workbook (cells G6, G56), entered here in the administered-activity field: the in-hospital excretion of the administered activity is therefore not represented by this default. Replace it with the administered activity and an in-hospital fraction justified for the facility."
       },
       "cross_checks": {
         "nureg_table_B7": {

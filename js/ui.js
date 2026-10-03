@@ -139,7 +139,15 @@ const UI = (() => {
       hint.id = 'keyboardHint';
       hint.className = 'keyboard-hint text-sm text-muted';
       hint.setAttribute('aria-label', 'Keyboard shortcuts');
-      hint.innerHTML = '<kbd>/</kbd> search &nbsp; <kbd>Esc</kbd> clear &nbsp; <kbd>Alt+D</kbd> dark mode';
+      // Only the shortcuts that exist on this page (copy audit 2026-10-03, T35)
+      const parts = [];
+      if (document.getElementById('searchInput')) {
+        parts.push('<kbd>/</kbd> search', '<kbd>Esc</kbd> clear search and close details');
+      } else if (document.getElementById('nuclideSearch')) {
+        parts.push('<kbd>&uarr;</kbd> <kbd>&darr;</kbd> choose nuclide', '<kbd>Enter</kbd> select', '<kbd>Esc</kbd> close list');
+      }
+      parts.push('<kbd>Alt+D</kbd> dark mode');
+      hint.innerHTML = parts.join(' &nbsp; ');
       pb.appendChild(hint);
     }
   }

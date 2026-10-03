@@ -217,6 +217,16 @@ a:hover { text-decoration: underline; }
   max-width: 980px;
 }
 
+.about-toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem 1rem;
+  margin: 0 0 1rem;
+  font-size: .9rem;
+}
+.about-toc a { color: var(--link, var(--green-700)); text-decoration: underline; }
+.about-content h3[id], .about-content[id], .about-content h3 { scroll-margin-top: 4.5rem; }
+
 .about-content {
   line-height: 1.65;
   overflow-wrap: anywhere;

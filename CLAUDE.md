@@ -96,7 +96,7 @@ Dark mode is supported. When adding or modifying UI elements (tables, tooltips, 
 
 - Original project code and documentation are licensed under EUPL-1.2 only; `LICENSING.md` defines the precise scope.
 - Do not describe the whole repository as EUPL or MIT. Chart.js and @kurkle/color retain their upstream MIT licences, while ICRP and other third-party data retain the terms in `LICENSE.TXT` and `THIRD_PARTY_NOTICES.md`.
-- Keep the licence text and scope summary embedded in `about.html` synchronized with `LICENSE`, `LICENSING.md`, `LICENSE.TXT` and `THIRD_PARTY_NOTICES.md`. `docs/USER_GUIDE.md`, not `README.md`, remains the canonical source for the in-app guide.
+- Keep the licence text and scope summary embedded in `about.html` synchronized with `LICENSE`, `LICENSING.md`, `LICENSE.TXT` and `THIRD_PARTY_NOTICES.md`. `docs/USER_GUIDE.md`, not `README.md`, remains the canonical source for the in-app guide: the `<article id="user-guide">` of `about.html` is generated with `node tools/build-about-guide.js` (never edit it by hand; a test checks it is up to date).
 
 ## Key References
 

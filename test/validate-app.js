@@ -503,6 +503,42 @@ async function main() {
       /const fmtDF = v => \(v >= 0\.001 \? v\.toFixed\(4\) : v\.toExponential\(2\)\)/.test(effluentHtml) &&
       !/k = 1/.test(effluentHtml + JSON.stringify(eff)) && /coverage factor 1/.test(effluentHtml));
   }
+  {
+    // Copy audit 2026-10-03, phase 4 (T31-T33, T35, T37, T38)
+    const guide4 = read('docs/USER_GUIDE.md');
+    const about4 = read('about.html');
+    const hasGuideTool = fs.existsSync(path.join(ROOT, 'tools/build-about-guide.js'));
+    check('the in-app guide is generated from docs/USER_GUIDE.md and is up to date (skipped inside a package without tools/)',
+      !hasGuideTool || require(path.join(ROOT, 'tools/build-about-guide.js')).build() === about4);
+    const gctx = vm.createContext({ console });
+    for (const f of ['js/data.js', 'js/physics.js']) vm.runInContext(read(f), gctx);
+    gctx.am = require(path.join(ROOT, 'data/icrp107-index.json')).nuclides.find(n => n.id === 'Am-241');
+    gctx.tc = require(path.join(ROOT, 'data/nuclides.json')).nuclides.find(n => n.id === 'Tc-99m');
+    const g = vm.runInContext(`({ lines: am.photons.length, gamma: PHYSICS.calcGammaConstants(am.photons).gammaH10,
+      a6: CALC.activityAtTime(1000, tc.half_life_s / 3600, 6), t100: CALC.timeToActivity(1000, 100, tc.half_life_s / 3600) })`, gctx);
+    check('guide examples are engine results: Am-241 (21 lines, 7.0), Tc-99m (500 MBq at 6 h, 20.0 h to 100 MBq) (T31)',
+      g.lines === 21 && Math.abs(g.gamma - 7.0) < 0.05 && Math.abs(g.a6 - 500) < 1 && Math.abs(g.t100 - 20.0) < 0.05 &&
+      [guide4, about4].every(t => /21 selected photon lines/.test(t) && /≈ 7\.0 μSv/.test(t) && /≈ 500 MBq/.test(t) && /≈ 20\.0 hours/.test(t) &&
+        !/~50 X-ray|0\.48 μSv|20\.6 hours|~501 MBq/.test(t)),
+      JSON.stringify(g));
+    check('guide describes the real controls: no slider, no years, no 0–300 mm, no transmission curve, no Safe/Caution, no "EU RD" (T32)',
+      [guide4, about4].every(t => !/slider|Converts to seconds|0–300 mm|Transmission curve|Safe \||⚠ Caution|EU RD 1029|cm, not m|Click \*\*"Search in ICRP 107"|is calculated instantly/.test(t) &&
+        /Spanish Royal Decree 1029\/2022/.test(t) && /matches the selected unit \(m or cm\)/.test(t) &&
+        /Calculators work offline with the complete local copy/.test(t)));
+    check('ICRP permission notice makes no commercial-only exception (T33)',
+      [read('THIRD_PARTY_NOTICES.md'), about4].every(t => !/relevant only if use\s+becomes commercial/.test(t) &&
+        /ICRP publications retain\s+copyright; verify permission for the intended reuse/.test(t)));
+    check('keyboard hint lists only the shortcuts of the page (T35)',
+      /getElementById\('searchInput'\)\) \{\s*parts\.push\('<kbd>\/<\/kbd> search'/.test(uiJs) &&
+      /getElementById\('nuclideSearch'\)/.test(uiJs) && !/<kbd>Esc<\/kbd> clear &nbsp;/.test(uiJs));
+    check('About has in-page navigation to guide, methods, references and licences (T38)',
+      /<nav class="about-toc" aria-label="On this page">/.test(about4) &&
+      ['#user-guide', '#guide-data-quality-and-limitations', '#guide-references', '#licences', '#third-party-notices']
+        .every(h => about4.includes(`href="${h}"`) && about4.includes(`id="${h.slice(1)}"`)));
+    check('user-facing strings carry no audit history, and long method notes are collapsible (T37)',
+      !/audit 20\d\d/.test(JSON.stringify(require(path.join(ROOT, 'data/effluent-scenarios.json')))) &&
+      /<summary>Shielding method<\/summary>/.test(doseHtml) && /<summary class="card-title"[^>]*>Reference &amp; data notes/.test(read('index.html')));
+  }
   check('decay names the denominator as mass of material, never "vial weight" (copy audit T04)',
     /Mass of material being assessed/.test(decayHtml) && !/Vial \/ container weight|Vial_weight/.test(decayHtml) &&
     /identify whether the container is included/.test(decayHtml));

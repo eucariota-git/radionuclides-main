@@ -103,13 +103,23 @@ node tools/generate-data.js
 # Parse ICRP 107 (generates icrp107-index.json + icrp107-data.js)
 node tools/parse-icrp107.js
 
-# Recalculate gamma constants (CAUTION: overwrites data)
-# Backup nuclides.json first!
-node tools/recalc-gamma.js --force
+# Recalculate H*(10) and H'(0.07) constants (dry run by default; --write to apply).
+# gamma_Kair is not recalculated: its provenance is in gamma_Kair_source.
+node tools/recalc-gamma.js
+node tools/recalc-gamma.js --write
+
+# Regenerate the in-app copy of the user guide (about.html) from docs/USER_GUIDE.md.
+# Never edit the <article id="user-guide"> of about.html by hand.
+node tools/build-about-guide.js
 
 # Regenerate dose-weighted shielding spectra (after photon-data changes)
 node tools/add-shielding-spectra.js && node tools/generate-data.js
 ```
+
+Editing data: change `data/nuclides.json` (or the other JSON sources), run
+`node tools/generate-data.js` to refresh the embedded JS twin — `DB.load()` discards a JSON
+that differs from the embedded copy — and bump `CACHE_VERSION` in `sw.js` together with
+`UTILS.APP_BUILD`.
 
 One-shot migration tools kept for provenance (already applied, do not re-run blindly):
 `add-therapy-nuclides.js`, `add-ingestion-coeffs.js`, `add-max-energy.js`, `restore-cornejo-published.js`.

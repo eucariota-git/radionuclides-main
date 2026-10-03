@@ -98,9 +98,9 @@ The conversion table in `js/data.js` (constant `ICRU57`): ambient dose
 equivalent h*(10) and directional dose equivalent h'(0.07,0°) per unit fluence,
 the 25 energies printed in ICRP Publication 74 (1996), Table A.21, used with
 attribution (since 2026-10-03; before that the h*(10) column above 1 MeV and
-the h'(0.07) column did not match the table). © ICRP. Reproduction of
-substantial ICRP tabular material requires permission; relevant only if use
-becomes commercial.
+the h'(0.07) column did not match the table). © ICRP. ICRP publications retain
+copyright; verify permission for the intended reuse. This is separate from the
+terms of the ICRP-07 decay data package (`LICENSE.TXT`).
 
 ### NIST XCOM / XAAMDI — photon mass attenuation coefficients
 The `ATTENUATION` table in `js/data.js` contains mass attenuation values for

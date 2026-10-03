@@ -140,7 +140,10 @@ All generated JSON files include metadata for audit trail:
 ### v1.8.0 — copy audit 2026-10-03 (texts and labels, T01–T38)
 - Dose: photon-less nuclides no longer imply that bremsstrahlung is the only external hazard; the Archer fit is described by its real quantity (dose at 1 cm depth in tissue); Y-90 and Archer results export a specific validity state instead of "within range".
 - Decay: the concentration denominator is "Mass of material being assessed" (CSV columns `Material_mass_input` / `Material_mass_unit`, formerly `Vial_weight_*`).
-- Guide: the shielded Tc-99m example and its "Safe" verdict were wrong and are replaced by a reproducible unshielded case.
+- Guide: the shielded Tc-99m example and its "Safe" verdict were wrong and are replaced by a reproducible unshielded case; steps rewritten to the real controls. The in-app copy is generated from `docs/USER_GUIDE.md` (`tools/build-about-guide.js`).
+- Decay and Dose: target-activity states, "inputs changed" notice, exports from the calculated snapshot, dose-equivalent wording, first HVL/TVL.
+- Properties: provenance of the constants per quantity (`gamma_Kair_source`), reasons instead of dashes, corrected application texts.
+- Effluent: receptor, geometries and retained fraction described as modelled; short input hints with the provenance in collapsible blocks.
 
 ### v1.7.0 — conversion table and audit 2026-10-03
 - **Conversion coefficients now ICRP 74 (1996) Table A.21** for both h\*(10) and h'(0.07,0°): the former h\*(10) values above 1 MeV (untraced since the first commit) were 3–20 % low, and h'(0.07) was a reconstruction. Curated Γ and shielding spectra regenerated; 30 of 37 recalculated entries change (Na-24 +2.5 %, I-131 Γ^H'(0.07) +2.9 %).
