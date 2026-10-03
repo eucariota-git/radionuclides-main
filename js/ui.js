@@ -144,6 +144,37 @@ const UI = (() => {
     }
   }
 
+  /* --- Stale results (copy audit 2026-10-03, T19) ---
+   * After a calculation, editing any input outside the results card leaves the
+   * displayed results (and the report/CSV, which describe the LAST calculation)
+   * out of step with the form. watchStaleResults() shows a notice at the top of
+   * the results card until the next successful calculation calls fresh(). */
+  function watchStaleResults(cardId) {
+    const card = document.getElementById(cardId);
+    if (!card) return { fresh() {}, isStale: () => false };
+    const note = document.createElement('div');
+    note.id = 'staleNote';
+    note.className = 'alert alert-warning mb-1 hidden';
+    note.setAttribute('role', 'status');
+    note.textContent = 'Inputs changed — recalculate to update results. The report and the CSV export still describe the last calculation.';
+    const title = card.querySelector('.card-title');
+    if (title) title.insertAdjacentElement('afterend', note); else card.prepend(note);
+    let stale = false, calculated = false;
+    const mark = e => {
+      if (!calculated || card.contains(e.target)) return;
+      if (!e.target.closest || !e.target.closest('main')) return;
+      if (!e.target.matches('input, select, textarea, li')) return;
+      stale = true;
+      note.classList.remove('hidden');
+    };
+    document.addEventListener('input', mark);
+    document.addEventListener('change', mark);
+    return {
+      fresh() { calculated = true; stale = false; note.classList.add('hidden'); },
+      isStale: () => stale,
+    };
+  }
+
   /* --- Calculation History --- */
   function saveHistory(key, entry) {
     try {
@@ -181,6 +212,7 @@ const UI = (() => {
     initKeyboard,
     showFatalError,
     getChartTheme,
+    watchStaleResults,
     saveHistory,
     loadHistory,
   };

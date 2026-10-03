@@ -74,21 +74,33 @@ const REPORT = (() => {
       const sign = dev >= 0 ? '+' : '−';
       const agrees = Math.abs(dev) <= 2;
       return `Curated entry, cross-checked against ${cv.source || 'Cornejo et al. (2015)'}: published Γ^H*(10) = ${published}, stored ${n.gamma_H10} (${sign}${Math.abs(dev).toFixed(1)}%)`
-        + (agrees ? '' : ' — the difference reflects updated ICRP 107 decay data and has NOT been reconciled with the published value');
+        + (agrees ? '' : ' — difference not reconciled');
     }
-    return 'Curated entry computed from ICRP 107 photon data with ICRP 74 Table A.21 coefficients — no published reference constant exists to cross-check it against';
+    return 'Curated entry computed from ICRP 107 photon data with ICRP 74 Table A.21 coefficients — no published comparison is recorded in this app';
   }
 
   function buildHtml(spec) {
     const meta = (typeof DB !== 'undefined' && DB.getMeta) ? DB.getMeta() : {};
     const now  = new Date();
-    const ts   = now.toISOString().slice(0, 16).replace('T', ' ') + ' (local: ' + now.toLocaleString() + ')';
+    // Both instants labelled: the ISO one is UTC, the other local with its zone
+    // (copy audit 2026-10-03, T36).
+    let zone = '';
+    try { zone = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) { /* no Intl */ }
+    const ts   = now.toISOString().slice(0, 19) + 'Z (UTC); local: ' + now.toLocaleString() + (zone ? ' (' + zone + ')' : '');
     const n    = spec.nuclide || {};
     // The per-nuclide status describes the stored Γ constants. A report built
     // on other coefficients (e.g. the sludge scenario) passes its own headerRows
     // instead, so that status is never printed against data it does not cover.
     const nuclideRows = spec.headerRows
       ? spec.headerRows.map(([k, v]) => `<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join('')
+      : spec.kind === 'decay'
+      // A decay report depends on the half-life only: the status of the Γ
+      // constants (and the Y-90 container warning) does not belong in it
+      // (copy audit 2026-10-03, T34).
+      ? `<tr><td>Nuclide</td><td><strong>${esc(n.id)}</strong> — ${esc(n.name)} (T&#189; = ${esc(n.half_life_display)})</td></tr>
+          <tr><td>Half-life source</td><td>${esc(n._icrp107
+            ? 'ICRP Publication 107 (2008), extended entry — not manually validated'
+            : 'Curated database entry — half-life as stored in data/nuclides.json (no per-nuclide half-life reference is recorded in this app)')}</td></tr>`
       : `<tr><td>Nuclide</td><td><strong>${esc(n.id)}</strong> — ${esc(n.name)} (T&#189; = ${esc(n.half_life_display)})</td></tr>
           <tr><td>Data status</td><td>${esc(validationStatus(n))}</td></tr>
           ${n.source ? `<tr><td>Nuclide source</td><td>${esc(n.source)}</td></tr>` : ''}`;

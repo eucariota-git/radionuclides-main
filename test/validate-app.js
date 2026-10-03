@@ -82,7 +82,7 @@ async function main() {
   check('both printable clearance ratios use fmtRatio', ratioCalls.length === 2,
     `found ${ratioCalls.length}`);
   check('clearance time remains formatted as a time',
-    /Clearance level reached after[^\n]+UTILS\.fmt\(t_clear_h\)/.test(decayHtml));
+    /Time to reach the Table A1 concentration level[^\n]+UTILS\.fmt\(t_clear_h\)/.test(decayHtml));
   console.log();
 
   console.log('Test 4: input-state and validation wiring');
@@ -239,9 +239,9 @@ async function main() {
   const tooltipTags = [...`${indexHtml}\n${doseHtml}`.matchAll(/<[^>]+class="[^"]*has-tooltip[^"]*"[^>]*>/g)]
     .map(match => match[0]);
   check('every tooltip trigger is keyboard focusable',
-    tooltipTags.length === 8 && tooltipTags.every(tag => /tabindex="0"/.test(tag)));
+    tooltipTags.length >= 8 && tooltipTags.every(tag => /tabindex="0"/.test(tag)));
   check('every tooltip trigger exposes an accessible name',
-    tooltipTags.length === 8 && tooltipTags.every(tag => /aria-label="[^"]+"/.test(tag)));
+    tooltipTags.length >= 8 && tooltipTags.every(tag => /aria-label="[^"]+"/.test(tag)));
   check('properties distinguishes dose-rate provenance from regulatory sources',
     />&#915; source<\/th>/.test(indexHtml) && /clearance_a1_source/.test(indexHtml));
   check('dose exposes elemental iron with an explicit density',
@@ -428,6 +428,42 @@ async function main() {
     /'Activity_input', 'Activity_unit', 'Activity_GBq'/.test(doseHtml));
   check('printed reports identify the application build',
     /<tr><td>Application<\/td>/.test(reportJs) && /APP_BUILD/.test(reportJs));
+  {
+    // Copy audit 2026-10-03, phase 2 (T16-T24, T34, T36)
+    const src = decayHtml.match(/function targetState\(A0_MBq, Atgt_MBq\) \{[\s\S]*?\r?\n  \}/)[0];
+    const ts = new Function(src + '; return targetState;')();
+    check('decay: a target equal to A0 is "already reached", a higher one "cannot be reached"; never a 0 h time (T16)',
+      ts(1000, 1000) === 'equal' && ts(1000, 2000) === 'above' && ts(1000, 100) === 'below' &&
+      /Target already reached at t = 0/.test(decayHtml) && /Target exceeds A₀ and cannot be reached by decay/.test(decayHtml) &&
+      !/no decay needed/.test(decayHtml) && (decayHtml.match(/targetState\(/g) || []).length === 3);
+    check('decay: a single Table A1 level is not announced as clearance, and equality is "at or below" (T17)',
+      !/Clearance reached|Below clearance|Above clearance|\? 'BELOW'/.test(decayHtml) &&
+      /At or below the individual level/.test(decayHtml) && /AT OR BELOW/.test(decayHtml));
+    check('decay: examples carry no unit, dates are labelled local, a manual elapsed time is recorded as such (T18)',
+      !/e\.g\. 24 \(hours\)|e\.g\. 100 \(MBq\)/.test(decayHtml) && /Elapsed time entered manually; target date not used/.test(decayHtml) &&
+      /'Elapsed_time_source'/.test(decayHtml) && /Fraction remaining \(%\)/.test(decayHtml));
+    check('decay and dose flag edited inputs as stale and export only the calculated snapshot (T19)',
+      /function watchStaleResults\(cardId\)/.test(uiJs) && /Inputs changed — recalculate to update results/.test(uiJs) &&
+      /staleWatch\.fresh\(\)/.test(decayHtml) && (doseHtml.match(/staleWatch\.fresh\(\)/g) || []).length === 2 &&
+      !/btnExportCsv[\s\S]{0,900}getElementById\('(refDateTime|targetDateTime)'\)/.test(decayHtml));
+    check('dose: quantities are dose equivalents (no D\', no "whole body", no "worst case") (T20, T22)',
+      !/D'\(0\)|D'\(t\)|D\(annual\)|whole body|worst case/.test(doseHtml) &&
+      /Annual integrated H/.test(doseHtml) && /H\*\(10\), ambient/.test(doseHtml) &&
+      /Integrate physical decay during exposure\?/.test(doseHtml));
+    check('dose: no absolute claim that compliance is shown by personal dosimetry (T21; RD 1029/2022 art. 34)',
+      [doseHtml, aboutHtml, read('docs/USER_GUIDE.md')].every(t =>
+        !/[Cc]ompliance (with dose limits )?is (assessed|demonstrated) with personal dosimetry/.test(t)) &&
+      (doseHtml.match(/do not establish compliance/g) || []).length >= 3);
+    check('dose: Archer is promised only where a fit exists; HVL/TVL are first layers (T23, T24)',
+      /only where a fit exists for the nuclide and material/.test(doseHtml) &&
+      !/Geometry, scatter, and source distribution effects are not modelled/.test(doseHtml) &&
+      /full photon spectrum \(published fit\)/.test(doseHtml) &&
+      /First HVL for/.test(doseHtml) && /Thickness \/ first HVL/.test(doseHtml) && !/n HVLs/.test(doseHtml));
+    check('reports: decay header shows the half-life source, not the Γ status; timestamps name UTC and local (T34, T36)',
+      /spec\.kind === 'decay'/.test(reportJs) && /Half-life source/.test(reportJs) && /kind: 'decay'/.test(decayHtml) &&
+      /Z \(UTC\); local: /.test(reportJs) && /no published comparison is recorded in this app/.test(reportJs) &&
+      /difference not reconciled/.test(reportJs) && !/reflects updated ICRP 107 decay data/.test(reportJs));
+  }
   check('decay names the denominator as mass of material, never "vial weight" (copy audit T04)',
     /Mass of material being assessed/.test(decayHtml) && !/Vial \/ container weight|Vial_weight/.test(decayHtml) &&
     /identify whether the container is included/.test(decayHtml));

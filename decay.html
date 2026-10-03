@@ -67,12 +67,12 @@
         </div>
       </div>
       <div class="form-group">
-        <label class="form-label" for="refDateTime">Reference date &amp; time</label>
-        <input type="datetime-local" class="form-input" id="refDateTime" title="Reference date and time">
+        <label class="form-label" for="refDateTime">Reference date &amp; time <span class="text-muted">(local)</span></label>
+        <input type="datetime-local" class="form-input" id="refDateTime" title="Reference date and time (local time of this device)">
       </div>
       <div class="form-group">
-        <label class="form-label" for="targetDateTime">Target date &amp; time <span class="text-muted">(optional)</span></label>
-        <input type="datetime-local" class="form-input" id="targetDateTime" title="Target date and time">
+        <label class="form-label" for="targetDateTime">Target date &amp; time <span class="text-muted">(local, optional)</span></label>
+        <input type="datetime-local" class="form-input" id="targetDateTime" title="Target date and time (local time of this device)">
       </div>
     </div>
 
@@ -81,7 +81,7 @@
       <div class="form-group">
         <label class="form-label" for="elapsed">— or — Elapsed time</label>
         <div class="d-flex gap-1">
-          <input type="number" class="form-input" id="elapsed" min="0" step="any" placeholder="e.g. 24 (hours)" title="Elapsed time">
+          <input type="number" class="form-input" id="elapsed" min="0" step="any" placeholder="e.g. 24" title="Elapsed time">
           <select class="form-select form-select-narrow" id="elapsedUnit" title="Unit" aria-label="Elapsed time unit">
             <option value="h" selected>h</option>
             <option value="min">min</option>
@@ -89,12 +89,12 @@
             <option value="s">s</option>
           </select>
         </div>
-        <div class="form-hint">Overrides date/time fields when filled</div>
+        <div class="form-hint">When filled, this value is used and the target date is ignored</div>
       </div>
       <div class="form-group">
         <label class="form-label" for="Atarget">Target Activity A<sub>target</sub> <span class="text-muted">(optional)</span></label>
         <div class="d-flex gap-1">
-          <input type="number" class="form-input" id="Atarget" min="0" step="any" placeholder="e.g. 100 (MBq)" title="Target Activity">
+          <input type="number" class="form-input" id="Atarget" min="0" step="any" placeholder="e.g. 100" title="Target Activity">
           <select class="form-select form-select-narrow" id="AtargetUnit" title="Unit" aria-label="Target activity unit">
             <option value="MBq" selected>MBq</option>
             <option value="GBq">GBq</option>
@@ -460,7 +460,12 @@
 
     // Determine elapsed time
     let t_h;
+    // Snapshot of the date fields AT CALCULATION TIME: the report and the CSV
+    // must not re-read the form later (copy audit 2026-10-03, T19).
+    const refDt    = document.getElementById('refDateTime').value || '';
+    const targetDt = document.getElementById('targetDateTime').value || '';
     const elapsedVal  = document.getElementById('elapsed').value.trim();
+    const elapsedManual = elapsedVal !== '';
     const elapsedUnit = document.getElementById('elapsedUnit').value;
     if (elapsedVal !== '') {
       if (!/^[0-9]*\.?[0-9]+([eE][+-]?[0-9]+)?$/.test(elapsedVal)) {
@@ -516,6 +521,7 @@
     // Show results card
     const card = document.getElementById('resultsCard');
     card.classList.remove('hidden');
+    staleWatch.fresh();
 
     const sourceTag = n._icrp107
       ? `<span class="tag tag-icrp107" title="Decay data from ICRP 107">ICRP 107</span>`
@@ -535,7 +541,7 @@
           = ${fmtVal(CALC.convertActivity(At_MBq,'MBq','mCi'))} mCi</div>
       </div>
       <div class="result-box">
-        <div class="result-label">Fraction remaining</div>
+        <div class="result-label">Fraction remaining (%)</div>
         <div class="result-value">${UTILS.fmt(fraction * 100)}%</div>
         <div class="result-unit">at t = ${UTILS.fmt(t_h)} h</div>
       </div>
@@ -559,12 +565,13 @@
       const Atgt_MBq = CALC.convertActivity(AtgtRaw, AtgtUnit, 'MBq');
       const tTarget_h = CALC.timeToActivity(A0_MBq, Atgt_MBq, T_half_h);
       inv.classList.remove('hidden');
-      if (Atgt_MBq >= A0_MBq) {
-        // Decay only lowers activity, so a target at or above A₀ is not reached
-        // by waiting (timeToActivity returns 0 here — do not show a green "0 h").
-        inv.innerHTML = `<div class="alert alert-warning">Target activity &ge; initial activity (${UTILS.fmt(A0_MBq)} MBq) — cannot be reached by decay.</div>`;
+      const tState = targetState(A0_MBq, Atgt_MBq);
+      if (tState === 'equal') {
+        inv.innerHTML = `<div class="alert alert-info">${TARGET_TEXT.equal} (${UTILS.fmt(A0_MBq)} MBq).</div>`;
+      } else if (tState === 'above') {
+        // Decay only lowers activity (timeToActivity returns 0 here — never show "0 h").
+        inv.innerHTML = `<div class="alert alert-warning">${TARGET_TEXT.above} (A&#8320; = ${UTILS.fmt(A0_MBq)} MBq).</div>`;
       } else if (isFinite(tTarget_h)) {
-        const refDt = document.getElementById('refDateTime').value;
         inv.innerHTML = `
           <div class="alert alert-success">
             <strong>Time to reach ${AtgtRaw} ${AtgtUnit}:</strong>
@@ -573,7 +580,7 @@
         if (refDt) {
           const d = new Date(new Date(refDt).getTime() + tTarget_h * 3.6e6);
           const dateEl = document.createElement('span');
-          dateEl.textContent = ' → ' + d.toLocaleString();
+          dateEl.textContent = ' → ' + d.toLocaleString() + ' (local time)';
           inv.querySelector('.alert-success').appendChild(dateEl);
         }
       } else {
@@ -702,7 +709,7 @@
             });
             datasets.push({
               _themeRole: 'success',
-              label: `Clearance reached: ${(t_cross_h * unitFactor).toFixed(2)} ${timeUnit}`,
+              label: `Table A1 level reached: ${(t_cross_h * unitFactor).toFixed(2)} ${timeUnit}`,
               data: pts.map((_, i) => i === crossIdx ? clearLevel : null),
               borderColor: chartTheme.green,
               backgroundColor: chartTheme.green,
@@ -760,13 +767,13 @@
     const tableHeaderRow = document.getElementById('tableHeaderRow');
     if (showConcentration) {
       tableCaption.textContent = 'Activity concentration at selected time points';
-      tableHeaderRow.innerHTML = '<th>Time</th><th>Elapsed (h)</th><th>Concentration (kBq/kg)</th><th>Fraction remaining</th>';
+      tableHeaderRow.innerHTML = '<th>Time</th><th>Elapsed (h)</th><th>Concentration (kBq/kg)</th><th>Fraction remaining (%)</th>';
     } else {
       tableCaption.textContent = 'Activity at selected time points';
-      tableHeaderRow.innerHTML = '<th>Time</th><th>Elapsed (h)</th><th>Activity (MBq)</th><th>Activity (mCi)</th><th>Fraction remaining</th>';
+      tableHeaderRow.innerHTML = '<th>Time</th><th>Elapsed (h)</th><th>Activity (MBq)</th><th>Activity (mCi)</th><th>Fraction remaining (%)</th>';
     }
 
-    const refDt2 = document.getElementById('refDateTime').value;
+    const refDt2 = refDt;
     const tbody = steps.map(s => {
       const A = CALC.activityAtTime(A0_MBq, T_half_h, s);
       const highlight = Math.abs(s - t_h) < 0.001 ? 'style="font-weight:700;background:var(--green-100)"' : '';
@@ -804,13 +811,14 @@
       // CSV rather than a mixture of free-form preamble and tabular data.
       const dbMeta = (typeof DB !== 'undefined' && DB.getMeta) ? DB.getMeta() : {};
       const exportedUtc = new Date().toISOString();
-      const referenceDateTime = document.getElementById('refDateTime').value || '';
-      const targetDateTime = document.getElementById('targetDateTime').value || '';
+      // Values of the calculation, not of the form at export time (T19)
+      const referenceDateTime = refDt;
+      const targetDateTime = elapsedManual ? '' : targetDt;
       const commonHeaders = [
         'App_version', 'App_build', 'Database_version', 'Exported_UTC',
         'Nuclide', 'Half_life_h', 'Initial_activity_input',
         'Initial_activity_unit', 'Initial_activity_MBq',
-        'Reference_datetime', 'Target_datetime',
+        'Reference_datetime', 'Target_datetime', 'Elapsed_time_source',
         'Material_mass_input', 'Material_mass_unit',
         'Clearance_level_kBq_per_kg',
         'Exemption_TableB_col2_kBq_per_kg', 'Exemption_TableB_col3_Bq',
@@ -818,7 +826,7 @@
       const commonValues = [
         UTILS.APP_VERSION, UTILS.APP_BUILD, dbMeta.version || '', exportedUtc,
         n.id, T_half_h, A0raw, A0unit, A0_MBq,
-        referenceDateTime, targetDateTime,
+        referenceDateTime, targetDateTime, elapsedManual ? 'entered manually (target date not used)' : 'reference and target date/time (local)',
         showConcentration ? vialWeightRaw : '', showConcentration ? vialWeightUnit : '',
         clearanceLevelOf(n) ?? '',
         exemptionColsOf(n).col2,
@@ -923,10 +931,10 @@
             else if (t_clear_h >= 24) tDisp = `${UTILS.fmt(t_clear_h/24)} d`;
             else if (t_clear_h >= 1) tDisp = `${UTILS.fmt(t_clear_h)} h`;
             else tDisp = `${UTILS.fmt(t_clear_h*60)} min`;
-            const refDtClear = document.getElementById('refDateTime').value;
+            const refDtClear = refDt;
             tClearItemHtml = `
           <div class="prop-item">
-            <div class="prop-key">Clearance reached after</div>
+            <div class="prop-key">Time to reach the Table A1 concentration level</div>
             <div class="prop-val" style="color:var(--green-700);">&#126; ${tDisp}</div>
             <div class="prop-note" id="dateNoteClear"></div>
           </div>`;
@@ -951,13 +959,13 @@
           </div>
           <div class="prop-item">
             <div class="prop-key">Status at t = 0</div>
-            <div class="prop-val" style="color:${cls0};">${below0 ? '&#10003; Below clearance' : '&#9888; Above clearance'}</div>
-            <div class="prop-note">${UTILS.fmtRatio(ratio0)} &times; clearance level</div>
+            <div class="prop-val" style="color:${cls0};">${below0 ? '&#10003; At or below the individual level' : '&#9888; Above the individual level'}</div>
+            <div class="prop-note">${UTILS.fmtRatio(ratio0)} &times; Table A1 level</div>
           </div>
           <div class="prop-item">
             <div class="prop-key">Status at t = ${UTILS.fmt(t_h)} h</div>
-            <div class="prop-val" style="color:${clsT};">${belowT ? '&#10003; Below clearance' : '&#9888; Above clearance'}</div>
-            <div class="prop-note">${UTILS.fmtRatio(ratioT)} &times; clearance level</div>
+            <div class="prop-val" style="color:${clsT};">${belowT ? '&#10003; At or below the individual level' : '&#9888; Above the individual level'}</div>
+            <div class="prop-note">${UTILS.fmtRatio(ratioT)} &times; Table A1 level</div>
           </div>
           ${tClearItemHtml}`;
       }
@@ -1038,8 +1046,7 @@
     lastDecayResult = {
       n, A0raw, A0unit, A0_MBq, t_h, At_MBq, fraction, T_half_h,
       AtgtRaw, AtgtUnit, vialWeightRaw, vialWeightUnit, weight_kg,
-      refDt: document.getElementById('refDateTime').value,
-      targetDt: document.getElementById('targetDateTime').value,
+      refDt, targetDt, elapsedManual,
     };
 
     card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -1047,6 +1054,20 @@
 
   // ---- Printable report ----
   let lastDecayResult = null;
+
+  // One state for the inverse calculation, shared by the screen and the report
+  // (copy audit 2026-10-03, T16): a target equal to A₀ is already met at t = 0;
+  // a target above A₀ can never be reached by decay. CALC.timeToActivity returns
+  // 0 in both cases, which must not be printed as a time.
+  function targetState(A0_MBq, Atgt_MBq) {
+    if (Math.abs(Atgt_MBq - A0_MBq) <= 1e-12 * A0_MBq) return 'equal';
+    return Atgt_MBq > A0_MBq ? 'above' : 'below';
+  }
+  const TARGET_TEXT = {
+    equal: 'Target already reached at t = 0: the target equals the initial activity',
+    above: 'Target exceeds A₀ and cannot be reached by decay',
+  };
+  const staleWatch = UI.watchStaleResults('resultsCard');
 
   document.getElementById('btnPrintDecay').onclick = () => {
     if (!lastDecayResult) { alert('Calculate first.'); return; }
@@ -1058,26 +1079,29 @@
       ['Half-life T½', `${r.n.half_life_display} (λ = ${UTILS.fmt(lam)} h⁻¹)`],
       ['Elapsed time t', `${UTILS.fmt(r.t_h)} h = ${UTILS.fmt(r.t_h / 24)} d = ${UTILS.fmt(r.t_h / r.T_half_h)} T½`],
     ];
-    if (r.refDt)    inputs.push(['Reference date/time', r.refDt.replace('T', ' ')]);
-    if (r.targetDt) inputs.push(['Target date/time', r.targetDt.replace('T', ' ')]);
+    if (r.refDt) inputs.push(['Reference date/time (local)', r.refDt.replace('T', ' ')]);
+    if (r.elapsedManual) inputs.push(['Elapsed time source', 'Elapsed time entered manually; target date not used']);
+    else if (r.targetDt) inputs.push(['Target date/time (local)', r.targetDt.replace('T', ' ')]);
 
     const results = [
       ['Activity A(t)', `${UTILS.fmt(r.At_MBq)} MBq = ${UTILS.fmt(CALC.convertActivity(r.At_MBq, 'MBq', 'GBq'))} GBq = ${UTILS.fmt(CALC.convertActivity(r.At_MBq, 'MBq', 'mCi'))} mCi`],
-      ['Fraction remaining', `${UTILS.fmt(r.fraction * 100)}%`],
+      ['Fraction remaining (%)', `${UTILS.fmt(r.fraction * 100)}%`],
       ['Activity lost', `${UTILS.fmt(r.A0_MBq - r.At_MBq)} MBq (${UTILS.fmt((1 - r.fraction) * 100)}%)`],
     ];
     if (!isNaN(r.AtgtRaw) && r.AtgtRaw > 0) {
       const Atgt_MBq = CALC.convertActivity(r.AtgtRaw, r.AtgtUnit, 'MBq');
       const tT = CALC.timeToActivity(r.A0_MBq, Atgt_MBq, r.T_half_h);
+      const tState = targetState(r.A0_MBq, Atgt_MBq);
       results.push([`Time to reach ${r.AtgtRaw} ${r.AtgtUnit}`,
-        isFinite(tT) ? `${UTILS.fmt(tT)} h = ${UTILS.fmt(tT / 24)} d = ${UTILS.fmt(tT / r.T_half_h)} T½` : 'target ≥ A₀ — no decay needed']);
+        tState !== 'below' ? TARGET_TEXT[tState]
+          : isFinite(tT) ? `${UTILS.fmt(tT)} h = ${UTILS.fmt(tT / 24)} d = ${UTILS.fmt(tT / r.T_half_h)} T½` : 'not calculable']);
     }
 
     const sections = [
       { heading: 'Input parameters', rows: inputs },
       { heading: 'Results', rows: results },
     ];
-    const notes = [`Exponential decay A(t) = A₀·e^(−λt) with T½ from ${r.n._icrp107 ? 'the selected data source' : 'ICRP 107'}.`];
+    const notes = ['Exponential decay of an isolated nuclide, A(t) = A₀·e^(−λt), with the half-life stated in the header. Dates and times are local times of the device that produced the report.'];
     const sources = [];
 
     if (!isNaN(r.vialWeightRaw) && r.vialWeightRaw > 0 && r.weight_kg) {
@@ -1095,11 +1119,11 @@
       } else {
         const rowA1 = clrR.rows[0];
         rows.push(['Clearance level (Table A1)', `${UTILS.fmt(clearLevel)} kBq/kg (${clrR.id}${rowA1.note ? `, note (${rowA1.note}); progeny ${rowA1.progeny.join(', ') || 'none listed'}` : ''})${rowA1.source_inconsistency ? ' — ' + rowA1.source_inconsistency : ''}`]);
-        rows.push(['Status at t = 0', `${specA0 <= clearLevel ? 'BELOW' : 'ABOVE'} clearance (${UTILS.fmtRatio(specA0 / clearLevel)} × level)`]);
-        rows.push([`Status at t = ${UTILS.fmt(r.t_h)} h`, `${specAt <= clearLevel ? 'BELOW' : 'ABOVE'} clearance (${UTILS.fmtRatio(specAt / clearLevel)} × level)`]);
+        rows.push(['Status at t = 0', `${specA0 <= clearLevel ? 'AT OR BELOW' : 'ABOVE'} the individual Table A1 level (${UTILS.fmtRatio(specA0 / clearLevel)} × level)`]);
+        rows.push([`Status at t = ${UTILS.fmt(r.t_h)} h`, `${specAt <= clearLevel ? 'AT OR BELOW' : 'ABOVE'} the individual Table A1 level (${UTILS.fmtRatio(specAt / clearLevel)} × level)`]);
         if (specA0 > clearLevel) {
           const t_clear_h = (r.T_half_h / Math.LN2) * Math.log(specA0 / clearLevel);
-          rows.push(['Clearance level reached after', `≈ ${UTILS.fmt(t_clear_h)} h = ${UTILS.fmt(t_clear_h / 24)} d`]);
+          rows.push(['Time to reach the Table A1 concentration level', `≈ ${UTILS.fmt(t_clear_h)} h = ${UTILS.fmt(t_clear_h / 24)} d`]);
         }
       }
       sections.push({ heading: 'Clearance assessment — RD 1217/2024 Annex IV Table A1', rows });
@@ -1131,7 +1155,7 @@
     if (r.n._icrp107) notes.push('ICRP 107 extended entry: decay data not manually validated. Verify against primary sources before regulatory use.');
     if (r.n.chain_members) notes.push('Chain entry: dose constants include progeny in secular equilibrium; the decay calculation follows the parent half-life (valid once equilibrium is established, i.e. aged ≳ 10 daughter half-lives).');
 
-    REPORT.print({ title: 'Decay Calculation', nuclide: r.n, sections, notes, sources });
+    REPORT.print({ title: 'Decay Calculation', kind: 'decay', nuclide: r.n, sections, notes, sources });
   };
 
   // Auto-calculate if nuclide pre-selected

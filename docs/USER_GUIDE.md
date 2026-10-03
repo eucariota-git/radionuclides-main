@@ -122,7 +122,7 @@ The application includes an **extended database of 1,252 radionuclides** from IC
 2. **Distance**: Enter distance from source (m or cm)
    - **Dose rate is calculated at YOUR selected distance** (primary output)
    - Both quantities are always shown: **H\*(10)** (ambient dose equivalent, effective-dose estimator) and **H'(0.07)** (directional dose equivalent, skin/extremity indicator — falls back to the H\*(10) value when no Γ^H'(0.07) constant exists)
-   - These are **area-monitoring** quantities; compliance with dose limits is assessed with personal dosimetry (Hp(10), Hp(0.07), Hp(3))
+   - These are **area-monitoring** quantities. These estimates do not establish compliance: apply the dose-assessment and monitoring methods required for the exposure situation (personal quantities are Hp(10), Hp(0.07), Hp(3); under RD 1029/2022 art. 34 the doses of category B workers may be estimated from workplace monitoring)
    - Reference dose rate @ 1 m shown for comparison
 3. **Dose rate** is calculated instantly:
    - H ̇ = Γ × A / r²
