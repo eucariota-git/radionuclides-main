@@ -635,6 +635,22 @@
 
   document.addEventListener('nm-theme-change', applyDistChartTheme);
 
+  // Validity state of the shielding/source model of ONE calculation. Computed
+  // once and stored in lastCalcResult.validity, so the screen, the report and the
+  // CSV cannot disagree. The absence of range warnings is not evidence of
+  // validity: Y-90 container constants and the Archer fits are never range-checked
+  // by the app (copy audit 2026-10-03, T03).
+  function shieldingValidity(r) {
+    if (r.isY90) return 'Experimental container estimates; validity not established; no regulatory assessment';
+    if (r.shieldWarnings && r.shieldWarnings.length)
+      return 'OUT OF VALIDATED RANGE — ' + r.shieldWarnings.join('; ') + '. Treat the shielding result as an extrapolation';
+    if (r.method === 'archer') return 'Published fit; applicability range not checked by the app';
+    if (r.method === 'unshielded') return 'No shielding';
+    return 'Within the tabulated attenuation and build-up ranges';
+  }
+  const Y90_SCOPE = 'Experimental bremsstrahlung component only; direct beta dose is excluded';
+  const ARCHER_BASIS = 'Archer transmission from Oumano et al. (2025), based on dose at 1 cm depth in tissue. Applied here as an approximation to both operational quantities';
+
   document.getElementById('btnPrintDose').onclick = () => {
     if (!lastCalcResult) { window.print(); return; }
     const r = lastCalcResult;
@@ -642,12 +658,12 @@
     const fdr = v => CALC.formatDoseRate(v).display;
     const methodText = {
       unshielded: 'No shielding applied.',
-      archer: 'Archer broad-beam transmission (Monte Carlo full-spectrum fit, Oumano et al. 2025).',
+      archer: ARCHER_BASIS + ' (broad-beam Monte Carlo fit to the full photon spectrum; not an explicit H*(10) or H\'(0.07) fit).',
       narrow_beam_spectrum: `Spectrum-weighted narrow-beam transmission over ${r.spectrumLines} ICRP 107 photon lines with point-isotropic exposure build-up (ANSI/ANS-6.4.3 reference data); accounts for beam hardening and scatter build-up. Infinite-medium build-up applied to a finite barrier: the deviation is not universally conservative — treat results as estimates, not shielding-design values.`,
       narrow_beam: 'Single-line narrow-beam attenuation with point-isotropic exposure build-up (ANSI/ANS-6.4.3 reference data; NIST XCOM attenuation).',
     }[r.method] || '';
     const notes = methodText ? [methodText] : [];
-    if (r.isY90) notes.push('Y-90 bremsstrahlung container estimate (methodology after Zanzonico et al. 1999); container values are estimates, not tabulated in that publication.');
+    if (r.isY90) notes.push(Y90_SCOPE + ". Container estimate (methodology after Zanzonico et al. 1999); container values are estimates, not tabulated in that publication. The H'(0.07) figure is NOT a complete skin/extremity assessment: direct beta/electron irradiation is not calculated.");
     if (!r.useH007) notes.push("No H'(0.07) constant for this nuclide/energy — the H'(0.07) row shows the H*(10) value instead (may underestimate the skin dose of low-energy emitters).");
     notes.push('H*(10) and H\'(0.07) are area-monitoring quantities; compliance with dose limits is assessed with personal dosimetry (Hp(10), Hp(0.07), Hp(3)). The limit screening in this report is indicative only.');
     if (r.n._icrp107) notes.push('ICRP 107 extended entry: constants computed automatically, NOT manually validated. Verify against primary sources before regulatory use.');
@@ -684,9 +700,7 @@
           // 0.004 m as "0.00 m" (audit 2026-10-03, H-08)
           ['Distance', `${r.distRaw} ${r.distUnit} (${Number(r.d_m.toPrecision(4))} m)`],
           ['Shielding', r.isY90 ? `Y-90 bremsstrahlung container: ${r.containerName || '—'}` : r.mat && r.mat !== 'none' ? `${r.mat}, ${r.thick} cm` : 'none'],
-          ['Shielding validity', r.shieldWarnings && r.shieldWarnings.length
-            ? 'OUT OF VALIDATED RANGE — ' + r.shieldWarnings.join('; ') + '. Treat the shielding result as an extrapolation.'
-            : (r.method === 'archer' ? 'Archer fit (its own published validity range)' : r.method === 'unshielded' ? 'no shielding' : 'within the tabulated attenuation and build-up ranges')],
+          ['Model validity', r.validity || shieldingValidity(r)],
           ['Exposure time per administration', `${UTILS.fmt(r.t_h)} h`],
           ['Administrations per year', String(r.nAdmin)],
           ['Decay during exposure', r.withDecay === undefined ? '—' : r.withDecay ? 'integrated A(t)' : 'no (constant activity, worst case)'],
@@ -708,7 +722,8 @@
 
   document.getElementById('btnExportDoseCsv').onclick = () => {
     if (!lastCalcResult) { alert('Calculate dose first.'); return; }
-    const { useH007, gammaExt, gammaWB, nAdmin, H_WB_cum, H_Ext_cum, Hdot_WB, Hdot_WB_t, Hdot_Ext, Hdot_Ext_t, Hdot_WB_1m, Hdot_WB_t_1m, Hdot_Ext_1m, Hdot_Ext_t_1m, n, A0raw, A0unit, A0_GBq, d_m, distRaw, distUnit, shieldWarnings, t_h, mat, thick, withDecay, patientTx, containerName, isY90, method } = lastCalcResult;
+    const { useH007, gammaExt, gammaWB, nAdmin, H_WB_cum, H_Ext_cum, Hdot_WB, Hdot_WB_t, Hdot_Ext, Hdot_Ext_t, Hdot_WB_1m, Hdot_WB_t_1m, Hdot_Ext_1m, Hdot_Ext_t_1m, n, A0raw, A0unit, A0_GBq, d_m, distRaw, distUnit, t_h, mat, thick, withDecay, patientTx, containerName, isY90, method } = lastCalcResult;
+    const validity = lastCalcResult.validity || shieldingValidity(lastCalcResult);
     // Rectangular, self-describing CSV (audit 2026-10-03, H-09): identity,
     // versions, inputs and validity repeated on every row, as the Decay export.
     const meta = (typeof DB !== 'undefined' && DB.getMeta) ? DB.getMeta() : {};
@@ -725,14 +740,14 @@
       t_h, nAdmin, withDecay === undefined ? '' : withDecay ? 'integrated A(t)' : 'no (constant activity, worst case)',
       isY90 ? `Y-90 bremsstrahlung container: ${containerName || '—'}` : mat && mat !== 'none' ? `${mat}, ${thick} cm` : 'none',
       isY90 ? 'Y-90 container estimate' : (method || ''),
-      shieldWarnings && shieldWarnings.length ? 'OUT OF VALIDATED RANGE: ' + shieldWarnings.join(' | ') : 'within range',
+      validity,
       patientTx !== undefined && patientTx < 1 ? patientTx : 1];
     const rows = [head,
       [...common, isY90 ? 'Y-90 H*(10) whole body' : 'H*(10) whole body', gammaWB,
-        Hdot_WB.toPrecision(5), Hdot_WB_t.toPrecision(5), Hdot_WB_1m.toPrecision(5), Hdot_WB_t_1m.toPrecision(5), (H_WB_cum * nAdmin).toPrecision(5), ''],
+        Hdot_WB.toPrecision(5), Hdot_WB_t.toPrecision(5), Hdot_WB_1m.toPrecision(5), Hdot_WB_t_1m.toPrecision(5), (H_WB_cum * nAdmin).toPrecision(5), isY90 ? Y90_SCOPE : ''],
       [...common, isY90 ? `Y-90 ${extLabel}` : extLabel, gammaExt,
         Hdot_Ext.toPrecision(5), Hdot_Ext_t.toPrecision(5), Hdot_Ext_1m.toPrecision(5), Hdot_Ext_t_1m.toPrecision(5), (H_Ext_cum * nAdmin).toPrecision(5),
-        useH007 ? '' : "H*(10) value — no H'(0.07) constant"],
+        [isY90 ? Y90_SCOPE + '; not a complete skin/extremity assessment' : '', useH007 ? '' : "H*(10) value — no H'(0.07) constant"].filter(Boolean).join('; ')],
     ];
     const csv = rows.map(r => r.map(v => {
       const str = String(v);
@@ -792,10 +807,11 @@
     const E_MeV   = n.representative_energy_keV / 1000;
     const ap      = getArcherParams(n, mat);  // Archer params or null
     // One spectrum per operational quantity — they are not interchangeable.
-    // Archer params, when present, take precedence for BOTH: they are broad-beam
-    // Monte Carlo fits to H*(10) and no H'(0.07) equivalent is published, so the
-    // H'(0.07) row of an Archer nuclide inherits the H*(10) transmission (stated
-    // in the method note below; the gap is ~1% for Tc-99m).
+    // Archer params, when present, take precedence for BOTH rows. Oumano et al.
+    // (2025) fit the ratio of dose at 1 cm depth in a tissue block with and
+    // without the barrier (deep dose equivalent, 10 CFR 20) — NOT an explicit
+    // H*(10) or H'(0.07) fit. Using it for both operational quantities is an
+    // approximation of this app, stated in the method note (copy audit T02).
     const sp      = getSpectrum(n, 'H10');    // dose-weighted line spectrum or null
     const sp007   = getSpectrum(n, 'H007') || sp;
 
@@ -823,7 +839,7 @@
     const parsed = parseFloat(document.getElementById('patientTx').value);
     if (patientAttenEnabled &&
         (!Number.isFinite(parsed) || parsed <= 0 || parsed > 100)) {
-      alert('Enter a patient transmission factor between 0 and 100%.\n\nThere is no default: patient attenuation depends on photon energy, anatomy and orientation. Derive it from measurement or a published study for your geometry.');
+      alert('Patient transmission must be > 0% and ≤ 100%.\n\nThere is no default: patient attenuation depends on photon energy, anatomy and orientation. Derive it from measurement or a published study for your geometry.');
       document.getElementById('patientTx').focus();
       return;
     }
@@ -927,7 +943,7 @@
         const useH007 = container.gamma_H007 != null;
         const gammaWB = container.gamma_H10;
         const gammaExt = useH007 ? container.gamma_H007 : container.gamma_H10;
-        const primaryLabel = useH007 ? "H'(0.07) (skin/extremity indicator)" : "H*(10)";
+        const primaryLabel = useH007 ? "H'(0.07), bremsstrahlung only" : "H*(10), bremsstrahlung only";
         // High-Z walls RAISE bremsstrahlung output — tungsten included (1.8×),
         // not just lead. The text now comes from the data so it cannot drift.
         const pbWarning = container.warning
@@ -958,7 +974,7 @@
           <tr style="background:var(--warning-100);">
             <td colspan="6">
               <strong>Y-90 experimental bremsstrahlung scenario</strong>
-              <span class="text-sm text-muted">(container-dependent estimates; Zanzonico et al. 1999 provides the formalism, not these constants)</span>
+              <span class="text-sm text-muted">(bremsstrahlung component only — direct beta dose is excluded; container-dependent estimates; Zanzonico et al. 1999 provides the formalism, not these constants)</span>
               ${containerHTML}
               ${pbWarning}
               <div style="margin-top:1rem;">
@@ -1005,23 +1021,24 @@
           withDecay: withDecay,
           isY90: true
         };
+        lastCalcResult.validity = shieldingValidity(lastCalcResult);
       } else {
-        // No photon dose component (not Y-90). Two distinct cases, worth telling
+        // No photon dose estimate (not Y-90). Two distinct cases, worth telling
         // apart: a curated pure β⁻ emitter, and one of the 89 ICRP 107 entries
         // whose lines all fall below the 20 keV / 0.01% filter.
         lastCalcResult = null;
         document.getElementById('resultsBody').innerHTML = `
           <tr><td colspan="5" style="padding:1rem;">
-            <strong>No photon dose component</strong> (&#915;<sup>H*(10)</sup> = 0).
+            <strong>No photon dose estimate with the selected filter.</strong>
             ${n._noPhotons
-              ? `${UTILS.escapeHtml(n.symbol)} is an ICRP 107 entry with no photon emission passing the
-                 selection filter (&#8805; 20 keV, yield &#8805; 0.01%), so no external photon dose can be
-                 estimated. Decay mode${decayModes.length > 1 ? 's' : ''}: <strong>${UTILS.escapeHtml(decayModeText || 'not recorded')}</strong>${minorModes.length ? ` (minor branches &lt; 0.01%: ${UTILS.escapeHtml(minorModeText)})` : ''}.
+              ? `${UTILS.escapeHtml(n.symbol)} is an ICRP 107 entry with no photon line passing the app's
+                 filter (&#8805; 20 keV, yield &#8805; 0.01%). This is not evidence that there is no external
+                 hazard. Decay mode${decayModes.length > 1 ? 's' : ''}: <strong>${UTILS.escapeHtml(decayModeText || 'not recorded')}</strong>${minorModes.length ? ` (minor branches &lt; 0.01%: ${UTILS.escapeHtml(minorModeText)})` : ''}.
                  ${isPureBetaMinus
-                   ? 'Any external hazard would come from bremsstrahlung, which depends on the container geometry and is not modelled here.'
-                   : 'This is not a pure β− emitter: assess the radiological hazard from the actual decay mode (for photon-less α and EC emitters the main concern is internal exposure).'}`
-              : `<strong>Pure &beta;&#8315; emitter</strong> — external dose requires bremsstrahlung data
-                 specific to container geometry.`}
+                   ? 'Direct beta/electron dose (skin, extremities) and bremsstrahlung are not calculated here; assess them for the actual source and container.'
+                   : 'β− is not the only recorded decay mode: assess the radiological hazard from the actual decay mode (for photon-less α and EC emitters the main concern is internal exposure).'}`
+              : `No photon line passes the app's filter. Direct beta/electron dose and bremsstrahlung are
+                 not calculated here; assess them for the actual source and container.`}
           </td></tr>`;
       }
 
@@ -1030,16 +1047,18 @@
       if (distChart) { distChart.destroy(); distChart = null; }
       document.getElementById('distChartContainer').innerHTML = `
         <div class="alert alert-warning" style="margin:1rem 0;">
-          <strong>${UTILS.escapeHtml(n.symbol)} ${isPureBetaMinus
+          <strong>${UTILS.escapeHtml(n.symbol)} ${n.id === 'Y-90'
+            ? 'is predominantly a &beta;&#8315; emitter; its photon contribution is not evaluated by this model.'
+            : isPureBetaMinus
             ? (minorModes.length
-                ? `is essentially a pure &beta;&#8315; emitter (minor branches &lt; 0.01%: ${UTILS.escapeHtml(minorModeText)}).`
-                : 'is a pure &beta;&#8315; emitter.')
+                ? `decays by &beta;&#8315; (minor branches &lt; 0.01%: ${UTILS.escapeHtml(minorModeText)}); no photon line passes the app's filter.`
+                : `has &beta;&#8315; as its only recorded decay mode; no photon line passes the app's filter.`)
             : `has no photon emission above the selection filter (decay: ${UTILS.escapeHtml(decayModeText || 'see ICRP 107')}).`}</strong><br>
           ${n.id === 'Y-90'
-            ? 'Dose shown above is an experimental container-dependent scenario inspired by the Zanzonico et al. formalism (J Nucl Med 40(6):1024–1028, 1999). That publication does not tabulate these container constants; do not use them for design or regulatory conclusions without geometry-specific evidence.'
+            ? Y90_SCOPE + '. The dose shown above is a container-dependent scenario inspired by the Zanzonico et al. formalism (J Nucl Med 40(6):1024–1028, 1999). That publication does not tabulate these container constants; do not use them for design or regulatory conclusions without geometry-specific evidence. The H\'(0.07) figure is not a complete skin/extremity assessment.'
             : isPureBetaMinus
-              ? 'External dose estimation requires bremsstrahlung data specific to the container geometry. See Zanzonico et al. (J Nucl Med 40(6), 1999) for the methodology.'
-              : 'No external photon dose can be estimated with this app. Assess the hazard according to the actual decay mode shown above — a β− bremsstrahlung scenario does not apply.'}
+              ? 'Direct beta/electron dose (skin, extremities) and bremsstrahlung are not calculated here; assess them for the actual source and container. Zanzonico et al. (J Nucl Med 40(6), 1999) describe a bremsstrahlung methodology.'
+              : 'No external photon dose is estimated by this app. Assess the hazard according to the actual decay mode shown above — a β− bremsstrahlung scenario does not apply.'}
         </div>`;
 
       // Y-90 gets NO regulatory verdict (audit 2026-07-15, finding 5).
@@ -1185,8 +1204,8 @@
       // gap, precisely in the nuclides where the distinction matters most.
       const T     = CALC.getTransmission(thick, E_MeV, mat, ap, sp);
       const T007  = CALC.getTransmission(thick, E_MeV, mat, ap, sp007);
-      // Archer nuclides share one broad-beam H*(10) fit for both rows, so a
-      // second figure there would be the same number twice.
+      // Archer nuclides share one broad-beam fit for both rows, so a second
+      // figure there would be the same number twice.
       const splitT = useH007 && !ap && Math.abs(T007 - T) > T * 1e-6;
       const methodLabel = method === 'archer'
         ? '<span class="tag tag-pet" style="font-size:.72rem;">Archer broad-beam</span>'
@@ -1194,7 +1213,7 @@
         ? `<span class="tag tag-other" style="font-size:.72rem;">Narrow beam · ${sp.length}-line spectrum + build-up</span>`
         : '<span class="tag tag-other" style="font-size:.72rem;">Narrow beam + build-up</span>';
       const methodNote = method === 'archer'
-        ? 'Monte Carlo, Oumano et al. 2025 — fitted to H*(10); the H\'(0.07) row inherits this transmission (no published H\'(0.07) Archer fit)'
+        ? ARCHER_BASIS + ' (the same transmission is used in the H*(10) and H\'(0.07) rows)'
         : method === 'narrow_beam_spectrum'
         ? 'Σ wᵢ·B(Eᵢ)·e⁻ᵘ⁽ᴱᵢ⁾ˣ dose-weighted (ICRP 107) + ANS-6.4.3 build-up, NIST XCOM — weighted separately for H*(10) and H\'(0.07)'
         : 'B(E)·e⁻ᵘˣ + ANS-6.4.3 build-up, NIST XCOM';
@@ -1231,7 +1250,9 @@
       const warnEl = document.getElementById('shieldRangeWarn');
       warnEl.innerHTML = '';
       shieldWarnings = [];
-      if (method !== 'archer') {
+      if (method === 'archer') {
+        warnEl.innerHTML = '<div class="alert alert-info mt-1">Published fit; applicability range not checked by the app.</div>';
+      } else {
         const range = PHYSICS.getShieldingRange(mat);
         const lines = sp || [[E_MeV * 1000, 1]];
         let wOverMfp = 0, wUnderE = 0, wOverE = 0, mfpMax = 0;
@@ -1403,6 +1424,7 @@
       mat, thick, patientTx, withDecay,
       method: mat === 'none' || thick <= 0 ? 'unshielded' : ap ? 'archer' : sp ? 'narrow_beam_spectrum' : 'narrow_beam',
       spectrumLines: sp ? sp.length : 0 };
+    lastCalcResult.validity = shieldingValidity(lastCalcResult);
 
     card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     updateHvlInfo();

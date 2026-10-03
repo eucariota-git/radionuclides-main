@@ -105,15 +105,15 @@
         <div class="form-hint">Calculates time to reach this activity</div>
       </div>
       <div class="form-group">
-        <label class="form-label" for="vialWeight">Vial / container weight <span class="text-muted">(optional)</span></label>
+        <label class="form-label" for="vialWeight">Mass of material being assessed <span class="text-muted">(optional)</span></label>
         <div class="d-flex gap-1">
-          <input type="number" class="form-input" id="vialWeight" min="0" step="any" placeholder="e.g. 10" title="Vial/container weight">
-          <select class="form-select form-select-medium" id="vialWeightUnit" title="Unit" aria-label="Vial weight unit">
+          <input type="number" class="form-input" id="vialWeight" min="0" step="any" placeholder="e.g. 10" title="Mass of material being assessed">
+          <select class="form-select form-select-medium" id="vialWeightUnit" title="Unit" aria-label="Mass unit">
             <option value="g" selected>g</option>
             <option value="kg">kg</option>
           </select>
         </div>
-        <div class="form-hint">For the clearance (Table&nbsp;A1) and moderate-quantity exemption (Table&nbsp;B, &le;&nbsp;1000&nbsp;kg) checks &mdash; RD&nbsp;1217/2024 Annex&nbsp;IV</div>
+        <div class="form-hint">Use the mass corresponding to the entered activity and the material covered by the assessment; identify whether the container is included. Used for the clearance (Table&nbsp;A1) and moderate-quantity exemption (Table&nbsp;B, &le;&nbsp;1000&nbsp;kg) checks &mdash; RD&nbsp;1217/2024 Annex&nbsp;IV</div>
       </div>
     </div>
 
@@ -495,7 +495,7 @@
       return;
     }
 
-    // Validate ALL inputs before rendering anything: the vial weight used to
+    // Validate ALL inputs before rendering anything: the material mass used to
     // be checked only at the chart stage, after the result boxes were already
     // updated — an invalid weight then left fresh numbers above a stale chart,
     // table and report snapshot (audit 2026-07-16, H-08).
@@ -503,7 +503,7 @@
     const vialWeightText  = vialWeightInput.value.trim();
     const vialWeightRaw   = vialWeightText === '' ? NaN : Number(vialWeightText);
     if (vialWeightText !== '' && (!Number.isFinite(vialWeightRaw) || vialWeightRaw <= 0)) {
-      alert('Vial / container weight must be a positive number.');
+      alert('Mass of material must be a positive number.');
       vialWeightInput.focus();
       return;
     }
@@ -811,7 +811,7 @@
         'Nuclide', 'Half_life_h', 'Initial_activity_input',
         'Initial_activity_unit', 'Initial_activity_MBq',
         'Reference_datetime', 'Target_datetime',
-        'Vial_weight_input', 'Vial_weight_unit',
+        'Material_mass_input', 'Material_mass_unit',
         'Clearance_level_kBq_per_kg',
         'Exemption_TableB_col2_kBq_per_kg', 'Exemption_TableB_col3_Bq',
       ];
@@ -887,16 +887,16 @@
       let clearHtml = `
         <div class="prop-grid">
           <div class="prop-item">
-            <div class="prop-key">Weight</div>
+            <div class="prop-key">Mass of material assessed</div>
             <div class="prop-val">${vialWeightRaw} ${vialWeightUnit}</div>
-            <div class="prop-note">${UTILS.fmt(weight_kg)} kg</div>
+            <div class="prop-note">${UTILS.fmt(weight_kg)} kg — as entered; state whether it includes the container</div>
           </div>
           <div class="prop-item">
-            <div class="prop-key">A&#8320; / weight (t = 0)</div>
+            <div class="prop-key">A&#8320; / mass (t = 0)</div>
             <div class="prop-val">${fmtSpec(specA0)}</div>
           </div>
           <div class="prop-item">
-            <div class="prop-key">A(t) / weight (t = ${UTILS.fmt(t_h)} h)</div>
+            <div class="prop-key">A(t) / mass (t = ${UTILS.fmt(t_h)} h)</div>
             <div class="prop-val">${fmtSpec(specAt)}</div>
           </div>`;
 
@@ -1005,7 +1005,7 @@
           if (weight_kg === null) {
             crit += `<div class="prop-item"><div class="prop-key">b) Moderate quantity &mdash; column 2${tag}</div>
               <div class="prop-val">${UTILS.fmt(row.conc_kBq_kg)} kBq/kg</div>
-              <div class="prop-note">Enter the material weight to evaluate this criterion.</div></div>`;
+              <div class="prop-note">Enter the mass of material to evaluate this criterion.</div></div>`;
           } else if (weight_kg > 1000) {
             crit += `<div class="prop-item"><div class="prop-key">b) Moderate quantity &mdash; column 2${tag}</div>
               <div class="prop-val">Not applicable</div>
@@ -1085,7 +1085,7 @@
       const specA0 = CALC.convertActivity(r.A0_MBq, 'MBq', 'kBq') / r.weight_kg;
       const specAt = CALC.convertActivity(r.At_MBq, 'MBq', 'kBq') / r.weight_kg;
       const rows = [
-        ['Material weight', `${r.vialWeightRaw} ${r.vialWeightUnit} (${UTILS.fmt(r.weight_kg)} kg)`],
+        ['Mass of material assessed', `${r.vialWeightRaw} ${r.vialWeightUnit} (${UTILS.fmt(r.weight_kg)} kg) — mass basis as entered by the user; the app does not record whether the container is included`],
         ['Specific activity at t = 0', `${UTILS.fmt(specA0)} kBq/kg`],
         [`Specific activity at t = ${UTILS.fmt(r.t_h)} h`, `${UTILS.fmt(specAt)} kBq/kg`],
       ];
@@ -1119,7 +1119,7 @@
             const c0 = r.A0_MBq * 1e3 / r.weight_kg, ct = r.At_MBq * 1e3 / r.weight_kg;
             rows.push([`b) Moderate quantity (≤ 1000 kg), column 2${tag}`, `${UTILS.fmt(row.conc_kBq_kg)} kBq/kg; t = 0: ${UTILS.fmtRatio(c0 / row.conc_kBq_kg)} × value; t = ${UTILS.fmt(r.t_h)} h: ${UTILS.fmtRatio(ct / row.conc_kBq_kg)} × value`]);
           } else {
-            rows.push([`b) Moderate quantity, column 2${tag}`, r.weight_kg ? 'not applicable: mass above 1000 kg (Annex II A.1.c — Table A1)' : 'not evaluated: no material weight entered']);
+            rows.push([`b) Moderate quantity, column 2${tag}`, r.weight_kg ? 'not applicable: mass above 1000 kg (Annex II A.1.c — Table A1)' : 'not evaluated: no mass of material entered']);
           }
           if (row.progeny.length || row.source_inconsistency) rows.push(['Note', [row.note_text, row.progeny.length ? `progeny ${row.progeny.join(', ')}` : '', row.source_inconsistency].filter(Boolean).join(' ')]);
         }

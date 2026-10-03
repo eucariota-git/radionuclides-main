@@ -103,7 +103,7 @@ The application includes an **extended database of 1,252 radionuclides** from IC
    - Units: seconds, minutes, hours, days, years
 5. View **Decay Curve**: Interactive chart shows A(t) = A₀ · e^(−λt)
 6. **Clearance and exemption** (RD 1217/2024 Annex IV, single nuclide; mixtures and sums over sources are not evaluated):
-   - **Clearance, Table A1**: enter the material weight; A/m is compared with the A1 value at t = 0 and at t, with the time needed to reach it. Works for curated and extended entries; Mo-99 gives the same result from either entry
+   - **Clearance, Table A1**: enter the mass of the material being assessed (the mass that corresponds to the entered activity; state whether the container is included); A/m is compared with the A1 value at t = 0 and at t, with the time needed to reach it. Works for curated and extended entries; Mo-99 gives the same result from either entry
    - **Exemption, Table B** — Annex II A.1 sets *separate* criteria: a) a source — total activity vs column 3; b) material in moderate quantity (≤ 1000 kg) — A/m vs column 2. Above 1000 kg, c) applies: Table A1
 
 **Example**:
@@ -132,7 +132,7 @@ The application includes an **extended database of 1,252 radionuclides** from IC
    - Material: Lead, elemental Iron, or Concrete (normal or lightweight). Iron is modelled as Fe at ρ = 7.874 g/cm³, not as a generic steel alloy
    - Thickness: 0–300 mm
    - Transmission curve shows dose reduction
-   - Uses **Archer broad-beam** (Monte Carlo) for Tc-99m, F-18, I-131, Lu-177
+   - Uses the **Archer broad-beam** fit of Oumano et al. (2025) for Tc-99m, F-18, I-131 and Lu-177 behind lead or concrete (iron has no fit and uses the spectral method). The published transmission is based on dose at 1 cm depth in tissue; the app applies it to both H\*(10) and H'(0.07) as an approximation, and does not check its applicability range
    - Uses **spectrum-weighted narrow-beam with build-up** (dose-weighted sum over the nuclide's ICRP 107 photon lines; NIST XCOM attenuation; ANSI/ANS-6.4.3 point-isotropic exposure buildup factors) for other nuclides — accounts for beam hardening AND scatter build-up (ICRP 107 extended entries build the spectrum dynamically at selection time)
 
 5. **Cumulative dose**:
@@ -156,9 +156,10 @@ The application includes an **extended database of 1,252 radionuclides** from IC
    - The scenario reports no regulatory verdict. Do not use it for shielding design or regulatory submissions without a primary source or measurements for the actual geometry
 
 **Example**:
-- 100 MBq Tc-99m at 50 cm: ~8.7 μSv/h (Γ = 21.7 μSv·h⁻¹·GBq⁻¹·m²)
-- With 5 mm lead shielding: ~0.9 μSv/h (~90% reduction)
-- 200 administrations/year with 5mm lead: ~1.6 mSv/year (Safe)
+- Inputs: 100 MBq Tc-99m, point source at 50 cm, no shielding, no patient attenuation, 10 min per administration, 200 administrations per year, decay integrated during each exposure
+- Dose rate at t = 0: Ḣ*(10) = Γ·A/r² = 21.72 × 0.100 / 0.50² ≈ 8.7 μSv/h (Γ = 21.72 μSv·h⁻¹·GBq⁻¹·m²)
+- Annual integrated H*(10): ≈ 0.29 mSv/y (200 × ≈ 1.43 μSv)
+- These are results of the app's point-source model for the stated inputs, not a measured dose and not a statement of safety or compliance
 
 - Y-90 scenarios are clearly marked experimental and are excluded from regulatory conclusions
 - The Dose report and CSV record the distance as entered (value and unit) and the shielding validity: when part of the dose weight falls outside the tabulated attenuation or build-up range (e.g. beyond 40 mean free paths, where B is clamped), the warning shown on screen is also printed and exported

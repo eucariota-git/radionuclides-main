@@ -30,7 +30,7 @@ Target users: medical physicists and radiation protection specialists.
 - **H\*(10)** ambient dose equivalent (area monitoring; estimator of effective dose) and **H'(0.07)** directional dose equivalent (area monitoring; skin/extremity indicator, available for low-energy emitters) — both always shown side by side; no automatic distance-based selection. Compliance with dose limits is assessed with personal dosimetry (Hp(10), Hp(0.07), Hp(3)); the built-in limit comparison is an indicative screening only
 - **Experimental Y-90 bremsstrahlung container scenario** (methodology inspired by Zanzonico et al. 1999; container values not tabulated in that publication) with interactive container selection (PMMA, Pb, W, none), explicit non-validation warning and no regulatory verdict
 - Shielding: lead, elemental iron, and concrete (normal-weight and light-weight)
-- **Archer broad-beam method** (Monte Carlo, Oumano et al. 2025) for Tc-99m, F-18, I-131, Lu-177
+- **Archer broad-beam method** (Monte Carlo, Oumano et al. 2025; transmission of dose at 1 cm depth in tissue, applied to both operational quantities as an approximation) for Tc-99m, F-18, I-131, Lu-177 behind lead or concrete
 - **Spectrum-weighted narrow beam** (dose-weighted sum over ICRP 107 photon lines, NIST XCOM) for all other nuclides — accounts for beam hardening of multi-line emitters; the spectrum is stored for curated nuclides and built dynamically for ICRP 107 extended entries (`PHYSICS.buildShieldingSpectrum`); single-line narrow beam is the internal fallback when no spectrum is available
 - **📄 Report / PDF** — printable calculation report with timestamp, database version, inputs, results, method, data sources and disclaimer (also in the Decay calculator)
 - Cumulative dose with radioactive decay integration
@@ -136,6 +136,11 @@ All generated JSON files include metadata for audit trail:
 ---
 
 ## Recent Improvements & Bug Fixes (2026-06)
+
+### v1.8.0 — copy audit 2026-10-03 (texts and labels, T01–T38)
+- Dose: photon-less nuclides no longer imply that bremsstrahlung is the only external hazard; the Archer fit is described by its real quantity (dose at 1 cm depth in tissue); Y-90 and Archer results export a specific validity state instead of "within range".
+- Decay: the concentration denominator is "Mass of material being assessed" (CSV columns `Material_mass_input` / `Material_mass_unit`, formerly `Vial_weight_*`).
+- Guide: the shielded Tc-99m example and its "Safe" verdict were wrong and are replaced by a reproducible unshielded case.
 
 ### v1.7.0 — conversion table and audit 2026-10-03
 - **Conversion coefficients now ICRP 74 (1996) Table A.21** for both h\*(10) and h'(0.07,0°): the former h\*(10) values above 1 MeV (untraced since the first commit) were 3–20 % low, and h'(0.07) was a reconstruction. Curated Γ and shielding spectra regenerated; 30 of 37 recalculated entries change (Na-24 +2.5 %, I-131 Γ^H'(0.07) +2.9 %).

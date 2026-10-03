@@ -11,7 +11,10 @@
  *     T(x) = [(1 + β/α)·e^(αγx) − β/α]^(−1/γ)   x in mm
  *     Source: Oumano et al. J Appl Clin Med Phys 2025
  *     (Archer parameters are Monte Carlo fits to the nuclide's FULL photon
- *      spectrum, so no further spectral weighting applies.)
+ *      spectrum, so no further spectral weighting applies. The fitted
+ *      transmission is the ratio of dose at 1 cm depth in a tissue block with
+ *      and without the barrier — deep dose equivalent — not an explicit H*(10)
+ *      or H'(0.07) fit; the app applies it to both as an approximation.)
  *   Narrow beam, spectrum-weighted with buildup:
  *     T(x) = Σ wᵢ·min(1, B(Eᵢ, μᵢx)·e^(−μᵢx))   x in cm
  *     wᵢ = relative dose contribution of each line (Σwᵢ = 1, from ICRP 107 yields

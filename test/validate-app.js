@@ -316,7 +316,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v34');
+    swVersion === 'nm-planner-v35');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -336,6 +336,21 @@ async function main() {
   check('README no longer advertises removed custom uploads and lists current modules',
     !/user-uploaded nuclides/.test(readmeMd) && /about\.html/.test(readmeMd) &&
     /js\/report\.js/.test(readmeMd) && /js\/utils\.js/.test(readmeMd) && /test\//.test(readmeMd));
+  {
+    // Guide examples must be what the engine returns (copy audit 2026-10-03, T05)
+    const ectx = vm.createContext({ console });
+    for (const f of ['js/data.js', 'js/physics.js']) vm.runInContext(read(f), ectx);
+    ectx.tc = require(path.join(ROOT, 'data/nuclides.json')).nuclides.find(n => n.id === 'Tc-99m');
+    const ex = vm.runInContext(`({
+      rate: CALC.doseRate(tc.gamma_H10, 0.1, 0.5, 0, 0.14, 'none', null),
+      annual: 200 * CALC.cumulativeDose(tc.gamma_H10, 0.1, 0.5, 1 / 6, tc.half_life_s / 3600, 0, 0.14, 'none', null),
+    })`, ectx);
+    check('guide dose example is the engine result (8.7 uSv/h; 0.29 mSv/y) and carries no shielded figure or "Safe" verdict',
+      Math.abs(ex.rate - 8.7) < 0.05 && Math.abs(ex.annual / 1000 - 0.29) < 0.005 &&
+      [guideMd, aboutHtml].every(t => /≈ 8\.7 μSv\/h/.test(t) && /≈ 0\.29 mSv\/y/.test(t) &&
+        !/~0\.9 μSv\/h/.test(t) && !/\(Safe\)/.test(t)),
+      `rate ${ex.rate}, annual ${ex.annual}`);
+  }
   check('guide and in-app copy both explain local ICRP data and PWA site-data reset',
     /bundled locally/.test(guideMd) && /site data/.test(guideMd) &&
     /bundled locally/.test(aboutHtml) && /site data/.test(aboutHtml));
@@ -366,9 +381,34 @@ async function main() {
     /decay_modes: icrpN\.decay_modes/.test(doseHtml) &&
     /isPureBetaMinus/.test(doseHtml) &&
     /m\.branching >= 1e-4/.test(doseHtml) &&
-    /essentially a pure &beta;/.test(doseHtml) &&
     /minorModes/.test(doseHtml) &&
-    !doseHtml.includes('is a pure &beta;&#8315; emitter.</strong>'));
+    !/is a pure &beta;|essentially a pure &beta;|Pure &beta;&#8315; emitter/.test(doseHtml));
+  check('dose: a photon-less nuclide never implies that bremsstrahlung is the only external hazard (copy audit T01)',
+    /Direct beta\/electron dose \(skin, extremities\) and bremsstrahlung are not calculated here/.test(doseHtml) &&
+    /No photon dose estimate with the selected filter/.test(doseHtml) &&
+    !/Any external hazard would come from bremsstrahlung/.test(doseHtml) &&
+    !/No photon dose component/.test(doseHtml) &&
+    /direct beta dose is excluded/.test(doseHtml));
+  check('dose: the Archer fit is described by its real quantity, dose at 1 cm depth in tissue (copy audit T02)',
+    /based on dose at 1 cm depth in tissue/.test(doseHtml) && !/fitted to H\*\(10\)/.test(doseHtml) &&
+    !/fits to H\*\(10\)/.test(doseHtml));
+  check('dose: one validity state feeds report and CSV; Y-90 and Archer never export "within range" (copy audit T03)',
+    /function shieldingValidity\(r\)/.test(doseHtml) &&
+    (doseHtml.match(/lastCalcResult\.validity = shieldingValidity\(lastCalcResult\)/g) || []).length === 2 &&
+    /Experimental container estimates; validity not established; no regulatory assessment/.test(doseHtml) &&
+    /Published fit; applicability range not checked by the app/.test(doseHtml) &&
+    !/'within range'/.test(doseHtml) && !/its own published validity range/.test(doseHtml));
+  {
+    // The function itself, run on the three cases the audit named
+    const src = doseHtml.match(/function shieldingValidity\(r\) \{[\s\S]*?\r?\n  \}/)[0];
+    const f = new Function(src + '; return shieldingValidity;')();
+    check('dose: shieldingValidity() returns the specific state for Y-90, Archer, warnings and unshielded',
+      /^Experimental container/.test(f({ isY90: true, shieldWarnings: [] })) &&
+      /^Published fit/.test(f({ method: 'archer', shieldWarnings: [] })) &&
+      /^OUT OF VALIDATED RANGE/.test(f({ method: 'narrow_beam_spectrum', shieldWarnings: ['x'] })) &&
+      f({ method: 'unshielded' }) === 'No shielding' &&
+      /^Within the tabulated/.test(f({ method: 'narrow_beam', shieldWarnings: [] })));
+  }
   check('Y-90 report keeps its scenario snapshot and cites only scenario sources (no auto ICRU 57/Cornejo)',
     /containerName: container\.name/.test(doseHtml) &&
     /patientTx: patientTx,\s*\n\s*withDecay: withDecay/.test(doseHtml) &&
@@ -379,7 +419,7 @@ async function main() {
     /const notes = methodText \? \[methodText\] : \[\];/.test(doseHtml));
   check('dose: shielding out-of-range warnings are kept in the result and exported (audit 2026-10-03, H-07)',
     /shieldWarnings = msgs\.map/.test(doseHtml) && /shieldWarnings: shieldWarnings\.slice\(\)/.test(doseHtml) &&
-    /'Shielding validity'/.test(doseHtml) && /'Shielding_validity'/.test(doseHtml));
+    /'Model validity'/.test(doseHtml) && /'Shielding_validity'/.test(doseHtml));
   check('dose: the exported distance keeps the entered value and unit, never toFixed(2) metres (H-08)',
     !/d_m\.toFixed\(2\)/.test(doseHtml) && /\$\{r\.distRaw\} \$\{r\.distUnit\}/.test(doseHtml) &&
     /'Distance_input', 'Distance_unit', 'Distance_m'/.test(doseHtml));
@@ -388,16 +428,19 @@ async function main() {
     /'Activity_input', 'Activity_unit', 'Activity_GBq'/.test(doseHtml));
   check('printed reports identify the application build',
     /<tr><td>Application<\/td>/.test(reportJs) && /APP_BUILD/.test(reportJs));
-  check('decay validates the vial weight before any result is rendered',
-    decayHtml.indexOf('Vial / container weight must be a positive number') > 0 &&
-    decayHtml.indexOf('Vial / container weight must be a positive number') <
+  check('decay names the denominator as mass of material, never "vial weight" (copy audit T04)',
+    /Mass of material being assessed/.test(decayHtml) && !/Vial \/ container weight|Vial_weight/.test(decayHtml) &&
+    /identify whether the container is included/.test(decayHtml));
+  check('decay validates the material mass before any result is rendered',
+    decayHtml.indexOf('Mass of material must be a positive number') > 0 &&
+    decayHtml.indexOf('Mass of material must be a positive number') <
     decayHtml.indexOf("card.classList.remove('hidden')"));
   check('decay CSV is rectangular and repeats self-describing version and scenario metadata',
     [
       'App_version', 'App_build', 'Database_version', 'Exported_UTC',
       'Nuclide', 'Half_life_h', 'Initial_activity_input',
       'Initial_activity_unit', 'Initial_activity_MBq', 'Reference_datetime',
-      'Target_datetime', 'Vial_weight_input', 'Vial_weight_unit',
+      'Target_datetime', 'Material_mass_input', 'Material_mass_unit',
       'Clearance_level_kBq_per_kg',
     ].every(field => decayHtml.includes(`'${field}'`)) &&
     /UTILS\.APP_VERSION, UTILS\.APP_BUILD, dbMeta\.version/.test(decayHtml) &&
