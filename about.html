@@ -90,7 +90,7 @@
       <li><strong>Clinical use</strong>: See modality and intended clinical applications</li>
       <li><strong>Export</strong>: Download the table as CSV</li>
     </ol>
-    <p><strong>Main database</strong>: 40 radionuclides — 32 with published comparison values in <strong>Cornejo et al. (2015)</strong>, <strong>Ga-68</strong>, the pure-β⁻ special case <strong>Y-90</strong>, and 6 therapy/imaging additions (<strong>Zr-89, Cu-67, Tb-161, Ho-166, Ra-223+daughters, Ac-225+daughters</strong>). Operational values use ICRP 107 photon data and ICRU 57 conversion coefficients where indicated; material differences from published comparison values are shown contextually.</p>
+    <p><strong>Main database</strong>: 40 radionuclides — 32 with published comparison values in <strong>Cornejo et al. (2015)</strong>, <strong>Ga-68</strong>, the pure-β⁻ special case <strong>Y-90</strong>, and 6 therapy/imaging additions (<strong>Zr-89, Cu-67, Tb-161, Ho-166, Ra-223+daughters, Ac-225+daughters</strong>). Operational values use ICRP 107 photon data and ICRP 74 Table A.21 conversion coefficients where indicated; material differences from published comparison values are shown contextually.</p>
 
     <h5>Extended Database — ICRP 107</h5>
     <p>The application includes an <strong>extended database of 1,252 radionuclides</strong> from ICRP Publication 107 (2008). If you search for a nuclide not in the main database:</p>
@@ -329,14 +329,15 @@
     <h4>Main Database (40 nuclides)</h4>
     <ul>
       <li><strong>Published comparison</strong>: Cornejo et al. (2015) for 32 nuclides (ΓKair matches the published table)</li>
-      <li><strong>Additional nuclides</strong>: Ga-68 (ICRP 107 / ICRU 57) and Y-90 (pure β⁻ emitter; no applicable photon dose-rate constants in Properties)</li>
+      <li><strong>Additional nuclides</strong>: Ga-68 (ICRP 107 / ICRP 74 A.21) and Y-90 (pure β⁻ emitter; no applicable photon dose-rate constants in Properties)</li>
       <li><strong>Note</strong>: Operational Γ H*(10) / H'(0.07) values use ICRP 107 nuclear data; material differences from published Cornejo values are reported with the affected nuclide and in calculation reports</li>
       <li><strong>Use case</strong>: Radiation protection estimation; verify against primary sources for regulatory submissions</li>
+      <li><strong>Conversion coefficients and photon filter</strong>: h*(10) and h'(0.07,0°) per unit fluence from ICRP 74 (1996) Table A.21 — the 25 printed energies, log-log interpolated, no 1.25 MeV node; the printed 6.90 pSv·cm² at 1.5 MeV is kept although the table's own columns give 7.04. Photon lines with E ≥ 20 keV and yield ≥ 0.01 % are used; lines with a yield exactly equal to 0.01 % are kept, whereas Cornejo et al. (2015) state yields above 0.01 %. Since the A.21 adoption (2026-10-03), 23 of the 32 published Cornejo Γ^H*(10) values are reproduced within ±2 % (22 before); Na-24 moved from −4.3 % to −1.9 %</li>
     </ul>
     <h4>Extended Database (1,252 nuclides from ICRP 107)</h4>
     <ul>
       <li><strong>Source</strong>: ICRP Publication 107 (2008) — official decay data compilation</li>
-      <li><strong>Calculation</strong>: Γ constants derived from photon spectrum using ICRU 57 / ICRP 74 conversion coefficients</li>
+      <li><strong>Calculation</strong>: Γ constants derived from photon spectrum using ICRP 74 Table A.21 conversion coefficients</li>
       <li><strong>Validation</strong>: ±5% agreement with published values for F-18, Tc-99m, I-131, Lu-177, Ga-68</li>
       <li><strong>Use case</strong>: Reference and estimation only — NOT validated for clinical use</li>
       <li><strong>Limitations</strong>:
@@ -847,8 +848,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     <h4>ICRP Publication 107 — nuclear decay data</h4>
     <p>Files: <code>data/icrp107-index.json</code>, <code>data/icrp107-data.js</code>, and the photon-derived values in <code>data/nuclides.json</code> / <code>data/nuclides-data.js</code>. © 2008 A. Endo and K.F. Eckerman (ICRP-07 / DECDATA). Redistributed for educational, research and not-for-profit purposes under the ICRP-07 copyright notice — see <a href="#license-data">LICENSE.TXT</a>, whose terms require that file to accompany all copies. <strong>Commercial use requires permission from the copyright holders</strong> (<a href="https://www.icrp.org/">https://www.icrp.org/</a>).</p>
 
-    <h4>ICRU Report 57 / ICRP Publication 74 — conversion coefficients</h4>
-    <p>The <code>ICRU57</code> table in <code>js/data.js</code> (ambient dose equivalent h*(10) and directional dose equivalent h'(0.07) per unit fluence). The h*(10) column uses tabulated ICRU 57 / ICRP 74 values with attribution. The h'(0.07) column is a <strong>reconstruction</strong>, not a verbatim ICRP/ICRU table: PTB-Dos-34 / ICRP 74 kerma coefficients ≤100 keV, anchors derived from Cornejo et al. (2015) per-line contributions at 150–400 keV, and the kerma approximation h'(0.07)≈h*(10) ≥500 keV (full provenance in the header of <code>js/data.js</code>). Reproduction of substantial ICRU/ICRP tabular material requires permission; relevant only if use becomes commercial.</p>
+    <h4>ICRP Publication 74 — conversion coefficients</h4>
+    <p>The conversion table in <code>js/data.js</code> (constant <code>ICRU57</code>): ambient dose equivalent h*(10) and directional dose equivalent h'(0.07,0°) per unit fluence, the 25 energies printed in ICRP Publication 74 (1996), Table A.21, used with attribution (since 2026-10-03; before that the h*(10) column above 1 MeV and the h'(0.07) column did not match the table). © ICRP. Reproduction of substantial ICRP tabular material requires permission; relevant only if use becomes commercial.</p>
 
     <h4>NIST XCOM / XAAMDI — photon mass attenuation coefficients</h4>
     <p>The <code>ATTENUATION</code> table in <code>js/data.js</code> contains mass attenuation values for lead, elemental iron and ordinary concrete. Reference values from NIST (X-Ray Attenuation and Absorption for Materials of Dosimetric Interest, and the XCOM database, NIST Standard Reference Database 8), used with attribution to NIST. SRD products may be subject to the <a href="https://www.nist.gov/open/copyright-fair-use-and-licensing-statements-srd-data-software-and-technical-series-publications">NIST SRD terms</a>.</p>

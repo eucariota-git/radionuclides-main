@@ -2,31 +2,28 @@
  * data.js — Physical constants and tabulated data
  *
  * Sources:
- *   ICRU 57 / ICRP 74 (1996): fluence-to-dose-equivalent conversion coefficients
+ *   ICRP 74 (1996) Table A.21: fluence-to-dose-equivalent conversion coefficients
  *   NIST XCOM: mass attenuation coefficients for Pb, Fe and ordinary concrete
  *
- * H*(10) conversion coefficients h*(10) [pSv·cm²] for photons
- *   Expanded and aligned field (isotropic point source approximation)
- *   Reference: ICRP Publication 74, Table A.2 (equivalent to ICRU 57)
- *
- * H'(0.07) conversion coefficients h'(0.07,0°) [pSv·cm²] for photons
- *   Normal incidence on ICRU sphere at 0.07 mm depth.
- *   Constructed as h'(0.07)/Φ = (Ka/Φ) × hK'(0.07,0°;E), with:
- *     Ka/Φ      — air kerma per fluence (Hubbell & Seltzer; identical to the kerma
- *                 function tabulated in Cornejo et al. 2015, Tabla I)
- *     hK'(0.07) — air-kerma-to-H'(0.07,0°) coefficients, ICRP 74 / ICRU 57
- *                 (as reproduced in PTB-Dos-34, Ankerhold 2000, Table 3.4)
- *   Provenance per energy range:
- *     10–100 keV : exact ICRP 74 hK'(0.07,0°) values
- *     150–400 keV: hK' interpolated through anchors derived from the published
- *                  per-line contributions in Cornejo et al. (SEPR companion report):
- *                  171 keV → 1.38, 245 keV → 1.32 Sv/Gy
- *     ≥500 keV   : kerma approximation h'(0.07) ≈ h*(10) (difference ≲5%)
- *   Validation: reproduces the four published Γ^H'(0.07) values of Cornejo et al.
- *   2015 Tabla III within −9.4% … +4.0% (Pd-103: 34.42 vs 38.0 = −9.42%;
- *   In-111: 96.46 vs 96.1 = +0.37%; I-125: 42.52 vs 40.9 = +3.96%;
- *   Xe-133: 17.35 vs 16.8 = +3.27%). The larger Pd-103 gap reflects updated
- *   ICRP-107 nuclear data, not a methodology error.
+ * Fluence-to-dose-equivalent conversion coefficients for photons [pSv·cm²]:
+ *   h*(10)      — ambient dose equivalent H*(10)
+ *   h'(0.07,0°) — directional dose equivalent H'(0.07), normal incidence
+ *   Source: ICRP Publication 74 (1996), Table A.21 (columns per unit fluence),
+ *   the 25 printed energies from 10 keV to 10 MeV. (ICRU Report 57 is the joint
+ *   publication; it has not been consulted, so no equivalence is asserted here.)
+ *   Transcription verified in the professional
+ *   library ('ICRP 74 (1996) - Tabla A.21 … .csv', visual double reading) and
+ *   re-checked against the printed page in the 2026-10-03 audit.
+ *   - 1.5 MeV row: the printed 6.90 is kept although the product of its own
+ *     columns (H/Ka × Ka/Φ = 1.15 × 6.12) gives 7.04 (+2 %) — an inconsistency
+ *     of the source, not corrected by guesswork.
+ *   - No 1.25 MeV node: Table A.21 has none (Co-60 lines are log-log
+ *     interpolated between 1.0 and 1.5 MeV).
+ *   History (audit 2026-10-03, H-01/H-02): until v1.6.1 the h*(10) column above
+ *   1 MeV carried untraced values (8.33 … 20.4 pSv·cm², 3–20 % below A.21, plus
+ *   a 1.25 MeV node) present since the first commit, and h'(0.07) was a
+ *   reconstruction Ka(Hubbell–Seltzer) × hK'(0.07) with anchors from Cornejo et
+ *   al. (2015) instead of the printed A.21 column.
  *
  * Dose rate constant formula (per Cornejo et al. methodology):
  *   Γ [μSv·h⁻¹·GBq⁻¹·m²] = K × Σᵢ (nᵢ × h(Eᵢ))
@@ -34,7 +31,10 @@
  *         K = 28.648
  *   nᵢ  = photon yield per decay (fraction, not %)
  *   Eᵢ  = photon energy in MeV
- *   Filter: Eᵢ ≥ 0.020 MeV (20 keV) AND nᵢ ≥ 0.0001 (0.01%)
+ *   Filter: Eᵢ ≥ 0.020 MeV (20 keV) AND nᵢ ≥ 0.0001 (0.01%). Cornejo et al. (2015)
+ *   state yields ABOVE 0.01 %; this project deliberately keeps lines with a
+ *   stored yield exactly equal to 0.01 % (more lines, applied to all 1252
+ *   nuclides) — audit 2026-10-03, H14.
  */
 
 'use strict';
@@ -56,37 +56,37 @@ const PHYSICS = (() => {
   // = 1/(4π) × 3.6×10¹⁸ × 10⁻¹⁶ = 1/(4π) × 360 = 28.648
 
   // ---------------------------------------------------------------------------
-  // ICRU 57 / ICRP 74: h*(10) and h'(0.07) conversion coefficients
+  // ICRP 74 (1996) Table A.21: h*(10) and h'(0.07,0°) per unit fluence
+  // (constant name kept as ICRU57 for API compatibility)
   // Format: [energy_MeV, h_H10_pSvcm2, h_H007_pSvcm2]
   // ---------------------------------------------------------------------------
   const ICRU57 = [
-    // E (MeV)   h*(10)   h'(0.07,0°)
-    [0.010,     0.061,    7.220],
-    [0.015,     0.830,    3.210],
-    [0.020,     1.050,    1.810],
-    [0.030,     0.810,    0.901],
-    [0.040,     0.640,    0.604],
-    [0.050,     0.550,    0.502],
-    [0.060,     0.510,    0.447],
-    [0.080,     0.530,    0.475],
-    [0.100,     0.610,    0.577],
-    [0.150,     0.890,    0.852],
-    [0.200,     1.200,    1.160],
-    [0.300,     1.800,    1.750],
-    [0.400,     2.380,    2.290],
-    [0.500,     2.930,    2.930],
-    [0.600,     3.440,    3.440],
-    [0.800,     4.380,    4.380],
-    [1.000,     5.200,    5.200],
-    [1.250,     6.110,    6.110],
-    [1.500,     6.910,    6.910],
-    [2.000,     8.330,    8.330],
-    [3.000,    10.600,   10.600],
-    [4.000,    12.500,   12.500],
-    [5.000,    14.100,   14.100],
-    [6.000,    15.600,   15.600],
-    [8.000,    18.200,   18.200],
-    [10.000,   20.400,   20.400],
+    // E (MeV)   h*(10)   h'(0.07,0°)    ICRP 74 Table A.21, per unit fluence
+    [0.010,     0.061,    7.20],
+    [0.015,     0.83,     3.19],
+    [0.020,     1.05,     1.81],
+    [0.030,     0.81,     0.90],
+    [0.040,     0.64,     0.62],
+    [0.050,     0.55,     0.50],
+    [0.060,     0.51,     0.47],
+    [0.080,     0.53,     0.49],
+    [0.100,     0.61,     0.58],
+    [0.150,     0.89,     0.85],
+    [0.200,     1.20,     1.15],
+    [0.300,     1.80,     1.80],
+    [0.400,     2.38,     2.38],
+    [0.500,     2.93,     2.93],
+    [0.600,     3.44,     3.44],
+    [0.800,     4.38,     4.38],
+    [1.000,     5.20,     5.20],
+    [1.500,     6.90,     6.90],   // printed value; columns' product gives 7.04 (source inconsistency)
+    [2.000,     8.60,     8.60],
+    [3.000,    11.1,     11.1],
+    [4.000,    13.4,     13.4],
+    [5.000,    15.5,     15.5],
+    [6.000,    17.6,     17.6],
+    [8.000,    21.6,     21.6],
+    [10.000,   25.6,     25.6],
   ];
 
   // ---------------------------------------------------------------------------
@@ -335,7 +335,7 @@ const PHYSICS = (() => {
   // Public API
   // ---------------------------------------------------------------------------
 
-  /** Get h*(10) [pSv·cm²] at energy E_MeV (log-linear interp on ICRU57 table, per ICRP 74 §5.2) */
+  /** Get h*(10) [pSv·cm²] at energy E_MeV (log-log interpolation on the ICRP 74 A.21 table) */
   function getH10(E_MeV) {
     return interpLogLog(ICRU57, E_MeV, 0, 1);
   }
@@ -514,11 +514,12 @@ const PHYSICS = (() => {
    * multi-line nuclides, e.g. Sn-113 at 5 mm Pb: 7.7e-112 vs 2.4e-3).
    *
    * The weighting quantity MATTERS. The h'(0.07)/h*(10) response ratio is NOT
-   * monotonic — 1.72 at 20 keV, dipping to 0.876 at 60 keV, back to 1.00 above
-   * 500 keV — so H'(0.07) weighting boosts both the softest and the hardest
-   * lines while suppressing the 40–300 keV band. Shielding H'(0.07) with H*(10)
-   * weights (as this function did before 2026-07-15) therefore errs in EITHER
-   * direction depending on the spectrum: it overstates T by 74% for the soft
+   * monotonic — 1.72 at 20 keV, dipping to 0.92 at 60 keV, back to 1.00 from
+   * 300 keV (ICRP 74 A.21) — so H'(0.07) weighting boosts both the softest and
+   * the hardest lines while suppressing the 40–200 keV band. Shielding H'(0.07)
+   * with H*(10) weights (as this function did before 2026-07-15) therefore errs
+   * in EITHER direction depending on the spectrum (figures below were measured
+   * with the pre-2026-10 h'(0.07) column): it overstated T by 74% for the soft
    * emitter Pd-103 at 1 mm Pb (5.09e-4 vs 2.93e-4) but understates it by ~8% for
    * Re-186, which has a hard tail. There is no conservative side to fall back on;
    * each quantity needs its own weights.

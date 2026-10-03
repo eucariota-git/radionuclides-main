@@ -509,7 +509,7 @@
   // Only used when Archer params are unavailable (Archer fits cover the full spectrum).
   // The weighting quantity matters, and the difference has no fixed sign: the
   // h'(0.07)/h*(10) response ratio peaks at 20 keV, dips at 60 keV and flattens
-  // above 500 keV, so T differs by −42% for Pd-103 and +8% for Re-186 at 5 mm Pb
+  // above 500 keV, so T differs by −40% for Pd-103 and +6% for Re-186 at 5 mm Pb
   // (audit 2026-07-15, finding 4). Each operational quantity uses its own spectrum.
   function getSpectrum(n, quantity) {
     if (!n) return null;
@@ -1073,7 +1073,7 @@
 
     // Info header
     const sourceTag = n._icrp107
-      ? `<span class="tag tag-icrp107" title="Dose constants calculated from ICRP 107 photon spectrum using ICRU 57 / Cornejo methodology">ICRP 107</span>`
+      ? `<span class="tag tag-icrp107" title="Dose constants calculated from ICRP 107 photon spectrum using ICRP 74 Table A.21 coefficients and the Cornejo methodology">ICRP 107</span>`
       : '';
     const energyWarning = !n.representative_energy_keV
       ? '<div class="alert alert-warning alert-lg mt-1">⚠️ Representative energy not defined; shielding calculations use narrow-beam approximation.</div>'

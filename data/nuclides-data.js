@@ -8,20 +8,23 @@ const NUCLIDE_DATA = {
     "gamma_Kair_units": "μGy·h⁻¹·GBq⁻¹·m²",
     "gamma_H10_units": "μSv·h⁻¹·GBq⁻¹·m²",
     "gamma_H007_units": "μSv·h⁻¹·GBq⁻¹·m²",
-    "H007_note": "H'(0.07) directional dose equivalent rate constant, computed for every photon emitter from the full ICRP 107 spectrum with the ICRU 57 h'(0.07) coefficients. Both H*(10) and H'(0.07) are AREA-monitoring quantities and are always reported side by side; neither bounds the other (H*(10) is not always the larger — Pd-103 is ~40% lower). The former gate that stored H'(0.07) only when all energies were < 300 keV and H'(0.07) > H*(10), substituting H*(10) otherwise as 'conservative', was removed in 2026-07: it had no normative basis and was wrong for 36 of 39 nuclides.",
+    "H007_note": "H'(0.07) directional dose equivalent rate constant, computed for every photon emitter from the full ICRP 107 spectrum with the h'(0.07,0°) fluence coefficients of ICRP 74 Table A.21. Both H*(10) and H'(0.07) are AREA-monitoring quantities and are always reported side by side; neither bounds the other (H*(10) is not always the larger — Pd-103 is ~40% lower). The former gate that stored H'(0.07) only when all energies were < 300 keV and H'(0.07) > H*(10), substituting H*(10) otherwise as 'conservative', was removed in 2026-07: it had no normative basis and was wrong for 36 of 39 nuclides.",
     "Y90_note": "Y-90 is a pure β⁻ emitter with negligible photon emissions (no gamma rays or X-rays ≥20 keV). Dose constants gamma_Kair, gamma_H10, gamma_H007 are null (not measured/not applicable). External dose from Y-90 sources comes from bremsstrahlung radiation in container material. PHYSICS.Y90_CONTAINERS holds container-specific estimates following the bremsstrahlung formalism of Zanzonico et al. 1999; that publication tabulates soft-tissue/bone constants, not container values — verify against a primary source before regulatory use.",
     "clearance_a1_kBq_per_kg_note": "Activity-concentration value for exemption of practices or clearance of materials containing artificial radionuclides under RD 1217/2024 Annex IV Table A1. Units: kBq/kg (= Bq/g). null means the radionuclide is not listed in Table A1; another table, a complementary value or a specific authorization may still apply.",
     "half_life_s_units": "seconds",
     "ingestion_dose_coeff_adult_units": "Sv/Bq",
     "effluent_liquid_limit_units": "Bq/L",
     "effluent_liquid_limit_note": "Calculated as (1 mSv / adult ingestion dose coefficient) / 600 L, using IS-28 Annex II II.A.4 and the adult (> 17 y) ingestion coefficients of RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1).",
-    "generated_at": "2026-06-10T19:31:59.145Z",
+    "generated_at": "2026-10-03T19:26:43.577Z",
     "generated_by_script": "tools/recalc-gamma.js",
     "generated_at_note": "generated_at/generated_by_script record when the gamma constants themselves were last recomputed. The file is NOT the product of a single script: other tools and hand edits touch it afterwards, so last_modified_at below is the one to read for freshness.",
     "icrp107_index_sha256": "3845347ee2fb71e18b84a844905e44dab9d2d8a12939173575040b7b9b6707f2",
     "clearance_note": "clearance_a1_kBq_per_kg values verified 2026-06 against RD 1217/2024 Anexo IV Tabla A1 (BOE-A-2024-25205, consolidated HTML). Nuclides not listed in Tabla A1 carry null (e.g. Ga-67, Yb-169, Ra-223 — the latter appears only in Tabla B for moderate quantities ≤1000 kg).",
-    "last_modified_at": "2026-07-15T13:35:24.406Z",
-    "last_modified_by_script": "tools/add-shielding-spectra.js"
+    "last_modified_at": "2026-10-03T19:26:26.493Z",
+    "last_modified_by_script": "tools/add-shielding-spectra.js",
+    "gamma_regenerated": "2026-10-03 by tools/recalc-gamma.js with the ICRP 74 Table A.21 conversion table of js/data.js",
+    "yield_threshold_note": "Lines with a stored yield EQUAL to 0.01 % are kept (filter n ≥ 0.01 %). Cornejo et al. (2015) state yields above 0.01 %; keeping the boundary lines is a project choice applied to all 1252 nuclides (audit 2026-10-03, H14).",
+    "conversion_table_note": "Γ^H*(10) and Γ^H'(0.07) use the 25 printed fluence coefficients of ICRP 74 (1996) Table A.21 (js/data.js), log-log interpolated, since 2026-10-03. Before that the H*(10) column above 1 MeV and the H'(0.07) column did not match A.21 (audit 2026-10-03, H-01/H-02)."
   },
   "nuclides": [
     {
@@ -50,7 +53,7 @@ const NUCLIDE_DATA = {
       "gamma_H007": 170.72,
       "H007_from_cornejo": false,
       "representative_energy_keV": 511,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": null,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 2.4e-11,
       "effluent_liquid_limit_Bq_per_L": 69400,
@@ -99,7 +102,7 @@ const NUCLIDE_DATA = {
       "gamma_H007": 170.79,
       "H007_from_cornejo": false,
       "representative_energy_keV": 511,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": null,
       "ingestion_dose_coeff_adult_Sv_per_Bq": null,
       "effluent_liquid_limit_Bq_per_L": null,
@@ -149,7 +152,7 @@ const NUCLIDE_DATA = {
       "gamma_H007": 170.95,
       "H007_from_cornejo": false,
       "representative_energy_keV": 511,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": null,
       "ingestion_dose_coeff_adult_Sv_per_Bq": null,
       "effluent_liquid_limit_Bq_per_L": null,
@@ -203,7 +206,7 @@ const NUCLIDE_DATA = {
       "gamma_H007": 165.53,
       "H007_from_cornejo": false,
       "representative_energy_keV": 511,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "archer_params": {
         "Pb": {
           "alpha": 0.166,
@@ -265,11 +268,11 @@ const NUCLIDE_DATA = {
       "category": "diagnostic",
       "modality": "other",
       "gamma_Kair": 435,
-      "gamma_H10": 474.72,
-      "gamma_H007": 474.72,
+      "gamma_H10": 486.77,
+      "gamma_H007": 486.77,
       "H007_from_cornejo": false,
       "representative_energy_keV": 1369,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 1,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 4.3e-10,
       "effluent_liquid_limit_Bq_per_L": 3880,
@@ -286,29 +289,29 @@ const NUCLIDE_DATA = {
       "shielding_spectrum": [
         [
           1368.6,
-          0.391985
+          0.380926
         ],
         [
           2754,
-          0.60763
+          0.618673
         ],
         [
           3866.2,
-          0.000385
+          0.000401
         ]
       ],
       "shielding_spectrum_h007": [
         [
           1368.6,
-          0.391985
+          0.380926
         ],
         [
           2754,
-          0.60763
+          0.618673
         ],
         [
           3866.2,
-          0.000385
+          0.000401
         ]
       ]
     },
@@ -330,11 +333,11 @@ const NUCLIDE_DATA = {
       "category": "diagnostic",
       "modality": "other",
       "gamma_Kair": 32.4,
-      "gamma_H10": 36.6,
-      "gamma_H007": 36.6,
+      "gamma_H10": 36.62,
+      "gamma_H007": 36.62,
       "H007_from_cornejo": false,
       "representative_energy_keV": 1525,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 100,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 4.3e-10,
       "effluent_liquid_limit_Bq_per_L": 3880,
@@ -351,53 +354,53 @@ const NUCLIDE_DATA = {
       "shielding_spectrum": [
         [
           312.6,
-          0.004931
+          0.004928
         ],
         [
           899.7,
-          0.001932
+          0.001931
         ],
         [
           1021.2,
-          0.000831
+          0.00083
         ],
         [
           1524.6,
-          0.988234
+          0.988113
         ],
         [
           1920.8,
-          0.002617
+          0.002687
         ],
         [
           2424.3,
-          0.001455
+          0.001511
         ]
       ],
       "shielding_spectrum_h007": [
         [
           312.6,
-          0.004788
+          0.004928
         ],
         [
           899.7,
-          0.001933
+          0.001931
         ],
         [
           1021.2,
-          0.000831
+          0.00083
         ],
         [
           1524.6,
-          0.988376
+          0.988113
         ],
         [
           1920.8,
-          0.002617
+          0.002687
         ],
         [
           2424.3,
-          0.001455
+          0.001511
         ]
       ]
     },
@@ -420,10 +423,10 @@ const NUCLIDE_DATA = {
       "modality": "SPECT",
       "gamma_Kair": 4.19,
       "gamma_H10": 5.45,
-      "gamma_H007": 5.29,
+      "gamma_H007": 5.45,
       "H007_from_cornejo": false,
       "representative_energy_keV": 320,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 100,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 3.8e-11,
       "effluent_liquid_limit_Bq_per_L": 43900,
@@ -468,10 +471,10 @@ const NUCLIDE_DATA = {
       "modality": "other",
       "gamma_Kair": 13.2,
       "gamma_H10": 20.69,
-      "gamma_H007": 19.7,
+      "gamma_H007": 19.73,
       "H007_from_cornejo": false,
       "representative_energy_keV": 122,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 1,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 2.1e-10,
       "effluent_liquid_limit_Bq_per_L": 7940,
@@ -505,11 +508,11 @@ const NUCLIDE_DATA = {
       "shielding_spectrum_h007": [
         [
           122.1,
-          0.870014
+          0.870243
         ],
         [
           136.5,
-          0.120827
+          0.120608
         ],
         [
           570.1,
@@ -517,7 +520,7 @@ const NUCLIDE_DATA = {
         ],
         [
           692.4,
-          0.008404
+          0.008394
         ]
       ]
     },
@@ -543,11 +546,11 @@ const NUCLIDE_DATA = {
       "category": "diagnostic",
       "modality": "other",
       "gamma_Kair": 130,
-      "gamma_H10": 153.6,
-      "gamma_H007": 153.6,
+      "gamma_H10": 153.61,
+      "gamma_H007": 153.61,
       "H007_from_cornejo": false,
       "representative_energy_keV": 811,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 1,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 7.4e-10,
       "effluent_liquid_limit_Bq_per_L": 2250,
@@ -564,11 +567,11 @@ const NUCLIDE_DATA = {
       "shielding_spectrum": [
         [
           511,
-          0.165986
+          0.165973
         ],
         [
           810.8,
-          0.820835
+          0.820767
         ],
         [
           864,
@@ -576,17 +579,17 @@ const NUCLIDE_DATA = {
         ],
         [
           1674.7,
-          0.007199
+          0.00728
         ]
       ],
       "shielding_spectrum_h007": [
         [
           511,
-          0.165986
+          0.165973
         ],
         [
           810.8,
-          0.820835
+          0.820767
         ],
         [
           864,
@@ -594,7 +597,7 @@ const NUCLIDE_DATA = {
         ],
         [
           1674.7,
-          0.007199
+          0.00728
         ]
       ]
     },
@@ -616,11 +619,11 @@ const NUCLIDE_DATA = {
       "category": "diagnostic",
       "modality": "other",
       "gamma_Kair": 148,
-      "gamma_H10": 168.98,
-      "gamma_H007": 168.93,
+      "gamma_H10": 168.39,
+      "gamma_H007": 168.34,
       "H007_from_cornejo": false,
       "representative_energy_keV": 1099,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 1,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 1.8e-9,
       "effluent_liquid_limit_Bq_per_L": 926,
@@ -637,61 +640,61 @@ const NUCLIDE_DATA = {
       "shielding_spectrum": [
         [
           142.7,
-          0.001469
+          0.001474
         ],
         [
           192.3,
-          0.006016
+          0.006037
         ],
         [
           334.8,
-          0.000917
+          0.00092
         ],
         [
           382,
-          0.000069
+          0.00007
         ],
         [
           1099.3,
-          0.533361
+          0.533954
         ],
         [
           1291.6,
-          0.457483
+          0.456858
         ],
         [
           1481.7,
-          0.000685
+          0.000687
         ]
       ],
       "shielding_spectrum_h007": [
         [
           142.7,
-          0.001405
+          0.001408
         ],
         [
           192.3,
-          0.005809
+          0.005784
         ],
         [
           334.8,
-          0.000888
+          0.00092
         ],
         [
           382,
-          0.000067
+          0.00007
         ],
         [
           1099.3,
-          0.533523
+          0.534126
         ],
         [
           1291.6,
-          0.457622
+          0.457005
         ],
         [
           1481.7,
-          0.000686
+          0.000687
         ]
       ]
     },
@@ -713,11 +716,11 @@ const NUCLIDE_DATA = {
       "category": "therapeutic",
       "modality": "therapy",
       "gamma_Kair": 307,
-      "gamma_H10": 349.67,
-      "gamma_H007": 349.67,
+      "gamma_H10": 348.25,
+      "gamma_H007": 348.25,
       "H007_from_cornejo": false,
       "representative_energy_keV": 1250,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 0.1,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 3.4e-9,
       "effluent_liquid_limit_Bq_per_L": 490,
@@ -734,21 +737,21 @@ const NUCLIDE_DATA = {
       "shielding_spectrum": [
         [
           1173.2,
-          0.477444
+          0.477478
         ],
         [
           1332.5,
-          0.522556
+          0.522522
         ]
       ],
       "shielding_spectrum_h007": [
         [
           1173.2,
-          0.477444
+          0.477478
         ],
         [
           1332.5,
-          0.522556
+          0.522522
         ]
       ]
     },
@@ -782,7 +785,7 @@ const NUCLIDE_DATA = {
       "gamma_H007": 30.66,
       "H007_from_cornejo": false,
       "representative_energy_keV": 511,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 100,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 1.2e-10,
       "effluent_liquid_limit_Bq_per_L": 13900,
@@ -799,21 +802,21 @@ const NUCLIDE_DATA = {
       "shielding_spectrum": [
         [
           511,
-          0.971593
+          0.971701
         ],
         [
           1345.8,
-          0.028407
+          0.028299
         ]
       ],
       "shielding_spectrum_h007": [
         [
           511,
-          0.971593
+          0.971701
         ],
         [
           1345.8,
-          0.028407
+          0.028299
         ]
       ]
     },
@@ -836,10 +839,10 @@ const NUCLIDE_DATA = {
       "modality": "SPECT",
       "gamma_Kair": 21,
       "gamma_H10": 26.8,
-      "gamma_H007": 25.67,
+      "gamma_H007": 26.07,
       "H007_from_cornejo": false,
       "representative_energy_keV": 93,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": null,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 1.9e-10,
       "effluent_liquid_limit_Bq_per_L": 8770,
@@ -897,43 +900,43 @@ const NUCLIDE_DATA = {
       "shielding_spectrum_h007": [
         [
           91.3,
-          0.018795
+          0.018802
         ],
         [
           93.3,
-          0.237602
+          0.237086
         ],
         [
           184.6,
-          0.251832
+          0.246276
         ],
         [
           209,
-          0.032486
+          0.031841
         ],
         [
           300.2,
-          0.328296
+          0.332516
         ],
         [
           393.5,
-          0.117781
+          0.120467
         ],
         [
           494.2,
-          0.00223
+          0.002201
         ],
         [
           703.1,
-          0.000465
+          0.000458
         ],
         [
           794.4,
-          0.002624
+          0.002584
         ],
         [
           887.7,
-          0.007889
+          0.007769
         ]
       ]
     },
@@ -963,7 +966,7 @@ const NUCLIDE_DATA = {
       "gamma_H007": 157.84,
       "H007_from_cornejo": false,
       "representative_energy_keV": 511,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": null,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 1e-10,
       "effluent_liquid_limit_Bq_per_L": 16700,
@@ -974,7 +977,7 @@ const NUCLIDE_DATA = {
       "shielding_spectrum": [
         [
           511,
-          0.963938
+          0.963954
         ],
         [
           578.5,
@@ -986,21 +989,21 @@ const NUCLIDE_DATA = {
         ],
         [
           1077.3,
-          0.032071
+          0.032011
         ],
         [
           1261.1,
-          0.001052
+          0.001046
         ],
         [
           1883.2,
-          0.001985
+          0.002035
         ]
       ],
       "shielding_spectrum_h007": [
         [
           511,
-          0.963938
+          0.963954
         ],
         [
           578.5,
@@ -1012,15 +1015,15 @@ const NUCLIDE_DATA = {
         ],
         [
           1077.3,
-          0.032071
+          0.032011
         ],
         [
           1261.1,
-          0.001052
+          0.001046
         ],
         [
           1883.2,
-          0.001985
+          0.002035
         ]
       ]
     },
@@ -1043,10 +1046,10 @@ const NUCLIDE_DATA = {
       "modality": "SPECT",
       "gamma_Kair": 51,
       "gamma_H10": 65.78,
-      "gamma_H007": 63.47,
+      "gamma_H007": 64.48,
       "H007_from_cornejo": false,
       "representative_energy_keV": 265,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 1,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 2.6e-9,
       "effluent_liquid_limit_Bq_per_L": 641,
@@ -1112,51 +1115,51 @@ const NUCLIDE_DATA = {
       "shielding_spectrum_h007": [
         [
           24.4,
-          0.000157
+          0.000154
         ],
         [
           66.1,
-          0.00229
+          0.002355
         ],
         [
           96.7,
-          0.008651
+          0.008593
         ],
         [
           121.1,
-          0.053845
+          0.053082
         ],
         [
           136,
-          0.20389
+          0.20057
         ],
         [
           198.6,
-          0.007683
+          0.007498
         ],
         [
           264.7,
-          0.409793
+          0.410165
         ],
         [
           279.5,
-          0.183739
+          0.184817
         ],
         [
           303.9,
-          0.010525
+          0.01066
         ],
         [
           400.7,
-          0.118769
+          0.121454
         ],
         [
           418.8,
-          0.000128
+          0.00013
         ],
         [
           572.2,
-          0.00053
+          0.000522
         ]
       ]
     },
@@ -1179,10 +1182,10 @@ const NUCLIDE_DATA = {
       "modality": "SPECT",
       "gamma_Kair": 14.6,
       "gamma_H10": 21.72,
-      "gamma_H007": 20.99,
+      "gamma_H007": 20.97,
       "H007_from_cornejo": false,
       "representative_energy_keV": 141,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "archer_params": {
         "Pb": {
           "alpha": 2.558,
@@ -1242,23 +1245,23 @@ const NUCLIDE_DATA = {
       "shielding_spectrum_h007": [
         [
           20.6,
-          0.00788
+          0.007888
         ],
         [
           20.6,
-          0.015338
+          0.015354
         ],
         [
           21,
-          0.001472
+          0.001473
         ],
         [
           21,
-          0.002827
+          0.00283
         ],
         [
           140.5,
-          0.972276
+          0.972248
         ],
         [
           142.6,
@@ -1416,7 +1419,7 @@ const NUCLIDE_DATA = {
       "shielding_spectrum_h007": [
         [
           20.6,
-          0.001867
+          0.001868
         ],
         [
           20.6,
@@ -1448,15 +1451,15 @@ const NUCLIDE_DATA = {
         ],
         [
           40.6,
-          0.004076
+          0.004176
         ],
         [
           140.5,
-          0.023489
+          0.023465
         ],
         [
           140.5,
-          0.446342
+          0.445875
         ],
         [
           142.6,
@@ -1468,27 +1471,27 @@ const NUCLIDE_DATA = {
         ],
         [
           162.4,
-          0.000072
+          0.000071
         ],
         [
           181.1,
-          0.040548
+          0.04029
         ],
         [
           366.4,
-          0.016307
+          0.016896
         ],
         [
           380.1,
-          0.000147
+          0.000153
         ],
         [
           411.5,
-          0.000224
+          0.000232
         ],
         [
           528.8,
-          0.001138
+          0.001139
         ],
         [
           621.8,
@@ -1496,11 +1499,11 @@ const NUCLIDE_DATA = {
         ],
         [
           739.5,
-          0.322718
+          0.32275
         ],
         [
           777.9,
-          0.118192
+          0.118204
         ],
         [
           823,
@@ -1508,7 +1511,7 @@ const NUCLIDE_DATA = {
         ],
         [
           960.8,
-          0.003095
+          0.003096
         ]
       ]
     },
@@ -1534,7 +1537,7 @@ const NUCLIDE_DATA = {
       "gamma_H007": 34.42,
       "H007_from_cornejo": false,
       "representative_energy_keV": 40,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 1000,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 1.9e-10,
       "effluent_liquid_limit_Bq_per_L": 8770,
@@ -1588,19 +1591,19 @@ const NUCLIDE_DATA = {
       "shielding_spectrum_h007": [
         [
           20,
-          0.301341
+          0.301356
         ],
         [
           20.2,
-          0.560776
+          0.560788
         ],
         [
           22.7,
-          0.039015
+          0.039003
         ],
         [
           22.7,
-          0.075865
+          0.075843
         ],
         [
           22.9,
@@ -1612,15 +1615,15 @@ const NUCLIDE_DATA = {
         ],
         [
           23.1,
-          0.00753
+          0.007528
         ],
         [
           23.1,
-          0.014543
+          0.014538
         ],
         [
           357.5,
-          0.000379
+          0.000393
         ]
       ]
     },
@@ -1643,10 +1646,10 @@ const NUCLIDE_DATA = {
       "modality": "SPECT",
       "gamma_Kair": 76.7,
       "gamma_H10": 88.71,
-      "gamma_H007": 96.46,
+      "gamma_H007": 96.7,
       "H007_from_cornejo": false,
       "representative_energy_keV": 171,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 10,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 2.9e-10,
       "effluent_liquid_limit_Bq_per_L": 5750,
@@ -1704,43 +1707,43 @@ const NUCLIDE_DATA = {
       "shielding_spectrum_h007": [
         [
           23,
-          0.101252
+          0.100967
         ],
         [
           23.2,
-          0.187509
+          0.186976
         ],
         [
           26,
-          0.013599
+          0.013556
         ],
         [
           26.1,
-          0.026242
+          0.026159
         ],
         [
           26.3,
-          0.000096
+          0.000095
         ],
         [
           26.3,
-          0.000133
+          0.000132
         ],
         [
           26.6,
-          0.002662
+          0.002653
         ],
         [
           26.6,
-          0.005165
+          0.005148
         ],
         [
           171.3,
-          0.264478
+          0.26245
         ],
         [
           245.4,
-          0.398864
+          0.401864
         ]
       ]
     },
@@ -1763,10 +1766,10 @@ const NUCLIDE_DATA = {
       "modality": "SPECT",
       "gamma_Kair": 38.5,
       "gamma_H10": 46.2,
-      "gamma_H007": 49.57,
+      "gamma_H007": 49.49,
       "H007_from_cornejo": false,
       "representative_energy_keV": 159,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 100,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 2.1e-10,
       "effluent_liquid_limit_Bq_per_L": 7940,
@@ -1884,47 +1887,47 @@ const NUCLIDE_DATA = {
       "shielding_spectrum_h007": [
         [
           27.2,
-          0.15394
+          0.154052
         ],
         [
           27.5,
-          0.281216
+          0.281412
         ],
         [
           30.9,
-          0.021396
+          0.021466
         ],
         [
           31,
-          0.04131
+          0.041458
         ],
         [
           31.2,
-          0.000188
+          0.000189
         ],
         [
           31.2,
-          0.000259
+          0.00026
         ],
         [
           31.7,
-          0.004278
+          0.004302
         ],
         [
           31.7,
-          0.008408
+          0.008456
         ],
         [
           31.8,
-          0.000244
+          0.000245
         ],
         [
           31.8,
-          0.000451
+          0.000454
         ],
         [
           159,
-          0.436609
+          0.435707
         ],
         [
           182.6,
@@ -1932,55 +1935,55 @@ const NUCLIDE_DATA = {
         ],
         [
           192.2,
-          0.000127
+          0.000126
         ],
         [
           248,
-          0.00059
+          0.000598
         ],
         [
           281,
-          0.000749
+          0.000767
         ],
         [
           330.7,
-          0.000129
+          0.000133
         ],
         [
           346.3,
-          0.001455
+          0.001507
         ],
         [
           440,
-          0.006296
+          0.006447
         ],
         [
           505.3,
-          0.005396
+          0.005404
         ],
         [
           529,
-          0.024754
+          0.024792
         ],
         [
           538.5,
-          0.006896
+          0.006907
         ],
         [
           624.6,
-          0.001713
+          0.001716
         ],
         [
           687.9,
-          0.000595
+          0.000596
         ],
         [
           735.8,
-          0.001453
+          0.001456
         ],
         [
           783.6,
-          0.00147
+          0.001472
         ]
       ]
     },
@@ -2003,10 +2006,10 @@ const NUCLIDE_DATA = {
       "modality": "brachytherapy",
       "gamma_Kair": 34.5,
       "gamma_H10": 35.52,
-      "gamma_H007": 42.52,
+      "gamma_H007": 42.53,
       "H007_from_cornejo": false,
       "representative_energy_keV": 28,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 100,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 1.5e-8,
       "effluent_liquid_limit_Bq_per_L": 111,
@@ -2076,35 +2079,35 @@ const NUCLIDE_DATA = {
       "shielding_spectrum_h007": [
         [
           27.2,
-          0.291151
+          0.290876
         ],
         [
           27.5,
-          0.531872
+          0.531355
         ],
         [
           30.9,
-          0.040467
+          0.040531
         ],
         [
           31,
-          0.07813
+          0.078278
         ],
         [
           31.2,
-          0.000356
+          0.000357
         ],
         [
           31.2,
-          0.00049
+          0.000491
         ],
         [
           31.7,
-          0.008091
+          0.008124
         ],
         [
           31.7,
-          0.015902
+          0.015966
         ],
         [
           31.8,
@@ -2116,15 +2119,15 @@ const NUCLIDE_DATA = {
         ],
         [
           31.8,
-          0.000461
+          0.000463
         ],
         [
           31.8,
-          0.000854
+          0.000857
         ],
         [
           35.5,
-          0.032088
+          0.032564
         ]
       ]
     },
@@ -2147,10 +2150,10 @@ const NUCLIDE_DATA = {
       "modality": "therapy",
       "gamma_Kair": 52,
       "gamma_H10": 65.78,
-      "gamma_H007": 64.01,
+      "gamma_H007": 65.86,
       "H007_from_cornejo": false,
       "representative_energy_keV": 365,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "archer_params": {
         "Pb": {
           "alpha": 0.1082,
@@ -2266,47 +2269,47 @@ const NUCLIDE_DATA = {
       "shielding_spectrum_h007": [
         [
           29.5,
-          0.005815
+          0.005645
         ],
         [
           29.8,
-          0.010583
+          0.010274
         ],
         [
           33.6,
-          0.000839
+          0.000823
         ],
         [
           33.6,
-          0.001626
+          0.001596
         ],
         [
           34.4,
-          0.00017
+          0.000168
         ],
         [
           34.4,
-          0.000332
+          0.000327
         ],
         [
           80.2,
-          0.005588
+          0.005601
         ],
         [
           177.2,
-          0.001229
+          0.001188
         ],
         [
           272.5,
-          0.000411
+          0.000407
         ],
         [
           284.3,
-          0.045508
+          0.045273
         ],
         [
           318.1,
-          0.000642
+          0.000643
         ],
         [
           324.7,
@@ -2314,35 +2317,35 @@ const NUCLIDE_DATA = {
         ],
         [
           325.8,
-          0.002316
+          0.002322
         ],
         [
           358.4,
-          0.000151
+          0.000152
         ],
         [
           364.5,
-          0.767694
+          0.772868
         ],
         [
           404.8,
-          0.000568
+          0.000573
         ],
         [
           503,
-          0.00475
+          0.004617
         ],
         [
           637,
-          0.116135
+          0.112875
         ],
         [
           642.7,
-          0.003544
+          0.003445
         ],
         [
           722.9,
-          0.03192
+          0.031024
         ]
       ]
     },
@@ -2365,10 +2368,10 @@ const NUCLIDE_DATA = {
       "modality": "SPECT",
       "gamma_Kair": 12.5,
       "gamma_H10": 17.04,
-      "gamma_H007": 17.35,
+      "gamma_H007": 17.55,
       "H007_from_cornejo": false,
       "representative_energy_keV": 81,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": null,
       "clearance_note": "Noble gas (inert): airborne release pathway; solid waste clearance not applicable. EU BSS 2013/59 Annex VI does not assign a kBq/kg limit.",
       "ingestion_dose_coeff_adult_Sv_per_Bq": null,
@@ -2441,19 +2444,19 @@ const NUCLIDE_DATA = {
       "shielding_spectrum_h007": [
         [
           30.6,
-          0.208155
+          0.205931
         ],
         [
           31,
-          0.377538
+          0.373967
         ],
         [
           34.9,
-          0.030335
+          0.030387
         ],
         [
           35,
-          0.058565
+          0.058681
         ],
         [
           35.2,
@@ -2461,35 +2464,35 @@ const NUCLIDE_DATA = {
         ],
         [
           35.3,
-          0.000421
+          0.000422
         ],
         [
           35.8,
-          0.006161
+          0.006187
         ],
         [
           35.8,
-          0.012008
+          0.012058
         ],
         [
           36,
-          0.000754
+          0.000757
         ],
         [
           36,
-          0.001426
+          0.001432
         ],
         [
           79.6,
-          0.002115
+          0.002157
         ],
         [
           81,
-          0.301213
+          0.306727
         ],
         [
           160.6,
-          0.000999
+          0.000984
         ]
       ]
     },
@@ -2568,27 +2571,27 @@ const NUCLIDE_DATA = {
       "shielding_spectrum_h007": [
         [
           31.8,
-          0.00526
+          0.005283
         ],
         [
           32.2,
-          0.009519
+          0.009571
         ],
         [
           36.3,
-          0.00077
+          0.000783
         ],
         [
           36.4,
-          0.001486
+          0.001512
         ],
         [
           37.2,
-          0.000157
+          0.00016
         ],
         [
           37.3,
-          0.000305
+          0.000311
         ],
         [
           37.4,
@@ -2596,11 +2599,11 @@ const NUCLIDE_DATA = {
         ],
         [
           37.4,
-          0.000042
+          0.000043
         ],
         [
           661.7,
-          0.982439
+          0.982315
         ]
       ]
     },
@@ -2623,10 +2626,10 @@ const NUCLIDE_DATA = {
       "modality": "therapy",
       "gamma_Kair": 10.6,
       "gamma_H10": 17.5,
-      "gamma_H007": 16.41,
+      "gamma_H007": 16.65,
       "H007_from_cornejo": false,
       "representative_energy_keV": 103,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 100,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 7.4e-10,
       "effluent_liquid_limit_Bq_per_L": 2250,
@@ -2753,111 +2756,111 @@ const NUCLIDE_DATA = {
       "shielding_spectrum_h007": [
         [
           40.9,
-          0.185048
+          0.186596
         ],
         [
           41.6,
-          0.329075
+          0.331065
         ],
         [
           47,
-          0.030018
+          0.029706
         ],
         [
           47.1,
-          0.057975
+          0.057356
         ],
         [
           47.4,
-          0.000437
+          0.000432
         ],
         [
           47.4,
-          0.000579
+          0.000572
         ],
         [
           48.3,
-          0.006394
+          0.006304
         ],
         [
           48.3,
-          0.012405
+          0.012231
         ],
         [
           48.4,
-          0.000095
+          0.000094
         ],
         [
           48.4,
-          0.000125
+          0.000123
         ],
         [
           48.5,
-          0.001316
+          0.001297
         ],
         [
           48.5,
-          0.002687
+          0.002648
         ],
         [
           69.7,
-          0.039038
+          0.040043
         ],
         [
           75.4,
-          0.002856
+          0.002915
         ],
         [
           83.4,
-          0.001589
+          0.001608
         ],
         [
           89.5,
-          0.001527
+          0.001532
         ],
         [
           97.4,
-          0.008333
+          0.008279
         ],
         [
           103.2,
-          0.309482
+          0.306338
         ],
         [
           151.6,
-          0.00017
+          0.000167
         ],
         [
           172.9,
-          0.001395
+          0.001367
         ],
         [
           463.6,
-          0.000687
+          0.000686
         ],
         [
           531.4,
-          0.003379
+          0.00333
         ],
         [
           533.2,
-          0.001727
+          0.001702
         ],
         [
           539.1,
-          0.001192
+          0.001174
         ],
         [
           596.7,
-          0.000693
+          0.000683
         ],
         [
           609.5,
-          0.000889
+          0.000876
         ],
         [
           609.5,
-          0.000889
+          0.000876
         ]
       ]
     },
@@ -2880,10 +2883,10 @@ const NUCLIDE_DATA = {
       "modality": "brachytherapy",
       "gamma_Kair": 43,
       "gamma_H10": 71.35,
-      "gamma_H007": 66.32,
+      "gamma_H007": 66.87,
       "H007_from_cornejo": false,
       "representative_energy_keV": 177,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": null,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 7.1e-10,
       "effluent_liquid_limit_Bq_per_L": 2350,
@@ -3045,11 +3048,11 @@ const NUCLIDE_DATA = {
       "shielding_spectrum_h007": [
         [
           20.8,
-          0.001384
+          0.001373
         ],
         [
           42.8,
-          0.000618
+          0.000624
         ],
         [
           45.9,
@@ -3057,19 +3060,19 @@ const NUCLIDE_DATA = {
         ],
         [
           49.9,
-          0.129308
+          0.127765
         ],
         [
           50.6,
-          0.001156
+          0.001146
         ],
         [
           50.9,
-          0.225642
+          0.22407
         ],
         [
           50.9,
-          0.001151
+          0.001143
         ],
         [
           51.5,
@@ -3077,63 +3080,63 @@ const NUCLIDE_DATA = {
         ],
         [
           57.4,
-          0.021903
+          0.022542
         ],
         [
           57.6,
-          0.042239
+          0.043515
         ],
         [
           58,
-          0.000399
+          0.000412
         ],
         [
           58,
-          0.000515
+          0.000532
         ],
         [
           59.1,
-          0.004773
+          0.004955
         ],
         [
           59.2,
-          0.009221
+          0.009577
         ],
         [
           59.3,
-          0.00009
+          0.000094
         ],
         [
           59.3,
-          0.000116
+          0.00012
         ],
         [
           59.5,
-          0.001063
+          0.001106
         ],
         [
           59.5,
-          0.002204
+          0.002293
         ],
         [
           63,
-          0.00419
+          0.004355
         ],
         [
           63.1,
-          0.086279
+          0.08967
         ],
         [
           65.9,
-          0.00002
+          0.000021
         ],
         [
           93.6,
-          0.006132
+          0.00616
         ],
         [
           109.8,
-          0.047636
+          0.047406
         ],
         [
           113.6,
@@ -3145,27 +3148,27 @@ const NUCLIDE_DATA = {
         ],
         [
           118.2,
-          0.00547
+          0.005436
         ],
         [
           129.9,
-          0.001721
+          0.001707
         ],
         [
           130.5,
-          0.036417
+          0.036125
         ],
         [
           177.2,
-          0.097515
+          0.096132
         ],
         [
           198,
-          0.177454
+          0.174512
         ],
         [
           199.8,
-          0.000161
+          0.000158
         ],
         [
           240.3,
@@ -3173,19 +3176,19 @@ const NUCLIDE_DATA = {
         ],
         [
           261.1,
-          0.011259
+          0.011342
         ],
         [
           306.8,
-          0.001382
+          0.001411
         ],
         [
           307.5,
-          0.003877
+          0.003958
         ],
         [
           307.7,
-          0.07781
+          0.079445
         ]
       ]
     },
@@ -3208,10 +3211,10 @@ const NUCLIDE_DATA = {
       "modality": "brachytherapy",
       "gamma_Kair": 0.563,
       "gamma_H10": 0.9,
-      "gamma_H007": 0.81,
+      "gamma_H007": 0.83,
       "H007_from_cornejo": false,
       "representative_energy_keV": 84,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 100,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 1.3e-9,
       "effluent_liquid_limit_Bq_per_L": 1280,
@@ -3274,47 +3277,47 @@ const NUCLIDE_DATA = {
       "shielding_spectrum_h007": [
         [
           48.3,
-          0.005326
+          0.005227
         ],
         [
           49.2,
-          0.009304
+          0.009108
         ],
         [
           51.4,
-          0.163492
+          0.16101
         ],
         [
           52.5,
-          0.284256
+          0.281708
         ],
         [
           55.8,
-          0.001719
+          0.001735
         ],
         [
           59.3,
-          0.02773
+          0.028494
         ],
         [
           59.5,
-          0.053453
+          0.054981
         ],
         [
           61.1,
-          0.006147
+          0.006331
         ],
         [
           61.1,
-          0.011882
+          0.012237
         ],
         [
           61.4,
-          0.00287
+          0.002955
         ],
         [
           84.3,
-          0.433821
+          0.436214
         ]
       ]
     },
@@ -3337,10 +3340,10 @@ const NUCLIDE_DATA = {
       "modality": "therapy",
       "gamma_Kair": 4.09,
       "gamma_H10": 6.28,
-      "gamma_H007": 5.99,
+      "gamma_H007": 6,
       "H007_from_cornejo": false,
       "representative_energy_keV": 208,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "archer_params": {
         "Pb": {
           "alpha": 0.3855,
@@ -3432,59 +3435,59 @@ const NUCLIDE_DATA = {
       "shielding_spectrum_h007": [
         [
           54.7,
-          0.037002
+          0.037766
         ],
         [
           55.9,
-          0.063853
+          0.065592
         ],
         [
           63.1,
-          0.006567
+          0.006866
         ],
         [
           63.4,
-          0.012706
+          0.013281
         ],
         [
           65,
-          0.001487
+          0.001552
         ],
         [
           65.1,
-          0.002878
+          0.003003
         ],
         [
           65.4,
-          0.000335
+          0.00035
         ],
         [
           65.4,
-          0.000697
+          0.000727
         ],
         [
           71.6,
-          0.003418
+          0.003544
         ],
         [
           113,
-          0.198652
+          0.19878
         ],
         [
           136.7,
-          0.001789
+          0.001784
         ],
         [
           208.4,
-          0.636338
+          0.631778
         ],
         [
           249.7,
-          0.014732
+          0.014869
         ],
         [
           321.3,
-          0.019546
+          0.020108
         ]
       ]
     },
@@ -3511,10 +3514,10 @@ const NUCLIDE_DATA = {
       "modality": "therapy",
       "gamma_Kair": 2.42,
       "gamma_H10": 3.86,
-      "gamma_H007": 3.58,
+      "gamma_H007": 3.64,
       "H007_from_cornejo": false,
       "representative_energy_keV": 137,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 1000,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 1.5e-9,
       "effluent_liquid_limit_Bq_per_L": 1110,
@@ -3613,83 +3616,83 @@ const NUCLIDE_DATA = {
       "shielding_spectrum_h007": [
         [
           58.1,
-          0.063173
+          0.064755
         ],
         [
           59.5,
-          0.108024
+          0.111515
         ],
         [
           61.6,
-          0.040807
+          0.042157
         ],
         [
           63.2,
-          0.070683
+          0.072897
         ],
         [
           67.1,
-          0.01183
+          0.012152
         ],
         [
           67.4,
-          0.022883
+          0.0235
         ],
         [
           69.2,
-          0.00271
+          0.002779
         ],
         [
           69.3,
-          0.005257
+          0.005388
         ],
         [
           69.6,
-          0.000617
+          0.000632
         ],
         [
           69.6,
-          0.001263
+          0.001294
         ],
         [
           71.3,
-          0.007871
+          0.008053
         ],
         [
           71.6,
-          0.015229
+          0.015576
         ],
         [
           73.5,
-          0.001823
+          0.001861
         ],
         [
           73.6,
-          0.003549
+          0.003624
         ],
         [
           74,
-          0.000419
+          0.000428
         ],
         [
           74,
-          0.000842
+          0.000859
         ],
         [
           122.6,
-          0.033878
+          0.03339
         ],
         [
           137.2,
-          0.58966
+          0.579965
         ],
         [
           630.3,
-          0.008409
+          0.008277
         ],
         [
           767.5,
-          0.011073
+          0.010898
         ]
       ]
     },
@@ -3711,11 +3714,11 @@ const NUCLIDE_DATA = {
       "category": "therapeutic",
       "modality": "therapy",
       "gamma_Kair": 7.08,
-      "gamma_H10": 9.91,
-      "gamma_H007": 9.65,
+      "gamma_H10": 9.92,
+      "gamma_H007": 9.68,
       "H007_from_cornejo": false,
       "representative_energy_keV": 155,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 100,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 1.4e-9,
       "effluent_liquid_limit_Bq_per_L": 1190,
@@ -3732,19 +3735,19 @@ const NUCLIDE_DATA = {
       "shielding_spectrum": [
         [
           61.6,
-          0.020994
+          0.020986
         ],
         [
           63.2,
-          0.036291
+          0.036277
         ],
         [
           71.3,
-          0.004005
+          0.004003
         ],
         [
           71.6,
-          0.007743
+          0.00774
         ],
         [
           73.5,
@@ -3752,7 +3755,7 @@ const NUCLIDE_DATA = {
         ],
         [
           73.6,
-          0.001801
+          0.0018
         ],
         [
           74,
@@ -3764,237 +3767,237 @@ const NUCLIDE_DATA = {
         ],
         [
           155,
-          0.415419
+          0.415257
         ],
         [
           322.9,
-          0.000939
+          0.000938
         ],
         [
           453.3,
-          0.006376
+          0.006373
         ],
         [
           478,
-          0.087778
+          0.087744
         ],
         [
           486.1,
-          0.007052
+          0.007049
         ],
         [
           633,
-          0.14288
+          0.142824
         ],
         [
           635,
-          0.016786
+          0.01678
         ],
         [
           672.5,
-          0.013282
+          0.013277
         ],
         [
           825.2,
-          0.002463
+          0.002462
         ],
         [
           829.5,
-          0.05792
+          0.057897
         ],
         [
           931.3,
-          0.084939
+          0.084905
         ],
         [
           1017.7,
-          0.002496
+          0.002494
         ],
         [
           1132.3,
-          0.015092
+          0.015039
         ],
         [
           1149.7,
-          0.002959
+          0.002947
         ],
         [
           1150.5,
-          0.00296
+          0.002949
         ],
         [
           1174.6,
-          0.003275
+          0.003261
         ],
         [
           1191.8,
-          0.002559
+          0.002547
         ],
         [
           1308,
-          0.013072
+          0.013008
         ],
         [
           1322.9,
-          0.002605
+          0.002593
         ],
         [
           1457.5,
-          0.004074
+          0.004064
         ],
         [
           1610.4,
-          0.0229
+          0.023047
         ],
         [
           1669.9,
-          0.002398
+          0.002424
         ],
         [
           1786,
-          0.004675
+          0.004762
         ],
         [
           1802,
-          0.008976
+          0.009153
         ],
         [
           1957,
-          0.003727
+          0.003836
         ]
       ],
       "shielding_spectrum_h007": [
         [
           61.6,
-          0.018945
+          0.019824
         ],
         [
           63.2,
-          0.032814
+          0.034278
         ],
         [
           71.3,
-          0.003655
+          0.003788
         ],
         [
           71.6,
-          0.007069
+          0.007324
         ],
         [
           73.5,
-          0.000847
+          0.000875
         ],
         [
           73.6,
-          0.001648
+          0.001704
         ],
         [
           74,
-          0.000194
+          0.000201
         ],
         [
           74,
-          0.000391
+          0.000404
         ],
         [
           155,
-          0.409056
+          0.406559
         ],
         [
           322.9,
-          0.000935
+          0.000961
         ],
         [
           453.3,
-          0.006441
+          0.006531
         ],
         [
           478,
-          0.089491
+          0.089913
         ],
         [
           486.1,
-          0.007211
+          0.007224
         ],
         [
           633,
-          0.146804
+          0.146356
         ],
         [
           635,
-          0.017248
+          0.017195
         ],
         [
           672.5,
-          0.013647
+          0.013606
         ],
         [
           825.2,
-          0.002531
+          0.002523
         ],
         [
           829.5,
-          0.059511
+          0.059329
         ],
         [
           931.3,
-          0.087272
+          0.087005
         ],
         [
           1017.7,
-          0.002565
+          0.002556
         ],
         [
           1132.3,
-          0.015506
+          0.015411
         ],
         [
           1149.7,
-          0.00304
+          0.00302
         ],
         [
           1150.5,
-          0.003042
+          0.003022
         ],
         [
           1174.6,
-          0.003365
+          0.003341
         ],
         [
           1191.8,
-          0.002629
+          0.00261
         ],
         [
           1308,
-          0.013432
+          0.01333
         ],
         [
           1322.9,
-          0.002677
+          0.002657
         ],
         [
           1457.5,
-          0.004186
+          0.004164
         ],
         [
           1610.4,
-          0.023529
+          0.023616
         ],
         [
           1669.9,
-          0.002464
+          0.002484
         ],
         [
           1786,
-          0.004803
+          0.004879
         ],
         [
           1802,
-          0.009223
+          0.009379
         ],
         [
           1957,
-          0.003829
+          0.003931
         ]
       ]
     },
@@ -4021,10 +4024,10 @@ const NUCLIDE_DATA = {
       "modality": "brachytherapy",
       "gamma_Kair": 109,
       "gamma_H10": 138.86,
-      "gamma_H007": 135.91,
+      "gamma_H007": 138.63,
       "H007_from_cornejo": false,
       "representative_energy_keV": 370,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 1,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 1.4e-9,
       "effluent_liquid_limit_Bq_per_L": 1190,
@@ -4141,7 +4144,7 @@ const NUCLIDE_DATA = {
         ],
         [
           316.5,
-          0.323546
+          0.323547
         ],
         [
           329.2,
@@ -4193,33 +4196,33 @@ const NUCLIDE_DATA = {
         ],
         [
           1061.5,
-          0.000594
+          0.000593
         ]
       ],
       "shielding_spectrum_h007": [
         [
           61.6,
-          0.001174
+          0.001208
         ],
         [
           63.2,
-          0.002033
+          0.002089
         ],
         [
           65.3,
-          0.002571
+          0.002635
         ],
         [
           67,
-          0.004417
+          0.004519
         ],
         [
           71.3,
-          0.000226
+          0.000231
         ],
         [
           71.6,
-          0.000438
+          0.000446
         ],
         [
           73.5,
@@ -4227,7 +4230,7 @@ const NUCLIDE_DATA = {
         ],
         [
           73.6,
-          0.000102
+          0.000104
         ],
         [
           74,
@@ -4235,15 +4238,15 @@ const NUCLIDE_DATA = {
         ],
         [
           74,
-          0.000024
+          0.000025
         ],
         [
           75.6,
-          0.000496
+          0.000504
         ],
         [
           76,
-          0.000961
+          0.000975
         ],
         [
           76.4,
@@ -4255,11 +4258,11 @@ const NUCLIDE_DATA = {
         ],
         [
           78,
-          0.000116
+          0.000118
         ],
         [
           78.1,
-          0.000227
+          0.00023
         ],
         [
           78.5,
@@ -4267,7 +4270,7 @@ const NUCLIDE_DATA = {
         ],
         [
           78.6,
-          0.000053
+          0.000054
         ],
         [
           110.4,
@@ -4275,83 +4278,83 @@ const NUCLIDE_DATA = {
         ],
         [
           136.3,
-          0.000326
+          0.000319
         ],
         [
           201.3,
-          0.001164
+          0.001132
         ],
         [
           205.8,
-          0.008407
+          0.008192
         ],
         [
           283.3,
-          0.000926
+          0.000929
         ],
         [
           296,
-          0.104512
+          0.105261
         ],
         [
           308.5,
-          0.112383
+          0.113441
         ],
         [
           316.5,
-          0.320769
+          0.324085
         ],
         [
           329.2,
-          0.00007
+          0.000071
         ],
         [
           374.5,
-          0.003295
+          0.00335
         ],
         [
           416.5,
-          0.003377
+          0.003417
         ],
         [
           420.5,
-          0.000352
+          0.000356
         ],
         [
           468.1,
-          0.27455
+          0.272246
         ],
         [
           484.6,
-          0.019015
+          0.018743
         ],
         [
           489.1,
-          0.00264
+          0.002598
         ],
         [
           588.6,
-          0.032205
+          0.031574
         ],
         [
           593.5,
-          0.000302
+          0.000296
         ],
         [
           604.4,
-          0.059827
+          0.058653
         ],
         [
           612.5,
-          0.039398
+          0.038625
         ],
         [
           884.5,
-          0.002902
+          0.002845
         ],
         [
           1061.5,
-          0.000607
+          0.000594
         ]
       ]
     },
@@ -4374,10 +4377,10 @@ const NUCLIDE_DATA = {
       "modality": "brachytherapy",
       "gamma_Kair": 54.6,
       "gamma_H10": 68.5,
-      "gamma_H007": 66.25,
+      "gamma_H007": 68.47,
       "H007_from_cornejo": false,
       "representative_energy_keV": 412,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 10,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 1e-9,
       "effluent_liquid_limit_Bq_per_L": 1670,
@@ -4422,25 +4425,25 @@ const NUCLIDE_DATA = {
         ],
         [
           411.8,
-          0.977479
+          0.977485
         ],
         [
           675.9,
-          0.01278
+          0.012781
         ],
         [
           1087.7,
-          0.003674
+          0.003667
         ]
       ],
       "shielding_spectrum_h007": [
         [
           69.1,
-          0.001625
+          0.001638
         ],
         [
           71.1,
-          0.002771
+          0.002788
         ],
         [
           80.1,
@@ -4448,7 +4451,7 @@ const NUCLIDE_DATA = {
         ],
         [
           80.5,
-          0.000611
+          0.000609
         ],
         [
           82.7,
@@ -4456,23 +4459,23 @@ const NUCLIDE_DATA = {
         ],
         [
           82.8,
-          0.000149
+          0.000148
         ],
         [
           83.3,
-          0.000035
+          0.000034
         ],
         [
           411.8,
-          0.977405
+          0.977939
         ],
         [
           675.9,
-          0.013215
+          0.012786
         ],
         [
           1087.7,
-          0.003799
+          0.003668
         ]
       ]
     },
@@ -4495,10 +4498,10 @@ const NUCLIDE_DATA = {
       "modality": "SPECT",
       "gamma_Kair": 10.4,
       "gamma_H10": 17.64,
-      "gamma_H007": 15.97,
+      "gamma_H007": 16.43,
       "H007_from_cornejo": false,
       "representative_energy_keV": 71,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 100,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 9.5e-11,
       "effluent_liquid_limit_Bq_per_L": 17500,
@@ -4584,71 +4587,71 @@ const NUCLIDE_DATA = {
       "shielding_spectrum_h007": [
         [
           30.6,
-          0.003979
+          0.00387
         ],
         [
           32.2,
-          0.00378
+          0.003694
         ],
         [
           69.1,
-          0.226088
+          0.228859
         ],
         [
           71.1,
-          0.385495
+          0.389484
         ],
         [
           80.1,
-          0.043706
+          0.043807
         ],
         [
           80.5,
-          0.084955
+          0.085103
         ],
         [
           81,
-          0.001139
+          0.00114
         ],
         [
           81.1,
-          0.001395
+          0.001396
         ],
         [
           82.7,
-          0.010594
+          0.010579
         ],
         [
           82.8,
-          0.02077
+          0.020738
         ],
         [
           83,
-          0.000302
+          0.000301
         ],
         [
           83,
-          0.000369
+          0.000368
         ],
         [
           83.3,
-          0.002463
+          0.002458
         ],
         [
           83.3,
-          0.004837
+          0.004826
         ],
         [
           135.3,
-          0.035512
+          0.034494
         ],
         [
           165.9,
-          0.00264
+          0.002554
         ],
         [
           167.4,
-          0.171976
+          0.166329
         ]
       ]
     },
@@ -4699,11 +4702,11 @@ const NUCLIDE_DATA = {
       "category": "diagnostic",
       "modality": "PET",
       "gamma_Kair": 151.28,
-      "gamma_H10": 178.29,
-      "gamma_H007": 178.29,
+      "gamma_H10": 178.32,
+      "gamma_H007": 178.32,
       "H007_from_cornejo": false,
       "representative_energy_keV": 909,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": null,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 7.9e-10,
       "effluent_liquid_limit_Bq_per_L": 2110,
@@ -4713,53 +4716,53 @@ const NUCLIDE_DATA = {
       "shielding_spectrum": [
         [
           511,
-          0.218265
+          0.218228
         ],
         [
           909.2,
-          0.769104
+          0.768974
         ],
         [
           1620.8,
-          0.000856
+          0.000862
         ],
         [
           1657.3,
-          0.001256
+          0.001268
         ],
         [
           1713,
-          0.009015
+          0.00914
         ],
         [
           1744.5,
-          0.001504
+          0.001528
         ]
       ],
       "shielding_spectrum_h007": [
         [
           511,
-          0.218265
+          0.218228
         ],
         [
           909.2,
-          0.769104
+          0.768974
         ],
         [
           1620.8,
-          0.000856
+          0.000862
         ],
         [
           1657.3,
-          0.001256
+          0.001268
         ],
         [
           1713,
-          0.009015
+          0.00914
         ],
         [
           1744.5,
-          0.001504
+          0.001528
         ]
       ]
     },
@@ -4782,10 +4785,10 @@ const NUCLIDE_DATA = {
       "modality": "therapy",
       "gamma_Kair": 13.59,
       "gamma_H10": 19.85,
-      "gamma_H007": 19.01,
+      "gamma_H007": 18.97,
       "H007_from_cornejo": false,
       "representative_energy_keV": 185,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": null,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 3.4e-10,
       "effluent_liquid_limit_Bq_per_L": 4900,
@@ -4821,27 +4824,27 @@ const NUCLIDE_DATA = {
       "shielding_spectrum_h007": [
         [
           91.3,
-          0.056234
+          0.057232
         ],
         [
           93.3,
-          0.131804
+          0.133807
         ],
         [
           184.6,
-          0.781347
+          0.777405
         ],
         [
           209,
-          0.002102
+          0.002097
         ],
         [
           300.2,
-          0.021035
+          0.021677
         ],
         [
           393.5,
-          0.007478
+          0.007782
         ]
       ]
     },
@@ -4864,10 +4867,10 @@ const NUCLIDE_DATA = {
       "modality": "therapy",
       "gamma_Kair": 11.95,
       "gamma_H10": 14.41,
-      "gamma_H007": 15.55,
+      "gamma_H007": 15.63,
       "H007_from_cornejo": false,
       "representative_energy_keV": 26,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": null,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 7.2e-10,
       "effluent_liquid_limit_Bq_per_L": 2310,
@@ -4983,107 +4986,107 @@ const NUCLIDE_DATA = {
       "shielding_spectrum_h007": [
         [
           25.7,
-          0.501648
+          0.498678
         ],
         [
           28.7,
-          0.000654
+          0.00065
         ],
         [
           43.8,
-          0.000621
+          0.000627
         ],
         [
           45.3,
-          0.066034
+          0.066304
         ],
         [
           46.1,
-          0.116308
+          0.116509
         ],
         [
           48.9,
-          0.160503
+          0.159505
         ],
         [
           52,
-          0.010916
+          0.010942
         ],
         [
           52.2,
-          0.021049
+          0.021124
         ],
         [
           52.5,
-          0.000178
+          0.000179
         ],
         [
           52.6,
-          0.000233
+          0.000234
         ],
         [
           53.5,
-          0.00236
+          0.002385
         ],
         [
           53.6,
-          0.004566
+          0.004618
         ],
         [
           53.8,
-          0.000512
-        ],
-        [
-          53.8,
-          0.001062
-        ],
-        [
-          57.2,
-          0.015157
-        ],
-        [
-          59.2,
-          0.000184
-        ],
-        [
-          74.6,
-          0.087971
-        ],
-        [
-          77.4,
           0.000519
         ],
         [
+          53.8,
+          0.001076
+        ],
+        [
+          57.2,
+          0.01563
+        ],
+        [
+          59.2,
+          0.000192
+        ],
+        [
+          74.6,
+          0.090693
+        ],
+        [
+          77.4,
+          0.000534
+        ],
+        [
           87.9,
-          0.001735
+          0.001761
         ],
         [
           103.1,
-          0.001106
+          0.001105
         ],
         [
           106.1,
-          0.000876
+          0.000875
         ],
         [
           286.5,
-          0.00044
+          0.000448
         ],
         [
           292.4,
-          0.001825
+          0.001863
         ],
         [
           343.6,
-          0.000487
+          0.000501
         ],
         [
           475.7,
-          0.00093
+          0.000933
         ],
         [
           550.2,
-          0.002126
+          0.002115
         ]
       ]
     },
@@ -5106,10 +5109,10 @@ const NUCLIDE_DATA = {
       "modality": "therapy",
       "gamma_Kair": 3.79,
       "gamma_H10": 5.15,
-      "gamma_H007": 4.9,
+      "gamma_H007": 4.94,
       "H007_from_cornejo": false,
       "representative_energy_keV": 1379,
-      "source": "ICRP 107 (photon data) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 100,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 1.4e-9,
       "effluent_liquid_limit_Bq_per_L": 1190,
@@ -5119,19 +5122,19 @@ const NUCLIDE_DATA = {
       "shielding_spectrum": [
         [
           48.3,
-          0.093614
+          0.09362
         ],
         [
           49.2,
-          0.164049
+          0.16406
         ],
         [
           55.6,
-          0.016174
+          0.016175
         ],
         [
           55.8,
-          0.031216
+          0.031218
         ],
         [
           56.2,
@@ -5139,11 +5142,11 @@ const NUCLIDE_DATA = {
         ],
         [
           57.2,
-          0.003538
+          0.003539
         ],
         [
           57.3,
-          0.006843
+          0.006844
         ],
         [
           57.5,
@@ -5155,7 +5158,7 @@ const NUCLIDE_DATA = {
         ],
         [
           80.6,
-          0.198729
+          0.198742
         ],
         [
           674,
@@ -5171,89 +5174,89 @@ const NUCLIDE_DATA = {
         ],
         [
           1379.4,
-          0.337764
+          0.336656
         ],
         [
           1581.9,
-          0.074394
+          0.07475
         ],
         [
           1662.5,
-          0.049306
+          0.049828
         ],
         [
           1749.9,
-          0.011767
+          0.011962
         ]
       ],
       "shielding_spectrum_h007": [
         [
           48.3,
-          0.09028
+          0.089697
         ],
         [
           49.2,
-          0.157771
+          0.156361
         ],
         [
           55.6,
-          0.015156
+          0.015468
         ],
         [
           55.8,
-          0.029227
+          0.02986
         ],
         [
           56.2,
-          0.000346
+          0.000354
         ],
         [
           57.2,
-          0.003295
+          0.003391
         ],
         [
           57.3,
-          0.00637
+          0.006559
         ],
         [
           57.5,
-          0.00073
+          0.000753
         ],
         [
           57.5,
-          0.001517
+          0.001564
         ],
         [
           80.6,
-          0.187554
+          0.191929
         ],
         [
           674,
-          0.004302
+          0.004271
         ],
         [
           705.3,
-          0.003018
+          0.002996
         ],
         [
           785.9,
-          0.003002
+          0.002981
         ],
         [
           1379.4,
-          0.355037
+          0.351325
         ],
         [
           1581.9,
-          0.078199
+          0.078008
         ],
         [
           1662.5,
-          0.051828
+          0.052
         ],
         [
           1749.9,
-          0.012368
+          0.012483
         ]
       ]
     },
@@ -5277,10 +5280,10 @@ const NUCLIDE_DATA = {
       "modality": "therapy",
       "gamma_Kair": 39.46,
       "gamma_H10": 52.86,
-      "gamma_H007": 50.83,
+      "gamma_H007": 51.97,
       "H007_from_cornejo": false,
       "representative_energy_keV": 351,
-      "source": "ICRP 107 (photon data, incl. progeny in secular equilibrium) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data, incl. progeny in secular equilibrium) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": null,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 1e-7,
       "effluent_liquid_limit_Bq_per_L": 16.7,
@@ -5336,7 +5339,7 @@ const NUCLIDE_DATA = {
         ],
         [
           73.1,
-          0.003641
+          0.003642
         ],
         [
           75.1,
@@ -5360,7 +5363,7 @@ const NUCLIDE_DATA = {
         ],
         [
           81.4,
-          0.045688
+          0.045689
         ],
         [
           82.4,
@@ -5376,7 +5379,7 @@ const NUCLIDE_DATA = {
         ],
         [
           84.1,
-          0.076889
+          0.07689
         ],
         [
           85.1,
@@ -5568,11 +5571,11 @@ const NUCLIDE_DATA = {
         ],
         [
           269.5,
-          0.121816
+          0.121818
         ],
         [
           271.2,
-          0.095246
+          0.095247
         ],
         [
           288.2,
@@ -5620,7 +5623,7 @@ const NUCLIDE_DATA = {
         ],
         [
           351.1,
-          0.146338
+          0.146339
         ],
         [
           362.1,
@@ -5676,7 +5679,7 @@ const NUCLIDE_DATA = {
         ],
         [
           401.8,
-          0.085335
+          0.085336
         ],
         [
           404.9,
@@ -5684,7 +5687,7 @@ const NUCLIDE_DATA = {
         ],
         [
           427.1,
-          0.024074
+          0.024075
         ],
         [
           430.6,
@@ -5744,7 +5747,7 @@ const NUCLIDE_DATA = {
         ],
         [
           598.7,
-          0.001758
+          0.001759
         ],
         [
           609.3,
@@ -5776,7 +5779,7 @@ const NUCLIDE_DATA = {
         ],
         [
           832,
-          0.086226
+          0.086227
         ],
         [
           897.8,
@@ -5792,77 +5795,77 @@ const NUCLIDE_DATA = {
         ],
         [
           1080.2,
-          0.000367
+          0.000366
         ],
         [
           1109.5,
-          0.003491
+          0.003482
         ],
         [
           1196.3,
-          0.000327
+          0.000326
         ]
       ],
       "shielding_spectrum_h007": [
         [
           33.6,
-          0.000446
+          0.000441
         ],
         [
           63.2,
-          0.000142
+          0.000145
         ],
         [
           65.4,
-          0.000199
+          0.000203
         ],
         [
           71.1,
-          0.001986
+          0.00202
         ],
         [
           73.1,
-          0.00337
+          0.003421
         ],
         [
           75.1,
-          0.000638
+          0.000647
         ],
         [
           77.1,
-          0.001472
+          0.001489
         ],
         [
           77.4,
-          0.001074
+          0.001086
         ],
         [
           79.6,
-          0.002467
+          0.00249
         ],
         [
           81,
-          0.000122
+          0.000123
         ],
         [
           81.4,
-          0.042756
+          0.043054
         ],
         [
           82.4,
-          0.000391
+          0.000393
         ],
         [
           82.9,
-          0.000761
+          0.000765
         ],
         [
           83.8,
-          0.000162
+          0.000163
         ],
         [
           84.1,
-          0.072525
+          0.072753
         ],
         [
           85.1,
@@ -5870,11 +5873,11 @@ const NUCLIDE_DATA = {
         ],
         [
           85.2,
-          0.000187
+          0.000188
         ],
         [
           85.7,
-          0.000043
+          0.000044
         ],
         [
           87.1,
@@ -5890,7 +5893,7 @@ const NUCLIDE_DATA = {
         ],
         [
           89.6,
-          0.000306
+          0.000305
         ],
         [
           90,
@@ -5898,7 +5901,7 @@ const NUCLIDE_DATA = {
         ],
         [
           90.1,
-          0.000597
+          0.000594
         ],
         [
           90.2,
@@ -5906,11 +5909,11 @@ const NUCLIDE_DATA = {
         ],
         [
           92.6,
-          0.000076
+          0.000075
         ],
         [
           92.7,
-          0.00015
+          0.000149
         ],
         [
           93.3,
@@ -5918,11 +5921,11 @@ const NUCLIDE_DATA = {
         ],
         [
           94.3,
-          0.000036
+          0.000035
         ],
         [
           94.6,
-          0.009088
+          0.008993
         ],
         [
           95,
@@ -5930,255 +5933,255 @@ const NUCLIDE_DATA = {
         ],
         [
           95.2,
-          0.017752
+          0.017554
         ],
         [
           95.7,
-          0.000278
+          0.000274
         ],
         [
           95.9,
-          0.000329
+          0.000325
         ],
         [
           97.3,
-          0.000037
+          0.000036
         ],
         [
           97.8,
-          0.002278
+          0.002245
         ],
         [
           98,
-          0.00453
+          0.004464
         ],
         [
           98.2,
-          0.000079
+          0.000078
         ],
         [
           98.2,
-          0.000093
+          0.000092
         ],
         [
           98.6,
-          0.000542
+          0.000534
         ],
         [
           98.6,
-          0.001041
+          0.001025
         ],
         [
           98.8,
-          0.000062
+          0.000061
         ],
         [
           98.8,
-          0.000106
+          0.000105
         ],
         [
           104.2,
-          0.000066
+          0.000065
         ],
         [
           106.8,
-          0.000082
+          0.00008
         ],
         [
           110.9,
-          0.00021
+          0.000206
         ],
         [
           122.3,
-          0.004772
+          0.004674
         ],
         [
           130.6,
-          0.000545
+          0.000533
         ],
         [
           136.1,
-          0.000122
+          0.000119
         ],
         [
           144.2,
-          0.015101
+          0.014746
         ],
         [
           154.2,
-          0.028186
+          0.027488
         ],
         [
           158.6,
-          0.003543
+          0.003453
         ],
         [
           175.7,
-          0.000111
+          0.000108
         ],
         [
           177.3,
-          0.000272
+          0.000264
         ],
         [
           179.5,
-          0.00089
+          0.000865
         ],
         [
           219,
-          0.0001
+          0.000097
         ],
         [
           221.3,
-          0.000262
+          0.000256
         ],
         [
           221.5,
-          0.000219
+          0.000214
         ],
         [
           244,
-          0.00031
+          0.000306
         ],
         [
           249.3,
-          0.000318
+          0.000315
         ],
         [
           251.6,
-          0.000344
+          0.000341
         ],
         [
           255.2,
-          0.000442
+          0.000438
         ],
         [
           269.5,
-          0.122962
+          0.122507
         ],
         [
           271.2,
-          0.09615
+          0.095849
         ],
         [
           288.2,
-          0.001514
+          0.001518
         ],
         [
           293.6,
-          0.000708
+          0.000711
         ],
         [
           293.8,
-          0.000644
+          0.000647
         ],
         [
           313.6,
-          0.000319
+          0.000321
         ],
         [
           323.9,
-          0.042266
+          0.04264
         ],
         [
           328.4,
-          0.002238
+          0.002259
         ],
         [
           334,
-          0.001107
+          0.001118
         ],
         [
           338.3,
-          0.03129
+          0.031616
         ],
         [
           342.9,
-          0.002485
+          0.002512
         ],
         [
           342.9,
-          0.00039
+          0.000394
         ],
         [
           346.8,
-          0.002041
+          0.002064
         ],
         [
           351.1,
-          0.147095
+          0.148826
         ],
         [
           362.1,
-          0.00054
+          0.000547
         ],
         [
           362.1,
-          0.000501
+          0.000507
         ],
         [
           362.9,
-          0.00018
+          0.000183
         ],
         [
           369.5,
-          0.00025
+          0.000254
         ],
         [
           370.9,
-          0.00013
+          0.000132
         ],
         [
           371.7,
-          0.005862
+          0.005943
         ],
         [
           372.9,
-          0.000604
+          0.000613
         ],
         [
           373.3,
-          0.000605
+          0.000613
         ],
         [
           376,
-          0.000149
+          0.000151
         ],
         [
           376.1,
-          0.000152
+          0.000154
         ],
         [
           382.8,
-          0.000172
+          0.000175
         ],
         [
           387.7,
-          0.000192
+          0.000195
         ],
         [
           393.5,
-          0.000144
+          0.000146
         ],
         [
           401.8,
-          0.085444
+          0.08679
         ],
         [
           404.9,
-          0.049477
+          0.05019
         ],
         [
           427.1,
-          0.024361
+          0.024485
         ],
         [
           430.6,
-          0.000273
+          0.000274
         ],
         [
           432.1,
-          0.000488
+          0.000489
         ],
         [
           438.2,
@@ -6194,99 +6197,99 @@ const NUCLIDE_DATA = {
         ],
         [
           445,
-          0.018768
+          0.01873
         ],
         [
           478,
-          0.000203
+          0.0002
         ],
         [
           481.1,
-          0.000408
+          0.000402
         ],
         [
           481.6,
-          0.000331
+          0.000326
         ],
         [
           481.9,
-          0.000163
+          0.000161
         ],
         [
           487.5,
-          0.000178
+          0.000175
         ],
         [
           500.4,
-          0.000192
+          0.000187
         ],
         [
           517.6,
-          0.000754
+          0.000738
         ],
         [
           527.6,
-          0.001227
+          0.001201
         ],
         [
           598.7,
-          0.001829
+          0.001788
         ],
         [
           609.3,
-          0.001119
+          0.001095
         ],
         [
           609.4,
-          0.000837
+          0.000818
         ],
         [
           632,
-          0.00062
+          0.000606
         ],
         [
           676.7,
-          0.000371
+          0.000363
         ],
         [
           676.7,
-          0.000277
+          0.000271
         ],
         [
           704.6,
-          0.010255
+          0.01003
         ],
         [
           766.5,
-          0.014695
+          0.014373
         ],
         [
           832,
-          0.08966
+          0.087696
         ],
         [
           897.8,
-          0.006994
+          0.006841
         ],
         [
           951,
-          0.000617
+          0.000604
         ],
         [
           1014.6,
-          0.000512
+          0.000501
         ],
         [
           1080.2,
-          0.000381
+          0.000372
         ],
         [
           1109.5,
-          0.00363
+          0.003541
         ],
         [
           1196.3,
-          0.00034
+          0.000331
         ]
       ]
     },
@@ -6309,11 +6312,11 @@ const NUCLIDE_DATA = {
       "category": "therapeutic",
       "modality": "therapy",
       "gamma_Kair": 27.69,
-      "gamma_H10": 35.2,
-      "gamma_H007": 34.34,
+      "gamma_H10": 35.21,
+      "gamma_H007": 34.86,
       "H007_from_cornejo": false,
       "representative_energy_keV": 441,
-      "source": "ICRP 107 (photon data, incl. progeny in secular equilibrium) / ICRU 57 (conversion coefficients)",
+      "source": "ICRP 107 (photon data, incl. progeny in secular equilibrium) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": null,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 2.4e-8,
       "effluent_liquid_limit_Bq_per_L": 69.4,
@@ -6361,7 +6364,7 @@ const NUCLIDE_DATA = {
         ],
         [
           63,
-          0.001867
+          0.001866
         ],
         [
           64.3,
@@ -6389,7 +6392,7 @@ const NUCLIDE_DATA = {
         ],
         [
           77.1,
-          0.00521
+          0.005208
         ],
         [
           77.4,
@@ -6397,23 +6400,23 @@ const NUCLIDE_DATA = {
         ],
         [
           79.2,
-          0.003826
+          0.003824
         ],
         [
           79.6,
-          0.00871
+          0.008707
         ],
         [
           81.9,
-          0.006442
+          0.00644
         ],
         [
           82.6,
-          0.00072
+          0.000719
         ],
         [
           83.5,
-          0.005028
+          0.005026
         ],
         [
           84.7,
@@ -6425,7 +6428,7 @@ const NUCLIDE_DATA = {
         ],
         [
           86.5,
-          0.008436
+          0.008433
         ],
         [
           87.4,
@@ -6437,15 +6440,15 @@ const NUCLIDE_DATA = {
         ],
         [
           89.6,
-          0.001051
+          0.00105
         ],
         [
           90.1,
-          0.002046
+          0.002045
         ],
         [
           92.1,
-          0.000782
+          0.000781
         ],
         [
           92.6,
@@ -6453,7 +6456,7 @@ const NUCLIDE_DATA = {
         ],
         [
           92.7,
-          0.001523
+          0.001522
         ],
         [
           92.7,
@@ -6501,11 +6504,11 @@ const NUCLIDE_DATA = {
         ],
         [
           99.6,
-          0.003077
+          0.003076
         ],
         [
           99.9,
-          0.00503
+          0.005028
         ],
         [
           100.5,
@@ -6529,15 +6532,15 @@ const NUCLIDE_DATA = {
         ],
         [
           108.4,
-          0.001342
+          0.001341
         ],
         [
           111.5,
-          0.001743
+          0.001742
         ],
         [
           117.2,
-          0.01014
+          0.010136
         ],
         [
           118.2,
@@ -6553,7 +6556,7 @@ const NUCLIDE_DATA = {
         ],
         [
           123.8,
-          0.000436
+          0.000435
         ],
         [
           124.8,
@@ -6573,7 +6576,7 @@ const NUCLIDE_DATA = {
         ],
         [
           145.2,
-          0.001027
+          0.001026
         ],
         [
           147.6,
@@ -6581,7 +6584,7 @@ const NUCLIDE_DATA = {
         ],
         [
           150,
-          0.005764
+          0.005761
         ],
         [
           150,
@@ -6593,11 +6596,11 @@ const NUCLIDE_DATA = {
         ],
         [
           153.9,
-          0.001395
+          0.001394
         ],
         [
           157.3,
-          0.002737
+          0.002736
         ],
         [
           169.1,
@@ -6617,11 +6620,11 @@ const NUCLIDE_DATA = {
         ],
         [
           188,
-          0.004942
+          0.00494
         ],
         [
           195.8,
-          0.001562
+          0.001561
         ],
         [
           197.7,
@@ -6633,15 +6636,15 @@ const NUCLIDE_DATA = {
         ],
         [
           216.9,
-          0.003348
+          0.003347
         ],
         [
           218.2,
-          0.123335
+          0.123286
         ],
         [
           224.6,
-          0.001052
+          0.001051
         ],
         [
           249.5,
@@ -6649,7 +6652,7 @@ const NUCLIDE_DATA = {
         ],
         [
           253.5,
-          0.001525
+          0.001524
         ],
         [
           258.5,
@@ -6661,11 +6664,11 @@ const NUCLIDE_DATA = {
         ],
         [
           292.8,
-          0.006133
+          0.006131
         ],
         [
           323.8,
-          0.002598
+          0.002597
         ],
         [
           324.1,
@@ -6681,19 +6684,19 @@ const NUCLIDE_DATA = {
         ],
         [
           410.7,
-          0.002758
+          0.002756
         ],
         [
           440.5,
-          0.553038
+          0.552815
         ],
         [
           452.4,
-          0.002557
+          0.002556
         ],
         [
           465.1,
-          0.045141
+          0.045123
         ],
         [
           481.1,
@@ -6717,7 +6720,7 @@ const NUCLIDE_DATA = {
         ],
         [
           593.1,
-          0.000333
+          0.000332
         ],
         [
           659.8,
@@ -6729,7 +6732,7 @@ const NUCLIDE_DATA = {
         ],
         [
           807.4,
-          0.010482
+          0.010478
         ],
         [
           868,
@@ -6741,19 +6744,19 @@ const NUCLIDE_DATA = {
         ],
         [
           1003.6,
-          0.002249
+          0.002248
         ],
         [
           1100.2,
-          0.013149
+          0.013112
         ],
         [
           1119.4,
-          0.002846
+          0.002837
         ],
         [
           1567.1,
-          0.120681
+          0.121071
         ]
       ],
       "shielding_spectrum_h007": [
@@ -6767,75 +6770,75 @@ const NUCLIDE_DATA = {
         ],
         [
           63,
-          0.001684
+          0.001739
         ],
         [
           64.3,
-          0.000124
+          0.000128
         ],
         [
           71.7,
-          0.000055
+          0.000056
         ],
         [
           73,
-          0.000516
+          0.000527
         ],
         [
           73.9,
-          0.001228
+          0.001254
         ],
         [
           74.9,
-          0.000068
+          0.000069
         ],
         [
           75.3,
-          0.000872
+          0.000889
         ],
         [
           77.1,
-          0.004773
+          0.004863
         ],
         [
           77.4,
-          0.000064
+          0.000065
         ],
         [
           79.2,
-          0.003512
+          0.003572
         ],
         [
           79.6,
-          0.007999
+          0.008132
         ],
         [
           81.9,
-          0.005952
+          0.006033
         ],
         [
           82.6,
-          0.000666
+          0.000675
         ],
         [
           83.5,
-          0.004667
+          0.00472
         ],
         [
           84.7,
-          0.000103
+          0.000104
         ],
         [
           85.2,
-          0.000201
+          0.000203
         ],
         [
           86.5,
-          0.007898
+          0.007954
         ],
         [
           87.4,
-          0.001087
+          0.001094
         ],
         [
           87.7,
@@ -6843,11 +6846,11 @@ const NUCLIDE_DATA = {
         ],
         [
           89.6,
-          0.000992
+          0.000995
         ],
         [
           90.1,
-          0.001935
+          0.001939
         ],
         [
           92.1,
@@ -6859,11 +6862,11 @@ const NUCLIDE_DATA = {
         ],
         [
           92.7,
-          0.00145
+          0.001448
         ],
         [
           92.7,
-          0.000487
+          0.000486
         ],
         [
           93.3,
@@ -6875,7 +6878,7 @@ const NUCLIDE_DATA = {
         ],
         [
           94.9,
-          0.000436
+          0.000434
         ],
         [
           95.2,
@@ -6883,171 +6886,171 @@ const NUCLIDE_DATA = {
         ],
         [
           95.3,
-          0.000367
+          0.000365
         ],
         [
           96,
-          0.000085
+          0.000084
         ],
         [
           96.2,
-          0.000142
+          0.000141
         ],
         [
           97.2,
-          0.000992
+          0.000986
         ],
         [
           97.9,
-          0.00194
+          0.001926
         ],
         [
           99.5,
-          0.000532
+          0.000528
         ],
         [
           99.6,
-          0.00298
+          0.002953
         ],
         [
           99.9,
-          0.004876
+          0.004829
         ],
         [
           100.5,
-          0.00025
+          0.000248
         ],
         [
           100.7,
-          0.000499
+          0.000494
         ],
         [
           101,
-          0.000339
+          0.000336
         ],
         [
           101.3,
-          0.00006
+          0.000059
         ],
         [
           101.4,
-          0.000115
+          0.000114
         ],
         [
           108.4,
-          0.001304
+          0.00129
         ],
         [
           111.5,
-          0.001695
+          0.001676
         ],
         [
           117.2,
-          0.009878
+          0.009754
         ],
         [
           118.2,
-          0.000209
+          0.000207
         ],
         [
           119.9,
-          0.000312
+          0.000308
         ],
         [
           119.9,
-          0.000112
+          0.000111
         ],
         [
           123.8,
-          0.000425
+          0.000419
         ],
         [
           124.8,
-          0.000156
+          0.000154
         ],
         [
           133.6,
-          0.00009
+          0.000089
         ],
         [
           134.9,
-          0.000196
+          0.000193
         ],
         [
           138.2,
-          0.000143
+          0.000141
         ],
         [
           145.2,
-          0.001007
+          0.00099
         ],
         [
           147.6,
-          0.000077
+          0.000076
         ],
         [
           150,
-          0.005656
+          0.005559
         ],
         [
           150,
-          0.000527
+          0.000518
         ],
         [
           152.6,
-          0.000126
+          0.000124
         ],
         [
           153.9,
-          0.00137
+          0.001346
         ],
         [
           157.3,
-          0.002691
+          0.002642
         ],
         [
           169.1,
-          0.00015
+          0.000147
         ],
         [
           171.3,
-          0.000607
+          0.000595
         ],
         [
           178.4,
-          0.000122
+          0.000119
         ],
         [
           186.2,
-          0.000176
+          0.000172
         ],
         [
           188,
-          0.004887
+          0.004779
         ],
         [
           195.8,
-          0.001547
+          0.001511
         ],
         [
           197.7,
-          0.000574
+          0.00056
         ],
         [
           198.7,
-          0.000231
+          0.000225
         ],
         [
           216.9,
-          0.003321
+          0.003268
         ],
         [
           218.2,
-          0.122364
+          0.120464
         ],
         [
           224.6,
-          0.001044
+          0.00103
         ],
         [
           249.5,
@@ -7055,7 +7058,7 @@ const NUCLIDE_DATA = {
         ],
         [
           253.5,
-          0.001516
+          0.001513
         ],
         [
           258.5,
@@ -7063,103 +7066,103 @@ const NUCLIDE_DATA = {
         ],
         [
           279.3,
-          0.000251
+          0.000253
         ],
         [
           292.8,
-          0.00611
+          0.006178
         ],
         [
           323.8,
-          0.002582
+          0.002624
         ],
         [
           324.1,
-          0.00029
+          0.000295
         ],
         [
           359.1,
-          0.000639
+          0.000652
         ],
         [
           381.8,
-          0.000677
+          0.000692
         ],
         [
           410.7,
-          0.002732
+          0.002785
         ],
         [
           440.5,
-          0.554629
+          0.558513
         ],
         [
           452.4,
-          0.002576
+          0.002582
         ],
         [
           465.1,
-          0.045698
+          0.045588
         ],
         [
           481.1,
-          0.000766
+          0.00076
         ],
         [
           515.4,
-          0.000492
+          0.000485
         ],
         [
           517.8,
-          0.000358
+          0.000353
         ],
         [
           526.1,
-          0.000808
+          0.000796
         ],
         [
           544.9,
-          0.000435
+          0.000429
         ],
         [
           593.1,
-          0.000341
+          0.000336
         ],
         [
           659.8,
-          0.001212
+          0.001194
         ],
         [
           710.8,
-          0.000364
+          0.000359
         ],
         [
           807.4,
-          0.010745
+          0.010586
         ],
         [
           868,
-          0.000494
+          0.000487
         ],
         [
           920.1,
-          0.000519
+          0.000511
         ],
         [
           1003.6,
-          0.002305
+          0.002271
         ],
         [
           1100.2,
-          0.013478
+          0.013247
         ],
         [
           1119.4,
-          0.002918
+          0.002867
         ],
         [
           1567.1,
-          0.123707
+          0.12232
         ]
       ]
     }

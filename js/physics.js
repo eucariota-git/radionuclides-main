@@ -15,10 +15,10 @@
  *   Narrow beam, spectrum-weighted with buildup:
  *     T(x) = Σ wᵢ·min(1, B(Eᵢ, μᵢx)·e^(−μᵢx))   x in cm
  *     wᵢ = relative dose contribution of each line (Σwᵢ = 1, from ICRP 107 yields
- *     × ICRU 57; see tools/add-shielding-spectra.js). One spectrum PER QUANTITY —
+ *     × ICRP 74 A.21; see tools/add-shielding-spectra.js). One spectrum PER QUANTITY —
  *     nuclide.shielding_spectrum weights h*(10), nuclide.shielding_spectrum_h007
  *     weights h'(0.07). They are not interchangeable and neither bounds the other
- *     (Pd-103 −42%, Re-186 +8% at 5 mm Pb — the response ratio is non-monotonic).
+ *     (Pd-103 −40%, Re-186 +6% at 5 mm Pb — the response ratio is non-monotonic).
  *     Accounts for spectral hardening AND scatter buildup. B = exposure buildup
  *     factor for a point isotropic source (ANSI/ANS-6.4.3 reference data,
  *     NUREG/CR-5740 Table 3 — see PHYSICS.getBuildup). The min(1, ·) clamp
@@ -244,7 +244,10 @@ const CALC = (() => {
     const lam   = lambda(T_half_h);
     const Hdot0 = (gamma * A0_GBq * T) / (d_m * d_m);
     if (T_half_h === Infinity || lam === 0) return Hdot0 * t_h;
-    return Hdot0 * (1 - Math.exp(-lam * t_h)) / lam;
+    // −expm1(−λt) instead of 1 − exp(−λt): for very long-lived nuclides λt falls
+    // below double precision and 1 − exp(−λt) cancels to 0 (Lu-176, 60 s gave
+    // 0 Sv instead of Γ·A·t; K-40 −5 %) — audit 2026-10-03, H-03.
+    return Hdot0 * (-Math.expm1(-lam * t_h)) / lam;
   }
 
   /**

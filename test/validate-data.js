@@ -65,15 +65,16 @@ console.log();
 // Test 2: Cornejo et al. dose rate constants
 console.log('Test 2: Cornejo et al. (2015) dose rate constants');
 
-// Stored app values: recalculated from ICRP 107 photon data (ICRU 57 coefficients).
+// Stored app values: recalculated from ICRP 107 photon data with the ICRP 74
+// Table A.21 coefficients (re-baselined 2026-10-03; H'(0.07) moved by up to 3 %).
 // They may legitimately differ from the published Cornejo values, which are
 // preserved separately in cornejo_validation (checked in Test 2b below).
 const cornevoConstants = {
-  'Tc-99m': { gamma_H10: 21.72, gamma_H007: 20.99 },  // H007 < H10 — consistent with no parenthetical value in Cornejo Tabla III
-  'I-131': { gamma_H10: 65.78, gamma_H007: 64.01 },
+  'Tc-99m': { gamma_H10: 21.72, gamma_H007: 20.97 },  // H007 < H10 — consistent with no parenthetical value in Cornejo Tabla III
+  'I-131': { gamma_H10: 65.78, gamma_H007: 65.86 },
   'F-18': { gamma_H10: 165.53, gamma_H007: 165.53 },  // single 511 keV line, h007 = h10 above 500 keV (kerma approximation)
-  'Lu-177': { gamma_H10: 6.28, gamma_H007: 5.99 },
-  'I-125': { gamma_H10: 35.52, gamma_H007: 42.52 },   // published Cornejo: 35.3 / (40.9) — within 1%/4%
+  'Lu-177': { gamma_H10: 6.28, gamma_H007: 6.00 },
+  'I-125': { gamma_H10: 35.52, gamma_H007: 42.53 },   // published Cornejo: 35.3 / (40.9) — within 1%/4%
 };
 
 for (const [nuclideId, ref] of Object.entries(cornevoConstants)) {
@@ -139,17 +140,27 @@ console.log('Test 4: ICRU 57 conversion coefficient table integrity');
 
 const ICRU57 = P.ICRU57;
 
-// Independent published anchors: these catch content errors while the shape
-// checks below catch ordering and curve-topology errors.
-const icruAnchors = [
-  [0.020, 1.050, 1.810],
-  [0.060, 0.510, 0.447],
-  [1.000, 5.200, 5.200],
+// ICRP 74 (1996) Table A.21, columns per unit fluence [pSv·cm²]: ALL 25 printed
+// energies, hand-entered from the verified library transcription ('ICRP 74 (1996)
+// - Tabla A.21 …csv', double visual reading) — independent of js/data.js. Until
+// 2026-10-03 only 3 energies were anchored and the h*(10) column above 1 MeV was
+// 3–20 % low (audit 2026-10-03, H-01/H-02).
+const A21 = [
+  [0.010, 0.061, 7.20], [0.015, 0.83, 3.19], [0.020, 1.05, 1.81], [0.030, 0.81, 0.90],
+  [0.040, 0.64, 0.62], [0.050, 0.55, 0.50], [0.060, 0.51, 0.47], [0.080, 0.53, 0.49],
+  [0.100, 0.61, 0.58], [0.150, 0.89, 0.85], [0.200, 1.20, 1.15], [0.300, 1.80, 1.80],
+  [0.400, 2.38, 2.38], [0.500, 2.93, 2.93], [0.600, 3.44, 3.44], [0.800, 4.38, 4.38],
+  [1.0, 5.20, 5.20], [1.5, 6.90, 6.90], [2.0, 8.60, 8.60], [3.0, 11.1, 11.1],
+  [4.0, 13.4, 13.4], [5.0, 15.5, 15.5], [6.0, 17.6, 17.6], [8.0, 21.6, 21.6], [10.0, 25.6, 25.6],
 ];
-for (const [energy, expectedH10, expectedH007] of icruAnchors) {
+totalTests++;
+if (ICRU57.length === A21.length && ICRU57.every((r, i) => r[0] === A21[i][0])) {
+  passedTests++; console.log('  ✓ conversion table has exactly the 25 energies of ICRP 74 A.21 (no 1.25 MeV node)');
+} else { failedTests++; console.log('  ✗ conversion table energies differ from ICRP 74 A.21'); }
+for (const [energy, expectedH10, expectedH007] of A21) {
   const row = ICRU57.find(r => r[0] === energy);
-  test(`ICRU57 h*(10) anchor at ${energy} MeV`, row ? row[1] : NaN, expectedH10, 1e-12);
-  test(`ICRU57 h'(0.07) anchor at ${energy} MeV`, row ? row[2] : NaN, expectedH007, 1e-12);
+  test(`A.21 h*(10) at ${energy} MeV = ${expectedH10}`, row ? row[1] : NaN, expectedH10, 1e-12);
+  test(`A.21 h'(0.07) at ${energy} MeV = ${expectedH007}`, row ? row[2] : NaN, expectedH007, 1e-12);
 }
 
 // Check that table is monotonically increasing in energy

@@ -70,18 +70,15 @@
 const fs = require('fs');
 const path = require('path');
 
-// --- ICRU 57 table (MUST mirror js/data.js) ------------------------------------
-const ICRU57 = [
-  [0.010, 0.061, 7.220], [0.015, 0.830, 3.210], [0.020, 1.050, 1.810],
-  [0.030, 0.810, 0.901], [0.040, 0.640, 0.604], [0.050, 0.550, 0.502],
-  [0.060, 0.510, 0.447], [0.080, 0.530, 0.475], [0.100, 0.610, 0.577],
-  [0.150, 0.890, 0.852], [0.200, 1.200, 1.160], [0.300, 1.800, 1.750],
-  [0.400, 2.380, 2.290], [0.500, 2.930, 2.930], [0.600, 3.440, 3.440],
-  [0.800, 4.380, 4.380], [1.000, 5.200, 5.200], [1.250, 6.110, 6.110],
-  [1.500, 6.910, 6.910], [2.000, 8.330, 8.330], [3.000, 10.600, 10.600],
-  [4.000, 12.500, 12.500], [5.000, 14.100, 14.100], [6.000, 15.600, 15.600],
-  [8.000, 18.200, 18.200], [10.000, 20.400, 20.400],
-];
+// --- Conversion table: the APP's own ICRP 74 Table A.21 (js/data.js) ------------
+// Loaded from js/data.js so that this tool and the app can never disagree
+// (audit 2026-10-03, H-01: four hand-kept copies of the table had to agree).
+const vm = require('vm');
+const ICRU57 = (() => {
+  const ctx = vm.createContext({});
+  vm.runInContext(fs.readFileSync(path.join(__dirname, '..', 'js', 'data.js'), 'utf8') + ';this.__T = PHYSICS.ICRU57;', ctx);
+  return ctx.__T;
+})();
 
 const GAMMA_FACTOR = 28.648;
 

@@ -76,7 +76,7 @@ const REPORT = (() => {
       return `Curated entry, cross-checked against ${cv.source || 'Cornejo et al. (2015)'}: published Γ^H*(10) = ${published}, stored ${n.gamma_H10} (${sign}${Math.abs(dev).toFixed(1)}%)`
         + (agrees ? '' : ' — the difference reflects updated ICRP 107 decay data and has NOT been reconciled with the published value');
     }
-    return 'Curated entry computed from ICRP 107 photon data with ICRU 57 coefficients — no published reference constant exists to cross-check it against';
+    return 'Curated entry computed from ICRP 107 photon data with ICRP 74 Table A.21 coefficients — no published reference constant exists to cross-check it against';
   }
 
   function buildHtml(spec) {

@@ -46,7 +46,7 @@ The application has no installation or authentication. It can be used in either 
 3. **Clinical use**: See modality and intended clinical applications
 4. **Export**: Download the table as CSV
 
-**Main database**: 40 radionuclides — 32 with published comparison values in **Cornejo et al. (2015)**, **Ga-68**, the pure-β⁻ special case **Y-90**, and 6 therapy/imaging additions (**Zr-89, Cu-67, Tb-161, Ho-166, Ra-223+daughters, Ac-225+daughters**). Operational values use ICRP 107 photon data and ICRU 57 conversion coefficients where indicated; material differences from published comparison values are shown contextually.
+**Main database**: 40 radionuclides — 32 with published comparison values in **Cornejo et al. (2015)**, **Ga-68**, the pure-β⁻ special case **Y-90**, and 6 therapy/imaging additions (**Zr-89, Cu-67, Tb-161, Ho-166, Ra-223+daughters, Ac-225+daughters**). Operational values use ICRP 107 photon data and ICRP 74 Table A.21 conversion coefficients where indicated; material differences from published comparison values are shown contextually.
 
 #### Extended Database — ICRP 107
 
@@ -242,13 +242,14 @@ Toggle dark/light mode using the **moon icon** (🌙) in the top-right corner. P
 
 ### Main Database (40 nuclides)
 - **Published comparison**: Cornejo et al. (2015) for 32 nuclides (ΓKair matches the published table)
-- **Additional nuclides**: Ga-68 (ICRP 107 / ICRU 57) and Y-90 (pure β⁻ emitter; no applicable photon dose-rate constants in Properties)
+- **Additional nuclides**: Ga-68 (ICRP 107 / ICRP 74 A.21) and Y-90 (pure β⁻ emitter; no applicable photon dose-rate constants in Properties)
 - **Note**: Operational Γ H*(10) / H'(0.07) values use ICRP 107 nuclear data; material differences from published Cornejo values are reported with the affected nuclide and in calculation reports
 - **Use case**: Radiation protection estimation; verify against primary sources for regulatory submissions
+- **Conversion coefficients and photon filter**: h*(10) and h'(0.07,0°) per unit fluence from ICRP 74 (1996) Table A.21 — the 25 printed energies, log-log interpolated, no 1.25 MeV node; the printed 6.90 pSv·cm² at 1.5 MeV is kept although the table's own columns give 7.04. Photon lines with E ≥ 20 keV and yield ≥ 0.01 % are used; lines with a yield exactly equal to 0.01 % are kept, whereas Cornejo et al. (2015) state yields above 0.01 %. Since the A.21 adoption (2026-10-03), 23 of the 32 published Cornejo Γ^H*(10) values are reproduced within ±2 % (22 before); Na-24 moved from −4.3 % to −1.9 %
 
 ### Extended Database (1,252 nuclides from ICRP 107)
 - **Source**: ICRP Publication 107 (2008) — official decay data compilation
-- **Calculation**: Γ constants derived from photon spectrum using ICRU 57 / ICRP 74 conversion coefficients
+- **Calculation**: Γ constants derived from photon spectrum using ICRP 74 Table A.21 conversion coefficients
 - **Validation**: ±5% agreement with published values for F-18, Tc-99m, I-131, Lu-177, Ga-68
 - **Use case**: Reference and estimation only — NOT validated for clinical use
 - **Limitations**:

@@ -69,7 +69,7 @@ $$\Gamma^{H*(10)} = K \sum_i n_i \cdot h(E_i)$$
 where:
 - $K$ = 28.648 μSv·h⁻¹·GBq⁻¹·m² per pSv·cm²
 - $n_i$ = photon yield (fraction per decay)
-- $h(E_i)$ = ICRU 57 / ICRP 74 fluence-to-dose conversion coefficient
+- $h(E_i)$ = ICRP 74 Table A.21 fluence-to-dose conversion coefficient
 
 Constants calculated from ICRP 107 are **informational only**. They are NOT manually validated and should not be used for clinical or regulatory submissions without independent verification.
 

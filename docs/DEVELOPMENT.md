@@ -30,7 +30,7 @@ Works offline after first load. Also works with `file://` protocol.
 Each module (PHYSICS, CALC, DB, ICRP107, UI) is an IIFE returning public API. No framework dependencies.
 
 ### `PHYSICS` (`js/data.js`)
-- ICRU 57 / ICRP 74 conversion coefficient tables
+- ICRP 74 Table A.21 conversion coefficients
 - Attenuation data (NIST XCOM)
 - Method: `calcGammaConstants(photons)` — calculates Γ from photon array
 
@@ -120,7 +120,7 @@ One-shot migration tools kept for provenance (already applied, do not re-run bli
 ### Dose Rate Constant
 Γ [μSv·h⁻¹·GBq⁻¹·m²] = 28.648 · Σᵢ (yᵢ · h(Eᵢ))
 
-where h(E) comes from ICRU 57 tables, and photons are filtered (E≥20keV, yield≥0.01%).
+where h(E) comes from ICRP 74 Table A.21, and photons are filtered (E≥20keV, yield≥0.01%).
 
 ### Shielding Models
 - **Archer broad-beam** (Monte Carlo): Tc-99m, F-18, I-131, Lu-177 — parameters fit the FULL spectrum (buildup inherently included); never combine with spectral weighting or `getBuildup`

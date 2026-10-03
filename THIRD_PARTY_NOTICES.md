@@ -93,15 +93,13 @@ notice — see [LICENSE.TXT](LICENSE.TXT), whose terms require that file to
 accompany all copies. **Commercial use requires permission from the copyright
 holders** (https://www.icrp.org/).
 
-### ICRU Report 57 / ICRP Publication 74 — conversion coefficients
-The `ICRU57` table in `js/data.js` (ambient dose equivalent h*(10) and
-directional dose equivalent h'(0.07) per unit fluence). The h*(10) column uses
-tabulated ICRU 57 / ICRP 74 values with attribution. The h'(0.07) column is a
-**reconstruction**, not a verbatim ICRP/ICRU table: PTB-Dos-34 / ICRP 74 kerma
-coefficients ≤100 keV, anchors derived from Cornejo et al. (2015) per-line
-contributions at 150–400 keV, and the kerma approximation h'(0.07)≈h*(10)
-≥500 keV (full provenance in the header of `js/data.js`). Reproduction of
-substantial ICRU/ICRP tabular material requires permission; relevant only if use
+### ICRP Publication 74 — conversion coefficients
+The conversion table in `js/data.js` (constant `ICRU57`): ambient dose
+equivalent h*(10) and directional dose equivalent h'(0.07,0°) per unit fluence,
+the 25 energies printed in ICRP Publication 74 (1996), Table A.21, used with
+attribution (since 2026-10-03; before that the h*(10) column above 1 MeV and
+the h'(0.07) column did not match the table). © ICRP. Reproduction of
+substantial ICRP tabular material requires permission; relevant only if use
 becomes commercial.
 
 ### NIST XCOM / XAAMDI — photon mass attenuation coefficients

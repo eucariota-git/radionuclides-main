@@ -5,8 +5,8 @@ const UTILS = (() => {
   // two different code versions never produce indistinguishable reports
   // (audit 2026-07-16, H-07). APP_BUILD must equal CACHE_VERSION in sw.js —
   // update both together; validate-app.js enforces the match.
-  const APP_VERSION = '1.6.1';
-  const APP_BUILD = 'nm-planner-v33';
+  const APP_VERSION = '1.7.0';
+  const APP_BUILD = 'nm-planner-v34';
 
   function escapeHtml(text) {
     const div = document.createElement('div');

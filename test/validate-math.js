@@ -80,18 +80,23 @@ const K_actual = GAMMA_FACTOR;
 test('K = 360/(4π) = 28.648', K_actual, K_expected, 0.001);  // ±0.1%
 console.log();
 
-// Test 2: ICRU 57 conversion coefficients — PHYSICS.getH10/getH007 against the
-// PUBLISHED ICRU 57 / ICRP 74 values (grid points must reproduce exactly;
-// off-grid points must match the log-log interpolation of the two published
-// neighbours). Exercises the production functions, not a local copy.
-console.log('Test 2: ICRU 57 conversion coefficients (published anchors)');
+// Test 2: conversion coefficients — PHYSICS.getH10/getH007 against the PUBLISHED
+// ICRP 74 (1996) Table A.21 values (grid points must reproduce exactly; off-grid
+// points must match the log-log interpolation of the two published neighbours).
+// Exercises the production functions, not a local copy. The full 25-node table
+// is checked in validate-data.js (audit 2026-10-03, H-01/H-02).
+console.log('Test 2: ICRP 74 Table A.21 conversion coefficients (published anchors)');
 
 // Grid points — published h*(10) values, must be reproduced exactly
 for (const [E, published] of [[0.020, 1.050], [0.060, 0.510], [0.100, 0.610],
-                              [0.150, 0.890], [1.000, 5.200], [10.000, 20.400]]) {
-  test(`h*(10) at ${E * 1000} keV = ${published} pSv·cm² (ICRU 57 grid point)`,
+                              [0.150, 0.890], [1.000, 5.200], [2.000, 8.60],
+                              [5.000, 15.5], [10.000, 25.6]]) {
+  test(`h*(10) at ${E * 1000} keV = ${published} pSv·cm² (A.21 grid point)`,
     PHYSICS_.getH10(E), published, 1e-9);
 }
+// No 1.25 MeV node (A.21 has none): Co-60 region interpolated between 1.0 and 1.5 MeV
+test('h*(10) at 1.25 MeV = log-log interp of published 5.20 / 6.90 (no extra node)',
+  PHYSICS_.getH10(1.25), logLogFromAnchors(1.0, 5.20, 1.5, 6.90, 1.25), 1e-9);
 
 // 141 keV (Tc-99m representative) — between the published 0.100→0.610 and 0.150→0.890
 test('h*(10) at 141 keV = log-log interp of published 0.610 / 0.890',
@@ -100,15 +105,15 @@ test('h*(10) at 141 keV = log-log interp of published 0.610 / 0.890',
 // 511 keV (PET annihilation quantum) — between published 0.500→2.930 and 0.600→3.440
 test('h*(10) at 511 keV = log-log interp of published 2.930 / 3.440',
   PHYSICS_.getH10(0.511), logLogFromAnchors(0.500, 2.930, 0.600, 3.440, 0.511), 1e-9);
-test('h\'(0.07) at 511 keV = h*(10) (kerma approximation above 500 keV)',
+test('h\'(0.07) at 511 keV = h*(10) (A.21 prints identical columns from 300 keV up)',
   PHYSICS_.getH007(0.511), PHYSICS_.getH10(0.511), 1e-9);
 
 // 364 keV (I-131 representative) — between published 0.300→1.800 and 0.400→2.380
 test('h*(10) at 364 keV = log-log interp of published 1.800 / 2.380',
   PHYSICS_.getH10(0.364), logLogFromAnchors(0.300, 1.800, 0.400, 2.380, 0.364), 1e-9);
 
-// h'(0.07) grid points — published ICRP 74 hK'(0.07) region (see js/data.js provenance)
-for (const [E, published] of [[0.020, 1.810], [0.060, 0.447], [0.100, 0.577]]) {
+// h'(0.07,0°) grid points — published ICRP 74 Table A.21 (per unit fluence)
+for (const [E, published] of [[0.020, 1.81], [0.040, 0.62], [0.060, 0.47], [0.100, 0.58], [0.200, 1.15], [0.400, 2.38]]) {
   test(`h'(0.07) at ${E * 1000} keV = ${published} pSv·cm² (grid point)`,
     PHYSICS_.getH007(E), published, 1e-9);
 }
@@ -155,7 +160,10 @@ console.log();
 // Test 4: Other reference nuclides from Cornejo
 console.log('Test 4: Other Cornejo reference nuclides');
 const cornevoNuclides = [
-  { id: 'I-131', gamma_H10_expected: 65.76, gamma_H007_expected: 64.0 },
+  // H'(0.07) expectations are regression values of the app (Cornejo publishes
+  // H'(0.07) only for Pd-103, In-111, I-125 and Xe-133); I-131 moved from 64.0 to
+  // 65.86 with the A.21 h'(0.07) column (2026-10-03).
+  { id: 'I-131', gamma_H10_expected: 65.76, gamma_H007_expected: 65.86 },
   { id: 'F-18', gamma_H10_expected: 165.5, gamma_H007_expected: 165.5 },
   { id: 'Lu-177', gamma_H10_expected: 6.28, gamma_H007_expected: 6.0 },
 ];
@@ -397,10 +405,11 @@ console.log();
 //   ≤ T_H*(10) for every nuclide, with the published gaps reproduced at 1 mm Pb.
 console.log('Test 11i: separate H*(10) and H\'(0.07) shielding spectra');
 {
-  // Reference gaps measured against the audit's independent reproduction:
-  // 100·(T_H10 − T_H007)/T_H007 at 1 mm Pb.
-  const gaps = [['Pd-103', 73.7], ['I-125', 18.5], ['Tb-161', 14.6],
-                ['Xe-133', 13.2], ['In-111', 12.4], ['I-123', 10.5]];
+  // Regression gaps 100·(T_H10 − T_H007)/T_H007 at 1 mm Pb. Re-baselined on
+  // 2026-10-03 with the ICRP 74 A.21 h'(0.07) column (were 73.7 / 18.5 / 14.6 /
+  // 13.2 / 12.4 / 10.5 % with the former reconstructed column).
+  const gaps = [['Pd-103', 67.68], ['I-125', 16.74], ['Tb-161', 12.67],
+                ['Xe-133', 11.24], ['In-111', 11.94], ['I-123', 10.42]];
   for (const [id, expected] of gaps) {
     const n = nuclides.find(x => x.id === id);
     if (!n || !n.shielding_spectrum_h007) {
@@ -416,20 +425,21 @@ console.log('Test 11i: separate H*(10) and H\'(0.07) shielding spectra');
 
   // The SIGN of the H*(10) vs H'(0.07) difference is not universal, because the
   // h'(0.07)/h*(10) response ratio is not monotonic: 1.72 at 20 keV, dipping to
-  // 0.876 at 60 keV, back to 1.00 above 500 keV. So H'(0.07) weighting boosts
-  // BOTH the softest and the hardest lines and suppresses the 40–300 keV band.
-  // Soft emitters therefore transmit less under H'(0.07) weights (Pd-103 −42%),
-  // while emitters with a hard tail transmit MORE (Re-186 +7.8%). Anything that
+  // 0.92 at 60 keV, back to 1.00 from 300 keV (ICRP 74 A.21). So H'(0.07)
+  // weighting boosts BOTH the softest and the hardest lines and suppresses the
+  // 40–200 keV band. Soft emitters therefore transmit less under H'(0.07) weights
+  // (Pd-103 −40%), while emitters with a hard tail transmit MORE (Re-186 +6.1%).
+  // Values re-baselined 2026-10-03 (A.21 column). Anything that
   // assumes one direction — including "H*(10) weights are conservative for skin
   // dose" — is wrong; that is why each quantity needs its own spectrum.
   test('Pd-103 (soft emitter): T_H\'(0.07) below T_H*(10) at 5 mm Pb',
     100 * (CALC_.transmissionSpectrum(0.5, nuclides.find(n => n.id === 'Pd-103').shielding_spectrum_h007, 'Pb') /
            CALC_.transmissionSpectrum(0.5, nuclides.find(n => n.id === 'Pd-103').shielding_spectrum,      'Pb') - 1),
-    -42.5, 0.02);
+    -40.36, 0.02);
   test('Re-186 (hard tail): T_H\'(0.07) ABOVE T_H*(10) at 5 mm Pb (sign flips)',
     100 * (CALC_.transmissionSpectrum(0.5, nuclides.find(n => n.id === 'Re-186').shielding_spectrum_h007, 'Pb') /
            CALC_.transmissionSpectrum(0.5, nuclides.find(n => n.id === 'Re-186').shielding_spectrum,      'Pb') - 1),
-    7.8, 0.05);
+    6.08, 0.05);
 
   // Structural invariant: every curated nuclide carries both spectra, same lines,
   // both normalized. (No inequality between them — see above.)
@@ -881,6 +891,41 @@ console.log('TEST 13: Effluent Scenarios 1 and 2 (CALC.sewerInspectorScenario1, 
   // 10.5 × (1700 / 1272.5) × (0.25 / 0.30) = 11.6896 µSv/GBq.
   const cc = EFF.crossChecks(ED.nuclides.find(n => n.id === 'I-131'), i131.half_life_s, plant);
   test('NUREG B.7 rescaled to the workbook plant = 11.69 µSv/GBq', cc.nureg_uSv_per_GBq, 10.5 * 1700 / 1272.5 * 0.25 / 0.30, 1e-9);
+}
+console.log();
+
+// ---------------------------------------------------------------------------
+// TEST 15: audit 2026-10-03 — integrated dose for very long-lived nuclides (H-03)
+// and chain constants keep their progeny (H-04)
+// ---------------------------------------------------------------------------
+console.log('TEST 15: long-lived integrated dose and chain constants');
+{
+  // H = Γ·A·T/d² · (1 − e^(−λt))/λ. For Lu-176 (T½ ≈ 3.8e10 y) and t = 60 s the
+  // decay over the exposure is negligible, so H must equal Γ·A·t to ~1e-9. The
+  // former 1 − exp(−λt) form cancelled to 0 in double precision.
+  const lu176 = icrp107Index.find(n => n.id === 'Lu-176');
+  const T_h = lu176.half_life_s / 3600;
+  const gamma = 10;   // any Γ: the test is about the time integral
+  const t_h = 60 / 3600;
+  const H = CALC_.cumulativeDose(gamma, 1, 1, t_h, T_h, 0, 0.3, 'Pb', null, null);
+  test('Lu-176, 60 s: integrated dose = Γ·A·t (was 0 before the expm1 fix)', H, gamma * 1 * t_h, 1e-9);
+  const k40 = icrp107Index.find(n => n.id === 'K-40');
+  const Tk = k40.half_life_s / 3600, tk = 1;
+  const lamk = Math.LN2 / Tk;
+  test('K-40, 1 h: integrated dose = Γ·A·(−expm1(−λt))/λ', CALC_.cumulativeDose(gamma, 1, 1, tk, Tk, 0, 1.46, 'Pb', null, null),
+    gamma * (-Math.expm1(-lamk * tk)) / lamk, 1e-12);
+  // Short-lived limit unchanged: t = 10 T½ gives (1 − 2^-10)·T½/ln2
+  test('F-18, 10 T½: integrated dose = Γ·A·(1 − 2^−10)·T½/ln 2', CALC_.cumulativeDose(gamma, 1, 1, 10 * 1.8295, 1.8295, 0, 0.511, 'Pb', null, null),
+    gamma * (1 - Math.pow(2, -10)) * 1.8295 / Math.LN2, 1e-12);
+
+  // H-04: the chain constants include the progeny. Parent-only Ra-223 would be
+  // about 24 and Ac-225 about 2.4 μSv·h⁻¹·GBq⁻¹·m² (audit 2026-10-03).
+  const ra = nuclides.find(n => n.id === 'Ra-223'), ac = nuclides.find(n => n.id === 'Ac-225');
+  const parentOnly = id => PHYSICS_.calcGammaConstants(icrp107Index.find(n => n.id === id).photons).gammaH10;
+  totalTests++;
+  if (ra.gamma_H10 > 2 * parentOnly('Ra-223') && ac.gamma_H10 > 10 * parentOnly('Ac-225') && ra.chain_members.length > 1) {
+    passedTests++; console.log(`  ✓ Ra-223 (${ra.gamma_H10}) and Ac-225 (${ac.gamma_H10}) constants include their progeny`);
+  } else { failedTests++; console.log('  ✗ chain constants lost their progeny'); }
 }
 console.log();
 

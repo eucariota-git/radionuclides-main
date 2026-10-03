@@ -24,7 +24,7 @@ effluent.html     Liquid effluent screening — NUREG/CR-5814 Scenarios 1 (sewer
 
 css/style.css     Shared styles (CSS variables, responsive grid)
 
-js/data.js        PHYSICS module — ICRU 57/ICRP 74 conversion coefficients, attenuation tables
+js/data.js        PHYSICS module — ICRP 74 Table A.21 conversion coefficients, attenuation tables
 js/physics.js     CALC module — decay, dose, Archer/spectrum/narrow-beam shielding algorithms
 js/db.js          DB module — nuclide database, search/filter
 js/report.js      REPORT module — printable calculation reports with traceability
@@ -64,7 +64,8 @@ Or open directly via `file://` — the app handles both protocols.
 - **Archer equation** (broad-beam, Monte Carlo) used for Tc-99m, F-18, I-131, Lu-177 — its parameters already fit the FULL photon spectrum, never combine with spectral weighting
 - **Spectrum-weighted narrow beam with build-up** T(x) = Σ wᵢ·min(1, B(Eᵢ, μᵢx)·e^(−μᵢx)) for all other curated nuclides (`shielding_spectrum` field, regenerated with `tools/add-shielding-spectra.js`) and for ICRP-107 extended nuclides (spectrum built at selection time with `PHYSICS.buildShieldingSpectrum` — never shield them with the single representative line: >10× error for 153 multi-line nuclides); single-line narrow beam (also with build-up) is the internal fallback for any nuclide without a stored spectrum
 - **Buildup B(E, mfp)**: ANSI/ANS-6.4.3 EXPOSURE response (absorption in air — NOT the report's "energy absorption" tables, which are dose in the shield medium). `PHYSICS.getBuildup`, Pb/Fe/concrete tables from NUREG/CR-5740 Table 3; Pb K-edge must not be interpolated across; validity 0–40 mfp. `Fe` means elemental iron (ρ = 7.874 g/cm³), not generic steel
-- Photon filter: G/X rays only, E ≥ 20 keV, yield ≥ 0.01%
+- Conversion table (`PHYSICS.ICRU57`): ICRP 74 (1996) Table A.21, h*(10) and h'(0.07,0°) per unit fluence, the 25 printed energies only (no 1.25 MeV node; 1.5 MeV keeps the printed 6.90 despite the 7.04 column product). It is the ONLY copy: tools load it from js/data.js. Regenerate curated Γ with `tools/recalc-gamma.js` (dry run by default; chain-aware; never touches cornejo_validation), then `add-shielding-spectra.js` and `generate-data.js`
+- Photon filter: G/X rays only, E ≥ 20 keV, yield ≥ 0.01% (boundary INCLUDED — Cornejo states > 0.01 %; documented project choice)
 - Half-lives stored in seconds internally; display format handled separately
 - Dose quantities: H*(10) and H'(0.07) are AREA-monitoring operational quantities and are always shown side by side — never reintroduce the old automatic "d < 25 cm → extremities/H'(0.07)" rule (no normative basis; removed 2026-07 per audit finding 2). Personal dosimetry quantities are Hp(10)/Hp(0.07)/Hp(3); the limit comparison in dose.html is labeled indicative screening only. H*(10) is NOT always ≥ H'(0.07) (e.g. Pd-103 −40%)
 
