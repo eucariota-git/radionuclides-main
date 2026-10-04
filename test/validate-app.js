@@ -316,7 +316,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v35');
+    swVersion === 'nm-planner-v36');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -542,6 +542,49 @@ async function main() {
   check('decay names the denominator as mass of material, never "vial weight" (copy audit T04)',
     /Mass of material being assessed/.test(decayHtml) && !/Vial \/ container weight|Vial_weight/.test(decayHtml) &&
     /identify whether the container is included/.test(decayHtml));
+  {
+    // Audit 2026-10-04, A01/A07
+    const iRender = decayHtml.indexOf("card.classList.remove('hidden')");
+    const iTarget = decayHtml.indexOf('Target activity must be a non-negative number');
+    check('decay validates the target activity before any result is rendered and reads badInput (A01)',
+      iTarget > 0 && iTarget < iRender && /AtgtInput\.validity\.badInput/.test(decayHtml) &&
+      !/parseFloat\(document\.getElementById\('Atarget'\)/.test(decayHtml));
+    check('a zero target is a state shared by the screen and the report, never hidden (A01)',
+      /if \(Atgt_MBq === 0\) return 'zero'/.test(decayHtml) &&
+      /zero:\s+'A target of zero is never reached in finite time/.test(decayHtml) &&
+      /\$\{TARGET_TEXT\.zero\}/.test(decayHtml) &&
+      (decayHtml.match(/if \(Number\.isFinite\((r\.)?AtgtRaw\)\)/g) || []).length === 2 &&
+      !/AtgtRaw > 0/.test(decayHtml));
+    const finiteAfter = (html, v) => new RegExp(
+      `const ${v}\\s*= CALC\\.convertActivity\\(A0raw, A0unit, '[MG]Bq'\\);[^]{0,250}?if \\(!Number\\.isFinite\\(${v}\\)\\)`).test(html);
+    check('decay, dose and effluent reject overflow after unit conversion and products (A07)',
+      finiteAfter(decayHtml, 'A0_MBq') && finiteAfter(doseHtml, 'A0_GBq') &&
+      /Number\.isFinite\(1e6 \* A0_GBq \* t_h \* nAdmin \/ \(d_m \* d_m\)\)/.test(doseHtml) &&
+      /\[out\.s1\.total_mSv_y, out\.s2\.total_mSv_y\]\.every\(Number\.isFinite\)/.test(effluentHtml));
+  }
+  {
+    // Audit 2026-10-04, A02-A06: documents and notices
+    const notices = read('THIRD_PARTY_NOTICES.md');
+    const about5 = read('about.html');
+    const readme5 = read('README.md');
+    const acceptance5 = read('docs/ACCEPTANCE_TEST.md');
+    check('README describes the Archer fit by its real quantity and keeps no change history (A02)',
+      !/published fits are H\\\*\(10\) broad-beam/.test(readme5) && !/Recent Improvements/.test(readme5) &&
+      /docs\/CHANGELOG\.md/.test(readme5) && /not a description of the current behaviour/.test(read('docs/CHANGELOG.md')));
+    check('acceptance sheet counts its A cases and treats Y-90 as an experimental scenario (A03)',
+      (() => {
+        const nA = (acceptance5.match(/^\| A\d+ \|/gm) || []).length;
+        return acceptance5.includes(`____ / ${nA} `) && /A10 \(Y-90\) es un \*\*escenario experimental\*\*/.test(acceptance5) &&
+          !/sin dispersión ni distribución de fuente/.test(acceptance5);
+      })());
+    check('notices state the ICRP 74 / ICRP 119 permission status apart from the ICRP-07 licence (A04)',
+      [notices, about5].every(t => /No permission on file\./.test(t) &&
+        /no reuse permission has been requested from ICRP/.test(t) && /That licence covers the decay data package only/.test(t)));
+    check('notices do not claim that references/ travels in the distribution package (A05)',
+      [notices, about5].every(t => !/article itself is\s+redistributed unmodified/.test(t) &&
+        /distribution\s+package contains only the transcribed parameters/.test(t) &&
+        /distribution package does not include/.test(t)));
+  }
   check('decay validates the material mass before any result is rendered',
     decayHtml.indexOf('Mass of material must be a positive number') > 0 &&
     decayHtml.indexOf('Mass of material must be a positive number') <

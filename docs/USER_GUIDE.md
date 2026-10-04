@@ -87,7 +87,7 @@ The application includes an **extended database of 1,252 radionuclides** from IC
 3. Give the **elapsed time** in one of two ways:
    - **Reference and target date/time**: both are local times of the device
    - **Elapsed time** entered manually (s, min, h or d). When this field is filled it is used and the target date is ignored; the report and the CSV record it
-4. Optional **target activity**: the time needed to reach it. A target equal to A₀ is reported as already reached at t = 0; a target above A₀ cannot be reached by decay
+4. Optional **target activity**: the time needed to reach it. A target equal to A₀ is reported as already reached at t = 0; a target above A₀ cannot be reached by decay; a target of zero is reported as never reached in finite time; a negative or non-numeric target is rejected before any result is shown
 5. Optional **mass of material being assessed**: the mass that corresponds to the entered activity and to the material covered by the assessment. State whether the container is included — the app does not know
 6. Press **Calculate**. Results: A(t), fraction remaining (%), elapsed time and activity lost; the **decay curve** A(t) = A₀ · e^(−λt) and a table of values
 7. If an input is edited after calculating, a notice asks to recalculate. The report and the CSV always describe the last calculation, not the current form

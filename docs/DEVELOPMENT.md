@@ -249,7 +249,7 @@ script — keep both in sync) is:
 - `data/icrp107-index.json`, `data/icrp107-data.js`
 - `assets/icons/`
 - `manifest.json`, `sw.js`
-- `README.md`, `docs/USER_GUIDE.md`
+- `README.md`, `docs/USER_GUIDE.md`, `docs/CHANGELOG.md`
 - `docs/ACCEPTANCE_TEST.md` — a clean template, never a partially filled
   working copy
 - `test/` and `docs/DEVELOPMENT.md` — the acceptance sheet (case B1) requires

@@ -422,6 +422,10 @@
     try {
       input = readInputs();
       out = EFFLUENT.evaluate(input);
+      // Finite inputs can still overflow in the products (audit 2026-10-04, A07)
+      if (![out.s1.total_mSv_y, out.s2.total_mSv_y].every(Number.isFinite)) {
+        throw new RangeError('The entered values are outside the representable range');
+      }
     } catch (err) {
       errBox.textContent = err.message;
       errBox.classList.remove('hidden');

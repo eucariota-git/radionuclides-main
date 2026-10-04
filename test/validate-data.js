@@ -225,6 +225,12 @@ console.log('Test 5: Material density constants');
 }
 console.log();
 
+// Provenance stamps: the file is edited by several tools after the gamma
+// recalculation, so the last modification can never predate it (audit 2026-10-04, A06)
+test('nuclides.json: last_modified_at is not older than generated_at',
+  Date.parse(nuclideData.notes.last_modified_at) >= Date.parse(nuclideData.notes.generated_at) ? 1 : 0, 1);
+console.log();
+
 // Test 6: Clearance levels — RD 1217/2024 Anexo IV Tabla A1
 // (equivalent to EU BSS 2013/59/Euratom Annex VII Table A, values in Bq/g = kBq/kg)
 // Lu-177, Sm-153, Ho-166 and Tm-170 = 100 visually confirmed against the official

@@ -94,6 +94,9 @@ for (const n of data.nuclides) {
   }
 }
 
+data.notes = data.notes || {};
+data.notes.last_modified_at = new Date().toISOString();
+data.notes.last_modified_by_script = 'tools/restore-cornejo-published.js';
 fs.writeFileSync(jsonPath, JSON.stringify(data, null, 2) + '\n', 'utf8');
 console.log(`✓ ${jsonPath}: ${updated} cornejo_validation fields set from Tabla III, ${removed} removed`);
 console.log('  Now run: node tools/generate-data.js');

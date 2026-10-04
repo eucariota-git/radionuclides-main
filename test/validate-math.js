@@ -205,6 +205,12 @@ test('A(0) = 100% of A₀', activityAtTime(100, T_half_Tc, 0), 100, 0.01);
 test('A(T½) = 50% of A₀', activityAtTime(100, T_half_Tc, T_half_Tc), 50, 0.01);
 test('A(2×T½) = 25% of A₀', activityAtTime(100, T_half_Tc, 2*T_half_Tc), 25, 0.01);
 test('A(3×T½) = 12.5% of A₀', activityAtTime(100, T_half_Tc, 3*T_half_Tc), 12.5, 0.01);
+// Why the pages re-check finiteness after converting units and treat a zero
+// target as its own state (audit 2026-10-04, A01/A07)
+test('convertActivity(1e308 Ci → GBq) overflows to Infinity from a finite entry',
+  CALC_.convertActivity(1e308, 'Ci', 'GBq') === Infinity ? 1 : 0, 1);
+test('timeToActivity(A₀, 0) is Infinity: a zero target is never reached',
+  CALC_.timeToActivity(1000, 0, T_half_Tc) === Infinity ? 1 : 0, 1);
 console.log();
 
 // Test 6: HVL calculation HVL = ln(2) / μ

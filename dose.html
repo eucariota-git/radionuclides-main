@@ -791,6 +791,11 @@
     }
     const A0unit  = document.getElementById('A0unit').value;
     const A0_GBq  = CALC.convertActivity(A0raw, A0unit, 'GBq');
+    // A finite entry can overflow in the unit conversion (1e308 Ci → Infinity):
+    // check again after converting (audit 2026-10-04, A07).
+    if (!Number.isFinite(A0_GBq)) {
+      alert('Activity is outside the representable range.'); return;
+    }
 
     const distStr = document.getElementById('distance').value.trim();
     if (!/^[0-9]*\.?[0-9]+([eE][+-]?[0-9]+)?$/.test(distStr)) {
@@ -856,6 +861,14 @@
 
     const T_half_h = DB.halfLifeHours(n);
     const withDecay = document.getElementById('decayMode').value === 'with_decay';
+
+    // Every dose on this page is bounded by Γ·A·t·N/d² and each factor is
+    // finite, but their product can still overflow (or d² underflow to zero).
+    // Reject that before any result, CSV or report is produced; the 1e6 margin
+    // covers Γ and the unit factors (audit 2026-10-04, A07).
+    if (!Number.isFinite(1e6 * A0_GBq * t_h * nAdmin / (d_m * d_m))) {
+      alert('The combination of activity, distance, time and administrations is outside the representable range.'); return;
+    }
 
     function fmtR(v) {
       const f = CALC.formatDoseRate(v);

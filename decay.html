@@ -445,6 +445,11 @@
     }
     const A0unit   = document.getElementById('A0unit').value;
     const A0_MBq   = CALC.convertActivity(A0raw, A0unit, 'MBq');
+    // A finite entry can overflow in the unit conversion (1e308 Ci → Infinity):
+    // check again after converting (audit 2026-10-04, A07).
+    if (!Number.isFinite(A0_MBq)) {
+      alert('Activity is outside the representable range.'); return;
+    }
     const T_half_h = DB.halfLifeHours(n);
 
     // Derive time unit from half_life_display (may be auto-scaled after tMax_h is known)
@@ -515,6 +520,26 @@
     const vialWeightUnit  = document.getElementById('vialWeightUnit').value;
     const weight_kg       = vialWeightText === '' ? null : (vialWeightUnit === 'g' ? vialWeightRaw / 1000 : vialWeightRaw);
 
+    // Target activity: empty = no target; zero is a valid entry with its own
+    // state (never reached); negative or non-numeric text is rejected here,
+    // before anything is rendered (audit 2026-10-04, A01). A number input
+    // returns '' for text it cannot parse, hence validity.badInput.
+    const AtgtInput = document.getElementById('Atarget');
+    const AtgtText  = AtgtInput.value.trim();
+    const AtgtEmpty = AtgtText === '' && !AtgtInput.validity.badInput;
+    const AtgtRaw   = AtgtText === '' ? NaN : Number(AtgtText);
+    const AtgtUnit  = document.getElementById('AtargetUnit').value;
+    if (!AtgtEmpty && (!Number.isFinite(AtgtRaw) || AtgtRaw < 0)) {
+      alert('Target activity must be a non-negative number.');
+      AtgtInput.focus();
+      return;
+    }
+    if (!AtgtEmpty && !Number.isFinite(CALC.convertActivity(AtgtRaw, AtgtUnit, 'MBq'))) {
+      alert('Target activity is outside the representable range.');
+      AtgtInput.focus();
+      return;
+    }
+
     const At_MBq = CALC.activityAtTime(A0_MBq, T_half_h, t_h);
     const fraction = At_MBq / A0_MBq;
 
@@ -558,15 +583,15 @@
     `;
 
     // Inverse: time to target
-    const AtgtRaw  = parseFloat(document.getElementById('Atarget').value);
-    const AtgtUnit = document.getElementById('AtargetUnit').value;
     const inv = document.getElementById('inverseResult');
-    if (!isNaN(AtgtRaw) && AtgtRaw > 0) {
+    if (Number.isFinite(AtgtRaw)) {
       const Atgt_MBq = CALC.convertActivity(AtgtRaw, AtgtUnit, 'MBq');
-      const tTarget_h = CALC.timeToActivity(A0_MBq, Atgt_MBq, T_half_h);
-      inv.classList.remove('hidden');
       const tState = targetState(A0_MBq, Atgt_MBq);
-      if (tState === 'equal') {
+      const tTarget_h = tState === 'zero' ? Infinity : CALC.timeToActivity(A0_MBq, Atgt_MBq, T_half_h);
+      inv.classList.remove('hidden');
+      if (tState === 'zero') {
+        inv.innerHTML = `<div class="alert alert-warning">${TARGET_TEXT.zero}.</div>`;
+      } else if (tState === 'equal') {
         inv.innerHTML = `<div class="alert alert-info">${TARGET_TEXT.equal} (${UTILS.fmt(A0_MBq)} MBq).</div>`;
       } else if (tState === 'above') {
         // Decay only lowers activity (timeToActivity returns 0 here — never show "0 h").
@@ -1060,10 +1085,12 @@
   // a target above A₀ can never be reached by decay. CALC.timeToActivity returns
   // 0 in both cases, which must not be printed as a time.
   function targetState(A0_MBq, Atgt_MBq) {
+    if (Atgt_MBq === 0) return 'zero';
     if (Math.abs(Atgt_MBq - A0_MBq) <= 1e-12 * A0_MBq) return 'equal';
     return Atgt_MBq > A0_MBq ? 'above' : 'below';
   }
   const TARGET_TEXT = {
+    zero:  'A target of zero is never reached in finite time (exponential decay)',
     equal: 'Target already reached at t = 0: the target equals the initial activity',
     above: 'Target exceeds A₀ and cannot be reached by decay',
   };
@@ -1088,10 +1115,10 @@
       ['Fraction remaining (%)', `${UTILS.fmt(r.fraction * 100)}%`],
       ['Activity lost', `${UTILS.fmt(r.A0_MBq - r.At_MBq)} MBq (${UTILS.fmt((1 - r.fraction) * 100)}%)`],
     ];
-    if (!isNaN(r.AtgtRaw) && r.AtgtRaw > 0) {
+    if (Number.isFinite(r.AtgtRaw)) {
       const Atgt_MBq = CALC.convertActivity(r.AtgtRaw, r.AtgtUnit, 'MBq');
-      const tT = CALC.timeToActivity(r.A0_MBq, Atgt_MBq, r.T_half_h);
       const tState = targetState(r.A0_MBq, Atgt_MBq);
+      const tT = tState === 'zero' ? Infinity : CALC.timeToActivity(r.A0_MBq, Atgt_MBq, r.T_half_h);
       results.push([`Time to reach ${r.AtgtRaw} ${r.AtgtUnit}`,
         tState !== 'below' ? TARGET_TEXT[tState]
           : isFinite(tT) ? `${UTILS.fmt(tT)} h = ${UTILS.fmt(tT / 24)} d = ${UTILS.fmt(tT / r.T_half_h)} T½` : 'not calculable']);

@@ -96,5 +96,8 @@ if (mismatches > 0) {
   process.exit(1);
 }
 
+data.notes = data.notes || {};
+data.notes.last_modified_at = new Date().toISOString();
+data.notes.last_modified_by_script = 'tools/add-ingestion-coeffs.js';
 fs.writeFileSync(jsonPath, JSON.stringify(data, null, 2) + '\n', 'utf8');
 console.log(`✓ ${jsonPath}: ${updated} new nuclides given e(g)/effluent. Run tools/generate-data.js`);

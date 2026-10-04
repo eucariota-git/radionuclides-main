@@ -19,7 +19,7 @@
     "generated_at_note": "generated_at/generated_by_script record when the gamma constants themselves were last recomputed. The file is NOT the product of a single script: other tools and hand edits touch it afterwards, so last_modified_at below is the one to read for freshness.",
     "icrp107_index_sha256": "3845347ee2fb71e18b84a844905e44dab9d2d8a12939173575040b7b9b6707f2",
     "clearance_note": "clearance_a1_kBq_per_kg values verified 2026-06 against RD 1217/2024 Anexo IV Tabla A1 (BOE-A-2024-25205, consolidated HTML). Nuclides not listed in Tabla A1 carry null (e.g. Ga-67, Yb-169, Ra-223 — the latter appears only in Tabla B for moderate quantities ≤1000 kg).",
-    "last_modified_at": "2026-10-03T19:26:26.493Z",
+    "last_modified_at": "2026-10-04T05:46:04.284Z",
     "last_modified_by_script": "tools/add-shielding-spectra.js",
     "gamma_regenerated": "2026-10-03 by tools/recalc-gamma.js with the ICRP 74 Table A.21 conversion table of js/data.js",
     "yield_threshold_note": "Lines with a stored yield EQUAL to 0.01 % are kept (filter n ≥ 0.01 %). Cornejo et al. (2015) state yields above 0.01 %; keeping the boundary lines is a project choice applied to all 1252 nuclides (audit 2026-10-03, H14).",

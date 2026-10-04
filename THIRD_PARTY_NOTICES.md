@@ -145,14 +145,15 @@ Files: `data/regulatory.json`, `data/regulatory-data.js`.
   redistributed.
 
 ### BOE — Spanish legal texts
-`references/RD 1029 de 2022 …`, `references/RD 1217 de 2024 …`. Legal and
-regulatory provisions are excluded from intellectual property under art. 13 of
-the Spanish Intellectual Property Law (LPI); redistributable.
+`references/RD 1029 de 2022 …`, `references/RD 1217 de 2024 …`, kept in the
+source repository only: the distribution package does not include `references/`.
+Legal and regulatory provisions are excluded from intellectual property under
+art. 13 of the Spanish Intellectual Property Law (LPI); redistributable.
 
 ### Oumano et al. (2025) — Archer broad-beam shielding parameters
-`references/J Applied Clin Med Phys - 2025 - Oumano …pdf`; the Archer α/β/γ
-parameters and the light-weight concrete density in `js/data.js` are transcribed
-from it.
+`references/J Applied Clin Med Phys - 2025 - Oumano …pdf` (source repository
+only); the Archer α/β/γ parameters and the light-weight concrete density in
+`js/data.js` are transcribed from it.
 
 > Oumano, M., et al. (2025). "Shielding resources for four common
 > radiopharmaceuticals utilized for imaging and therapy: Tc-99m, F-18, I-131,
@@ -160,14 +161,29 @@ from it.
 > DOI: 10.1002/acm2.70084.
 
 Licensed **CC BY 4.0** (https://creativecommons.org/licenses/by/4.0/). Changes:
-numeric parameter values transcribed into the application; the article itself is
-redistributed unmodified in `references/`.
+numeric parameter values transcribed into the application. The article itself is
+kept unmodified in `references/` of the source repository; the distribution
+package contains only the transcribed parameters and this bibliographic
+reference, not the article.
 
 ### Status / permissions
 
-- ICRP-107 may be redistributed for the educational, research and not-for-profit
-  purposes stated in `LICENSE.TXT`; the ICRU/NIST/NUREG numeric tables are used
-  with attribution; Oumano is CC BY 4.0; the BOE texts carry no IP.
+- **Express licence.** ICRP-107 (the ICRP-07 decay data package) may be
+  redistributed for the educational, research and not-for-profit purposes stated
+  in `LICENSE.TXT`. That licence covers the decay data package only.
+- **No permission on file.** ICRP Publication 74 (1996) Table A.21 (25 energies,
+  two columns), the five inhalation coefficients of ICRP Publication 119 (2012)
+  Table G.1 and the chemical-form labels of its Table F.1 are © ICRP and are used
+  with attribution. Attribution and a not-for-profit purpose are not a
+  permission: as of 2026-10-04 no reuse permission has been requested from ICRP.
+  It must be obtained, or the basis for the reuse documented, before the package
+  is distributed outside the author's organisation.
+- **Legal provisions.** The adult ingestion coefficients are the values of
+  RD 783/2001 Annex III, and Tables A1 and B those of RD 1217/2024 Annex IV,
+  both published in the BOE (art. 13 LPI); ICRP 119 Table F.1 is the numerical
+  transcription of the former.
+- The NIST and NUREG numeric tables are used with attribution under the terms
+  stated in their sections; Oumano is CC BY 4.0.
 - For **commercial use of the affected data**, first obtain permission from ICRP (ICRP-107 data
   and any substantial ICRU/ICRP-74 material) and written confirmation of the
   applicable terms from NIST (XCOM SRD 8) and NRC/ORNL or ANS (ANS-6.4.3 buildup).

@@ -52,6 +52,7 @@ const ALLOWLIST = [
   'manifest.json', 'sw.js',
   'README.md',
   'docs/USER_GUIDE.md', 'docs/DEVELOPMENT.md', 'docs/ACCEPTANCE_TEST.md',
+  'docs/CHANGELOG.md',
   'test/',
   'LICENSE', 'LICENSE.TXT', 'LICENSING.md', 'THIRD_PARTY_NOTICES.md',
 ];

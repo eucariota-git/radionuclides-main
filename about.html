@@ -137,7 +137,7 @@
           <li><strong>Elapsed time</strong> entered manually (s, min, h or d). When this field is filled it is used and the target date is ignored; the report and the CSV record it</li>
         </ul>
       </li>
-      <li>Optional <strong>target activity</strong>: the time needed to reach it. A target equal to A₀ is reported as already reached at t = 0; a target above A₀ cannot be reached by decay</li>
+      <li>Optional <strong>target activity</strong>: the time needed to reach it. A target equal to A₀ is reported as already reached at t = 0; a target above A₀ cannot be reached by decay; a target of zero is reported as never reached in finite time; a negative or non-numeric target is rejected before any result is shown</li>
       <li>Optional <strong>mass of material being assessed</strong>: the mass that corresponds to the entered activity and to the material covered by the assessment. State whether the container is included — the app does not know</li>
       <li>Press <strong>Calculate</strong>. Results: A(t), fraction remaining (%), elapsed time and activity lost; the <strong>decay curve</strong> A(t) = A₀ · e^(−λt) and a table of values</li>
       <li>If an input is edited after calculating, a notice asks to recalculate. The report and the CSV always describe the last calculation, not the current form</li>
@@ -832,18 +832,21 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     </ul>
 
     <h4>BOE — Spanish legal texts</h4>
-    <p><code>references/RD 1029 de 2022 …</code>, <code>references/RD 1217 de 2024 …</code>. Legal and regulatory provisions are excluded from intellectual property under art. 13 of the Spanish Intellectual Property Law (LPI); redistributable.</p>
+    <p><code>references/RD 1029 de 2022 …</code>, <code>references/RD 1217 de 2024 …</code>, kept in the source repository only: the distribution package does not include <code>references/</code>. Legal and regulatory provisions are excluded from intellectual property under art. 13 of the Spanish Intellectual Property Law (LPI); redistributable.</p>
 
     <h4>Oumano et al. (2025) — Archer broad-beam shielding parameters</h4>
-    <p><code>references/J Applied Clin Med Phys - 2025 - Oumano …pdf</code>; the Archer α/β/γ parameters and the light-weight concrete density in <code>js/data.js</code> are transcribed from it.</p>
+    <p><code>references/J Applied Clin Med Phys - 2025 - Oumano …pdf</code> (source repository only); the Archer α/β/γ parameters and the light-weight concrete density in <code>js/data.js</code> are transcribed from it.</p>
     <blockquote>
       <p>Oumano, M., et al. (2025). “Shielding resources for four common radiopharmaceuticals utilized for imaging and therapy: Tc-99m, F-18, I-131, and Lu-177.” <em>Journal of Applied Clinical Medical Physics</em> 26(5):e70084. DOI: 10.1002/acm2.70084.</p>
     </blockquote>
-    <p>Licensed <strong>CC BY 4.0</strong> (<a href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a>). Changes: numeric parameter values transcribed into the application; the article itself is redistributed unmodified in <code>references/</code>.</p>
+    <p>Licensed <strong>CC BY 4.0</strong> (<a href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a>). Changes: numeric parameter values transcribed into the application. The article itself is kept unmodified in <code>references/</code> of the source repository; the distribution package contains only the transcribed parameters and this bibliographic reference, not the article.</p>
 
     <h4>Status / permissions</h4>
     <ul>
-      <li>ICRP-107 may be redistributed for the educational, research and not-for-profit purposes stated in <code>LICENSE.TXT</code>; the ICRU/NIST/NUREG numeric tables are used with attribution; Oumano is CC BY 4.0; the BOE texts carry no IP.</li>
+      <li><strong>Express licence.</strong> ICRP-107 (the ICRP-07 decay data package) may be redistributed for the educational, research and not-for-profit purposes stated in <code>LICENSE.TXT</code>. That licence covers the decay data package only.</li>
+      <li><strong>No permission on file.</strong> ICRP Publication 74 (1996) Table A.21 (25 energies, two columns), the five inhalation coefficients of ICRP Publication 119 (2012) Table G.1 and the chemical-form labels of its Table F.1 are © ICRP and are used with attribution. Attribution and a not-for-profit purpose are not a permission: as of 2026-10-04 no reuse permission has been requested from ICRP. It must be obtained, or the basis for the reuse documented, before the package is distributed outside the author's organisation.</li>
+      <li><strong>Legal provisions.</strong> The adult ingestion coefficients are the values of RD 783/2001 Annex III, and Tables A1 and B those of RD 1217/2024 Annex IV, both published in the BOE (art. 13 LPI); ICRP 119 Table F.1 is the numerical transcription of the former.</li>
+      <li>The NIST and NUREG numeric tables are used with attribution under the terms stated in their sections; Oumano is CC BY 4.0.</li>
       <li>For <strong>commercial use of the affected data</strong>, first obtain permission from ICRP (ICRP-107 data and any substantial ICRU/ICRP-74 material) and written confirmation of the applicable terms from NIST (XCOM SRD 8) and NRC/ORNL or ANS (ANS-6.4.3 buildup).</li>
       <li>Public hosting, copying or forking does not expand the permissions granted by any data source; each deployment and redistribution must assess those terms.</li>
     </ul>

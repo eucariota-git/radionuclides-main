@@ -104,7 +104,14 @@ console.log(`\n${changed} of ${rows.filter(r => r.old10 !== undefined).length} r
 
 if (WRITE) {
   nuclideData.notes = nuclideData.notes || {};
-  nuclideData.notes.gamma_regenerated = `${new Date().toISOString().slice(0, 10)} by tools/recalc-gamma.js with the ICRP 74 Table A.21 conversion table of js/data.js`;
+  // One instant for both stamps, so last_modified_at can never be older than
+  // generated_at (audit 2026-10-04, A06).
+  const now = new Date().toISOString();
+  nuclideData.notes.generated_at = now;
+  nuclideData.notes.generated_by_script = 'tools/recalc-gamma.js';
+  nuclideData.notes.last_modified_at = now;
+  nuclideData.notes.last_modified_by_script = 'tools/recalc-gamma.js';
+  nuclideData.notes.gamma_regenerated = `${now.slice(0, 10)} by tools/recalc-gamma.js with the ICRP 74 Table A.21 conversion table of js/data.js`;
   fs.writeFileSync(NUCLIDES_JSON, JSON.stringify(nuclideData, null, 2) + '\n', 'utf8');
   console.log(`✓ wrote ${NUCLIDES_JSON} — now run tools/add-shielding-spectra.js and tools/generate-data.js`);
 } else {

@@ -249,6 +249,9 @@ for (const def of NEW_NUCLIDES) {
   console.log(`✓ ${def.id}: Γ_Kair=${c.gamma_Kair}  Γ_H10=${c.gamma_H10}  Γ_H007=${c.gamma_H007}  rep=${c.representative_energy_keV} keV  max=${c.max_photon_energy_keV} keV  members=[${members.map(m => m.id + (m.branch < 1 ? `(${(m.branch * 100).toFixed(1)}%)` : '')).join(', ')}]`);
 }
 
+nuclideData.notes = nuclideData.notes || {};
+nuclideData.notes.last_modified_at = new Date().toISOString();
+nuclideData.notes.last_modified_by_script = 'tools/add-therapy-nuclides.js';
 fs.writeFileSync(nuclideJsonPath, JSON.stringify(nuclideData, null, 2) + '\n', 'utf8');
 console.log(`\n✓ ${nuclideJsonPath} now has ${nuclideData.nuclides.length} nuclides`);
 console.log('Run: node tools/generate-data.js');
