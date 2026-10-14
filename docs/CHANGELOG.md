@@ -4,6 +4,12 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
+### v1.9.1 — caregiver review fixes
+- Inverse calculations and the dose-vs-restriction curve are withheld when applying the same restriction to both rows would put more than 24 h/day in the restriction period (the source workbook does not check it and could recommend an impossible schedule).
+- The minimum restriction of the product information must be empty or ≥ 0; negative values are rejected by the engine, not only by the form.
+- With rejected inputs there is no curve, and the self-check reports "current case not checked" instead of OK on the reference cases alone.
+- The caregiver CSV carries the warnings, the adopted-restriction note and the self-check state on every row.
+
 ### v1.9.0 — caregiver dose page
 - New **Caregiver** page (`caregiver.html`, `js/caregiver.js`, `data/caregiver.json`): port of the workbook *Dosis_acompanantes_simple_v2.1.xlsx* — external dose to one caregiver or family member after discharge, two consecutive effective half-lives, day-time and sleeping cohabitation during and after a restriction, equal cycles, criteria per category, inverse calculations (maximum discharge rate, minimum and adopted restriction, floor), dose-vs-restriction curve, self-check, report and CSV. Reproduces the workbook to within 1e-9 (relative) on its preloaded case and its curve.
 - Reports: the *Database* row and the ICRP 107 common source are printed only when the report uses them.

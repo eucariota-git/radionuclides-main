@@ -203,6 +203,7 @@
       <h3 class="card-title mt-2">Treatment dose vs restriction</h3>
       <p class="text-sm">Same restriction in both cohabitation rows, with the hours and distances of the table. The curve tends to the
         floor (indefinite restriction): below it the dose can only be lowered by reducing contact during the restriction.</p>
+      <p class="form-hint" id="curveNote"></p>
       <div class="chart-wrap">
         <canvas id="curveChart" aria-label="Treatment dose versus restriction days" role="img"></canvas>
       </div>
@@ -537,12 +538,23 @@
     $('adoptedNote').textContent = inv.adoptedNote;
     $('btnApplyAdopted').disabled = inv.adopted_d === null;
 
-    $('selfCheckStatus').textContent = sc.ok ? 'OK' : 'REVIEW';
+    $('selfCheckStatus').textContent = sc.ok ? 'OK'
+      : (sc.currentOk === null && sc.referencesOk ? 'reference cases OK — current case not checked (inputs rejected)' : 'REVIEW');
     $('selfCheckStatus').className = sc.ok ? 'meets-yes' : '';
     $('selfCheckBody').innerHTML = sc.items.map(i => `<tr><td>${esc(i.label)}</td><td class="num">${Number.isFinite(i.value) ? i.value.toFixed(i.reference ? 2 : 4) : ''}</td>` +
       `<td>${i.ok ? '<span class="meets-yes">OK</span>' : '<strong style="color:var(--danger);">REVIEW</strong>'}</td></tr>`).join('');
 
-    drawChart(cv, out);
+    if (cv.points.length) {
+      $('curveNote').textContent = '';
+      $('curveChart').parentElement.classList.remove('hidden');
+      drawChart(cv, out);
+    } else {
+      if (chart) { chart.destroy(); chart = null; }
+      $('curveChart').parentElement.classList.add('hidden');
+      $('curveNote').textContent = !out.ready
+        ? 'No curve: the inputs are rejected (see the status above).'
+        : 'No curve: with the same restriction in both rows the hours during the restriction would exceed 24 h/day.';
+    }
   }
 
   document.querySelectorAll('main input, main select').forEach(el => {
@@ -614,7 +626,7 @@
           ['Treatment dose with the adopted restriction', `${f3(inv.doseAtAdopted_mSv)} mSv`],
         ] },
         { heading: 'Treatment dose vs restriction', rows: cv.points.map(p => [`${p.days} d`, `${f3(p.dose_mSv)} mSv`]) },
-        { heading: 'Self-check', rows: [['Overall', sc.ok ? 'OK' : 'REVIEW']].concat(sc.items.map(i => [i.label, i.ok ? 'OK' : 'REVIEW'])) },
+        { heading: 'Self-check', rows: [['Overall', sc.ok ? 'OK' : (sc.currentOk === null && sc.referencesOk ? 'reference cases OK; current case not checked (inputs rejected)' : 'REVIEW')]].concat(sc.items.map(i => [i.label, i.ok ? 'OK' : 'REVIEW'])) },
       ],
       notes: [data.inverse_note].concat(data.assumptions),
       sources: data.references,
@@ -634,7 +646,8 @@
     const exportedUtc = new Date().toISOString();
     const inv = out.inverse;
     const head = ['App_version', 'App_build', 'Caregiver_data_version', 'Exported_UTC', 'Radiopharmaceutical',
-      'Row_type', 'Item', 'Restriction_d', 'Value', 'Unit', 'Status', 'Criterion_mSv', 'Criterion_basis', 'Assumptions'];
+      'Row_type', 'Item', 'Restriction_d', 'Value', 'Unit', 'Status', 'Warnings', 'Adopted_restriction_note', 'Self_check',
+      'Criterion_mSv', 'Criterion_basis', 'Assumptions'];
     const assumptions = [
       `rate_1m=${input.rate_1m_uSv_h} uSv/h`, `discharge=${input.discharge_h} h`, `fast_end=${input.fast_end_h} h`,
       `T_fast=${input.T_fast_h} h`, `T_slow=${input.T_slow_h} h`, `cycles=${input.cycles}`, `category=${input.category}`,
@@ -644,7 +657,10 @@
       ...(input.profile === 'own' ? out.points.map(p => `own ${p.distance_m ?? ''} m: ${p.rate_uSv_h ?? ''} uSv/h, f=${p.factor ?? 'none'}`) : []),
     ].join('; ');
     const common = [UTILS.APP_VERSION, UTILS.APP_BUILD, data.meta.version, exportedUtc, input.radiopharmaceutical];
-    const tail = [out.status, out.criterion.value ?? '', out.criterion.basis, assumptions];
+    const sc = last.sc;
+    const tail = [out.status, out.warnings.join(' | '), out.inverse.adoptedNote,
+      sc.ok ? 'OK' : (sc.currentOk === null && sc.referencesOk ? 'current case not checked' : 'REVIEW'),
+      out.criterion.value ?? '', out.criterion.basis, assumptions];
     const rows = [head];
     const add = (type, item, R, v, unit) => rows.push([...common, type, item, R, p6(v), unit, ...tail]);
     for (const [k, label] of ROWS) add('row', `${label} dose per cycle`, input.rows[k].days, out.rows[k].dose_mSv, 'mSv');

@@ -90,6 +90,12 @@ const CAREGIVER = (() => {
     if (R < 0 || tA < 0 || tF < 0 || Ts <= 0 || N < 1 || N !== Math.trunc(N)) {
       return 'Invalid rate, times, half-life or number of cycles';
     }
+    // The workbook enforces ≥ 0 only through Excel data validation (D24); the
+    // engine must not rely on the form's min attribute.
+    const spc = input.spc_min_restriction_d;
+    if (spc !== null && spc !== undefined && !(num(spc) && spc >= 0)) {
+      return 'Invalid minimum restriction of the product information: leave it empty or enter a number ≥ 0';
+    }
     if (!data.profiles[input.profile]) return 'Select a proximity profile';
     if (tF <= tA) return null;
     if (!num(Tf)) return 'Missing fast half-life: discharge precedes the end of the fast phase';
@@ -294,7 +300,15 @@ const CAREGIVER = (() => {
       inv.maxRate_uSv_h = input.rate_1m_uSv_h * crit / out.treatment_mSv;      // D37
     }
     const fr = out.fr, fn = out.fn;
-    if (out.ready && num(crit) && crit > 0 && num(fr) && num(fn)) {
+    // Applying the SAME restriction to both rows puts both "during" schedules in
+    // the same days. The table may be valid (e.g. a 0-day row whose "during"
+    // hours never apply) while that common schedule is not: the workbook
+    // (D58–D61, sheet Curva) does not check it and can recommend > 24 h/d.
+    out.commonDuring_h = num(day.h_during) && num(sleep.h_during) ? day.h_during + sleep.h_during : null;
+    out.commonFeasible = out.commonDuring_h !== null && out.commonDuring_h <= 24;
+    if (out.ready && num(crit) && crit > 0 && num(fr) && num(fn) && !out.commonFeasible) {
+      inv.minRestrictionCode = 'infeasible_common';
+    } else if (out.ready && num(crit) && crit > 0 && num(fr) && num(fn)) {
       inv.ready = true;
       inv.floor_mSv = N * fr * k.Iinf * 1000;                                     // D38
       const target = crit / 1000 / N;                                             // D59
@@ -338,12 +352,15 @@ const CAREGIVER = (() => {
     unattainable: 'Unattainable: reduce contact',
     no_reduction: 'The restriction does not reduce the dose',
     unattainable_reduce: 'Unattainable: reduce contact during the restriction',
+    infeasible_common: 'Not applicable: with the same restriction in both rows the hours during the restriction exceed 24 h/day',
   };
 
   /** Sheet Curva: treatment dose vs restriction (same restriction in both rows). */
   function curve(input, data = _data, days = (data || {}).curve_days) {
     const out = evaluate(input, data);
-    if (!out.kinetics || !num(out.fr) || !num(out.fn)) return { points: [], out };
+    // Only for accepted inputs and a feasible common schedule (the workbook's
+    // Curva only requires D45 and fr/fn, and plots rejected cases)
+    if (!out.ready || !out.commonFeasible || !num(out.fr) || !num(out.fn)) return { points: [], out };
     const N = input.cycles;
     return {
       points: days.map(d => ({ days: d, dose_mSv: doseWithRestriction(N, out.fr, out.fn, out.kinetics, d * S_PER_D) })),
@@ -407,7 +424,12 @@ const CAREGIVER = (() => {
     const base = rc.cases[mr.from_case];
     const maxRate = base.rate * mr.criterion_mSv / caseDose(base);
     items.push({ label: mr.label, ok: Math.abs(maxRate - mr.expected_uSv_h) <= mr.tol + 1e-9, value: maxRate, reference: true });
-    return { ok: items.every(i => i.ok), items };
+    // The reference cases verify the formulas; they say nothing about rejected
+    // current inputs, which are reported as "not checked", never as OK.
+    const current = items.filter(i => !i.reference);
+    const referencesOk = items.filter(i => i.reference).every(i => i.ok);
+    const currentOk = out.ready ? current.every(i => i.ok) : null;
+    return { ok: referencesOk && currentOk === true, referencesOk, currentOk, items };
   }
 
   /** Default input in the shape evaluate() takes (deep copy of the data file defaults). */

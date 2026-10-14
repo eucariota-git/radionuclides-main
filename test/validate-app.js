@@ -317,7 +317,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v37');
+    swVersion === 'nm-planner-v38');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -773,6 +773,21 @@ async function main() {
       /<nav class="site-nav"[\s\S]*?href="caregiver\.html"[\s\S]*?<\/nav>/.test(html)) &&
     /href="caregiver\.html" class="active"/.test(caregiverHtml) &&
     /not values fixed by regulation for this treatment/.test(caregiverHtml) && /not values fixed by regulation/.test(cgData.criteria_note));
+  check('review fix 1: no inverse result or curve when the common restriction would exceed 24 h/d',
+    (() => { const x = CG.defaultInput(); x.rate_1m_uSv_h = 10;
+      x.rows.day = { days: 0, h_during: 20, d_during: 1, h_after: 0, d_after: null };
+      x.rows.sleep = { days: 3, h_during: 8, d_during: 1, h_after: 8, d_after: 0.1 };
+      const r = CG.evaluate(x);
+      return r.ready && r.inverse.minRestrictionCode === 'infeasible_common' && r.inverse.adopted_d === null &&
+        r.inverse.floor_mSv === null && Number.isFinite(r.inverse.maxRate_uSv_h) && CG.curve(x).points.length === 0; })());
+  check('review fix 2: a negative product-information minimum is rejected',
+    /Invalid minimum restriction/.test(mod(x => { x.rows.sleep.h_after = 0; x.spc_min_restriction_d = -3; }).status) &&
+    mod(x => { x.rows.sleep.h_after = 0; x.spc_min_restriction_d = -3; }).inverse.adopted_d === null);
+  check('review fix 3: rejected inputs give no curve and a self-check that is not OK',
+    (() => { const x = CG.defaultInput(); x.rows.day.h_after = 20; const s = CG.selfCheck(x);
+      return CG.curve(x).points.length === 0 && s.ok === false && s.currentOk === null && s.referencesOk === true; })());
+  check('review fix 4: the caregiver CSV carries warnings, adopted note and self-check state',
+    /'Status', 'Warnings', 'Adopted_restriction_note', 'Self_check'/.test(caregiverHtml) && /out\.warnings\.join\(' \| '\)/.test(caregiverHtml));
   check('caregiver chart follows the live theme; report and CSV are self-describing',
     /addEventListener\('nm-theme-change', applyCurveChartTheme\)/.test(caregiverHtml) &&
     /'App_version', 'App_build', 'Caregiver_data_version', 'Exported_UTC'/.test(caregiverHtml) &&
