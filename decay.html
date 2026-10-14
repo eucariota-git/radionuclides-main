@@ -765,11 +765,12 @@
           y: showConcentration ? {
             type: 'logarithmic',
             title: { display: true, text: yAxisLabel, color: chartTheme.text },
-            ticks: { callback: v => (Math.abs(Math.log10(v) - Math.round(Math.log10(v))) < 1e-9 ? v.toExponential(0) : ''), color: chartTheme.text },
+            ticks: { callback: v => (Math.abs(Math.log10(v) - Math.round(Math.log10(v))) < 1e-9 ? UTILS.fmtSig(v, 1) : ''), color: chartTheme.text },
             grid: { color: chartTheme.grid },
           } : {
             title: { display: true, text: yAxisLabel, color: chartTheme.text },
-            ticks: { callback: v => v.toExponential(2), color: chartTheme.text },
+            // plain numbers (R-06: a linear axis read "1.00e+3, 9.00e+2…")
+            ticks: { callback: v => (v === 0 ? '0' : UTILS.fmtSig(v, 3)), color: chartTheme.text },
             grid: { color: chartTheme.grid },
           }
         }
@@ -904,11 +905,12 @@
       const specA0     = A0_kBq / weight_kg;  // kBq/kg at t=0
       const specAt     = At_kBq / weight_kg;  // kBq/kg at t=t_h
 
+      // 3 significant figures (R-06: the Table A1 level read "100.0 kBq/kg")
       function fmtSpec(v) {
-        if (v >= 1e6) return `${UTILS.fmt(v/1e6)} GBq/kg`;
-        if (v >= 1e3) return `${UTILS.fmt(v/1e3)} MBq/kg`;
-        if (v >= 1)   return `${UTILS.fmt(v)} kBq/kg`;
-        return `${UTILS.fmt(v*1000)} Bq/kg`;
+        if (v >= 1e6) return `${UTILS.fmtSig(v/1e6, 3)} GBq/kg`;
+        if (v >= 1e3) return `${UTILS.fmtSig(v/1e3, 3)} MBq/kg`;
+        if (v >= 1)   return `${UTILS.fmtSig(v, 3)} kBq/kg`;
+        return `${UTILS.fmtSig(v*1000, 3)} Bq/kg`;
       }
 
       let clearHtml = `
@@ -981,11 +983,11 @@
             <div class="prop-val" style="color:${cls0};">${below0 ? '&#10003; At or below the individual level' : '&#9888; Above the individual level'}</div>
             <div class="prop-note">${UTILS.fmtRatio(ratio0)} &times; Table A1 level</div>
           </div>
-          <div class="prop-item">
+          ${t_h > 0 ? `<div class="prop-item">
             <div class="prop-key">Status at t = ${UTILS.fmt(t_h)} h</div>
             <div class="prop-val" style="color:${clsT};">${belowT ? '&#10003; At or below the individual level' : '&#9888; Above the individual level'}</div>
             <div class="prop-note">${UTILS.fmtRatio(ratioT)} &times; Table A1 level</div>
-          </div>
+          </div>` : ''}
           ${tClearItemHtml}`;
       }
 
@@ -1026,11 +1028,11 @@
           const tA = tReach(A0_Bq, row.activity_Bq);
           let crit = `<div class="prop-grid">
             <div class="prop-item"><div class="prop-key">a) Total activity &mdash; column 3${tag}</div>
-              <div class="prop-val">${UTILS.fmt(row.activity_Bq)} Bq</div>
-              <div class="prop-note">t = 0: ${status(A0_Bq, row.activity_Bq)}<br>t = ${UTILS.fmt(t_h)} h: ${status(At_Bq, row.activity_Bq)}${tA ? `<br>Reached after &#126; ${fmtT(tA)}` : ''}</div></div>`;
+              <div class="prop-val">${UTILS.fmtSig(row.activity_Bq, 1)} Bq</div>
+              <div class="prop-note">t = 0: ${status(A0_Bq, row.activity_Bq)}${t_h > 0 ? `<br>t = ${UTILS.fmt(t_h)} h: ${status(At_Bq, row.activity_Bq)}` : ''}${tA ? `<br>Reached after &#126; ${fmtT(tA)}` : ''}</div></div>`;
           if (weight_kg === null) {
             crit += `<div class="prop-item"><div class="prop-key">b) Moderate quantity &mdash; column 2${tag}</div>
-              <div class="prop-val">${UTILS.fmt(row.conc_kBq_kg)} kBq/kg</div>
+              <div class="prop-val">${UTILS.fmtSig(row.conc_kBq_kg, 1)} kBq/kg</div>
               <div class="prop-note">Enter the mass of material to evaluate this criterion.</div></div>`;
           } else if (weight_kg > 1000) {
             crit += `<div class="prop-item"><div class="prop-key">b) Moderate quantity &mdash; column 2${tag}</div>
@@ -1040,8 +1042,8 @@
             const c0 = A0_MBq * 1e3 / weight_kg, ct = At_MBq * 1e3 / weight_kg;   // kBq/kg
             const tC = tReach(c0, row.conc_kBq_kg);
             crit += `<div class="prop-item"><div class="prop-key">b) Moderate quantity &mdash; column 2${tag}</div>
-              <div class="prop-val">${UTILS.fmt(row.conc_kBq_kg)} kBq/kg</div>
-              <div class="prop-note">t = 0: ${status(c0, row.conc_kBq_kg)}<br>t = ${UTILS.fmt(t_h)} h: ${status(ct, row.conc_kBq_kg)}${tC ? `<br>Reached after &#126; ${fmtT(tC)}` : ''}</div></div>`;
+              <div class="prop-val">${UTILS.fmtSig(row.conc_kBq_kg, 1)} kBq/kg</div>
+              <div class="prop-note">t = 0: ${status(c0, row.conc_kBq_kg)}${t_h > 0 ? `<br>t = ${UTILS.fmt(t_h)} h: ${status(ct, row.conc_kBq_kg)}` : ''}${tC ? `<br>Reached after &#126; ${fmtT(tC)}` : ''}</div></div>`;
           }
           crit += '</div>';
           const extra = [row.note_text, row.progeny.length ? `Progeny: ${row.progeny.join(', ')}` : '', row.source_inconsistency ? `⚠ ${row.source_inconsistency}` : '']

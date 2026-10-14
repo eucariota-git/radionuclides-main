@@ -222,7 +222,8 @@ for (const def of NEW_NUCLIDES) {
     name: def.name,
     half_life_s: icrp.half_life_s,
     half_life_display: icrp.half_life_display,
-    decay_modes: icrp.decay_modes || [],
+    // ICRP codes → the notation of the other curated entries (audit 2026-10-14 v1.11, R-07)
+    decay_modes: (icrp.decay_modes || []).map(d => ({ ...d, mode: ({ 'B-': 'β-', 'B+': 'β+', 'A': 'α', 'ECB+': 'EC, β+' })[d.mode] || d.mode })),
     clinical_use: def.clinical_use,
     category: def.category,
     modality: def.modality,

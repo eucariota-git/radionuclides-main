@@ -4,6 +4,14 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
+### v1.12.0 — review of v1.11.0 (R-01…R-11)
+- **Extended entries with short-lived progeny** (R-01): Γ came from the parent's lines only, so Ge-68 and Sr-82 showed no photon dose and Sn-113 a third of it. The ICRP 107 parser dropped metastable daughters (`[mn]?` missing in the daughter regex: Mo-99 listed only Tc-99, Cs-137 and Sn-113 none); fixed and the index regenerated (114 decay records, no other field changed). `ICRP107.progeny()` adds the descendants with T½ ≤ 1/10 of the parent's and ≤ 30 d at their Bateman equilibrium ratio; Dose includes them by default with a *Short-lived progeny* selector (parent only for a fresh source), Properties shows both Γ and the spectrum with the emitter of each line.
+- **Pd-103 includes Rh-103m** (56 min, always in equilibrium): Γ^H*(10) 20.51 → 22.7 and Γ^H'(0.07) 34.42 → 38.09 µSv·h⁻¹·GBq⁻¹·m², now 1.7 % and 0.2 % from Cornejo et al. (2015) (23.1 / 38.0) instead of −11 %.
+- **Effluent** (R-02): a scenario total above the criterion turns the box red ("EXCEEDS IT"; amber above 50 %).
+- **Γ^H'(0.07) of Cs-137 and Mo-99+Tc-99m** (R-03) calculated (92.27, 44.15) instead of copying H*(10) and attributing it to Cornejo, who publishes none for them. Ga-68 Γ^K-air reproduced (128.75 → 129) and documented (R-04).
+- **Half-lives** (R-05): every curated value now equals its source exactly (18 entries were within 0.015 % but not equal; I-125 shows 59.39 d).
+- **Formatting** (R-06…R-11): reference values at their significant figures (3880 Bq/L, not "3880.0"; 69400, not "6.9×10⁴"; Γ at 3 figures); ×10ⁿ notation throughout; chart ticks with a decimal point whatever the browser locale and in plain numbers; decay modes β-/β+/α instead of B-/A/ECB+; no duplicate t = 0 lines in Decay; short-distance warning in the Dose result; "Representative energy" explained; the Properties table hides the Γ-source column on phones.
+
 ### v1.11.0 — photon-spectrum chart in Properties
 - The detail panel shows the photon spectrum as a chart above the table: energy on a linear axis, yield per 100 decays on a logarithmic axis, one colour per photon type (G, X, AQ; palette validated for colour-vision deficiency in light and dark), and a second view with each line's share of Γ^H*(10) (n·h*(10)(E), the same calculation that gives Γ; Lu-177 208 keV = 62.7 %). For Ra-223 and Ac-225 the share refers to the parent's lines only.
 - One renderer for curated and extended entries replaces the two duplicated tables; the table header is now readable in dark mode.

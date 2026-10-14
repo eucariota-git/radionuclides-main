@@ -1528,6 +1528,13 @@ kbd {
   .nuclide-symbol-large {
     font-size: 1.8rem;
   }
+
+  /* The "Γ source" column wrapped to five lines and left ~2 nuclides per screen
+     (audit 2026-10-14 v1.11, R-10); it is repeated in the detail panel. */
+  #nuclideTable th:last-child,
+  #nuclideTable td:last-child:not([colspan]) {
+    display: none;
+  }
 }
 
 @media (max-width: 420px) {

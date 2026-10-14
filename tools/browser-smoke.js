@@ -291,6 +291,26 @@ async function main() {
       check('properties Y-90: no spectrum chart and no errors', realErrors().length === 0 &&
         await ev(`!document.getElementById('spectrumChart')`));
     });
+    await guard('Review v1.11 (R-01, R-02, R-06)', async () => {
+      // R-01: an extended generator parent gets its progeny's dose by default
+      await open('dose.html?id=Ge-68', 1280);
+      await ev(`document.getElementById('btnCalc').click()`); await sleep(400);
+      const info = await text('#nuclideInfo');
+      check('dose Ge-68: Γ includes Ga-68 in equilibrium (158) and says so', /incl\. Ga-68 in equilibrium/.test(info) && /= 158\b/.test(info), info.slice(0, 160));
+      await ev(`(() => { const s = document.getElementById('progenyMode'); s.value = 'parent'; s.dispatchEvent(new Event('change')); document.getElementById('btnCalc').click(); })()`);
+      await sleep(400);
+      check('dose Ge-68 parent only: no photon estimate, and the excluded progeny is stated',
+        /Its short-lived progeny is excluded/.test(await text('#resultsBody')));
+      await pageChecks('dose Ge-68');
+      // R-02: a total above the criterion is not shown as neutral
+      await open('effluent.html', 1280);
+      check('effluent: Scenario 2 above the criterion is flagged (danger box, "EXCEEDS IT")',
+        await ev(`document.getElementById('s2Box').classList.contains('danger')`) && /EXCEEDS IT/.test(await text('#s2Pct')));
+      // R-06: tick labels with a decimal point whatever the browser locale
+      await open('decay.html?id=Lu-177', 1280);
+      const ticks = await ev(`Chart.getChart(document.querySelector('canvas')).scales.x.ticks.map(t => t.label).join(' ')`);
+      check('decay chart: x tick labels use a decimal point', !/\d,\d/.test(ticks), ticks);
+    });
     await guard('Report: the print path builds the report without errors', async () => {
       // Report: the print path builds the report without errors
       await open('caregiver.html', 1280);

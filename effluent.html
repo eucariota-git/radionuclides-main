@@ -176,12 +176,12 @@
       </div>
 
       <div class="result-grid mt-2">
-        <div class="result-box">
+        <div class="result-box" id="s1Box">
           <div class="result-label">Scenario 1 — total E (included nuclides)</div>
           <div class="result-value" id="s1Total">—</div>
           <div class="result-unit" id="s1Pct">mSv/y</div>
         </div>
-        <div class="result-box">
+        <div class="result-box" id="s2Box">
           <div class="result-label">Scenario 2 — total E (included nuclides)</div>
           <div class="result-value" id="s2Total">—</div>
           <div class="result-unit" id="s2Pct">mSv/y</div>
@@ -410,7 +410,9 @@
     if (!Number.isFinite(v)) return '—';
     if (v === 0) return '0';
     const a = Math.abs(v);
-    return (a < 1e-3 || a >= 1e5) ? v.toExponential(3) : v.toPrecision(4);
+    // 4 significant figures, ×10ⁿ like the rest of the app, no padding zeros
+    // ("20.00" GBq/y, "4.996e+4" — audit 2026-10-14 v1.11, R-06)
+    return (a < 1e-3 || a >= 1e5) ? UTILS.toSci(Number(v.toPrecision(4)), 3) : String(Number(v.toPrecision(4)));
   };
   const pct = f => Number.isFinite(f) ? UTILS.fmtRatio(f * 100, 100) : '—';
   let last = null;
@@ -483,7 +485,15 @@
     const totalText = res => (res.complete ? '' : '≥ ') + sci(res.total_mSv_y);
     const pctText = res => out.comparison === 'none'
       ? 'mSv/y — no comparison (criterion ≤ 0)'
-      : `mSv/y — ${res.complete ? '' : 'at least '}${pct(res.fraction_of_criterion)} % of the criterion`;
+      : `mSv/y — ${res.complete ? '' : 'at least '}${pct(res.fraction_of_criterion)} % of the criterion${res.fraction_of_criterion > 1 ? ' — EXCEEDS IT' : ''}`;
+    // R-02 (audit 2026-10-14 v1.11): a total above the criterion was shown in the
+    // same neutral box as one at 2 % of it. Same thresholds as Dose (> 100 %
+    // danger, > 50 % warning); no box state when there is no comparison.
+    const boxClass = res => (out.comparison === 'none' || !Number.isFinite(res.fraction_of_criterion)) ? 'result-box'
+      : res.fraction_of_criterion > 1 ? 'result-box danger'
+      : res.fraction_of_criterion > 0.5 ? 'result-box warning' : 'result-box';
+    document.getElementById('s1Box').className = boxClass(out.s1);
+    document.getElementById('s2Box').className = boxClass(out.s2);
     document.getElementById('s1Total').textContent = totalText(out.s1);
     document.getElementById('s2Total').textContent = totalText(out.s2);
     document.getElementById('s1Pct').textContent = pctText(out.s1);

@@ -318,7 +318,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v46');
+    swVersion === 'nm-planner-v47');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -928,6 +928,56 @@ async function main() {
     /--spectrum-g:\s*#2e8b57/.test(styleCss) && /--spectrum-g:\s*#3fa874/.test(styleCss) &&
     /spectrum: \{ G: token\('--spectrum-g'\)/.test(uiJs) &&
     /addEventListener\('nm-theme-change', drawSpectrum\)/.test(indexHtml15));
+
+  console.log();
+  console.log('Test 16: review of v1.11.0 (2026-10-14) — R-01..R-11');
+  const pctx = vm.createContext({ console, ICRP107_DATA: require(path.join(ROOT, 'data/icrp107-index.json')) });
+  for (const f of ['js/nuclide-id.js', 'js/data.js', 'js/icrp107-loader.js']) {
+    vm.runInContext(read(f).replace(/^const (PHYSICS|ICRP107|NUCLIDE_ID) =/m, 'var $1 ='), pctx);
+  }
+  await vm.runInContext('ICRP107._ensureLoaded()', pctx);
+  const I = vm.runInContext('ICRP107', pctx);
+  const g10 = (id, progeny) => { const c = I.calcConstants(id, { progeny }); return c ? c.gammaH10 : null; };
+  const modesOf = id => (I.get(id).decay_modes || []).map(d => d.daughter);
+  check('R-01: the ICRP 107 index keeps metastable daughters (Mo-99 → Tc-99m, Cs-137 → Ba-137m, Sn-113 → In-113m)',
+    modesOf('Mo-99').includes('Tc-99m') && modesOf('Cs-137').includes('Ba-137m') && modesOf('Sn-113').includes('In-113m') &&
+    /dName\.match\(\/\^\[A-Z\]\[a-z\]\?-\\d\+\[mn\]\?\$\/\)/.test(read('tools/parse-icrp107.js')));
+  const tc = I.progeny('Mo-99').find(m => m.id === 'Tc-99m');
+  check('R-01: equilibrium activity ratio is the Bateman one (Mo-99 → Tc-99m 0.965, as the curated entry)',
+    tc && Math.abs(tc.fraction - 0.9654) < 5e-4);
+  check('R-01: Γ with progeny — Ge-68 158 (Ga-68), Sn-113 70.1 (×3.5 the parent), Mo-99 44.9 = curated Mo-99+Tc-99m within 0.5 %',
+    g10('Ge-68', false) === null && Math.abs(g10('Ge-68', true) - 157.9) < 0.2 &&
+    Math.abs(g10('Sn-113', true) / g10('Sn-113', false) - 3.49) < 0.02 &&
+    Math.abs(g10('Mo-99', true) / 45 - 1) < 0.005);
+  check('R-01: progeny limited to T½ ≤ parent/10 and ≤ 30 d (Th-230 does not take in Ra-226; Ra-226 stops before Pb-210)',
+    I.progeny('Th-230').length === 0 && I.progeny('Ra-226').some(m => m.id === 'Bi-214') && !I.progeny('Ra-226').some(m => m.id === 'Pb-210'));
+  check('R-01: Dose offers include/parent-only, defaults to include and labels the result; Properties shows both Γ',
+    /id="progenyMode"[\s\S]{0,200}<option value="include" selected>/.test(doseHtml) &&
+    /ICRP107\.calcConstants\(id, \{ progeny: withProgeny \}\)/.test(doseHtml) && /progenyTag/.test(doseHtml) &&
+    /with progeny in equilibrium · parent only:/.test(indexHtml15) && /Short-lived progeny/.test(indexHtml15));
+  check('R-02: Effluent total boxes turn warning/danger above 50 %/100 % of the criterion',
+    /res\.fraction_of_criterion > 1 \? 'result-box danger'/.test(effluentHtml) && /id="s2Box"/.test(effluentHtml));
+  const nuc = require(path.join(ROOT, 'data/nuclides.json')).nuclides;
+  const byId = id => nuc.find(n => n.id === id);
+  check("R-03: H'(0.07) of Cs-137 and Mo-99+Tc-99m is calculated (92.27, 44.15) and sourced, not a copy of H*(10)",
+    byId('Cs-137').gamma_H007 === 92.27 && byId('Mo-99+Tc-99m').gamma_H007 === 44.15 &&
+    /publish no H'\(0\.07\)/.test(byId('Cs-137').gamma_H007_source) && /K-air, H\*: Cornejo \(2015\); H′:/.test(indexHtml15));
+  check('R-03b: Pd-103 includes Rh-103m in equilibrium (Γ 22.7 / 38.09, Cornejo 23.1 / 38.0)',
+    byId('Pd-103').gamma_H10 === 22.7 && byId('Pd-103').gamma_H007 === 38.09 &&
+    byId('Pd-103').chain_members.some(m => m.id === 'Rh-103m'));
+  check('R-04: Ga-68 K-air has a calculation record', /^Calculated by this project/.test(byId('Ga-68').gamma_Kair_source));
+  check('R-05: every curated half-life equals its source value (C-11 1221.66 s, Se-75 and Cs-137 = ICRP 107)',
+    byId('C-11').half_life_s === 1221.66 &&
+    ['Se-75', 'Cs-137'].every(id => Math.abs(byId(id).half_life_s / I.get(id).half_life_s - 1) < 1e-9));
+  check('R-06: significant-figure formatter, Chart.js locale fixed, no raw Γ floats or 17-digit distances',
+    /function fmtSig\(val, sig = 3\)/.test(read('js/utils.js')) && /Chart\.defaults\.locale = 'en-US'/.test(uiJs) &&
+    /gamma_H10: sig4\(constants\.gammaH10\)/.test(doseHtml) && /d = \$\{Number\(d_m\.toPrecision\(4\)\)\} m/.test(doseHtml) &&
+    !/v\.toExponential\(2\)/.test(read('decay.html')));
+  check('R-07: curated decay modes use β-/β+/α/EC notation, not ICRP codes',
+    nuc.every(n => (n.decay_modes || []).every(m => !['B-', 'B+', 'A', 'ECB+'].includes(m.mode))));
+  check('R-08/R-11: no duplicated t = 0 line in Decay; short-distance warning in the Dose result',
+    /\$\{t_h > 0 \? `<br>t = \$\{UTILS\.fmt\(t_h\)\} h: \$\{status\(At_Bq/.test(read('decay.html')) &&
+    /const distWarning = d_m < 0\.25/.test(doseHtml));
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);
   process.exitCode = failed === 0 ? 0 : 1;

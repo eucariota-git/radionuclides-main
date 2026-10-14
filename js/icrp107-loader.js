@@ -106,11 +106,12 @@ const ICRP107 = (function() {
    * Calculate gamma dose constants from photon emissions
    * Uses PHYSICS.calcGammaConstants() if available
    */
-  function calcConstants(id) {
+  function calcConstants(id, opts = {}) {
     const nuclide = get(id);
-    if (!nuclide || !nuclide.photons || nuclide.photons.length === 0) {
-      return null;
-    }
+    if (!nuclide) return null;
+    // opts.progeny: include the equilibrium progeny (see progeny()).
+    const photons = opts.progeny ? photonsWithProgeny(id) : (nuclide.photons || []);
+    if (photons.length === 0) return null;
 
     // Check if PHYSICS module is available (from data.js)
     if (typeof PHYSICS === 'undefined' || !PHYSICS.calcGammaConstants) {
@@ -120,13 +121,11 @@ const ICRP107 = (function() {
 
     try {
       // PHYSICS.calcGammaConstants expects [{energy_keV, yield_percent, type}]
-      const result = PHYSICS.calcGammaConstants(nuclide.photons);
+      const result = PHYSICS.calcGammaConstants(photons);
+      if (!result.contributions.length) return null;
 
       // Calculate max photon energy for H'(0.07) assessment
-      let maxPhotonEnergy = null;
-      if (nuclide.photons && nuclide.photons.length > 0) {
-        maxPhotonEnergy = Math.max(...nuclide.photons.map(p => p.energy_keV));
-      }
+      const maxPhotonEnergy = Math.max(...result.contributions.map(c => c.energy_keV));
 
       return {
         ...result,
@@ -134,11 +133,68 @@ const ICRP107 = (function() {
         source: 'ICRP 107',
         method: 'calculated_from_photon_emissions',
         nuclide_id: nuclide.id,
+        photons,
+        progeny: opts.progeny ? progeny(id) : [],
       };
     } catch (err) {
       console.error(`Failed to calculate constants for ${id}:`, err);
       return null;
     }
+  }
+
+  /**
+   * Short-lived progeny that grows into equilibrium with the parent (audit
+   * 2026-10-14 v1.11, R-01). The extended entries used to give Γ from the
+   * parent's lines only, so Ge-68 and Sr-82 (generator parents, all their dose
+   * from Ga-68/Rb-82) showed no photon dose at all and Sn-113 a third of it.
+   *
+   * Rule (an app criterion, not a regulatory one): follow the NDX daughters
+   * recursively and keep every descendant whose half-life is at most 1/10 of the
+   * CHAIN PARENT's (so equilibrium is reached and stays) and at most 30 d (so it
+   * is reached within about a year — Th-230 would otherwise take in Ra-226 and
+   * its 16 000-year ingrowth). A descendant that fails the rule ends its branch:
+   * Ra-226 keeps Rn-222…Po-214 but not Pb-210. The
+   * equilibrium activity per unit parent activity is the asymptotic Bateman
+   * ratio Π bᵢ·λᵢ/(λᵢ − λ₁) — 1 for secular equilibrium, > 1 for transient
+   * (Mo-99 → Tc-99m: 0.8773 × 1.100 = 0.965, the value of the curated entry).
+   * Stable daughters and daughters absent from the index are skipped.
+   * @returns {Array<{id, fraction, half_life_s}>} progeny only (parent excluded)
+   */
+  const MAX_PROGENY_HALF_LIFE_S = 30 * 86400;
+  function progeny(id) {
+    const parent = get(id);
+    if (!parent || !(parent.half_life_s > 0) || !Number.isFinite(parent.half_life_s)) return [];
+    const lp = Math.LN2 / parent.half_life_s;
+    const out = new Map();
+    (function walk(n, factor, depth) {
+      if (depth > 12) return;
+      for (const dm of n.decay_modes || []) {
+        const d = dm.daughter ? get(dm.daughter) : null;
+        if (!d || !(d.half_life_s > 0) || d.half_life_s > parent.half_life_s / 10 || d.half_life_s > MAX_PROGENY_HALF_LIFE_S) continue;
+        const ld = Math.LN2 / d.half_life_s;
+        const f = factor * dm.branching * ld / (ld - lp);
+        const prev = out.get(d.id);
+        out.set(d.id, { id: d.id, fraction: (prev ? prev.fraction : 0) + f, half_life_s: d.half_life_s });
+        walk(d, f, depth + 1);
+      }
+    })(parent, 1, 0);
+    return [...out.values()];
+  }
+
+  /**
+   * Photon list of the parent plus its equilibrium progeny, each daughter's
+   * yields scaled by its activity fraction (same rule as the curated chains).
+   */
+  function photonsWithProgeny(id) {
+    const parent = get(id);
+    if (!parent) return [];
+    const lines = (parent.photons || []).map(p => ({ ...p, from: parent.id }));
+    for (const m of progeny(id)) {
+      for (const p of (get(m.id).photons || [])) {
+        lines.push({ ...p, yield_percent: p.yield_percent * m.fraction, from: m.id });
+      }
+    }
+    return lines.sort((a, b) => a.energy_keV - b.energy_keV);
   }
 
   // Liquid-effluent levels are no longer derived here: the ICRP 107 index has
@@ -162,6 +218,8 @@ const ICRP107 = (function() {
     get,
     normalize,
     calcConstants,
+    progeny,
+    photonsWithProgeny,
     isReady,
     // For testing:
     _ensureLoaded: ensureLoaded,

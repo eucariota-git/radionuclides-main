@@ -5,8 +5,8 @@ const UTILS = (() => {
   // two different code versions never produce indistinguishable reports
   // (audit 2026-07-16, H-07). APP_BUILD must equal CACHE_VERSION in sw.js —
   // update both together; validate-app.js enforces the match.
-  const APP_VERSION = '1.11.0';
-  const APP_BUILD = 'nm-planner-v46';
+  const APP_VERSION = '1.12.0';
+  const APP_BUILD = 'nm-planner-v47';
 
   function escapeHtml(text) {
     const div = document.createElement('div');
@@ -101,6 +101,28 @@ const UTILS = (() => {
     return val.toFixed(12);
   }
 
+  /**
+   * Reference data (Γ, regulatory levels, coefficients) at a fixed number of
+   * significant figures, without the false precision of fmt() ("3880.0" Bq/L,
+   * "100.0 kBq/kg") and without fmt()'s 2-figure cut above 10 000 ("6.9×10⁴"
+   * for 69 400) — audit 2026-10-14 v1.11, R-06. Trailing zeros are kept
+   * (6 → "6.00"): they state the precision.
+   * @param {number} val
+   * @param {number} [sig=3]
+   */
+  function fmtSig(val, sig = 3) {
+    if (val === null || val === undefined || !Number.isFinite(val)) return '—';
+    if (val === 0) return '0';
+    const a = Math.abs(val);
+    if (a >= 1e6 || a < 1e-3) return toSci(val, sig - 1);
+    const mag = Math.floor(Math.log10(a));
+    if (mag >= sig - 1) {
+      const step = 10 ** (mag - sig + 1);
+      return String(Math.round(val / step) * step);
+    }
+    return val.toPrecision(sig);
+  }
+
   function formatDate(date) {
     if (!(date instanceof Date) || !isFinite(date)) return '—';
     return date.toLocaleString();
@@ -119,6 +141,8 @@ const UTILS = (() => {
     safeFilename,
     fmt,
     fmtRatio,
+    fmtSig,
+    toSci,
     formatDate,
     safeAttr,
   };

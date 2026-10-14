@@ -15,14 +15,14 @@ const NUCLIDE_DATA = {
     "ingestion_dose_coeff_adult_units": "Sv/Bq",
     "effluent_liquid_limit_units": "Bq/L",
     "effluent_liquid_limit_note": "Calculated as (1 mSv / adult ingestion dose coefficient) / 600 L, using IS-28 Annex II II.A.4 and the adult (> 17 y) ingestion coefficients of RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1).",
-    "generated_at": "2026-10-03T19:26:43.577Z",
+    "generated_at": "2026-10-14T20:11:40.768Z",
     "generated_by_script": "tools/recalc-gamma.js",
     "generated_at_note": "generated_at/generated_by_script record when the gamma constants themselves were last recomputed. The file is NOT the product of a single script: other tools and hand edits touch it afterwards, so last_modified_at below is the one to read for freshness.",
     "icrp107_index_sha256": "3845347ee2fb71e18b84a844905e44dab9d2d8a12939173575040b7b9b6707f2",
     "clearance_note": "clearance_a1_kBq_per_kg values verified 2026-06 against RD 1217/2024 Anexo IV Tabla A1 (BOE-A-2024-25205, consolidated HTML). Nuclides not listed in Tabla A1 carry null (e.g. Ga-67, Yb-169, Ra-223 — the latter appears only in Tabla B for moderate quantities ≤1000 kg).",
-    "last_modified_at": "2026-10-14T17:22:11.766Z",
+    "last_modified_at": "2026-10-14T20:11:40.966Z",
     "last_modified_by_script": "tools/add-shielding-spectra.js",
-    "gamma_regenerated": "2026-10-03 by tools/recalc-gamma.js with the ICRP 74 Table A.21 conversion table of js/data.js",
+    "gamma_regenerated": "2026-10-14 by tools/recalc-gamma.js with the ICRP 74 Table A.21 conversion table of js/data.js",
     "yield_threshold_note": "Lines with a stored yield EQUAL to 0.01 % are kept (filter n ≥ 0.01 %). Cornejo et al. (2015) state yields above 0.01 %; keeping the boundary lines is a project choice applied to all 1252 nuclides (audit 2026-10-03, H14).",
     "conversion_table_note": "Γ^H*(10) and Γ^H'(0.07) use the 25 printed fluence coefficients of ICRP 74 (1996) Table A.21 (js/data.js), log-log interpolated, since 2026-10-03. Before that the H*(10) column above 1 MeV and the H'(0.07) column did not match A.21 (audit 2026-10-03, H-01/H-02).",
     "half_life_source_note": "Per-nuclide provenance in half_life_source (audit 2026-10-14, N-03): each curated half-life matches ICRP Publication 107 (2008) or the DDEP recommended value (LNHB/CEA) within 0.015 %; the values that matched neither (O-15, Mo-99, Lu-177, Y-90 → DDEP; K-42 → ICRP 107) were replaced. Photon yields and Γ constants remain ICRP 107."
@@ -34,7 +34,7 @@ const NUCLIDE_DATA = {
       "Z": 6,
       "A": 11,
       "name": "Carbon-11",
-      "half_life_s": 1221.8,
+      "half_life_s": 1221.66,
       "half_life_display": "20.36 min",
       "decay_modes": [
         {
@@ -633,7 +633,7 @@ const NUCLIDE_DATA = {
       "Z": 26,
       "A": 59,
       "name": "Iron-59",
-      "half_life_s": 3843936,
+      "half_life_s": 3844281.6,
       "half_life_display": "44.49 d",
       "decay_modes": [
         {
@@ -733,7 +733,7 @@ const NUCLIDE_DATA = {
       "Z": 27,
       "A": 60,
       "name": "Cobalt-60",
-      "half_life_s": 166348800,
+      "half_life_s": 166349576.9,
       "half_life_display": "5.27 y",
       "decay_modes": [
         {
@@ -793,7 +793,7 @@ const NUCLIDE_DATA = {
       "Z": 29,
       "A": 64,
       "name": "Copper-64",
-      "half_life_s": 45723.6,
+      "half_life_s": 45721.44,
       "half_life_display": "12.70 h",
       "decay_modes": [
         {
@@ -861,7 +861,7 @@ const NUCLIDE_DATA = {
       "Z": 31,
       "A": 67,
       "name": "Gallium-67",
-      "half_life_s": 281768,
+      "half_life_s": 281767.68,
       "half_life_display": "3.26 d",
       "decay_modes": [
         {
@@ -999,7 +999,7 @@ const NUCLIDE_DATA = {
       "category": "diagnostic",
       "modality": "PET",
       "gamma_Kair": 129,
-      "gamma_Kair_source": "Project addition; no reference or calculation record is stored for this value",
+      "gamma_Kair_source": "Calculated by this project from ICRP 107 (2008) photon data and ICRP 74 (1996) Table A.21 (air kerma per unit fluence): 128.75, stored as 129 (reproduced in audit 2026-10-14 v1.11, R-04)",
       "gamma_H10": 157.84,
       "gamma_H007": 157.84,
       "H007_from_cornejo": false,
@@ -1073,7 +1073,7 @@ const NUCLIDE_DATA = {
       "Z": 34,
       "A": 75,
       "name": "Selenium-75",
-      "half_life_s": 10347792,
+      "half_life_s": 10348905.6,
       "half_life_display": "119.78 d",
       "decay_modes": [
         {
@@ -1211,7 +1211,7 @@ const NUCLIDE_DATA = {
       "Z": 43,
       "A": 99,
       "name": "Technetium-99m",
-      "half_life_s": 21624.1,
+      "half_life_s": 21624.12,
       "half_life_display": "6.007 h",
       "decay_modes": [
         {
@@ -1334,7 +1334,7 @@ const NUCLIDE_DATA = {
       "gamma_Kair": 33.9,
       "gamma_Kair_source": "Cornejo et al. (2015), Tabla III — published value",
       "gamma_H10": 45,
-      "gamma_H007": 45,
+      "gamma_H007": 44.15,
       "H007_from_cornejo": false,
       "representative_energy_keV": 141,
       "source": "Cornejo et al.",
@@ -1560,14 +1560,15 @@ const NUCLIDE_DATA = {
           0.003096
         ]
       ],
-      "half_life_source": "DDEP — LNHB/CEA Table de Radionucléides: T½ = 2.7479(6) d (Mo-99) (consulted 2026-10-14)"
+      "half_life_source": "DDEP — LNHB/CEA Table de Radionucléides: T½ = 2.7479(6) d (Mo-99) (consulted 2026-10-14)",
+      "gamma_H007_source": "Calculated by this project (audit 2026-10-14 v1.11, R-03): ICRP 107 (2008) photon data incl. the equilibrium progeny, ICRP 74 (1996) Table A.21. Cornejo et al. (2015) publish no H'(0.07) for this entry; the value used until v1.11 was a copy of H*(10)."
     },
     {
       "id": "Pd-103",
       "symbol": "¹⁰³Pd",
       "Z": 46,
       "A": 103,
-      "name": "Palladium-103",
+      "name": "Palladium-103 (+ Rh-103m)",
       "half_life_s": 1468022.4,
       "half_life_display": "16.99 d",
       "decay_modes": [
@@ -1576,16 +1577,16 @@ const NUCLIDE_DATA = {
           "fraction": 1
         }
       ],
-      "clinical_use": "Brachytherapy: permanent prostate seed implants",
+      "clinical_use": "Brachytherapy: permanent prostate seed implants. Constants include Rh-103m (T½ 56 min) in equilibrium, as in Cornejo et al. (2015).",
       "category": "therapeutic",
       "modality": "brachytherapy",
       "gamma_Kair": 35.9,
       "gamma_Kair_source": "Cornejo et al. (2015), Tabla III — published value",
-      "gamma_H10": 20.51,
-      "gamma_H007": 34.42,
+      "gamma_H10": 22.7,
+      "gamma_H007": 38.09,
       "H007_from_cornejo": false,
       "representative_energy_keV": 40,
-      "source": "ICRP 107 (photon data) / ICRP 74 Table A.21 (conversion coefficients)",
+      "source": "ICRP 107 (photon data, incl. progeny in secular equilibrium) / ICRP 74 Table A.21 (conversion coefficients)",
       "clearance_a1_kBq_per_kg": 1000,
       "ingestion_dose_coeff_adult_Sv_per_Bq": 1.9e-10,
       "effluent_liquid_limit_Bq_per_L": 8770,
@@ -1601,80 +1602,146 @@ const NUCLIDE_DATA = {
       "shielding_spectrum": [
         [
           20,
-          0.293417
+          0.265166
+        ],
+        [
+          20,
+          0.028123
         ],
         [
           20.2,
-          0.551931
+          0.498793
+        ],
+        [
+          20.2,
+          0.052902
         ],
         [
           22.7,
-          0.043559
+          0.039365
         ],
         [
           22.7,
-          0.0847
+          0.076545
+        ],
+        [
+          22.7,
+          0.004175
+        ],
+        [
+          22.7,
+          0.008119
         ],
         [
           22.9,
-          0.000258
+          0.000233
         ],
         [
           22.9,
-          0.000363
+          0.000328
         ],
         [
           23.1,
-          0.008567
+          0.007742
         ],
         [
           23.1,
-          0.016546
+          0.014953
+        ],
+        [
+          23.1,
+          0.000821
+        ],
+        [
+          23.1,
+          0.001586
+        ],
+        [
+          39.8,
+          0.000554
         ],
         [
           357.5,
-          0.000659
+          0.000595
         ]
       ],
       "shielding_spectrum_h007": [
         [
           20,
-          0.301356
+          0.272396
+        ],
+        [
+          20,
+          0.02889
         ],
         [
           20.2,
-          0.560788
+          0.506899
+        ],
+        [
+          20.2,
+          0.053762
         ],
         [
           22.7,
-          0.039003
+          0.035255
         ],
         [
           22.7,
-          0.075843
+          0.068554
+        ],
+        [
+          22.7,
+          0.003739
+        ],
+        [
+          22.7,
+          0.007271
         ],
         [
           22.9,
-          0.000229
+          0.000207
         ],
         [
           22.9,
-          0.000322
+          0.000291
         ],
         [
           23.1,
-          0.007528
+          0.006804
         ],
         [
           23.1,
-          0.014538
+          0.013141
+        ],
+        [
+          23.1,
+          0.000721
+        ],
+        [
+          23.1,
+          0.001394
+        ],
+        [
+          39.8,
+          0.000321
         ],
         [
           357.5,
-          0.000393
+          0.000355
         ]
       ],
-      "half_life_source": "ICRP Publication 107 (2008)"
+      "half_life_source": "ICRP Publication 107 (2008)",
+      "chain_members": [
+        {
+          "id": "Pd-103",
+          "equilibrium_activity_fraction": 1
+        },
+        {
+          "id": "Rh-103m",
+          "equilibrium_activity_fraction": 1.001
+        }
+      ]
     },
     {
       "id": "In-111",
@@ -1682,7 +1749,7 @@ const NUCLIDE_DATA = {
       "Z": 49,
       "A": 111,
       "name": "Indium-111",
-      "half_life_s": 242326.1,
+      "half_life_s": 242326.08,
       "half_life_display": "2.80 d",
       "decay_modes": [
         {
@@ -1804,7 +1871,7 @@ const NUCLIDE_DATA = {
       "Z": 53,
       "A": 123,
       "name": "Iodine-123",
-      "half_life_s": 47606.4,
+      "half_life_s": 47604.24,
       "half_life_display": "13.22 h",
       "decay_modes": [
         {
@@ -2046,8 +2113,8 @@ const NUCLIDE_DATA = {
       "Z": 53,
       "A": 125,
       "name": "Iodine-125",
-      "half_life_s": 5131564.8,
-      "half_life_display": "59.41 d",
+      "half_life_s": 5131123.2,
+      "half_life_display": "59.39 d",
       "decay_modes": [
         {
           "mode": "EC",
@@ -2192,7 +2259,7 @@ const NUCLIDE_DATA = {
       "Z": 53,
       "A": 131,
       "name": "Iodine-131",
-      "half_life_s": 693213.1,
+      "half_life_s": 693213.12,
       "half_life_display": "8.02 d",
       "decay_modes": [
         {
@@ -2413,7 +2480,7 @@ const NUCLIDE_DATA = {
       "Z": 54,
       "A": 133,
       "name": "Xenon-133",
-      "half_life_s": 453384,
+      "half_life_s": 453375.36,
       "half_life_display": "5.25 d",
       "decay_modes": [
         {
@@ -2563,7 +2630,7 @@ const NUCLIDE_DATA = {
       "Z": 55,
       "A": 137,
       "name": "Caesium-137 + Barium-137m (equilibrium)",
-      "half_life_s": 951900000,
+      "half_life_s": 952001275,
       "half_life_display": "30.17 y",
       "decay_modes": [
         {
@@ -2577,7 +2644,7 @@ const NUCLIDE_DATA = {
       "gamma_Kair": 77.5,
       "gamma_Kair_source": "Cornejo et al. (2015), Tabla III — published value",
       "gamma_H10": 93.1,
-      "gamma_H007": 93.1,
+      "gamma_H007": 92.27,
       "H007_from_cornejo": false,
       "representative_energy_keV": 662,
       "source": "Cornejo et al. — Values include ¹³⁷ᵐBa 661.7 keV gamma in secular equilibrium",
@@ -2670,7 +2737,8 @@ const NUCLIDE_DATA = {
       ],
       "e_max_beta_MeV": 1.17563,
       "beta_yield_per_decay": 1.002,
-      "half_life_source": "ICRP Publication 107 (2008)"
+      "half_life_source": "ICRP Publication 107 (2008)",
+      "gamma_H007_source": "Calculated by this project (audit 2026-10-14 v1.11, R-03): ICRP 107 (2008) photon data incl. the equilibrium progeny, ICRP 74 (1996) Table A.21. Cornejo et al. (2015) publish no H'(0.07) for this entry; the value used until v1.11 was a copy of H*(10)."
     },
     {
       "id": "Sm-153",
@@ -3573,7 +3641,7 @@ const NUCLIDE_DATA = {
       "Z": 75,
       "A": 186,
       "name": "Rhenium-186",
-      "half_life_s": 321261.1,
+      "half_life_s": 321261.12,
       "half_life_display": "3.72 d",
       "decay_modes": [
         {
@@ -3781,7 +3849,7 @@ const NUCLIDE_DATA = {
       "Z": 75,
       "A": 188,
       "name": "Rhenium-188",
-      "half_life_s": 61210.8,
+      "half_life_s": 61214.4,
       "half_life_display": "17.00 h",
       "decay_modes": [
         {
@@ -4089,7 +4157,7 @@ const NUCLIDE_DATA = {
       "Z": 77,
       "A": 192,
       "name": "Iridium-192",
-      "half_life_s": 6378825.6,
+      "half_life_s": 6378652.8,
       "half_life_display": "73.83 d",
       "decay_modes": [
         {
@@ -4449,7 +4517,7 @@ const NUCLIDE_DATA = {
       "Z": 79,
       "A": 198,
       "name": "Gold-198",
-      "half_life_s": 232770.2,
+      "half_life_s": 232787.52,
       "half_life_display": "2.69 d",
       "decay_modes": [
         {
@@ -4573,7 +4641,7 @@ const NUCLIDE_DATA = {
       "Z": 81,
       "A": 201,
       "name": "Thallium-201",
-      "half_life_s": 262837.4,
+      "half_life_s": 262837.44,
       "half_life_display": "3.04 d",
       "decay_modes": [
         {
@@ -4788,7 +4856,7 @@ const NUCLIDE_DATA = {
       "half_life_display": "3.267 d",
       "decay_modes": [
         {
-          "mode": "ECB+",
+          "mode": "EC, β+",
           "branching": 1
         }
       ],
@@ -4873,7 +4941,7 @@ const NUCLIDE_DATA = {
       "half_life_display": "2.576 d",
       "decay_modes": [
         {
-          "mode": "B-",
+          "mode": "β-",
           "branching": 1
         }
       ],
@@ -4958,7 +5026,7 @@ const NUCLIDE_DATA = {
       "half_life_display": "6.906 d",
       "decay_modes": [
         {
-          "mode": "B-",
+          "mode": "β-",
           "branching": 1
         }
       ],
@@ -5203,7 +5271,7 @@ const NUCLIDE_DATA = {
       "half_life_display": "1.117 d",
       "decay_modes": [
         {
-          "mode": "B-",
+          "mode": "β-",
           "branching": 1
         }
       ],
@@ -5376,7 +5444,7 @@ const NUCLIDE_DATA = {
       "half_life_display": "11.43 d",
       "decay_modes": [
         {
-          "mode": "A",
+          "mode": "α",
           "daughter": "Rn-219",
           "branching": 1
         }
@@ -6413,7 +6481,7 @@ const NUCLIDE_DATA = {
       "half_life_display": "10 d",
       "decay_modes": [
         {
-          "mode": "A",
+          "mode": "α",
           "daughter": "Fr-221",
           "branching": 1
         }

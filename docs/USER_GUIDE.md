@@ -60,8 +60,8 @@ No installation or authentication is needed:
 **Purpose**: dose-equivalent rate and integrated dose equivalent at a distance from a point source, with optional shielding.
 
 **How to use**:
-1. Select the nuclide and **activity** (A₀ is the activity at the start of each exposure).
-2. **Distance** in m or cm.
+1. Select the nuclide and **activity** (A₀ is the activity at the start of each exposure). For an extended ICRP 107 nuclide with short-lived progeny (Ge-68 → Ga-68, Sn-113 → In-113m, Mo-99 → Tc-99m…), **Short-lived progeny** chooses between the progeny in equilibrium (default, as for the curated chains) and the parent alone (freshly separated source).
+2. **Distance** in m or cm (below 0.25 m the result carries a warning: the point-source model depends on the real source size there).
 3. Optional **shielding** — lead, elemental iron (ρ = 7.874 g/cm³, not a generic steel) or normal / light-weight concrete — and optional **patient transmission** (no default: it depends on energy, anatomy and geometry). *Shielding details* names the method used: the Archer broad-beam fit of Oumano et al. (2025) for Tc-99m, F-18, I-131 and Lu-177 behind lead or concrete, otherwise spectrum-weighted narrow-beam attenuation with build-up; it gives the first HVL/TVL and warns when part of the spectrum falls outside the tabulated range.
 4. **Exposure** time per administration and administrations per year; choose whether physical decay is integrated during each exposure.
 5. Press **Calculate Dose**: rate at t = 0 and after decay, reference rate at 1 m, annual integrated dose for **H\*(10)** (estimator of effective dose) and **H'(0.07)** (skin/extremity indicator), and the rate against distance.
@@ -130,10 +130,10 @@ The **moon icon** (🌙) in the top-right corner toggles dark mode; the choice i
 
 ## Data Quality & Limitations
 
-- **Curated database (40 nuclides)**: 32 with published comparison values in Cornejo et al. (2015), whose Γ^K-air is the value shown; Γ^H\*(10) and Γ^H'(0.07) are recalculated from ICRP 107 (2008) photon data and ICRP 74 (1996) Table A.21 (23 of the 32 within ±2 % of the published values; differences are reported, not reconciled). Ga-68, Zr-89, Cu-67, Tb-161, Ho-166, Ra-223 and Ac-225 have no published comparison (the alpha chains assume all progeny retained and in equilibrium); Y-90 has no photon constants.
+- **Curated database (40 nuclides)**: 32 with published comparison values in Cornejo et al. (2015), whose Γ^K-air is the value shown; Γ^H\*(10) and Γ^H'(0.07) are recalculated from ICRP 107 (2008) photon data and ICRP 74 (1996) Table A.21 (23 of the 32 within ±2 % of the published values; differences are reported, not reconciled). Ga-68, Zr-89, Cu-67, Tb-161, Ho-166, Ra-223 and Ac-225 have no published comparison (the alpha chains assume all progeny retained and in equilibrium); Pd-103 includes Rh-103m and Cs-137 and Mo-99+Tc-99m their daughters, also in equilibrium (the Γ^H'(0.07) of these two is calculated: Cornejo publishes none for them); Y-90 has no photon constants.
 - **Half-lives**: each one names its source — ICRP 107 (2008) or the DDEP recommended value (LNHB/CEA).
 - **Conversion coefficients and photon filter**: ICRP 74 Table A.21, 25 printed energies, log-log interpolated (the printed 6.90 pSv·cm² at 1.5 MeV is kept although the table's own columns give 7.04); photon lines with E ≥ 20 keV and yield ≥ 0.01 % (a yield exactly 0.01 % is kept).
-- **Extended database (1,252 nuclides, ICRP 107)**: constants computed with the same method, not manually validated; continuous beta spectra and bremsstrahlung are not included. Reference and estimation only — not validated for clinical use.
+- **Extended database (1,252 nuclides, ICRP 107)**: constants computed with the same method, not manually validated; short-lived progeny (T½ ≤ 1/10 of the parent's and ≤ 30 d, an app criterion) is included in equilibrium by default and marked "+"; continuous beta spectra and bremsstrahlung are not included. Reference and estimation only — not validated for clinical use.
 - **Shielding**: infinite-medium point-isotropic build-up factors (ANSI/ANS-6.4.3) applied to finite barriers — the deviation is not universally conservative; not a substitute for structural shielding design.
 - **H'(0.07)**: area-monitoring indicator for skin and extremities, photons only; direct beta/electron dose is not calculated.
 - **Use**: radiation protection estimation; verify against primary sources for regulatory submissions.

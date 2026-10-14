@@ -4,7 +4,7 @@ const ICRP107_DATA = {
   "source": "ICRP Publication 107: Nuclear Decay Data for Dosimetric Calculations",
   "publication_date": "2008-06-16",
   "notes": {
-    "generated_at": "2026-10-14T17:08:12.436Z",
+    "generated_at": "2026-10-14T20:05:06.613Z",
     "generated_by_script": "tools/parse-icrp107.js",
     "source_files_hashes": {
       "icrp107_ndx_sha256": "ac84a9cf1da890031c2ab81a33cba858ff637d701fca3bc33fb07c5a1d6cf2b9",
@@ -8261,6 +8261,11 @@ const ICRP107_DATA = {
           "mode": "B-",
           "daughter": "Cd-113",
           "branching": 0.98261
+        },
+        {
+          "mode": "B-",
+          "daughter": "Cd-113m",
+          "branching": 0.017388
         }
       ]
     },
@@ -9470,6 +9475,11 @@ const ICRP107_DATA = {
           "mode": "B-",
           "daughter": "Cd-115",
           "branching": 0.9421
+        },
+        {
+          "mode": "B-",
+          "daughter": "Cd-115m",
+          "branching": 0.05787
         }
       ]
     },
@@ -10319,6 +10329,11 @@ const ICRP107_DATA = {
           "mode": "B-",
           "daughter": "Cd-117",
           "branching": 0.84703
+        },
+        {
+          "mode": "B-",
+          "daughter": "Cd-117m",
+          "branching": 0.15297
         }
       ]
     },
@@ -17944,6 +17959,11 @@ const ICRP107_DATA = {
       "photon_count_total": 119,
       "photon_count_filtered": 10,
       "decay_modes": [
+        {
+          "mode": "B-",
+          "daughter": "Se-79m",
+          "branching": 0.97188
+        },
         {
           "mode": "B-",
           "daughter": "Se-79",
@@ -29230,6 +29250,11 @@ const ICRP107_DATA = {
           "mode": "IT",
           "daughter": "Au-193",
           "branching": 0.9997
+        },
+        {
+          "mode": "EC",
+          "daughter": "Pt-193m",
+          "branching": 0.0003
         }
       ]
     },
@@ -37895,6 +37920,11 @@ const ICRP107_DATA = {
           "mode": "EC",
           "daughter": "Pb-197",
           "branching": 0.56103
+        },
+        {
+          "mode": "B+",
+          "daughter": "Pb-197m",
+          "branching": 0.43897
         }
       ]
     },
@@ -39220,6 +39250,11 @@ const ICRP107_DATA = {
           "mode": "EC",
           "daughter": "Pb-201",
           "branching": 0.54833
+        },
+        {
+          "mode": "B+",
+          "daughter": "Pb-201m",
+          "branching": 0.45167
         }
       ]
     },
@@ -42777,8 +42812,9 @@ const ICRP107_DATA = {
       "photon_count_filtered": 279,
       "decay_modes": [
         {
-          "mode": "ECB+",
-          "branching": 1
+          "mode": "EC",
+          "daughter": "Pb-204m",
+          "branching": 0.098525
         }
       ]
     },
@@ -44542,6 +44578,7 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "B-",
+          "daughter": "Po-212m",
           "branching": 1
         }
       ]
@@ -47410,6 +47447,11 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "EC",
+          "daughter": "Se-73m",
+          "branching": 0.99881
+        },
+        {
+          "mode": "B+",
           "daughter": "Se-73",
           "branching": 0.001192
         }
@@ -50423,7 +50465,8 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "B-",
-          "branching": 1
+          "daughter": "Kr-83m",
+          "branching": 0.99845
         }
       ]
     },
@@ -50978,6 +51021,11 @@ const ICRP107_DATA = {
       "photon_count_total": 233,
       "photon_count_filtered": 42,
       "decay_modes": [
+        {
+          "mode": "B-",
+          "daughter": "Kr-85m",
+          "branching": 0.99779
+        },
         {
           "mode": "B-",
           "daughter": "Kr-85",
@@ -52047,6 +52095,11 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "EC",
+          "daughter": "Ag-102m",
+          "branching": 0.94624
+        },
+        {
+          "mode": "B+",
           "daughter": "Ag-102",
           "branching": 0.053762
         }
@@ -53347,6 +53400,7 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "EC",
+          "daughter": "Ag-104m",
           "branching": 1
         }
       ]
@@ -54791,6 +54845,11 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "EC",
+          "daughter": "Ag-105m",
+          "branching": 0.82963
+        },
+        {
+          "mode": "B+",
           "daughter": "Ag-105",
           "branching": 0.17037
         }
@@ -55176,6 +55235,7 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "B-",
+          "daughter": "In-115m",
           "branching": 1
         }
       ]
@@ -55232,6 +55292,11 @@ const ICRP107_DATA = {
           "mode": "B-",
           "daughter": "In-115",
           "branching": 0.99989
+        },
+        {
+          "mode": "B-",
+          "daughter": "In-115m",
+          "branching": 0.00010578
         }
       ]
     },
@@ -55850,6 +55915,11 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "B-",
+          "daughter": "In-117m",
+          "branching": 0.91507
+        },
+        {
+          "mode": "B-",
           "daughter": "In-117",
           "branching": 0.084933
         }
@@ -56247,6 +56317,11 @@ const ICRP107_DATA = {
           "mode": "B-",
           "daughter": "In-117",
           "branching": 0.99002
+        },
+        {
+          "mode": "B-",
+          "daughter": "In-117m",
+          "branching": 0.0099831
         }
       ]
     },
@@ -56729,6 +56804,11 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "B-",
+          "daughter": "In-119m",
+          "branching": 0.90091
+        },
+        {
+          "mode": "B-",
           "daughter": "In-119",
           "branching": 0.099092
         }
@@ -57141,6 +57221,11 @@ const ICRP107_DATA = {
           "mode": "B-",
           "daughter": "In-119",
           "branching": 0.99787
+        },
+        {
+          "mode": "B-",
+          "daughter": "In-119m",
+          "branching": 0.0021328
         }
       ]
     },
@@ -61914,6 +61999,11 @@ const ICRP107_DATA = {
           "mode": "B-",
           "daughter": "Pr-144",
           "branching": 0.99023
+        },
+        {
+          "mode": "B-",
+          "daughter": "Pr-144m",
+          "branching": 0.0097699
         }
       ]
     },
@@ -73220,7 +73310,8 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "B-",
-          "branching": 1
+          "daughter": "Ba-137m",
+          "branching": 0.94399
         }
       ]
     },
@@ -78044,6 +78135,11 @@ const ICRP107_DATA = {
           "mode": "EC",
           "daughter": "Tb-149",
           "branching": 0.56682
+        },
+        {
+          "mode": "B+",
+          "daughter": "Tb-149m",
+          "branching": 0.43318
         }
       ]
     },
@@ -79097,6 +79193,11 @@ const ICRP107_DATA = {
         },
         {
           "mode": "B+",
+          "daughter": "Tb-151m",
+          "branching": 0.41023
+        },
+        {
+          "mode": "A",
           "daughter": "Gd-147",
           "branching": 0.056
         }
@@ -90176,6 +90277,11 @@ const ICRP107_DATA = {
           "mode": "EC",
           "daughter": "Sm-143",
           "branching": 0.99879
+        },
+        {
+          "mode": "B+",
+          "daughter": "Sm-143m",
+          "branching": 0.0012069
         }
       ]
     },
@@ -98688,7 +98794,8 @@ const ICRP107_DATA = {
       "photon_count_filtered": 6,
       "decay_modes": [
         {
-          "mode": "ECB+",
+          "mode": "EC",
+          "daughter": "Mn-52m",
           "branching": 1
         }
       ]
@@ -98924,6 +99031,7 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "B-",
+          "daughter": "Co-60m",
           "branching": 1
         }
       ]
@@ -113424,6 +113532,11 @@ const ICRP107_DATA = {
           "mode": "EC",
           "daughter": "Lu-169",
           "branching": 0.96904
+        },
+        {
+          "mode": "B+",
+          "daughter": "Lu-169m",
+          "branching": 0.03096
         }
       ]
     },
@@ -114177,6 +114290,7 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "EC",
+          "daughter": "Lu-172m",
           "branching": 1
         }
       ]
@@ -115940,6 +116054,11 @@ const ICRP107_DATA = {
           "mode": "IT",
           "daughter": "Hf-182",
           "branching": 0.42
+        },
+        {
+          "mode": "B-IT",
+          "daughter": "Ta-182m",
+          "branching": 0.08928
         }
       ]
     },
@@ -117525,6 +117644,11 @@ const ICRP107_DATA = {
           "mode": "EC",
           "daughter": "Au-193",
           "branching": 0.96459
+        },
+        {
+          "mode": "B+",
+          "daughter": "Au-193m",
+          "branching": 0.035408
         }
       ]
     },
@@ -118268,11 +118392,16 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "EC",
+          "daughter": "Au-193m",
+          "branching": 0.89197
+        },
+        {
+          "mode": "B+",
           "daughter": "Hg-193",
           "branching": 0.071
         },
         {
-          "mode": "B+",
+          "mode": "IT",
           "daughter": "Au-193",
           "branching": 0.037027
         }
@@ -120255,6 +120384,11 @@ const ICRP107_DATA = {
           "mode": "EC",
           "daughter": "Dy-153",
           "branching": 0.99949
+        },
+        {
+          "mode": "B+",
+          "daughter": "Tb-149m",
+          "branching": 0.00051
         }
       ]
     },
@@ -121140,6 +121274,11 @@ const ICRP107_DATA = {
           "mode": "EC",
           "daughter": "Dy-154",
           "branching": 1
+        },
+        {
+          "mode": "B+",
+          "daughter": "Tb-150m",
+          "branching": 0.00001
         }
       ]
     },
@@ -129618,6 +129757,11 @@ const ICRP107_DATA = {
           "mode": "EC",
           "daughter": "Te-119",
           "branching": 0.99046
+        },
+        {
+          "mode": "B+",
+          "daughter": "Te-119m",
+          "branching": 0.0095421
         }
       ]
     },
@@ -131326,6 +131470,11 @@ const ICRP107_DATA = {
           "mode": "EC",
           "daughter": "Te-121",
           "branching": 0.99714
+        },
+        {
+          "mode": "B+",
+          "daughter": "Te-121m",
+          "branching": 0.0028631
         }
       ]
     },
@@ -131710,6 +131859,11 @@ const ICRP107_DATA = {
           "mode": "EC",
           "daughter": "Te-123",
           "branching": 0.99996
+        },
+        {
+          "mode": "EC",
+          "daughter": "Te-123m",
+          "branching": 0.00004442
         }
       ]
     },
@@ -133067,7 +133221,8 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "B-",
-          "branching": 1
+          "daughter": "Xe-131m",
+          "branching": 0.011759
         }
       ]
     },
@@ -134227,6 +134382,11 @@ const ICRP107_DATA = {
           "mode": "B-",
           "daughter": "Xe-133",
           "branching": 0.97115
+        },
+        {
+          "mode": "B-",
+          "daughter": "Xe-133m",
+          "branching": 0.028846
         }
       ]
     },
@@ -135306,6 +135466,11 @@ const ICRP107_DATA = {
           "mode": "B-",
           "daughter": "Xe-135",
           "branching": 0.83432
+        },
+        {
+          "mode": "B-",
+          "daughter": "Xe-135m",
+          "branching": 0.16568
         }
       ]
     },
@@ -140403,7 +140568,8 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "EC",
-          "branching": 1
+          "daughter": "Cd-111m",
+          "branching": 0.000049998
         }
       ]
     },
@@ -141301,7 +141467,8 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "B-",
-          "branching": 1
+          "daughter": "Sn-117m",
+          "branching": 0.0035321
         }
       ]
     },
@@ -141903,7 +142070,8 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "B-",
-          "branching": 1
+          "daughter": "Sn-119m",
+          "branching": 0.0094773
         }
       ]
     },
@@ -142129,6 +142297,11 @@ const ICRP107_DATA = {
           "mode": "B-",
           "daughter": "Sn-121",
           "branching": 0.8865
+        },
+        {
+          "mode": "B-",
+          "daughter": "Sn-121m",
+          "branching": 0.1135
         }
       ]
     },
@@ -144532,6 +144705,11 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "EC",
+          "daughter": "Os-183m",
+          "branching": 0.70972
+        },
+        {
+          "mode": "B+",
           "daughter": "Os-183",
           "branching": 0.29028
         }
@@ -149454,7 +149632,8 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "EC",
-          "branching": 1
+          "daughter": "Os-189m",
+          "branching": 0.074264
         }
       ]
     },
@@ -150036,6 +150215,11 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "EC",
+          "daughter": "Os-190m",
+          "branching": 0.914
+        },
+        {
+          "mode": "IT",
           "daughter": "Ir-190",
           "branching": 0.086
         }
@@ -151490,6 +151674,11 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "B-",
+          "daughter": "Pt-195m",
+          "branching": 0.43692
+        },
+        {
+          "mode": "IT",
           "daughter": "Ir-195",
           "branching": 0.05
         }
@@ -153879,6 +154068,11 @@ const ICRP107_DATA = {
           "mode": "EC",
           "daughter": "Br-76",
           "branching": 0.99189
+        },
+        {
+          "mode": "EC",
+          "daughter": "Br-76m",
+          "branching": 0.0081144
         }
       ]
     },
@@ -154054,6 +154248,11 @@ const ICRP107_DATA = {
           "mode": "EC",
           "daughter": "Br-77",
           "branching": 0.90386
+        },
+        {
+          "mode": "B+",
+          "daughter": "Br-77m",
+          "branching": 0.096135
         }
       ]
     },
@@ -157920,6 +158119,11 @@ const ICRP107_DATA = {
           "mode": "EC",
           "daughter": "Ba-129",
           "branching": 0.92384
+        },
+        {
+          "mode": "B+",
+          "daughter": "Ba-129m",
+          "branching": 0.076164
         }
       ]
     },
@@ -175648,6 +175852,11 @@ const ICRP107_DATA = {
           "mode": "EC",
           "daughter": "Nb-91",
           "branching": 0.99966
+        },
+        {
+          "mode": "B+",
+          "daughter": "Nb-91m",
+          "branching": 0.00034232
         }
       ]
     },
@@ -175721,6 +175930,11 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "EC",
+          "daughter": "Nb-91m",
+          "branching": 0.5
+        },
+        {
+          "mode": "B+",
           "daughter": "Mo-91",
           "branching": 0.5
         }
@@ -175745,7 +175959,8 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "EC",
-          "branching": 1
+          "daughter": "Nb-93m",
+          "branching": 0.88
         }
       ]
     },
@@ -175952,6 +176167,11 @@ const ICRP107_DATA = {
       "photon_count_total": 276,
       "photon_count_filtered": 18,
       "decay_modes": [
+        {
+          "mode": "B-",
+          "daughter": "Tc-99m",
+          "branching": 0.8773
+        },
         {
           "mode": "B-",
           "daughter": "Tc-99",
@@ -177217,6 +177437,11 @@ const ICRP107_DATA = {
           "mode": "EC",
           "daughter": "Zr-89",
           "branching": 0.98772
+        },
+        {
+          "mode": "B+",
+          "daughter": "Zr-89m",
+          "branching": 0.012278
         }
       ]
     },
@@ -177264,7 +177489,8 @@ const ICRP107_DATA = {
       "photon_count_filtered": 5,
       "decay_modes": [
         {
-          "mode": "ECB+",
+          "mode": "EC",
+          "daughter": "Zr-89m",
           "branching": 1
         }
       ]
@@ -180452,7 +180678,8 @@ const ICRP107_DATA = {
       "photon_count_filtered": 41,
       "decay_modes": [
         {
-          "mode": "ECB+",
+          "mode": "EC",
+          "daughter": "Pr-134m",
           "branching": 1
         }
       ]
@@ -188167,6 +188394,11 @@ const ICRP107_DATA = {
         },
         {
           "mode": "A",
+          "daughter": "U-235m",
+          "branching": 0.0039933
+        },
+        {
+          "mode": "ECA",
           "daughter": "Pa-231",
           "branching": 0.000026
         }
@@ -192024,6 +192256,7 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "EC",
+          "daughter": "Re-182m",
           "branching": 1
         }
       ]
@@ -193616,7 +193849,8 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "B-",
-          "branching": 1
+          "daughter": "Ir-193m",
+          "branching": 0.0034757
         }
       ]
     },
@@ -199052,6 +199286,11 @@ const ICRP107_DATA = {
       "photon_count_total": 19,
       "photon_count_filtered": 0,
       "decay_modes": [
+        {
+          "mode": "B-",
+          "daughter": "U-235m",
+          "branching": 0.9999
+        },
         {
           "mode": "B-",
           "daughter": "U-235",
@@ -204797,6 +205036,11 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "EC",
+          "daughter": "Rh-101m",
+          "branching": 0.9973
+        },
+        {
+          "mode": "B+",
           "daughter": "Rh-101",
           "branching": 0.0027
         }
@@ -204867,7 +205111,8 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "EC",
-          "branching": 1
+          "daughter": "Rh-103m",
+          "branching": 0.99875
         }
       ]
     },
@@ -205373,6 +205618,11 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "B-",
+          "daughter": "Ag-111m",
+          "branching": 0.99756
+        },
+        {
+          "mode": "B-",
           "daughter": "Ag-111",
           "branching": 0.0024368
         }
@@ -205631,7 +205881,8 @@ const ICRP107_DATA = {
       "photon_count_filtered": 27,
       "decay_modes": [
         {
-          "mode": "ECB+",
+          "mode": "EC",
+          "daughter": "Rh-96m",
           "branching": 1
         }
       ]
@@ -206013,6 +206264,11 @@ const ICRP107_DATA = {
           "mode": "EC",
           "daughter": "Rh-97",
           "branching": 0.98838
+        },
+        {
+          "mode": "B+",
+          "daughter": "Rh-97m",
+          "branching": 0.011622
         }
       ]
     },
@@ -206771,6 +207027,11 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "EC",
+          "daughter": "Rh-99m",
+          "branching": 0.96647
+        },
+        {
+          "mode": "B+",
           "daughter": "Rh-99",
           "branching": 0.033529
         }
@@ -208613,6 +208874,11 @@ const ICRP107_DATA = {
           "mode": "EC",
           "daughter": "Nd-141",
           "branching": 0.99833
+        },
+        {
+          "mode": "B+",
+          "daughter": "Nd-141m",
+          "branching": 0.0016651
         }
       ]
     },
@@ -222634,11 +222900,16 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "EC",
+          "daughter": "Ir-186m",
+          "branching": 0.81942
+        },
+        {
+          "mode": "A",
           "daughter": "Ir-186",
           "branching": 0.18058
         },
         {
-          "mode": "A",
+          "mode": "ECA",
           "daughter": "Os-182",
           "branching": 0.000001
         }
@@ -226322,6 +226593,11 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "A",
+          "daughter": "U-235m",
+          "branching": 0.9994
+        },
+        {
+          "mode": "A",
           "daughter": "U-235",
           "branching": 0.0006
         }
@@ -227796,6 +228072,7 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "B-",
+          "daughter": "Am-246m",
           "branching": 1
         }
       ]
@@ -232228,6 +232505,11 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "EC",
+          "daughter": "Kr-81m",
+          "branching": 0.95691
+        },
+        {
+          "mode": "B+",
           "daughter": "Kr-81",
           "branching": 0.043091
         }
@@ -232395,6 +232677,11 @@ const ICRP107_DATA = {
           "mode": "EC",
           "daughter": "Kr-81",
           "branching": 0.023786
+        },
+        {
+          "mode": "B+",
+          "daughter": "Kr-81m",
+          "branching": 0.00021355
         }
       ]
     },
@@ -232896,7 +233183,8 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "EC",
-          "branching": 1
+          "daughter": "Kr-83m",
+          "branching": 0.74292
         }
       ]
     },
@@ -236212,6 +236500,11 @@ const ICRP107_DATA = {
           "mode": "EC",
           "daughter": "W-179",
           "branching": 0.76079
+        },
+        {
+          "mode": "B+",
+          "daughter": "W-179m",
+          "branching": 0.23921
         }
       ]
     },
@@ -240072,7 +240365,8 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "B-",
-          "branching": 1
+          "daughter": "Os-189m",
+          "branching": 0.12211
         }
       ]
     },
@@ -250889,7 +251183,8 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "B-",
-          "branching": 1
+          "daughter": "Rh-103m",
+          "branching": 0.98755
         }
       ]
     },
@@ -252421,7 +252716,8 @@ const ICRP107_DATA = {
       "photon_count_filtered": 9,
       "decay_modes": [
         {
-          "mode": "ECB+",
+          "mode": "EC",
+          "daughter": "Tc-94m",
           "branching": 1
         }
       ]
@@ -252988,6 +253284,11 @@ const ICRP107_DATA = {
           "mode": "EC",
           "daughter": "Tc-95",
           "branching": 0.97387
+        },
+        {
+          "mode": "B+",
+          "daughter": "Tc-95m",
+          "branching": 0.026131
         }
       ]
     },
@@ -253093,6 +253394,11 @@ const ICRP107_DATA = {
           "mode": "EC",
           "daughter": "Tc-97",
           "branching": 0.99958
+        },
+        {
+          "mode": "EC",
+          "daughter": "Tc-97m",
+          "branching": 0.00042179
         }
       ]
     },
@@ -253810,6 +254116,11 @@ const ICRP107_DATA = {
           "mode": "EC",
           "daughter": "Sn-113",
           "branching": 0.77569
+        },
+        {
+          "mode": "B+",
+          "daughter": "Sn-113m",
+          "branching": 0.22431
         }
       ]
     },
@@ -256355,6 +256666,7 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "IT",
+          "daughter": "Sb-124m",
           "branching": 1
         }
       ]
@@ -256534,7 +256846,8 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "B-",
-          "branching": 1
+          "daughter": "Te-125m",
+          "branching": 0.23136
         }
       ]
     },
@@ -257059,6 +257372,11 @@ const ICRP107_DATA = {
           "mode": "B-",
           "daughter": "Te-127",
           "branching": 0.8232
+        },
+        {
+          "mode": "B-",
+          "daughter": "Te-127m",
+          "branching": 0.1768
         }
       ]
     },
@@ -258008,6 +258326,11 @@ const ICRP107_DATA = {
           "mode": "B-",
           "daughter": "Te-129",
           "branching": 0.77381
+        },
+        {
+          "mode": "B-",
+          "daughter": "Te-129m",
+          "branching": 0.22619
         }
       ]
     },
@@ -259026,6 +259349,11 @@ const ICRP107_DATA = {
           "mode": "B-",
           "daughter": "Te-131",
           "branching": 0.91793
+        },
+        {
+          "mode": "B-",
+          "daughter": "Te-131m",
+          "branching": 0.082067
         }
       ]
     },
@@ -259561,6 +259889,11 @@ const ICRP107_DATA = {
           "mode": "B-",
           "daughter": "Te-133",
           "branching": 0.82662
+        },
+        {
+          "mode": "B-",
+          "daughter": "Te-133m",
+          "branching": 0.17338
         }
       ]
     },
@@ -265531,7 +265864,8 @@ const ICRP107_DATA = {
       "photon_count_filtered": 24,
       "decay_modes": [
         {
-          "mode": "ECB+",
+          "mode": "EC",
+          "daughter": "In-106m",
           "branching": 1
         }
       ]
@@ -265710,7 +266044,8 @@ const ICRP107_DATA = {
       "photon_count_filtered": 31,
       "decay_modes": [
         {
-          "mode": "ECB+",
+          "mode": "EC",
+          "daughter": "In-108m",
           "branching": 1
         }
       ]
@@ -266582,6 +266917,11 @@ const ICRP107_DATA = {
           "mode": "EC",
           "daughter": "In-109",
           "branching": 0.71734
+        },
+        {
+          "mode": "B+",
+          "daughter": "In-109m",
+          "branching": 0.28266
         }
       ]
     },
@@ -266650,6 +266990,7 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "EC",
+          "daughter": "In-110m",
           "branching": 1
         }
       ]
@@ -266976,6 +267317,11 @@ const ICRP107_DATA = {
           "mode": "EC",
           "daughter": "In-111",
           "branching": 0.99793
+        },
+        {
+          "mode": "B+",
+          "daughter": "In-111m",
+          "branching": 0.0020745
         }
       ]
     },
@@ -267044,7 +267390,8 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "EC",
-          "branching": 1
+          "daughter": "In-113m",
+          "branching": 0.99998
         }
       ]
     },
@@ -268002,6 +268349,7 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "B-",
+          "daughter": "Sb-126m",
           "branching": 1
         }
       ]
@@ -269066,6 +269414,7 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "B-",
+          "daughter": "Sb-128m",
           "branching": 1
         }
       ]
@@ -269505,6 +269854,7 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "B-",
+          "daughter": "Sb-130m",
           "branching": 1
         }
       ]
@@ -270046,6 +270396,11 @@ const ICRP107_DATA = {
           "mode": "B-",
           "daughter": "Sb-130",
           "branching": 0.86005
+        },
+        {
+          "mode": "B-",
+          "daughter": "Sb-130m",
+          "branching": 0.13995
         }
       ]
     },
@@ -270651,6 +271006,11 @@ const ICRP107_DATA = {
           "mode": "EC",
           "daughter": "Rb-81",
           "branching": 0.99856
+        },
+        {
+          "mode": "B+",
+          "daughter": "Rb-81m",
+          "branching": 0.0014422
         }
       ]
     },
@@ -271752,6 +272112,11 @@ const ICRP107_DATA = {
       "photon_count_total": 401,
       "photon_count_filtered": 45,
       "decay_modes": [
+        {
+          "mode": "B-",
+          "daughter": "Y-91m",
+          "branching": 0.58247
+        },
         {
           "mode": "B-",
           "daughter": "Y-91",
@@ -297769,6 +298134,11 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "B-",
+          "daughter": "Dy-165m",
+          "branching": 0.89028
+        },
+        {
+          "mode": "B-",
           "daughter": "Dy-165",
           "branching": 0.10972
         }
@@ -300333,6 +300703,11 @@ const ICRP107_DATA = {
           "mode": "EC",
           "daughter": "Mo-91",
           "branching": 0.99302
+        },
+        {
+          "mode": "B+",
+          "daughter": "Mo-91m",
+          "branching": 0.0069789
         }
       ]
     },
@@ -300406,6 +300781,11 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "EC",
+          "daughter": "Mo-91m",
+          "branching": 0.97976
+        },
+        {
+          "mode": "B+",
           "daughter": "Mo-91",
           "branching": 0.020245
         }
@@ -311597,6 +311977,7 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "B-",
+          "daughter": "Pa-234m",
           "branching": 1
         }
       ]
@@ -314656,6 +315037,11 @@ const ICRP107_DATA = {
           "mode": "EC",
           "daughter": "Hg-195",
           "branching": 0.99656
+        },
+        {
+          "mode": "B+",
+          "daughter": "Hg-195m",
+          "branching": 0.0034358
         }
       ]
     },
@@ -329387,6 +329773,7 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "B-",
+          "daughter": "Np-240m",
           "branching": 1
         }
       ]
@@ -337336,7 +337723,8 @@ const ICRP107_DATA = {
       "photon_count_filtered": 8,
       "decay_modes": [
         {
-          "mode": "ECB+",
+          "mode": "EC",
+          "daughter": "Sr-85m",
           "branching": 1
         }
       ]
@@ -338033,6 +338421,11 @@ const ICRP107_DATA = {
           "mode": "EC",
           "daughter": "Sr-85",
           "branching": 0.96
+        },
+        {
+          "mode": "B+",
+          "daughter": "Sr-85m",
+          "branching": 0.039998
         }
       ]
     },
@@ -338639,7 +339032,8 @@ const ICRP107_DATA = {
       "photon_count_filtered": 2,
       "decay_modes": [
         {
-          "mode": "ECB+",
+          "mode": "EC",
+          "daughter": "Sr-87m",
           "branching": 1
         }
       ]
@@ -344794,6 +345188,11 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "EC",
+          "daughter": "Y-85m",
+          "branching": 0.96841
+        },
+        {
+          "mode": "B+",
           "daughter": "Y-85",
           "branching": 0.031588
         }
@@ -345049,6 +345448,11 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "EC",
+          "daughter": "Y-87m",
+          "branching": 0.99704
+        },
+        {
+          "mode": "B+",
           "daughter": "Y-87",
           "branching": 0.0029636
         }
@@ -345197,7 +345601,8 @@ const ICRP107_DATA = {
       "decay_modes": [
         {
           "mode": "B-",
-          "branching": 1
+          "daughter": "Nb-93m",
+          "branching": 0.975
         }
       ]
     },
@@ -345233,6 +345638,11 @@ const ICRP107_DATA = {
           "mode": "B-",
           "daughter": "Nb-95",
           "branching": 0.9892
+        },
+        {
+          "mode": "B-",
+          "daughter": "Nb-95m",
+          "branching": 0.010802
         }
       ]
     },

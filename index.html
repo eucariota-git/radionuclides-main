@@ -68,7 +68,7 @@
             <th class="has-tooltip" tabindex="0" aria-label="Gamma K-air. Air kerma rate constant at 1 metre from 1 GBq, in microgray per hour per GBq per square metre." data-tooltip="Air-kerma rate at 1 m from a 1 GBq point source, without attenuation. See the Γ source column for provenance.">&#915;<sup>K-air</sup><span class="th-unit">μGy·h⁻¹·GBq⁻¹·m²</span></th>
             <th class="has-tooltip" tabindex="0" aria-label="Gamma H star 10. Ambient dose equivalent rate constant for area monitoring and effective-dose estimation, in microsievert per hour per GBq per square metre." data-tooltip="Ambient dose equivalent rate constant (area monitoring; estimator of effective dose). ICRP 74 Table A.21 coefficients.">&#915;<sup>H*(10)</sup><span class="th-unit">μSv·h⁻¹·GBq⁻¹·m²</span></th>
             <th class="has-tooltip" tabindex="0" aria-label="Gamma H prime 0.07. Directional dose equivalent rate constant for area monitoring and skin or extremity indication, in microsievert per hour per GBq per square metre." data-tooltip="Directional dose equivalent rate constant at 0.07 mm depth (area monitoring; skin/extremity indicator).">&#915;<sup>H'(0.07)</sup><span class="th-unit">μSv·h⁻¹·GBq⁻¹·m²</span></th>
-            <th>Rep. energy<span class="th-unit">keV</span></th>
+            <th class="has-tooltip" tabindex="0" aria-label="Representative energy: Nominal energy carried over from the original data set, for orientation only: curated entries shield and integrate over their full line spectrum, not this value. It is not always the most intense line (Co-60, 1250 keV, and Ir-192, 370 keV, carry a mean energy)." data-tooltip="Nominal energy carried over from the original data set, for orientation only: curated entries shield and integrate over their full line spectrum, not this value. It is not always the most intense line (Co-60, 1250 keV, and Ir-192, 370 keV, carry a mean energy).">Rep. energy<span class="th-unit">keV</span></th>
             <th class="has-tooltip" tabindex="0" aria-label="Liquid effluent individual concentration level in becquerel per litre. One of several IS-28 II.A.4 conditions: a complete assessment also requires the mixture sum, the annual activity limits, an express discharge authorisation and soluble or dispersible material." data-tooltip="Individual concentration level, (1 mSv / e(g)) / 600 L — only ONE of the IS-28 II.A.4 conditions (see the reference notes below).">Liquid effluent<span class="th-unit">Bq/L</span></th>
             <th class="has-tooltip" tabindex="0" aria-label="Activity concentration value for exemption of practices or clearance of materials under RD 1217/2024 Annex IV Table A1, in kilobecquerel per kilogram." data-tooltip="RD 1217/2024 Annex IV Table A1: clearance / exemption level for any quantity of solid material (kBq/kg = Bq/g).">Exemption /<br>clearance<span class="th-unit">kBq/kg</span></th>
             <th class="has-tooltip" tabindex="0" aria-label="Source of the dose rate constants Gamma K-air, Gamma H star 10 and Gamma H prime 0.07." data-tooltip="Provenance of the three dose-rate constant columns, stated per quantity: K-air may be a published value while H*(10) and H'(0.07) are recalculated. Liquid-effluent and exemption/clearance values have their own regulatory sources.">&#915; source</th>
@@ -148,7 +148,7 @@
   // RD 1217/2024 Annex IV Tables A1 and B, and the adult public e(g) with its
   // IS-28 individual discharge level. Explicit "not tabulated" states (audit
   // 2026-10-03): an absent value is never shown as if the nuclide were exempt.
-  const fmt3 = v => (Number.isFinite(v) ? Number(v.toPrecision(3)).toLocaleString('en-US', { maximumSignificantDigits: 3 }) : '—');
+  const fmt3 = v => UTILS.fmtSig(v, 3);
   function regulatoryItemsHtml(id, { withIngestion }) {
     const esc = UTILS.escapeHtml;
     const a1 = REGULATORY.clearanceA1(id);
@@ -156,14 +156,14 @@
     const tag = r => (r.note ? ` (${esc(r.note)})` : '');
     let html = a1.status === 'listed'
       ? `<div class="prop-item"><div class="prop-key">Clearance / exemption, Table A1</div>
-           <div class="prop-val">${a1.rows[0].kBq_kg}${tag(a1.rows[0])}</div>
+           <div class="prop-val">${UTILS.fmtSig(a1.rows[0].kBq_kg, 1)}${tag(a1.rows[0])}</div>
            <div class="prop-note">kBq/kg · RD 1217/2024 Annex IV Table A1${a1.rows[0].progeny.length ? ` · progeny ${esc(a1.rows[0].progeny.join(', '))}` : ''}</div></div>`
       : `<div class="prop-item"><div class="prop-key">Clearance / exemption, Table A1</div>
            <div class="prop-val">Not tabulated</div>
            <div class="prop-note">Annex III.1.b: RP 122 Part 1${a1.natural ? ' · natural: Table A2' : ''}</div></div>`;
     html += b.status === 'listed'
       ? b.rows.map(r => `<div class="prop-item"><div class="prop-key">Exemption ≤ 1000 kg, Table B${b.rows.length > 1 ? tag(r) : ''}</div>
-           <div class="prop-val">${r.conc_kBq_kg} kBq/kg · ${UTILS.fmt(r.activity_Bq)} Bq</div>
+           <div class="prop-val">${UTILS.fmtSig(r.conc_kBq_kg, 1)} kBq/kg · ${UTILS.fmtSig(r.activity_Bq, 1)} Bq</div>
            <div class="prop-note">column 2 (concentration) · column 3 (total activity)${b.rows.length > 1 ? '' : tag(r)}</div></div>`).join('')
       : `<div class="prop-item"><div class="prop-key">Exemption ≤ 1000 kg, Table B</div>
            <div class="prop-val">Not tabulated</div>
@@ -173,7 +173,7 @@
       const lvl = REGULATORY.dischargeLevel(id);
       html += ing.status === 'listed'
         ? `<div class="prop-item"><div class="prop-key">Adult ingestion e(g)</div>
-             <div class="prop-val">${ing.governing.e_Sv_per_Bq.toExponential(1)}</div>
+             <div class="prop-val">${UTILS.fmtSig(ing.governing.e_Sv_per_Bq, 2)}</div>
              <div class="prop-note">Sv/Bq · RD 783/2001 Annex III table a)${ing.rows.length > 1 ? ` · most restrictive of ${ing.rows.length} forms` : ''}</div></div>
            <div class="prop-item"><div class="prop-key">Individual discharge concentration level</div>
              <div class="prop-val">${fmt3(lvl.Bq_per_L)}</div>
@@ -209,7 +209,7 @@
     if (withIngestion) {
       const ing = REGULATORY.ingestionAdult(id);
       if (ing.status === 'listed') {
-        const forms = ing.rows.map(r => `${r.e_Sv_per_Bq.toExponential(1)} Sv/Bq${r.compound ? ' (' + esc(r.compound) + ')' : ''}, f1 ${r.f1}`).join('; ');
+        const forms = ing.rows.map(r => `${UTILS.fmtSig(r.e_Sv_per_Bq, 2)} Sv/Bq${r.compound ? ' (' + esc(r.compound) + ')' : ''}, f1 ${r.f1}`).join('; ');
         out.push(`Adult ingestion e(g): RD 783/2001 Annex III table a).${ing.rows.length > 1 ? ' Tabulated forms: ' + forms + '. The most restrictive governs the level shown.' : ''} Discharge level = (1 mSv / e(g)) / 600 L — one IS-28 II.A.4 condition only (see the reference notes).`);
       }
     }
@@ -249,7 +249,8 @@
 
   function fmtGamma(val) {
     if (val === null || val === undefined) return '<span class="text-muted text-sm">Not applicable</span>';
-    return `<span class="mono">${val}</span>`;
+    // 3 significant figures: the precision of the ICRP 74 coefficients (R-06).
+    return `<span class="mono">${UTILS.fmtSig(val, 3)}</span>`;
   }
 
   // Warning marker when the stored (ICRP 107-recalculated) Γ H*(10) deviates
@@ -284,10 +285,14 @@
     if (spectrumChart) { spectrumChart.destroy(); spectrumChart = null; }
     spectrumState = null;
     if (!photons || !photons.length) { host.innerHTML = opts.note || ''; return; }
-    const rows = photons.map(p => `<tr><td class="mono">${p.energy_keV}</td><td class="mono">${UTILS.fmt(p.yield_percent)}</td><td class="mono">${UTILS.escapeHtml(p.type)}</td></tr>`).join('');
+    // Extended entries with equilibrium progeny list the emitter of each line.
+    const showFrom = !!opts.progeny;
+    const rows = photons.map(p => `<tr><td class="mono">${p.energy_keV}</td><td class="mono">${UTILS.fmtSig(p.yield_percent, 2)}</td><td class="mono">${UTILS.escapeHtml(p.type)}</td>${showFrom ? `<td class="mono">${UTILS.escapeHtml(p.from || '')}</td>` : ''}</tr>`).join('');
+    const title = opts.chain ? 'Parent-only photon spectrum; dose constants include the stated progeny'
+      : showFrom ? `Photon spectrum, parent + progeny in equilibrium (${UTILS.escapeHtml(opts.progeny)})` : 'Photon spectrum';
     host.innerHTML = `
       <div class="d-flex justify-between flex-wrap gap-1 align-center">
-        <div style="font-weight:600;">${opts.chain ? 'Parent-only photon spectrum; dose constants include the stated progeny' : 'Photon spectrum'} (E ≥ 20 keV, yield ≥ 0.01%)</div>
+        <div style="font-weight:600;">${title} (E ≥ 20 keV, yield ≥ 0.01%)</div>
         <div class="filter-bar" role="group" aria-label="Spectrum view" style="margin-bottom:0;">
           <button type="button" class="filter-btn active" data-spectrum-view="yield" aria-pressed="true">Yield</button>
           <button type="button" class="filter-btn" data-spectrum-view="dose" aria-pressed="false">Share of &#915;<sup>H*(10)</sup></button>
@@ -303,13 +308,14 @@
             <tr>
               <th style="padding:0.3rem 0.5rem;text-align:left;border-right:1px solid var(--border);">E [keV]</th>
               <th style="padding:0.3rem 0.5rem;text-align:left;border-right:1px solid var(--border);">Yield [%]</th>
-              <th style="padding:0.3rem 0.5rem;text-align:left;">Type</th>
+              <th style="padding:0.3rem 0.5rem;text-align:left;${showFrom ? 'border-right:1px solid var(--border);' : ''}">Type</th>
+              ${showFrom ? '<th style="padding:0.3rem 0.5rem;text-align:left;">Emitter</th>' : ''}
             </tr>
           </thead>
           <tbody>${rows}</tbody>
         </table>
       </div>
-      <div class="form-hint">Type — G: gamma; X: X-ray; AQ: annihilation photons. Yield: photons emitted per 100 decays.</div>`;
+      <div class="form-hint">Type — G: gamma; X: X-ray; AQ: annihilation photons. Yield: photons emitted per 100 decays${showFrom ? ' of the parent (progeny lines scaled by their equilibrium activity per parent decay)' : ''}.</div>`;
     spectrumState = { photons, chain: !!opts.chain, id: opts.id, view: 'yield' };
     host.querySelectorAll('[data-spectrum-view]').forEach(btn => btn.addEventListener('click', () => {
       host.querySelectorAll('[data-spectrum-view]').forEach(b => {
@@ -398,8 +404,10 @@
       `<div class="prop-note">${UTILS.escapeHtml(notes.join('; '))}</div></div>`;
   }
 
+  // Regulatory levels are stored to 3 significant figures (R-06: fmt() showed
+  // "3880.0" next to "6.9×10⁴" in the same column).
   function fmtNumber(val) {
-    return UTILS.fmt(val);
+    return UTILS.fmtSig(val, 3);
   }
 
   // Provenance of the three dose-rate constants, PER QUANTITY (copy audit
@@ -410,7 +418,8 @@
   function gammaSourceLabel(n) {
     if (n.id === 'Y-90') return 'Not applicable';
     if (!n.source) return 'Not recorded';
-    if (n.source.startsWith('Cornejo')) return 'K-air, H*, H′: Cornejo (2015)';
+    // H'(0.07) of the two Cornejo entries is calculated (Cornejo publishes none for them, R-03)
+    if (n.source.startsWith('Cornejo')) return n.gamma_H007_source ? `K-air, H*: Cornejo (2015); H′: ${SRC_CALC}, incl. progeny` : 'K-air, H*, H′: Cornejo (2015)';
     const kair = n.gamma_Kair_source || '';
     const hs = n.chain_members ? `${SRC_CALC}, incl. progeny` : SRC_CALC;
     if (kair.startsWith('Cornejo')) return `K-air: Cornejo (2015); H*/H′: ${hs}`;
@@ -452,7 +461,9 @@
   }
 
   function enrichIcrpNuclide(n) {
-    const constants = ICRP107.calcConstants(n.id);
+    // Same default as the Dose page: short-lived progeny in equilibrium (R-01).
+    const progeny = ICRP107.progeny(n.id);
+    const constants = ICRP107.calcConstants(n.id, { progeny: progeny.length > 0 });
     return {
       ...n,
       _icrp107: true,
@@ -462,8 +473,15 @@
       representative_energy_keV: null,
       gamma_H10: constants ? Number(constants.gammaH10.toPrecision(4)) : null,
       gamma_H007: constants ? Number(constants.gammaH007.toPrecision(4)) : null,
+      _progenyIds: progeny.filter(m => m.fraction >= 1e-3).map(m => m.id).join(', '),
       source: 'ICRP 107',
     };
+  }
+
+  function progenyMark(n) {
+    return n._progenyIds
+      ? ` <span title="Includes the short-lived progeny in equilibrium: ${UTILS.safeAttr(n._progenyIds)}" style="cursor:help;">+</span>`
+      : '';
   }
 
   function renderTable() {
@@ -493,7 +511,7 @@
     const rows = data.map(n => {
       if (n._regOnly) return regulatoryOnlyRow(n.id);
       const sel = n.id === selectedId ? 'selected' : '';
-      const decayStr = (n.decay_modes || []).map(d => d.mode || d.daughter ? `${d.mode || 'decay'}` : d.mode).join(', ');
+      const decayStr = [...new Set((n.decay_modes || []).map(d => d.mode || 'decay'))].join(', ');
 
       if (n._icrp107) {
         // ICRP 107 extended database entry
@@ -504,12 +522,12 @@
           <td class="text-sm">${UTILS.escapeHtml(decayStr)}</td>
           <td>${icrpBadge}</td>
           <td class="num">${cellStatus('Not calculated')}</td>
-          <td class="num">${n.gamma_H10 == null ? cellStatus('No selected photon line') : fmtGamma(n.gamma_H10)}</td>
-          <td class="num">${n.gamma_H007 == null ? cellStatus('No selected photon line') : fmtGamma(n.gamma_H007)}</td>
+          <td class="num">${n.gamma_H10 == null ? cellStatus('No selected photon line') : fmtGamma(n.gamma_H10) + progenyMark(n)}</td>
+          <td class="num">${n.gamma_H007 == null ? cellStatus('No selected photon line') : fmtGamma(n.gamma_H007) + progenyMark(n)}</td>
           <td class="num">${cellStatus('See details')}</td>
           <td class="num">${extendedDischargeCell(n.id)}</td>
           <td class="num">${extendedClearanceCell(n.id)}</td>
-          <td class="text-sm">H*/H′: ${SRC_CALC} (not manually validated)</td>
+          <td class="text-sm">H*/H′: ${SRC_CALC}${n._progenyIds ? `, incl. ${UTILS.escapeHtml(n._progenyIds)}` : ''} (not manually validated)</td>
         </tr>`;
       }
 
@@ -600,7 +618,7 @@
 
     const rows = currentData.map(n => {
       const sel = n.id === selectedId ? 'selected' : '';
-      const decayStr = (n.decay_modes || []).map(d => d.mode || d.daughter ? `${d.mode || 'decay'}` : d.mode).join(', ');
+      const decayStr = [...new Set((n.decay_modes || []).map(d => d.mode || 'decay'))].join(', ');
       const icrpBadge = '<span class="tag tag-icrp107" style="font-size:0.85em;">ICRP 107</span>';
       return `<tr class="${sel}" data-id="${UTILS.escapeHtml(n.id)}" style="opacity:0.85;">
         <td class="sym">${UTILS.escapeHtml(n.symbol)}</td>
@@ -608,12 +626,12 @@
         <td class="text-sm">${UTILS.escapeHtml(decayStr)}</td>
         <td>${icrpBadge}</td>
         <td class="num">${cellStatus('Not calculated')}</td>
-        <td class="num">${n.gamma_H10 == null ? cellStatus('No selected photon line') : fmtGamma(n.gamma_H10)}</td>
-        <td class="num">${n.gamma_H007 == null ? cellStatus('No selected photon line') : fmtGamma(n.gamma_H007)}</td>
+        <td class="num">${n.gamma_H10 == null ? cellStatus('No selected photon line') : fmtGamma(n.gamma_H10) + progenyMark(n)}</td>
+        <td class="num">${n.gamma_H007 == null ? cellStatus('No selected photon line') : fmtGamma(n.gamma_H007) + progenyMark(n)}</td>
         <td class="num">${cellStatus('See details')}</td>
         <td class="num">${extendedDischargeCell(n.id)}</td>
         <td class="num">${extendedClearanceCell(n.id)}</td>
-        <td class="text-sm">H*/H′: ${SRC_CALC} (not manually validated)</td>
+        <td class="text-sm">H*/H′: ${SRC_CALC}${n._progenyIds ? `, incl. ${UTILS.escapeHtml(n._progenyIds)}` : ''} (not manually validated)</td>
       </tr>`;
     }).join('');
 
@@ -682,24 +700,25 @@
       }).join(', ');
 
       const photonCount = n.photon_count_filtered || 0;
-      const photonNote = photonCount > 0
-        ? `${photonCount} selected photon line${photonCount !== 1 ? 's' : ''} (γ, X, annihilation; E ≥ 20 keV, yield ≥ 0.01%)`
-        : 'No photon line passes the filter (E ≥ 20 keV, yield ≥ 0.01%)';
+      const photonNote = photonCount > 0 ? `${photonCount} line${photonCount !== 1 ? 's' : ''}` : 'None';
+      const photonSub = `${photonCount > 0 ? 'selected' : 'no'} γ, X or annihilation line${photonCount !== 1 ? 's' : ''}${ICRP107.progeny(n.id).length ? ' of the parent' : ''} with E ≥ 20 keV and yield ≥ 0.01% — ICRP 107`;
 
-      // Calculate dose constants from photons
-      let gammaH10 = '—', gammaH007 = '—', gammaKair = '—';
-      if (n.photons && n.photons.length > 0 && typeof PHYSICS !== 'undefined' && PHYSICS.calcGammaConstants) {
-        try {
-          const constants = PHYSICS.calcGammaConstants(n.photons);
-          if (constants) {
-            gammaH10 = (constants.gammaH10 || constants.gamma_H10) != null ? UTILS.fmt(constants.gammaH10 || constants.gamma_H10) : '—';
-            gammaH007 = (constants.gammaH007 || constants.gamma_H007) != null ? UTILS.fmt(constants.gammaH007 || constants.gamma_H007) : '—';
-            gammaKair = (constants.gammaKair || constants.gamma_Kair) != null ? UTILS.fmt(constants.gammaKair || constants.gamma_Kair) : gammaH10; // Fallback to H10
-          }
-        } catch (e) {
-          console.warn('Error calculating dose constants:', e);
-        }
-      }
+      // Dose constants from the photon lines: parent only, and — when there is
+      // short-lived progeny — parent + progeny in equilibrium, the default of the
+      // Dose page (audit 2026-10-14 v1.11, R-01: Ge-68 showed no Γ at all).
+      const progeny = ICRP107.progeny(n.id);
+      const progenyIds = progeny.filter(m => m.fraction >= 1e-3).map(m => m.id).join(', ');
+      const cParent = ICRP107.calcConstants(n.id);
+      const cChain = progeny.length ? ICRP107.calcConstants(n.id, { progeny: true }) : null;
+      const gFmt = (c, k) => (c ? UTILS.fmtSig(c[k], 3) : '—');
+      const gammaVal = k => cChain
+        ? `${gFmt(cChain, k)}<div class="prop-note">with progeny in equilibrium · parent only: ${gFmt(cParent, k)}</div>`
+        : gFmt(cParent, k);
+      const progenyHtml = progeny.length
+        ? `<div class="prop-item"><div class="prop-key">Short-lived progeny</div>
+             <div class="prop-val">${UTILS.escapeHtml(progenyIds)}</div>
+             <div class="prop-note">Equilibrium after ≈ ${UTILS.escapeHtml(CALC.formatHalfLife(10 * Math.max(...progeny.map(m => m.half_life_s))))} (10 half-lives of the longest-lived one). App criterion: T½ ≤ 1/10 of the parent's and ≤ 30 d</div></div>`
+        : '';
 
       const betaEnergyHtml = betaEnergyItem(n);
 
@@ -718,21 +737,23 @@
         <div class="prop-item">
           <div class="prop-key">Photon emissions</div>
           <div class="prop-val">${photonNote}</div>
-          <div class="prop-note">Filtered from ICRP 107</div>
+          <div class="prop-note">${photonSub}</div>
         </div>
         <div class="prop-item">
           <div class="prop-key">Γ<sup>H*(10)</sup></div>
-          <div class="prop-val" style="font-family:monospace;">${gammaH10}</div>
+          <div class="prop-val" style="font-family:monospace;">${gammaVal('gammaH10')}</div>
           <div class="prop-note">&#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178; — ambient dose-equivalent rate constant, calculated from the selected photon lines</div>
         </div>
         <div class="prop-item">
           <div class="prop-key">Γ<sup>H'(0.07)</sup></div>
-          <div class="prop-val" style="font-family:monospace;">${gammaH007}</div>
+          <div class="prop-val" style="font-family:monospace;">${gammaVal('gammaH007')}</div>
           <div class="prop-note">&#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178; — directional dose-equivalent rate constant</div>
         </div>
+        ${progenyHtml}
       `;
 
-      renderSpectrum(n.photons, { id: n.id });
+      if (cChain) renderSpectrum(cChain.photons, { id: n.id, progeny: progenyIds });
+      else renderSpectrum(n.photons, { id: n.id });
 
       // Regulatory values (RD 1217/2024 A1/B; RD 783/2001 e(g) and IS-28 level).
       // The ICRP 107 index carries no dose coefficients, so they come from REGULATORY.
@@ -750,7 +771,7 @@
             .map(c => `${UTILS.escapeHtml(c.id)}: ${fmtNumber(c.effluent_liquid_limit_Bq_per_L)} Bq/L`)
             .join('; ')
         : 'Bq/L';
-      const ingestionCoeff = fmtNumber(n.ingestion_dose_coeff_adult_Sv_per_Bq);
+      const ingestionCoeff = UTILS.fmtSig(n.ingestion_dose_coeff_adult_Sv_per_Bq, 2);
 
       const betaEnergyHtml = betaEnergyItem(n);
 
@@ -769,21 +790,21 @@
         <div class="prop-item">
           <div class="prop-key">Representative photon energy</div>
           <div class="prop-val">${n.representative_energy_keV ?? '—'}</div>
-          <div class="prop-note">keV</div>
+          <div class="prop-note">keV — nominal, for orientation; the calculations use the full spectrum below</div>
         </div>
         <div class="prop-item">
           <div class="prop-key">&#915;<sup>K-air</sup></div>
-          <div class="prop-val">${n.gamma_Kair !== null ? n.gamma_Kair : '—'}</div>
+          <div class="prop-val">${n.gamma_Kair !== null ? UTILS.fmtSig(n.gamma_Kair, 3) : '—'}</div>
           <div class="prop-note">&#956;Gy&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;</div>
         </div>
         <div class="prop-item">
           <div class="prop-key">&#915;<sup>H*(10)</sup></div>
-          <div class="prop-val">${n.gamma_H10 !== null ? n.gamma_H10 : '—'}</div>
+          <div class="prop-val">${n.gamma_H10 !== null ? UTILS.fmtSig(n.gamma_H10, 3) : '—'}</div>
           <div class="prop-note">&#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;</div>
         </div>
         <div class="prop-item">
           <div class="prop-key">&#915;<sup>H'(0.07)</sup></div>
-          <div class="prop-val">${n.gamma_H007 !== null ? n.gamma_H007 : '—'}</div>
+          <div class="prop-val">${n.gamma_H007 !== null ? UTILS.fmtSig(n.gamma_H007, 3) : '—'}</div>
           <div class="prop-note">&#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;${n.H007_from_cornejo ? ' &#9888;' : ''}</div>
         </div>
         ${regulatoryItemsHtml(n.id, { withIngestion: false })}
@@ -830,8 +851,11 @@
 
     if (n.id === 'Y-90') {
       notes.push('Predominantly β⁻ emitter with no photon line passing the filter: photon dose-rate constants are not applicable, and direct beta dose is not calculated by this app. The Dose page provides a separate experimental bremsstrahlung scenario whose estimates depend on container material; they are not primary-source container constants and must not be used for regulatory conclusions.');
-    } else if (n.source && !n.source.startsWith('Cornejo') && !n._icrp107) {
-      notes.push('Source: ' + UTILS.escapeHtml(n.source));
+    } else if (n.source && !n._icrp107) {
+      // Per-quantity provenance, the same text as the table's "Γ source" column
+      // (hidden on narrow screens, R-10)
+      notes.push('Γ source — ' + UTILS.escapeHtml(gammaSourceLabel(n)) + '. ' + UTILS.escapeHtml(n.source));
+      if (n.gamma_H007_source) notes.push("Γ H'(0.07): " + UTILS.escapeHtml(n.gamma_H007_source));
     } else if (n.H007_from_cornejo) {
       notes.push('H\'(0.07) value from Cornejo et al.: applies when all photon energies < 300 keV and H\'(0.07) > H*(10). Used instead of H*(10) for extremity dose estimation.');
     }
@@ -904,7 +928,7 @@
       a1Of(n) !== '' ? 'RD 1217/2024 Annex IV Table A1' : 'not tabulated in Table A1 (Annex III.1.b: RP 122 Part 1)',
       (() => { const b = REGULATORY.exemptionB(n.id); return b.status === 'listed' ? b.rows.map(r => r.conc_kBq_kg + (r.note ? ` (${r.note})` : '')).join(' | ') : ''; })(),
       (() => { const b = REGULATORY.exemptionB(n.id); return b.status === 'listed' ? b.rows.map(r => r.activity_Bq + (r.note ? ` (${r.note})` : '')).join(' | ') : ''; })(),
-      n._regOnly ? '' : n._icrp107 ? `H*/H′: ${SRC_CALC}` : gammaSourceLabel(n),
+      n._regOnly ? '' : n._icrp107 ? `H*/H′: ${SRC_CALC}${n._progenyIds ? `, incl. ${n._progenyIds} in equilibrium` : ''}` : gammaSourceLabel(n),
       n.gamma_Kair_source || '',
       origin(n)
     ].map(v => {

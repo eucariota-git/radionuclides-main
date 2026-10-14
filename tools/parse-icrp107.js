@@ -191,7 +191,9 @@ function parseNDX(ndxPath) {
       const dName = d.name.trim();
       const dRec = parseInt(d.rec, 10);
       const dBranch = parseFloat(d.branch);
-      if (dName && dName.match(/^[A-Z][a-z]?-\d+$/) && !isNaN(dRec) && dRec > 0 && !isNaN(dBranch) && dBranch > 0 && dBranch <= 1.0) {
+      // [mn]? — metastable daughters (Tc-99m, Ba-137m, In-113m) must be kept:
+      // without it Mo-99 listed only Tc-99 (12 %) and Cs-137/Sn-113 no daughter.
+      if (dName && dName.match(/^[A-Z][a-z]?-\d+[mn]?$/) &&!isNaN(dRec) && dRec > 0 && !isNaN(dBranch) && dBranch > 0 && dBranch <= 1.0) {
         daughters.push({ name: dName, branching: dBranch });
       }
     }

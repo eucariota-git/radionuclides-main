@@ -75,6 +75,10 @@ for (const n of nuclideData.nuclides) {
   let source, newT = null;
   if (Math.min(dI, dD) <= TOL) {
     source = dD < dI ? ddepLabel(n.id, r) : ICRP_LABEL;
+    // The value must BE the source's, not just lie within TOL of it (audit
+    // 2026-10-14 v1.11, R-05: C-11, Se-75 and Cs-137 were 0.011 % off theirs).
+    const exact = Number((dD < dI ? tD : tI).toPrecision(10));
+    if (n.half_life_s !== exact) newT = exact;
   } else if (r) {
     newT = Number(tD.toPrecision(8)); source = ddepLabel(n.id, r);
   } else {

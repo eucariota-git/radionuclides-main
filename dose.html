@@ -80,6 +80,14 @@
         </div>
         <div class="form-hint" id="distHint">Point-source approximation (1/d&#178;)</div>
       </div>
+      <div class="form-group hidden" id="progenyGroup">
+        <label class="form-label" for="progenyMode">Short-lived progeny</label>
+        <select class="form-select" id="progenyMode" title="Short-lived progeny">
+          <option value="include" selected>Include (equilibrium)</option>
+          <option value="parent">Parent only (fresh source)</option>
+        </select>
+        <div class="form-hint" id="progenyHint"></div>
+      </div>
     </div>
   </div>
 
@@ -272,7 +280,11 @@
     const icrpN = ICRP107.get(id);
     if (!icrpN) return null;
 
-    const constants = ICRP107.calcConstants(id);
+    // Short-lived progeny in equilibrium (audit 2026-10-14 v1.11, R-01): included
+    // by default — the curated chains make the same assumption — and selectable.
+    const progeny = ICRP107.progeny(icrpN.id);
+    const withProgeny = progeny.length > 0 && document.getElementById('progenyMode').value === 'include';
+    const constants = ICRP107.calcConstants(id, { progeny: withProgeny });
     if (!constants) {
       // No photon passes the filter (89 ICRP 107 entries, e.g. C-14, Ca-45).
       // These are searchable and clickable, so returning null here meant the
@@ -297,16 +309,22 @@
         archer_params: null,
         _icrp107: true,
         _noPhotons: true,
+        _progeny: progeny,
+        _progenyIncluded: withProgeny,
         decay_modes: icrpN.decay_modes || null,
         source: 'ICRP 107 (no photon emission above the 20 keV / 0.01% filter)',
       };
     }
 
-    const repPhoton = icrpN.photons.reduce((best, p) => {
+    const photons = constants.photons;
+    const repPhoton = photons.reduce((best, p) => {
       const score = p.yield_percent * p.energy_keV;
       const bestScore = best.yield_percent * best.energy_keV;
       return score > bestScore ? p : best;
-    }, icrpN.photons[0] || { energy_keV: 100, yield_percent: 0 });
+    }, photons[0] || { energy_keV: 100, yield_percent: 0 });
+    // 4 significant figures, like the stored constants (the raw float was shown
+    // with 17 digits in the results, report and CSV — audit R-06).
+    const sig4 = v => (v == null || !Number.isFinite(v) ? v : Number(v.toPrecision(4)));
 
     return {
       id: icrpN.id,
@@ -314,15 +332,18 @@
       name: icrpN.id,
       half_life_s: icrpN.half_life_s,
       half_life_display: icrpN.half_life_display,
-      gamma_H10: constants.gammaH10,
-      gamma_H007: constants.gammaH007,
-      gamma_Kair: constants.gamma_Kair,
+      gamma_H10: sig4(constants.gammaH10),
+      gamma_H007: sig4(constants.gammaH007),
+      gamma_Kair: null,
       max_photon_energy_keV: constants.max_photon_energy_keV,
       representative_energy_keV: repPhoton.energy_keV,
-      shielding_spectrum:      PHYSICS.buildShieldingSpectrum(icrpN.photons, 'H10'),
-      shielding_spectrum_h007: PHYSICS.buildShieldingSpectrum(icrpN.photons, 'H007'),
+      shielding_spectrum:      PHYSICS.buildShieldingSpectrum(photons, 'H10'),
+      shielding_spectrum_h007: PHYSICS.buildShieldingSpectrum(photons, 'H007'),
       archer_params: null,
       _icrp107: true,
+      _progeny: progeny,
+      _progenyIncluded: withProgeny,
+      decay_modes: icrpN.decay_modes || null,
       source: 'ICRP 107 (calculated)',
     };
   }
@@ -403,8 +424,24 @@
     searchInput.value = id;
     setExpanded(false);
     updateShieldingAvailability(n);
+    updateProgenyControl(n);
     updateHvlInfo();
   }
+
+  // Progeny selector: shown only for extended entries with short-lived progeny.
+  function updateProgenyControl(n) {
+    const prog = (n && n._progeny) || [];
+    document.getElementById('progenyGroup').classList.toggle('hidden', !prog.length);
+    if (!prog.length) return;
+    const longest = Math.max(...prog.map(m => m.half_life_s));
+    const list = prog.filter(m => m.fraction >= 1e-3)
+      .map(m => `${m.id} (T½ ${CALC.formatHalfLife(m.half_life_s)}, ${UTILS.fmtSig(m.fraction, 3)} Bq/Bq)`).join(', ');
+    document.getElementById('progenyHint').textContent =
+      `${list}. Equilibrium is reached after about 10 half-lives of the longest-lived one (≈ ${CALC.formatHalfLife(10 * longest)}); before that, "include" overestimates. App criterion: progeny with T½ ≤ 1/10 of the parent's and ≤ 30 d.`;
+  }
+  document.getElementById('progenyMode').addEventListener('change', () => {
+    if (hiddenSelect.value) selectNuclide(hiddenSelect.value);
+  });
 
   // Named event handlers for proper cleanup capability
   const onSearchFocus = () => {
@@ -914,7 +951,7 @@
         .filter(m => m.branching == null || m.branching >= 1e-4)
         .map(m => String(m.mode || '').trim());
       const minorModes = allModes.filter(m => m.branching != null && m.branching < 1e-4);
-      const decayModeText = decayModes.map(m => DECAY_MODE_NAMES[m] || m).join(' + ');
+      const decayModeText = [...new Set(decayModes)].map(m => DECAY_MODE_NAMES[m] || m).join(' + ');
       const minorModeText = minorModes
         .map(m => `${DECAY_MODE_NAMES[String(m.mode).trim()] || String(m.mode).trim()} ${(m.branching * 100).toExponential(2)}%`)
         .join(', ');
@@ -1001,7 +1038,7 @@
               ${pbWarning}
               <div style="margin-top:1rem;">
                 <strong>Dose rate at ${UTILS.fmt(d_m)} m (${primaryLabel}):</strong> ${fmtR(Hdot_primary)} (t=0) | ${fmtR(Hdot_primary_t)} (after ${UTILS.fmt(t_h)}h decay)
-                <br><strong>Annual dose (${primaryLabel}):</strong> ${fmt(H_primary_cum * nAdmin)}
+                <br><strong>Annual dose (${primaryLabel}):</strong> ${fmt(H_primary_cum * nAdmin)}/y
                 ${useH007 ? `<br><span class="text-sm">H*(10): ${fmt(H_WB_cum * nAdmin)}/y</span>` : ''}
               </div>
             </td>
@@ -1058,7 +1095,8 @@
                  hazard. Decay mode${decayModes.length > 1 ? 's' : ''}: <strong>${UTILS.escapeHtml(decayModeText || 'not recorded')}</strong>${minorModes.length ? ` (minor branches &lt; 0.01%: ${UTILS.escapeHtml(minorModeText)})` : ''}.
                  ${isPureBetaMinus
                    ? 'Direct beta/electron dose (skin, extremities) and bremsstrahlung are not calculated here; assess them for the actual source and container.'
-                   : 'β− is not the only recorded decay mode: assess the radiological hazard from the actual decay mode (for photon-less α and EC emitters the main concern is internal exposure).'}`
+                   : 'Not a pure β− emitter: assess the radiological hazard from the actual decay mode and from any progeny.'}
+                 ${n._progeny && n._progeny.length && !n._progenyIncluded ? '<br><strong>Its short-lived progeny is excluded</strong> (Parent only selected above): select "Include" to estimate the dose from the progeny in equilibrium.' : ''}`
               : `No photon line passes the app's filter. Direct beta/electron dose and bremsstrahlung are
                  not calculated here; assess them for the actual source and container.`}
           </td></tr>`;
@@ -1138,18 +1176,30 @@
     const sourceTag = n._icrp107
       ? `<span class="tag tag-icrp107" title="Dose constants calculated from ICRP 107 photon spectrum using ICRP 74 Table A.21 coefficients and the Cornejo methodology">ICRP 107</span>`
       : '';
+    // R-01: say whether the constants include the short-lived progeny
+    const progIds = (n._progeny || []).filter(m => m.fraction >= 1e-3).map(m => m.id).join(', ');
+    const progenyTag = progIds
+      ? (n._progenyIncluded
+          ? ` <span class="text-sm">(incl. ${UTILS.escapeHtml(progIds)} in equilibrium)</span>`
+          : ` <span class="text-sm" style="color:var(--warning-text);">(parent only — ${UTILS.escapeHtml(progIds)} excluded)</span>`)
+      : '';
+    // R-11: the form hint warns while typing, but the result itself did not
+    // (1.1 cm gave 179.5 mSv/h with no caveat). Same 0.25 m threshold.
+    const distWarning = d_m < 0.25
+      ? `<div class="alert alert-warning mt-1">&#9888; d = ${Number(d_m.toPrecision(3))} m: at short distances the point-source model (1/d²) depends on the real size of the source and shield and can be far off — at contact it is not valid. Use a contact or extremity method for these geometries.</div>`
+      : '';
     const energyWarning = !n.representative_energy_keV
       ? '<div class="alert alert-warning alert-lg mt-1">⚠️ Representative energy not defined; shielding calculations use narrow-beam approximation.</div>'
       : '';
     document.getElementById('nuclideInfo').innerHTML =
-      `<strong>${UTILS.escapeHtml(n.symbol)} — ${UTILS.escapeHtml(n.name)}</strong> ${sourceTag} &nbsp;|&nbsp; T&#189; = ${UTILS.escapeHtml(n.half_life_display)} &nbsp;|&nbsp;
+      `<strong>${UTILS.escapeHtml(n.symbol)} — ${UTILS.escapeHtml(n.name)}</strong> ${sourceTag}${progenyTag} &nbsp;|&nbsp; T&#189; = ${UTILS.escapeHtml(n.half_life_display)} &nbsp;|&nbsp;
        A&#8320; = ${A0raw} ${A0unit} (${UTILS.fmt(A0_GBq)} GBq) &nbsp;|&nbsp;
-       d = ${d_m} m &nbsp;|&nbsp; t = ${UTILS.fmt(t_h)} h/admin &nbsp;|&nbsp; n = ${nAdmin} admin/y &nbsp;|&nbsp; patient Tx = ${UTILS.fmt(patientTx*100)}% &nbsp;|&nbsp;`
+       d = ${Number(d_m.toPrecision(4))} m &nbsp;|&nbsp; t = ${UTILS.fmt(t_h)} h/admin &nbsp;|&nbsp; n = ${nAdmin} admin/y &nbsp;|&nbsp; patient Tx = ${UTILS.fmt(patientTx*100)}% &nbsp;|&nbsp;`
        + (n.representative_energy_keV ? `` : '') + energyWarning +
-       `&#915;<sup>H*(10)</sup> = ${gammaWB} &nbsp;|&nbsp; ${useH007
-         ? `&#915;<sup>H'(0.07)</sup> = ${gammaExt}`
+       `&#915;<sup>H*(10)</sup> = ${UTILS.fmtSig(gammaWB, 3)} &nbsp;|&nbsp; ${useH007
+         ? `&#915;<sup>H'(0.07)</sup> = ${UTILS.fmtSig(gammaExt, 3)}`
          : `&#915;<sup>H'(0.07)</sup> = ${n.gamma_H007 ?? '—'} <span style="color:var(--text-muted)">(no H'(0.07) constant — H*(10) value used in that row)</span>`
-       } &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;`;
+       } &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;` + distWarning;
 
     // Dose rate at t=0 (at selected distance)
     const Hdot_WB  = CALC.doseRate(gammaWB,  A0_GBq, d_m, thick, E_MeV, mat, ap, sp)    * patientTx;
@@ -1194,7 +1244,7 @@
         <td class="num">${fmtR(Hdot_WB_t)}</td>
         <td class="num text-muted">${fmtR(Hdot_WB_1m)}</td>
         <td class="num">${fmt(H_WB_cum * nAdmin)}</td>
-        <td class="text-sm text-muted">&#915;<sup>H*(10)</sup> = ${gammaWB} &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;</td>
+        <td class="text-sm text-muted">&#915;<sup>H*(10)</sup> = ${UTILS.fmtSig(gammaWB, 3)} &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;</td>
       </tr>
       <tr>
         <td>
@@ -1207,8 +1257,8 @@
         <td class="num">${fmt(H_Ext_cum * nAdmin)}</td>
         <td class="text-sm text-muted">
           &#915;${useH007
-            ? `<sup>H'(0.07)</sup> = ${gammaExt}`
-            : `<sup>H*(10)</sup> = ${gammaExt} <span class="text-muted">(no H'(0.07) constant — H*(10) value shown; may underestimate the skin dose of low-energy emitters)</span>`
+            ? `<sup>H'(0.07)</sup> = ${UTILS.fmtSig(gammaExt, 3)}`
+            : `<sup>H*(10)</sup> = ${UTILS.fmtSig(gammaExt, 3)} <span class="text-muted">(no H'(0.07) constant — H*(10) value shown; may underestimate the skin dose of low-energy emitters)</span>`
           } &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;
           ${n.H007_from_cornejo ? '<br><span style="color:var(--warning-text);">&#9888; H\'(0.07) from Cornejo et al.</span>' : ''}
         </td>
@@ -1385,7 +1435,8 @@
           y: {
             title: { display: true, text: 'Dose-equivalent rate (μSv/h)', color: chartTheme.text },
             type: 'logarithmic',
-            ticks: { callback: v => CALC.formatDoseRate(v).display, color: chartTheme.text },
+            // "100 μSv/h", not "100.0 μSv/h" (R-06)
+            ticks: { callback: v => { const f = CALC.formatDoseRate(v); return `${Number(f.value.toPrecision(3))} ${f.unit}`; }, color: chartTheme.text },
             grid: { color: chartTheme.grid },
             afterBuildTicks: (axis) => {
               // Keep only decade ticks (powers of 10) for equal visual spacing

@@ -3,6 +3,11 @@
    Dark mode, print, keyboard shortcuts, history management
    ========================================================= */
 
+// Chart.js formats tick labels with the BROWSER locale, so a Spanish browser
+// drew "33,2" and "0,5" on axes while the rest of the app uses a decimal point
+// (audit 2026-10-14 v1.11, R-06). Every page loads Chart.js before this file.
+if (typeof Chart !== 'undefined') Chart.defaults.locale = 'en-US';
+
 const UI = (() => {
   /* --- Dark Mode --- */
   function initDarkMode() {
