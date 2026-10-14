@@ -33,10 +33,9 @@
 <main class="page-body" id="main-content">
   <h1 class="page-title">Liquid Effluent — Sewer and STP Workers</h1>
   <div class="page-subtitle">
-    Annual effective dose from activity excreted by nuclear-medicine patients, adapted from NUREG/CR-5814 (1992):
-    <strong>Scenario 1</strong> — sewer system inspector in the interceptor (external irradiation from wastewater — water slab, receptor 1 m above its surface — plus aerosol inhalation);
-    <strong>Scenario 2</strong> — sewage-treatment-plant (STP / EDAR) operator of sludge dewatering equipment
-    (external exposure to dewatered sludge + inhalation of resuspended dry sludge; retained fraction as entered (default: 100%), annual discharge / annual sludge-production screening model with transit decay only — IAEA SRS-19 (2001) §4.9).
+    Annual effective dose from activity excreted by nuclear-medicine patients, adapted from NUREG/CR-5814 (1992), for two receptors:
+    <strong>Scenario 1</strong>, sewer system inspector (wastewater + aerosol inhalation), and
+    <strong>Scenario 2</strong>, sewage-treatment-plant (STP / EDAR) sludge operator (dewatered sludge + resuspended dust). Model and sources under <em>Method</em>.
   </div>
 
   <div class="alert alert-warning mb-1">
@@ -135,7 +134,6 @@
     <h2 class="card-title">&#128202; Results</h2>
     <div id="calcError" class="alert alert-danger hidden" role="alert"></div>
     <div id="resultBlock">
-      <p class="text-sm">The two scenarios are different receptors: each total is compared with the criterion on its own and they are <strong>not added together</strong>.</p>
 
       <h3 class="card-title">Scenario 1 — sewer system inspector</h3>
       <div class="overflow-x-auto">
@@ -508,12 +506,16 @@
         <td>${esc(nd.e_inh.type)}</td>
       </tr>`;
     }).join('');
-    document.getElementById('coeffSources').innerHTML = nuclides.map(({ nd }) =>
-      `<li><strong>${esc(nd.id)}</strong> — k Sc. 1: ${esc(nd.k_ext.s1.source)}` +
-      (nd.k_ext.s1.report_file ? ` [report: ${esc(nd.k_ext.s1.report_file.file)}, SHA-256 ${esc(nd.k_ext.s1.report_file.sha256.slice(0, 12))}…]` : '') +
-      (nd.k_ext.s2 ? ` k Sc. 2: ${esc(nd.k_ext.s2.quantity)} ${esc(nd.k_ext.s2.source)}` +
-        (nd.k_ext.s2.report_file ? ` [report: ${esc(nd.k_ext.s2.report_file.file)}, SHA-256 ${esc(nd.k_ext.s2.report_file.sha256.slice(0, 12))}…]` : '') : '') +
-      ` e(inh): ${esc(nd.e_inh.source)} Half-life: ${esc(nd.half_life_source || (DB.getById(nd.id) || {}).half_life_source || 'app database')}</li>`).join('');
+    // Shared statements once; per nuclide only what differs (copy audit 2026-10-14)
+    const reportRef = rf => (rf ? ` [report ${esc(rf.file)}, SHA-256 ${esc(rf.sha256.slice(0, 12))}…]` : '');
+    const CN = data.coefficient_notes;
+    document.getElementById('coeffSources').innerHTML =
+      `<li><strong>All nuclides</strong> — k Sc. 1: ${esc(CN.k_s1)}${reportRef(nuclides[0].nd.k_ext.s1.report_file)}
+        k Sc. 2: ${esc(CN.k_s2_quantity)} e(inh): ${esc(CN.e_inh_basis)}</li>` +
+      nuclides.map(({ nd }) =>
+        `<li><strong>${esc(nd.id)}</strong> — ` +
+        (nd.k_ext.s2 ? `k Sc. 2: ${esc(nd.k_ext.s2.source)}${reportRef(nd.k_ext.s2.report_file)} ` : 'k Sc. 2: not calculated. ') +
+        `e(inh): absorption ${esc(nd.e_inh.type_note)}. Half-life: ${esc(nd.half_life_source || (DB.getById(nd.id) || {}).half_life_source || 'app database')}</li>`).join('');
 
     const ccHtml = nuclides.map(({ nd, T }) => {
       const cc = EFFLUENT.crossChecks(nd, T, input.s2);

@@ -4,6 +4,10 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
+### v1.10.5 — copy review 2026-10-14
+- Errors fixed: wheelchair symbol on the Decay clearance heading; the Effluent coefficient sources no longer show the author's local folders (report file name and SHA-256 only, also in `effluent-scenarios.json` v2.3.0); one wording for the legal basis of e(inh); Caregiver references numbered consistently (`caregiver.json` v1.1); precise air-kerma tooltip; the user guide no longer points to an unshipped file, no longer lists ICRU as a data source, lists every source now used (DDEP, Caregiver articles and guidance) and every nuclide without a published comparison.
+- Repetition removed: the regulatory chain and the IS-28 conditions are stated once in Properties (one-line tooltips); Dose states the "does not establish compliance" warning next to the limit comparison and merges the limits note; Effluent has a one-sentence subtitle, one statement of the tank boundary and shared coefficient sources stated once; Caregiver has a short subtitle, a one-line category hint and 9 assumptions instead of 14.
+
 ### v1.10.4 — database version
 - `nuclides.json` is now **v1.3**. It had kept v1.2 since the first release although its content changed several times (ICRP 74 A.21 recalculation in v1.7.0, beta endpoints and half-life sources in v1.10.1–v1.10.2), so reports printed the same database version for different data. Rule added to the development guide: bump it whenever its content changes.
 

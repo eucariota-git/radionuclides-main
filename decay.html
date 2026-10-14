@@ -114,7 +114,7 @@
             <option value="kg">kg</option>
           </select>
         </div>
-        <div class="form-hint">Use the mass corresponding to the entered activity and the material covered by the assessment; identify whether the container is included. Used for the clearance (Table&nbsp;A1) and moderate-quantity exemption (Table&nbsp;B, &le;&nbsp;1000&nbsp;kg) checks &mdash; RD&nbsp;1217/2024 Annex&nbsp;IV</div>
+        <div class="form-hint">Mass that contains the entered activity (state whether it includes the container). Enables the Table&nbsp;A1 clearance and Table&nbsp;B (&le;&nbsp;1000&nbsp;kg) checks.</div>
       </div>
     </div>
 
@@ -137,7 +137,7 @@
     <!-- Clearance assessment -->
     <div id="clearanceSection" class="hidden">
       <hr class="divider">
-      <h3 class="card-title">&#9855; Clearance assessment &mdash; RD 1217/2024, Annex IV Table A1</h3>
+      <h3 class="card-title">&#9851; Clearance assessment &mdash; RD 1217/2024, Annex IV Table A1</h3>
       <div id="clearanceContent"></div>
     </div>
 
@@ -991,8 +991,7 @@
 
       clearHtml += `</div>
         <div class="alert alert-warning mt-1" style="font-size:.82rem;">
-          Table A1 (RD 1217/2024 Annex IV): activity concentration values for clearance of solid materials, applicable by default to
-          any quantity and any type of solid material. Values in kBq/kg. <strong>Individual level for one nuclide:</strong> for mixtures,
+          <strong>Individual level for one nuclide:</strong> for mixtures,
           Annex III.1.a requires &Sigma;(C&#7522;/L&#7522;) &le; 1, which is not evaluated here. For parent entries marked (a), the value refers to the
           parent's activity and already accounts for the listed progeny. Clearance of materials from authorised practices is
           subject to the conditions of Annex III; consult the CSN.

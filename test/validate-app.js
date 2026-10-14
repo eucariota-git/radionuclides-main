@@ -318,7 +318,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v43');
+    swVersion === 'nm-planner-v44');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -455,7 +455,9 @@ async function main() {
     check('dose: no absolute claim that compliance is shown by personal dosimetry (T21; RD 1029/2022 art. 34)',
       [doseHtml, aboutHtml, read('docs/USER_GUIDE.md')].every(t =>
         !/[Cc]ompliance (with dose limits )?is (assessed|demonstrated) with personal dosimetry/.test(t)) &&
-      (doseHtml.match(/do not establish compliance/g) || []).length >= 3);
+      // stated where the limits are compared and in the report (not repeated in the subtitle)
+      /Indicative screening only<\/strong>[^`]*do not establish compliance/.test(doseHtml) &&
+      /notes\.push\('H\*\(10\) and H\\'\(0\.07\) are area-monitoring quantities\. These operational-quantity estimates do not establish compliance/.test(doseHtml));
     check('dose: Archer is promised only where a fit exists; HVL/TVL are first layers (T23, T24)',
       /only where a fit exists for the nuclide and material/.test(doseHtml) &&
       !/Geometry, scatter, and source distribution effects are not modelled/.test(doseHtml) &&
@@ -543,7 +545,7 @@ async function main() {
   }
   check('decay names the denominator as mass of material, never "vial weight" (copy audit T04)',
     /Mass of material being assessed/.test(decayHtml) && !/Vial \/ container weight|Vial_weight/.test(decayHtml) &&
-    /identify whether the container is included/.test(decayHtml));
+    /state whether it includes the container/.test(decayHtml));
   {
     // Audit 2026-10-04, A01/A07
     const iRender = decayHtml.indexOf("card.classList.remove('hidden')");

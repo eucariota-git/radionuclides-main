@@ -2,8 +2,8 @@
 const EFFLUENT_DATA = {
   "meta": {
     "id": "effluent-scenarios",
-    "version": "2.2.0",
-    "date": "2026-10-03",
+    "version": "2.3.0",
+    "date": "2026-10-14",
     "title": "Liquid effluent to sewer — NUREG/CR-5814 Scenarios No. 1 (sewer inspector) and No. 2 (STP sludge process operator)",
     "description": "Screening doses to two workers who are members of the public with respect to the licensee: (1) a sewer system inspector exposed to the facility's wastewater in the interceptor — external irradiation from wastewater (water slab; receptor 1 m above its surface) plus aerosol inhalation; (2) a sewage-treatment-plant (EDAR) operator of sludge dewatering equipment — external exposure to dewatered sludge plus inhalation of resuspended dry sludge. Scenario 1 adapts NUREG/CR-5814 §5.2.1 as the workbook 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx' (sheet Escenario-1); Scenario 2 adapts NUREG/CR-5814 §5.2.2 as IRA-xxxx_Lu-177_dosis_en_escenario2_v1.xlsx (sheet Escenario-2). Screening philosophy of IAEA SRS-19 §4.9 and §6.6.",
     "units_note": "Values in this file are in the display units stated in each 'unit' field; the CALC functions work in SI and EFFLUENT.evaluate converts.",
@@ -31,11 +31,11 @@ const EFFLUENT_DATA = {
       },
       "tank_limit_GBq_y": {
         "label": "Annual discharge from decay tanks (sum of controlled nuclides)",
-        "hint": "Total annual activity released from the decay tanks, shared among the nuclides marked “Tanks”. No decay credit. The default equals the IS-28 boundary (strictly < 1 GBq/y), not a demonstration of compliance.",
+        "hint": "Total annual release from the decay tanks, shared among the nuclides marked “Tanks”; no decay credit.",
         "value": 1,
         "unit": "GBq/y",
         "min": 0,
-        "source": "IS-28 Annex II II.A.4: annual discharge strictly below 1 GBq for the sum of nuclides other than H-3 and C-14 (the facility's authorisation prevails). Shared among the controlled nuclides in proportion to the activity excreted into the tanks. The default (1 GBq/y) equals the boundary: IS-28 requires the annual discharge of these nuclides to be STRICTLY below 1 GBq, so the default is a boundary scenario, not a demonstration of compliance."
+        "source": "IS-28 Annex II II.A.4: annual discharge strictly below 1 GBq for the sum of nuclides other than H-3 and C-14 (the facility's authorisation prevails). The 1 GBq/y default is that boundary — a boundary scenario, not a demonstration of compliance."
       }
     },
     "s1": {
@@ -252,9 +252,9 @@ const EFFLUENT_DATA = {
           "report_id": "PHITS Scenario 1 report, 2026-08-20",
           "source": "Own PHITS 3.33 calculation: 'Escenario 1 del NUREG/CR-5814 · Lu-177, Lu-177m, Tc-99m, I-131 y F-18', 2026-08-20, Table 7. Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); photon transport only. Uncertainty: relative Monte Carlo standard uncertainty (coverage factor 1).",
           "report_file": {
-            "file": "C:\\phits\\main\\sims_nureg\\escenario_1_individual\\herramientas\\informe_esc1_5nuc.md",
+            "file": "informe_esc1_5nuc.md",
             "sha256": "417eb31f2d6fe19dd3534355b5b6fbe6b40a56d7e932cc777924459dcdb83591",
-            "pdf": "C:\\phits\\main\\sims_nureg\\escenario_1_individual\\Informe_PHITS_escenario_1_5_radionucleidos.pdf",
+            "pdf": "Informe_PHITS_escenario_1_5_radionucleidos.pdf",
             "pdf_sha256": "cf321822ec79174573523ecdb3beae2fea29fcf9941531ed83da0b25c6298c62"
           }
         },
@@ -274,7 +274,7 @@ const EFFLUENT_DATA = {
           },
           "source": "Own PHITS calculation: 'Coeficientes de tasa de dosis efectiva externa para Lu-177 y Lu-177m en el escenario 2 de NUREG/CR-5814', approved 2026-07-30, §7.2. Uncertainties are relative Monte Carlo standard uncertainties (coverage factor 1). The report does not state a one-sided secondary-electron envelope.",
           "report_file": {
-            "file": "C:\\phits\\main\\sims_nureg\\inputs_individuales\\informe\\informe_coeficientes_lu_escenario2.md",
+            "file": "informe_coeficientes_lu_escenario2.md",
             "sha256": "64d60f8d2339746e0f07842bce4a6f636a142aeb132a692e4c6fd70f5f279387"
           }
         }
@@ -283,7 +283,8 @@ const EFFLUENT_DATA = {
         "value": 1.1e-9,
         "unit": "Sv/Bq",
         "type": "M",
-        "source": "ICRP Publication 119 (2012), Table G.1, adult member of the public, absorption type M (Lu-177 is tabulated for types M and S only). Same value as RD 783/2001 Annex III table b), repealed by RD 1029/2022 but kept for members of the public by CSN Resolution of 3 April 2024."
+        "source": "RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by RD 1029/2022 and the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1), absorption type M (lutetium is tabulated for types M and S only).",
+        "type_note": "type M (lutetium is tabulated for types M and S only)"
       },
       "source_term": {
         "patients_per_y": 75,
@@ -307,9 +308,9 @@ const EFFLUENT_DATA = {
           "report_id": "PHITS Scenario 1 report, 2026-08-20",
           "source": "Own PHITS 3.33 calculation: 'Escenario 1 del NUREG/CR-5814 · Lu-177, Lu-177m, Tc-99m, I-131 y F-18', 2026-08-20, Table 7. Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); photon transport only. Uncertainty: relative Monte Carlo standard uncertainty (coverage factor 1).",
           "report_file": {
-            "file": "C:\\phits\\main\\sims_nureg\\escenario_1_individual\\herramientas\\informe_esc1_5nuc.md",
+            "file": "informe_esc1_5nuc.md",
             "sha256": "417eb31f2d6fe19dd3534355b5b6fbe6b40a56d7e932cc777924459dcdb83591",
-            "pdf": "C:\\phits\\main\\sims_nureg\\escenario_1_individual\\Informe_PHITS_escenario_1_5_radionucleidos.pdf",
+            "pdf": "Informe_PHITS_escenario_1_5_radionucleidos.pdf",
             "pdf_sha256": "cf321822ec79174573523ecdb3beae2fea29fcf9941531ed83da0b25c6298c62"
           }
         },
@@ -327,9 +328,9 @@ const EFFLUENT_DATA = {
             "envelope_pos": 0.0082268,
             "report_id": "INF-I131-S2-RESULTADOS-1.1.0, §X.5 (air domain accepted with DEV-05)"
           },
-          "source": "Own PHITS 3.330 calculation: 'Informe de resultados del I-131 en el escenario 2 de NUREG/CR-5814', INF-I131-S2-RESULTADOS-1.1.0, 2026-08-23. Uncertainties are relative Monte Carlo standard uncertainties (coverage factor 1); the envelope is a separate one-sided model bound for bremsstrahlung and direct beta, not added to the central value.",
+          "source": "Xe-131m excluded (open pool). Own PHITS 3.330 calculation: 'Informe de resultados del I-131 en el escenario 2 de NUREG/CR-5814', INF-I131-S2-RESULTADOS-1.1.0, 2026-08-23. Uncertainties are relative Monte Carlo standard uncertainties (coverage factor 1); the envelope is a separate one-sided model bound for bremsstrahlung and direct beta, not added to the central value.",
           "report_file": {
-            "file": "C:\\phits\\main\\sims_nureg\\inputs_individuales\\informe\\informe_resultados_i131.md",
+            "file": "informe_resultados_i131.md",
             "sha256": "a40000ba57a19e0a1c17c3388f465346a14b7058af7302e37c6b272b92210707"
           }
         }
@@ -338,7 +339,8 @@ const EFFLUENT_DATA = {
         "value": 7.4e-9,
         "unit": "Sv/Bq",
         "type": "F",
-        "source": "RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1), absorption type F (types M and S give 2.4E-9 and 1.6E-9 Sv/Bq; F is the most conservative and the type used by IAEA SRS-19 Table XVI)."
+        "source": "RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by RD 1029/2022 and the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1), absorption type F (types M and S give 2.4E-9 and 1.6E-9 Sv/Bq; F is the most conservative and the type used by IAEA SRS-19 Table XVI).",
+        "type_note": "type F (types M and S give 2.4E-9 and 1.6E-9 Sv/Bq; F is the most conservative and the type used by IAEA SRS-19 Table XVI)"
       },
       "source_term": {
         "patients_per_y": 50,
@@ -386,9 +388,9 @@ const EFFLUENT_DATA = {
           "report_id": "PHITS Scenario 1 report, 2026-08-20",
           "source": "Own PHITS 3.33 calculation: 'Escenario 1 del NUREG/CR-5814 · Lu-177, Lu-177m, Tc-99m, I-131 y F-18', 2026-08-20, Table 7. Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); photon transport only. Uncertainty: relative Monte Carlo standard uncertainty (coverage factor 1).",
           "report_file": {
-            "file": "C:\\phits\\main\\sims_nureg\\escenario_1_individual\\herramientas\\informe_esc1_5nuc.md",
+            "file": "informe_esc1_5nuc.md",
             "sha256": "417eb31f2d6fe19dd3534355b5b6fbe6b40a56d7e932cc777924459dcdb83591",
-            "pdf": "C:\\phits\\main\\sims_nureg\\escenario_1_individual\\Informe_PHITS_escenario_1_5_radionucleidos.pdf",
+            "pdf": "Informe_PHITS_escenario_1_5_radionucleidos.pdf",
             "pdf_sha256": "cf321822ec79174573523ecdb3beae2fea29fcf9941531ed83da0b25c6298c62"
           }
         },
@@ -406,9 +408,9 @@ const EFFLUENT_DATA = {
             "envelope_pos": null,
             "report_id": "P20P21-G9-FINAL-1.0.0 × f45 = 1.4349 (coefficient B)"
           },
-          "source": "Own PHITS calculation: 'Coeficientes de tasa de dosis efectiva externa para Lu-177 y Lu-177m en el escenario 2 de NUREG/CR-5814', approved 2026-07-30, §7.2. relative Monte Carlo standard uncertainties (coverage factor 1).",
+          "source": "Own PHITS calculation: 'Coeficientes de tasa de dosis efectiva externa para Lu-177 y Lu-177m en el escenario 2 de NUREG/CR-5814', approved 2026-07-30, §7.2. Uncertainties are relative Monte Carlo standard uncertainties (coverage factor 1).",
           "report_file": {
-            "file": "C:\\phits\\main\\sims_nureg\\inputs_individuales\\informe\\informe_coeficientes_lu_escenario2.md",
+            "file": "informe_coeficientes_lu_escenario2.md",
             "sha256": "64d60f8d2339746e0f07842bce4a6f636a142aeb132a692e4c6fd70f5f279387"
           }
         }
@@ -417,7 +419,8 @@ const EFFLUENT_DATA = {
         "value": 1.3e-8,
         "unit": "Sv/Bq",
         "type": "M",
-        "source": "RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1), absorption type M (lutetium is tabulated for types M and S only)."
+        "source": "RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by RD 1029/2022 and the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1), absorption type M (lutetium is tabulated for types M and S only).",
+        "type_note": "type M (lutetium is tabulated for types M and S only)"
       },
       "source_term": {
         "patients_per_y": 75,
@@ -443,9 +446,9 @@ const EFFLUENT_DATA = {
           "report_id": "PHITS Scenario 1 report, 2026-08-20",
           "source": "Own PHITS 3.33 calculation: 'Escenario 1 del NUREG/CR-5814 · Lu-177, Lu-177m, Tc-99m, I-131 y F-18', 2026-08-20, Table 7. Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); photon transport only. Uncertainty: relative Monte Carlo standard uncertainty (coverage factor 1).",
           "report_file": {
-            "file": "C:\\phits\\main\\sims_nureg\\escenario_1_individual\\herramientas\\informe_esc1_5nuc.md",
+            "file": "informe_esc1_5nuc.md",
             "sha256": "417eb31f2d6fe19dd3534355b5b6fbe6b40a56d7e932cc777924459dcdb83591",
-            "pdf": "C:\\phits\\main\\sims_nureg\\escenario_1_individual\\Informe_PHITS_escenario_1_5_radionucleidos.pdf",
+            "pdf": "Informe_PHITS_escenario_1_5_radionucleidos.pdf",
             "pdf_sha256": "cf321822ec79174573523ecdb3beae2fea29fcf9941531ed83da0b25c6298c62"
           }
         },
@@ -463,9 +466,9 @@ const EFFLUENT_DATA = {
             "envelope_pos": null,
             "report_id": "Tc-99m Scenario 2 report (DEV-03, DEV-04, DEV-05)"
           },
-          "source": "Own PHITS calculation: 'informe_resultados_tc99m', Scenario 2 of NUREG/CR-5814, approved for L10 and L45 with declared deviations DEV-03, DEV-04 and DEV-05. relative Monte Carlo standard uncertainties (coverage factor 1).",
+          "source": "Own PHITS calculation: 'informe_resultados_tc99m', Scenario 2 of NUREG/CR-5814, approved for L10 and L45 with declared deviations DEV-03, DEV-04 and DEV-05. Uncertainties are relative Monte Carlo standard uncertainties (coverage factor 1).",
           "report_file": {
-            "file": "C:\\phits\\main\\sims_nureg\\inputs_individuales\\informe\\informe_resultados_tc99m.md",
+            "file": "informe_resultados_tc99m.md",
             "sha256": "6eef353fcf859826e05e954a6d489a9f243fb982485be73d385c9d7e1f8c22e1"
           }
         }
@@ -474,7 +477,8 @@ const EFFLUENT_DATA = {
         "value": 1.9e-11,
         "unit": "Sv/Bq",
         "type": "M",
-        "source": "RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1), absorption type M (workbook choice; types F and S give 1.2E-11 and 2.0E-11 Sv/Bq)."
+        "source": "RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by RD 1029/2022 and the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1), absorption type M (workbook choice; types F and S give 1.2E-11 and 2.0E-11 Sv/Bq).",
+        "type_note": "type M (workbook choice; types F and S give 1.2E-11 and 2.0E-11 Sv/Bq)"
       },
       "source_term": {
         "patients_per_y": 0,
@@ -503,9 +507,9 @@ const EFFLUENT_DATA = {
           "report_id": "PHITS Scenario 1 report, 2026-08-20",
           "source": "Own PHITS 3.33 calculation: 'Escenario 1 del NUREG/CR-5814 · Lu-177, Lu-177m, Tc-99m, I-131 y F-18', 2026-08-20, Table 7. Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); photon transport only. Uncertainty: relative Monte Carlo standard uncertainty (coverage factor 1).",
           "report_file": {
-            "file": "C:\\phits\\main\\sims_nureg\\escenario_1_individual\\herramientas\\informe_esc1_5nuc.md",
+            "file": "informe_esc1_5nuc.md",
             "sha256": "417eb31f2d6fe19dd3534355b5b6fbe6b40a56d7e932cc777924459dcdb83591",
-            "pdf": "C:\\phits\\main\\sims_nureg\\escenario_1_individual\\Informe_PHITS_escenario_1_5_radionucleidos.pdf",
+            "pdf": "Informe_PHITS_escenario_1_5_radionucleidos.pdf",
             "pdf_sha256": "cf321822ec79174573523ecdb3beae2fea29fcf9941531ed83da0b25c6298c62"
           }
         },
@@ -515,7 +519,8 @@ const EFFLUENT_DATA = {
         "value": 5.6e-11,
         "unit": "Sv/Bq",
         "type": "M",
-        "source": "RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1), absorption type M (workbook choice; type S gives 5.9E-11 Sv/Bq, F 2.8E-11)."
+        "source": "RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by RD 1029/2022 and the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1), absorption type M (workbook choice; types F and S give 2.8E-11 and 5.9E-11 Sv/Bq).",
+        "type_note": "type M (workbook choice; types F and S give 2.8E-11 and 5.9E-11 Sv/Bq)"
       },
       "source_term": {
         "patients_per_y": 2500,
@@ -545,5 +550,10 @@ const EFFLUENT_DATA = {
     "Workbooks IRA-xxxx_Lu-177_dosis_en_escenario2_v1.xlsx (Scenario 2) and 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx' (Scenario 1) — reference implementations of the algorithms."
   ],
   "nureg_table_A21_note": "NUREG/CR-5814 Table A.21 (pp. A.54–A.56), 'Modified external dose factors for GENII, Sv/yr per Bq/m3 (8-Aug-90)': column 'SEWER MAINT 1.0 m' (Scenario 1) and 'STP WKR 0.15 m' (Scenario 2). Converted with 1 y = 8766 h, the convention that reproduces Table B.7. GENII-1990 effective dose equivalent (ICRP 26/30 era) and NUREG geometries (Table A.20); Lu-177 and Lu-177m are not tabulated. Indicative comparison only; the differences have not been investigated.",
-  "phits_reports_note": "The PHITS reports are kept outside this repository, at the paths given with each coefficient (report_file); their SHA-256 identifies the exact version from which the values were taken (2026-10-03)."
+  "phits_reports_note": "The PHITS reports are the author's own documents, kept outside this repository; each coefficient names its report file and the SHA-256 of the exact version from which the values were taken (2026-10-03).",
+  "coefficient_notes": {
+    "k_s1": "Own PHITS 3.33 calculation: 'Escenario 1 del NUREG/CR-5814 · Lu-177, Lu-177m, Tc-99m, I-131 y F-18', 2026-08-20, Table 7. Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); photon transport only. Uncertainty: relative Monte Carlo standard uncertainty (coverage factor 1).",
+    "k_s2_quantity": "Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); receptor 2 m above the centre of a uniform 3 m deep source of water-equivalent sludge (1.2 g/cm³).",
+    "e_inh_basis": "RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by RD 1029/2022 and the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1)."
+  }
 };

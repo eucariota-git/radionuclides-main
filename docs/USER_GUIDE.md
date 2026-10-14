@@ -266,10 +266,11 @@ Toggle dark/light mode using the **moon icon** (🌙) in the top-right corner. P
 
 ### Main Database (40 nuclides)
 - **Published comparison**: Cornejo et al. (2015) for 32 nuclides (ΓKair matches the published table)
-- **Additional nuclides**: Ga-68 (ICRP 107 / ICRP 74 A.21) and Y-90 (predominantly a β⁻ emitter; no applicable photon dose-rate constants in Properties, and direct beta dose is not calculated)
+- **Without a published comparison**: Ga-68, Zr-89, Cu-67, Tb-161, Ho-166, Ra-223 and Ac-225 (ICRP 107 / ICRP 74 A.21; the alpha chains assume all progeny retained and in equilibrium), and Y-90 (predominantly a β⁻ emitter; no applicable photon dose-rate constants in Properties, and direct beta dose is not calculated)
+- **Half-lives**: each one names its source — ICRP 107 (2008) or the DDEP recommended value (LNHB/CEA)
 - **Note**: Operational Γ H*(10) / H'(0.07) values use ICRP 107 nuclear data; material differences from published Cornejo values are reported with the affected nuclide and in calculation reports
 - **Use case**: Radiation protection estimation; verify against primary sources for regulatory submissions
-- **Conversion coefficients and photon filter**: h*(10) and h'(0.07,0°) per unit fluence from ICRP 74 (1996) Table A.21 — the 25 printed energies, log-log interpolated, no 1.25 MeV node; the printed 6.90 pSv·cm² at 1.5 MeV is kept although the table's own columns give 7.04. Photon lines with E ≥ 20 keV and yield ≥ 0.01 % are used; lines with a yield exactly equal to 0.01 % are kept, whereas Cornejo et al. (2015) state yields above 0.01 %. Of the 32 Γ^H\*(10) values published by Cornejo et al. (2015), 23 are reproduced within ±2 %; the history of the conversion table is in `docs/GAMMA_A21_2026-10-03.md`
+- **Conversion coefficients and photon filter**: h*(10) and h'(0.07,0°) per unit fluence from ICRP 74 (1996) Table A.21 — the 25 printed energies, log-log interpolated, no 1.25 MeV node; the printed 6.90 pSv·cm² at 1.5 MeV is kept although the table's own columns give 7.04. Photon lines with E ≥ 20 keV and yield ≥ 0.01 % are used; lines with a yield exactly equal to 0.01 % are kept, whereas Cornejo et al. (2015) state yields above 0.01 %. Of the 32 Γ^H\*(10) values published by Cornejo et al. (2015), 23 are reproduced within ±2 %
 
 ### Extended Database (1,252 nuclides from ICRP 107)
 - **Source**: ICRP Publication 107 (2008) — official decay data compilation
@@ -329,13 +330,21 @@ Toggle dark/light mode using the **moon icon** (🌙) in the top-right corner. P
 - **ICRP Publication 116** (2010). "Conversion Coefficients for Radiological Protection Quantities for External Radiation Exposures." With the corrigenda in ICRP Publication 129 (2015).
 - **IAEA Safety Reports Series No. 19** (2001). "Generic Models for Use in Assessing the Impact of Discharges of Radioactive Substances to the Environment." §4.9 and §6.6.
 - **Kennedy W.E. Jr., Parkhurst M.A., Aaberg R.L., Rhoads K.C., Hill R.L., Martin J.B.** (1992). *Evaluation of Exposure Pathways to Man From Disposal of Radioactive Materials Into Sanitary Sewer Systems*. NUREG/CR-5814 / PNL-7892, U.S. NRC. §5.2.1, §5.2.2, Tables A.16, A.20, A.21, B.7.
-- **ICRU Report 57** (1998). "Conversion Coefficients for use in Radiological Protection against External Radiation." Related literature; not consulted for this app, whose conversion coefficients are taken from ICRP Publication 74.
 - **Instrucción IS-28** (CSN, 22 September 2010). "Especificaciones técnicas de funcionamiento que deben cumplir las instalaciones radiactivas de segunda y tercera categoría." BOE nº 246, 11 October 2010 (BOE-A-2010-15594).
 - **[Real Decreto 1029/2022](https://www.boe.es/buscar/act.php?id=BOE-A-2022-21682)**, de 20 de diciembre, por el que se aprueba el Reglamento sobre protección de la salud contra los riesgos derivados de la exposición a las radiaciones ionizantes. BOE-A-2022-21682.
 - **[Real Decreto 1217/2024](https://www.boe.es/buscar/act.php?id=BOE-A-2024-25205)**, de 3 de diciembre, por el que se aprueba el Reglamento sobre instalaciones nucleares y radiactivas, y otras actividades relacionadas con la exposición a las radiaciones ionizantes. BOE-A-2024-25205.
 - **Zanzonico P.B. et al.** (1999). "Bremsstrahlung radiation exposure from pure beta-ray emitters." *J Nucl Med* 40(6):1024–1028. Methodological background only; the application's container constants are not tabulated in the article.
 - **NIST XCOM / XAAMDI**. Photon mass attenuation coefficients for lead, elemental iron and ordinary concrete.
 - **Trubey D.K.** (1991). *New Gamma-Ray Buildup Factor Data for Point Kernel Calculations: ANS-6.4.3 Standard Reference Data*. NUREG/CR-5740 / ORNL/RSIC-49/R1, Table 3 (exposure buildup factors for lead, iron and concrete).
+- **DDEP — Decay Data Evaluation Project**. LNHB/CEA *Table de Radionucléides*, recommended half-lives (consulted 14 October 2026); Mougeot X. et al., *Metrologia* 62 (2025) 029001/029002 and 63 (2026) 019001 for the recent evaluations.
+- **Monserrat Fuertes et al.** (2023). "Individualisation of radiation protection recommendations for patients treated with [177Lu]Lu-DOTA-TATE." *EJNMMI Physics* 10:50. DOI 10.1186/s40658-023-00570-7 (CC BY 4.0).
+- **Gayol Vilorio et al.** (2025). "Periodo de restricciones tras el alta en terapia con 177Lu-DOTATATE y 177Lu-PSMA-617." *Rev. Fís. Méd.* 26(2):27–36.
+- **Kurth J. et al.** (2018). "External radiation exposure, excretion and effective half-life in 177Lu-PSMA-targeted therapies." *EJNMMI Research* 8:32 (CC BY 4.0).
+- **Demir M. et al.** (2016). "Evaluation of radiation safety in 177Lu-PSMA therapy and outpatient treatment protocol." *J. Radiol. Prot.* 36(2):269. DOI 10.1088/0952-4746/36/2/269.
+- **Foro CSN-SEPR-SEFM** (2011). *Criterios de alta de pacientes y medidas para la protección radiológica del público después de tratamientos metabólicos con 131I*.
+- **European Commission, Radiation Protection 97** (1998). *Radiation protection following iodine-131 therapy (exposures due to out-patients or discharged in-patients)*.
+- **ICRP Publication 94** (2004). "Release of patients after therapy with unsealed radionuclides." **ICRP Publication 103** (2007), para. 351.
+- **IAEA SSG-46** (2018), para. 2.49, and **IAEA Safety Reports Series No. 63** (2009), "Release of patients after radionuclide therapy."
 - **Oumano M. et al.** (2025). "Shielding resources for four common radiopharmaceuticals utilized for imaging and therapy: Tc-99m, F-18, I-131, and Lu-177." *J Appl Clin Med Phys* 26(5):e70084. DOI 10.1002/acm2.70084 (CC BY 4.0).
 
 ---
@@ -348,7 +357,7 @@ For issues, questions, or feature requests, contact the person or organisation t
 
 This application was developed with the assistance of AI coding tools — Anthropic **Claude Code** and OpenAI **Codex** — operated, reviewed and directed by the author, who remains the sole author and licensor of the original code. These tools hold no authorship, copyright or licence interest in the application; this statement is a voluntary transparency notice, not a licence obligation.
 
-Correctness does not rest on how the code was written: numerical data are taken from the cited sources (ICRP, ICRU, NIST, NUREG/ANS, BOE) — transcribed where the source tabulates them, computed or reconstructed from them where indicated (e.g. the operational Γ constants, the H'(0.07) spectra, the explicitly experimental Y-90 container estimates), with the status labelled per value — the calculation paths are checked by the automated test suites against external anchors, and adoption for professional use requires the independent human validation described in the acceptance sheet.
+Correctness does not rest on how the code was written: numerical data are taken from the cited sources (ICRP, NIST, NUREG/ANS, DDEP, BOE and the cited articles) — transcribed where the source tabulates them, computed or reconstructed from them where indicated (e.g. the operational Γ constants, the dose-weighted shielding spectra, the explicitly experimental Y-90 container estimates), with the status labelled per value — the calculation paths are checked by the automated test suites against external anchors, and adoption for professional use requires the independent human validation described in the acceptance sheet.
 
 ---
 
