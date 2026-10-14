@@ -941,7 +941,9 @@ async function main() {
   const modesOf = id => (I.get(id).decay_modes || []).map(d => d.daughter);
   check('R-01: the ICRP 107 index keeps metastable daughters (Mo-99 → Tc-99m, Cs-137 → Ba-137m, Sn-113 → In-113m)',
     modesOf('Mo-99').includes('Tc-99m') && modesOf('Cs-137').includes('Ba-137m') && modesOf('Sn-113').includes('In-113m') &&
-    /dName\.match\(\/\^\[A-Z\]\[a-z\]\?-\\d\+\[mn\]\?\$\/\)/.test(read('tools/parse-icrp107.js')));
+    // tools/ is not shipped in the distribution package: check the parser only in the repository
+    (!fs.existsSync(path.join(ROOT, 'tools/parse-icrp107.js')) ||
+      /dName\.match\(\/\^\[A-Z\]\[a-z\]\?-\\d\+\[mn\]\?\$\/\)/.test(read('tools/parse-icrp107.js'))));
   const tc = I.progeny('Mo-99').find(m => m.id === 'Tc-99m');
   check('R-01: equilibrium activity ratio is the Bateman one (Mo-99 → Tc-99m 0.965, as the curated entry)',
     tc && Math.abs(tc.fraction - 0.9654) < 5e-4);
