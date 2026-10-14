@@ -390,8 +390,9 @@ const CALC = (() => {
    * with DF = exp(−λ·t_transit). Algorithm reproduced from the reference
    * workbook IRA-xxxx_Lu-177_dosis_en_escenario2_v1.xlsx (sheet Escenario-2).
    *
-   * No decay during the exposure year is modelled: the sludge is continuously
-   * renewed, so the annual-average concentration is the steady-state one.
+   * No decay during the exposure year is modelled. Dividing the annual discharge
+   * by the annual sludge production is a screening assumption; a continuous
+   * discharge does not by itself demonstrate mixing or steady state.
    * k must be an effective-dose-rate coefficient for the SAME sludge geometry
    * (see data/effluent-scenarios.json) — it is not a point-source Γ.
    *

@@ -304,13 +304,15 @@ const CAREGIVER = (() => {
     // the same days. The table may be valid (e.g. a 0-day row whose "during"
     // hours never apply) while that common schedule is not: the workbook
     // (D58–D61, sheet Curva) does not check it and can recommend > 24 h/d.
+    // The check applies only when a POSITIVE common restriction is actually
+    // proposed: a 0-day solution never uses the "during" hours and stays valid
+    // (audit 2026-10-14, N-07 — v1.9.1 rejected it).
     out.commonDuring_h = num(day.h_during) && num(sleep.h_during) ? day.h_during + sleep.h_during : null;
     out.commonFeasible = out.commonDuring_h !== null && out.commonDuring_h <= 24;
-    if (out.ready && num(crit) && crit > 0 && num(fr) && num(fn) && !out.commonFeasible) {
-      inv.minRestrictionCode = 'infeasible_common';
-    } else if (out.ready && num(crit) && crit > 0 && num(fr) && num(fn)) {
+    if (out.ready && num(crit) && crit > 0 && num(fr) && num(fn)) {
       inv.ready = true;
-      inv.floor_mSv = N * fr * k.Iinf * 1000;                                     // D38
+      // floor = indefinite common restriction: only defined if that schedule fits in a day
+      inv.floor_mSv = out.commonFeasible ? N * fr * k.Iinf * 1000 : null;       // D38
       const target = crit / 1000 / N;                                             // D59
       let t = null, code = null;
       if (Math.abs(fn - fr) <= EPS_F) {
@@ -342,6 +344,11 @@ const CAREGIVER = (() => {
           ? 'The cohabitation table uses fewer days than the adopted restriction'
           : 'The cohabitation table covers the adopted restriction';
         inv.doseAtAdopted_mSv = doseWithRestriction(N, fr, fn, k, inv.adopted_d * S_PER_D);  // D41
+      }
+      if (!out.commonFeasible && !(inv.adopted_d === 0)) {
+        // a positive (or no) common restriction would need > 24 h/d during it
+        Object.assign(inv, { minRestrictionCode: 'infeasible_common', minRestriction_d: null, adopted_d: null,
+          adoptedNote: '', doseAtAdopted_mSv: null });
       }
     }
     return out;

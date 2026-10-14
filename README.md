@@ -199,6 +199,7 @@ tools/recalc-gamma.js   Recalculates curated Γ (incl. chains) with the A.21 tab
 tools/generate-data.js  Wraps nuclides.json, effluent-scenarios.json, regulatory.json and caregiver.json as JS for offline compatibility
 tools/build-regulatory-data.js  Builds regulatory.json from the verified library CSVs + the BOE HTML extraction
 tools/add-max-energy.js Adds max_photon_energy_keV to ICRP 107 nuclides
+tools/sync-beta-emax.js Copies the beta endpoint and beta yield of the curated entries from the ICRP 107 index
 
 references/             Open-license sources only (BOE legal texts, CC BY Oumano 2025); copyrighted PDFs (Cornejo, Zanzonico, ICRP) kept locally, gitignored
 test/                   Mathematical, data, constants and application-integration validation

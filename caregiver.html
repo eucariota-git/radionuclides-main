@@ -739,6 +739,11 @@
   presetHint();
   render();
 })();
+// Offline support (PWA): every page registers the service worker, so a first
+// visit that lands directly on this page also installs the cache (audit 2026-10-14, N-09).
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.protocol === 'http:')) {
+  navigator.serviceWorker.register('sw.js').catch(() => { /* offline-first is best-effort */ });
+}
 </script>
 </body>
 </html>

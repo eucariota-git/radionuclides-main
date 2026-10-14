@@ -4,7 +4,7 @@ const ICRP107_DATA = {
   "source": "ICRP Publication 107: Nuclear Decay Data for Dosimetric Calculations",
   "publication_date": "2008-06-16",
   "notes": {
-    "generated_at": "2026-06-10T19:47:50.318Z",
+    "generated_at": "2026-10-14T17:08:12.436Z",
     "generated_by_script": "tools/parse-icrp107.js",
     "source_files_hashes": {
       "icrp107_ndx_sha256": "ac84a9cf1da890031c2ab81a33cba858ff637d701fca3bc33fb07c5a1d6cf2b9",
@@ -26,6 +26,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 35.7,
@@ -320,6 +321,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 48.4,
@@ -619,6 +621,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 36.7,
@@ -907,7 +910,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 226.026097,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.117,
+      "beta_yield_per_decay": 0.8305,
       "photons": [
         {
           "energy_keV": 67.6,
@@ -1086,7 +1090,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 227.027752,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.04,
+      "e_max_beta_MeV": 0.0448,
+      "beta_yield_per_decay": 0.9878,
       "photons": [
         {
           "energy_keV": 20.2,
@@ -1140,7 +1145,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 228.031021,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.06924,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20.2,
@@ -2249,7 +2255,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 230.036289,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.94,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 53.2,
@@ -3028,7 +3035,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 231.038559,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.87862,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20.2,
@@ -3212,7 +3220,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 232.042029,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.7,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 49.4,
@@ -3406,7 +3415,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 233.044549,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.77,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 90.3,
@@ -3470,7 +3480,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 100.912799,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 5,
+      "e_max_beta_MeV": 5.40781,
+      "beta_yield_per_decay": 0.9434,
       "photons": [
         {
           "energy_keV": 21,
@@ -3594,7 +3605,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 101.911689,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.917,
+      "beta_yield_per_decay": 0.7228,
       "photons": [
         {
           "energy_keV": 21,
@@ -4038,7 +4050,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 102.908972,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.3658,
+      "beta_yield_per_decay": 0.7362,
       "photons": [
         {
           "energy_keV": 21,
@@ -4271,7 +4284,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 102.908972,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.0906,
+      "beta_yield_per_decay": 0.3495,
       "photons": [
         {
           "energy_keV": 21,
@@ -4465,7 +4479,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 103.908628,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.6652,
+      "beta_yield_per_decay": 0.2754,
       "photons": [
         {
           "energy_keV": 21,
@@ -5074,7 +5089,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 104.906528,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.93341,
+      "beta_yield_per_decay": 0.1568,
       "photons": [
         {
           "energy_keV": 21,
@@ -5562,7 +5578,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 104.906528,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.70809,
+      "beta_yield_per_decay": 0.6207,
       "photons": [
         {
           "energy_keV": 21,
@@ -5957,6 +5974,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 21,
@@ -6274,7 +6292,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 105.906668,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.32,
+      "e_max_beta_MeV": 0.35147,
+      "beta_yield_per_decay": 0.000004001,
       "photons": [
         {
           "energy_keV": 21,
@@ -6338,7 +6357,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 106.905096,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.9433,
+      "beta_yield_per_decay": 0.5964,
       "photons": [
         {
           "energy_keV": 21,
@@ -6442,6 +6462,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 21,
@@ -6814,7 +6835,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 108.904751,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.649,
+      "beta_yield_per_decay": 0.9745,
       "photons": [
         {
           "energy_keV": 21,
@@ -6893,6 +6915,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 21,
@@ -7007,6 +7030,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 22,
@@ -7074,7 +7098,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 110.90529,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.8922,
+      "beta_yield_per_decay": 0.9971,
       "photons": [
         {
           "energy_keV": 21,
@@ -7132,7 +7157,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 110.90529,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.46735,
+      "beta_yield_per_decay": 0.9876,
       "photons": [
         {
           "energy_keV": 22,
@@ -7421,7 +7447,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 111.907004,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.0368,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 23,
@@ -7479,7 +7506,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 111.907004,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.85,
+      "e_max_beta_MeV": 0.85124,
+      "beta_yield_per_decay": 0.007006,
       "photons": [
         {
           "energy_keV": 22,
@@ -7588,7 +7616,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 112.906566,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.956,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 23,
@@ -8021,7 +8050,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 113.908803,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.016,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 23,
@@ -8245,7 +8275,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 113.908803,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.74441,
+      "beta_yield_per_decay": 0.3603,
       "photons": [
         {
           "energy_keV": 22,
@@ -8444,7 +8475,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 114.908759,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 5,
+      "e_max_beta_MeV": 5.076,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 23,
@@ -8677,7 +8709,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 115.911359,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3,
+      "e_max_beta_MeV": 3.1,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 23,
@@ -9451,7 +9484,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 116.911679,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 5.5,
+      "e_max_beta_MeV": 5.64649,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 23,
@@ -9824,7 +9858,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 117.914579,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.16,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 23,
@@ -10298,7 +10333,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 99.9161,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.14362,
+      "beta_yield_per_decay": 0.8508,
       "photons": [
         {
           "energy_keV": 21,
@@ -10872,7 +10908,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 26.981539,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.17342,
+      "beta_yield_per_decay": 0.8175,
       "photons": [
         {
           "energy_keV": 511,
@@ -10915,7 +10952,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 28.980445,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.86289,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 1778.9,
@@ -10943,7 +10981,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 29.98296,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.4063,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 397.9,
@@ -11002,6 +11041,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20.8,
@@ -11390,7 +11430,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 238.051979,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.236,
+      "beta_yield_per_decay": 0.00137,
       "photons": [
         {
           "energy_keV": 20.8,
@@ -11885,6 +11926,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20.8,
@@ -12164,6 +12206,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20.8,
@@ -12458,6 +12501,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20.2,
@@ -12586,7 +12630,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 242.059549,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.65,
+      "e_max_beta_MeV": 0.6648,
+      "beta_yield_per_decay": 0.828,
       "photons": [
         {
           "energy_keV": 20.8,
@@ -12751,6 +12796,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20.9,
@@ -12850,6 +12896,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20.2,
@@ -12963,7 +13010,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 244.064284,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.36,
+      "e_max_beta_MeV": 0.38712,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20.3,
@@ -13137,7 +13185,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 244.064284,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.5,
+      "e_max_beta_MeV": 1.5159,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 22.1,
@@ -13256,7 +13305,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 245.066451,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.85,
+      "e_max_beta_MeV": 0.8947,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20.3,
@@ -13405,7 +13455,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 246.069774,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.1974,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20.3,
@@ -13614,7 +13665,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 246.069774,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.406,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20.3,
@@ -14378,7 +14430,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 247.072089,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.62,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20.3,
@@ -14553,6 +14606,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 20,
       "photon_count_filtered": 0,
@@ -14574,7 +14628,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 39.962383,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.55,
+      "e_max_beta_MeV": 0.565,
+      "beta_yield_per_decay": 1.001,
       "photons": [],
       "photon_count_total": 1,
       "photon_count_filtered": 0,
@@ -14596,7 +14651,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 41.963046,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.49161,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 1293.6,
@@ -14629,7 +14685,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 42.965636,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.55,
+      "e_max_beta_MeV": 0.599,
+      "beta_yield_per_decay": 1.001,
       "photons": [],
       "photon_count_total": 1,
       "photon_count_filtered": 0,
@@ -14652,7 +14709,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 43.964924,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.583,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 167.1,
@@ -15101,7 +15159,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 44.96804,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.9573,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 137.3,
@@ -15260,7 +15319,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 68.93227,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 6,
+      "e_max_beta_MeV": 6.04178,
+      "beta_yield_per_decay": 0.9905,
       "photons": [
         {
           "energy_keV": 190.3,
@@ -15499,7 +15559,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 69.93092,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.991,
+      "beta_yield_per_decay": 0.9395,
       "photons": [
         {
           "energy_keV": 86.8,
@@ -15898,7 +15959,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 70.927112,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3,
+      "e_max_beta_MeV": 3.0437,
+      "beta_yield_per_decay": 0.9029,
       "photons": [
         {
           "energy_keV": 175.3,
@@ -16311,7 +16373,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 71.926752,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.8,
+      "e_max_beta_MeV": 0.81605,
+      "beta_yield_per_decay": 0.2833,
       "photons": [
         {
           "energy_keV": 23.4,
@@ -16745,7 +16808,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 72.923825,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.334,
+      "beta_yield_per_decay": 0.8796,
       "photons": [
         {
           "energy_keV": 112.5,
@@ -17124,6 +17188,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 53.4,
@@ -17151,7 +17216,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 74.921596,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.5,
+      "e_max_beta_MeV": 1.5404,
+      "beta_yield_per_decay": 0.631,
       "photons": [
         {
           "energy_keV": 511,
@@ -17219,7 +17285,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 76.920647,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.962,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 358.4,
@@ -17407,7 +17474,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 77.921827,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.65,
+      "e_max_beta_MeV": 0.6829,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 87.9,
@@ -17460,7 +17528,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 78.920948,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.212,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 156.6,
@@ -17818,7 +17887,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 79.922534,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.2809,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 364.5,
@@ -17892,7 +17962,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 204.986073,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.80909,
+      "beta_yield_per_decay": 0.2438,
       "photons": [
         {
           "energy_keV": 24,
@@ -18271,7 +18342,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 205.986666,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.488,
+      "beta_yield_per_decay": 0.147,
       "photons": [
         {
           "energy_keV": 77.1,
@@ -19115,7 +19187,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 206.985783,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.5622,
+      "beta_yield_per_decay": 0.1831,
       "photons": [
         {
           "energy_keV": 61.8,
@@ -19559,7 +19632,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 207.986589,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.2697,
+      "beta_yield_per_decay": 0.01753,
       "photons": [
         {
           "energy_keV": 43.7,
@@ -20843,7 +20917,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 208.986172,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.43182,
+      "beta_yield_per_decay": 0.03174,
       "photons": [
         {
           "energy_keV": 77.1,
@@ -21882,7 +21957,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 209.987147,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.13722,
+      "beta_yield_per_decay": 0.0007491,
       "photons": [
         {
           "energy_keV": 77.1,
@@ -22466,7 +22542,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 210.987496,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.4898,
+      "beta_yield_per_decay": 0.0008914,
       "photons": [
         {
           "energy_keV": 46.5,
@@ -22911,6 +22988,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 77.1,
@@ -23010,6 +23088,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 404,
@@ -23039,6 +23118,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 75.1,
@@ -23113,6 +23193,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 77.4,
@@ -23151,7 +23232,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 218.008693,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.883,
+      "beta_yield_per_decay": 0.001,
       "photons": [],
       "photon_count_total": 7,
       "photon_count_filtered": 0,
@@ -23180,6 +23262,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 2,
       "photon_count_filtered": 0,
@@ -23202,7 +23285,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 220.015409,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.499,
+      "beta_yield_per_decay": 0.9204,
       "photons": [
         {
           "energy_keV": 81.4,
@@ -23331,7 +23415,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 186.964567,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.90647,
+      "beta_yield_per_decay": 0.5145,
       "photons": [
         {
           "energy_keV": 65.3,
@@ -23735,7 +23820,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 187.965323,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.688,
+      "beta_yield_per_decay": 0.07617,
       "photons": [
         {
           "energy_keV": 25.6,
@@ -25194,7 +25280,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 190.963699,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.42,
+      "beta_yield_per_decay": 0.1347,
       "photons": [
         {
           "energy_keV": 65.3,
@@ -26088,7 +26175,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 191.964812,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.85,
+      "e_max_beta_MeV": 0.868,
+      "beta_yield_per_decay": 0.00179,
       "photons": [
         {
           "energy_keV": 24.4,
@@ -26772,7 +26860,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 192.964149,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.494,
+      "beta_yield_per_decay": 0.05209,
       "photons": [
         {
           "energy_keV": 65.3,
@@ -28646,6 +28735,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 37.7,
@@ -29055,6 +29145,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 38.2,
@@ -29153,7 +29244,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 194.965034,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.47,
+      "beta_yield_per_decay": 0.01691,
       "photons": [
         {
           "energy_keV": 49.7,
@@ -30042,6 +30134,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 30.9,
@@ -30145,6 +30238,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 56.8,
@@ -30243,7 +30337,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 196.966568,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.65,
+      "e_max_beta_MeV": 0.686,
+      "beta_yield_per_decay": 0.07211,
       "photons": [
         {
           "energy_keV": 65.3,
@@ -30382,6 +30477,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 30.7,
@@ -30515,7 +30611,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 198.968765,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.3,
+      "e_max_beta_MeV": 1.37239,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 69.1,
@@ -30589,6 +30686,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 50.5,
@@ -30707,7 +30805,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 199.970729,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.45,
+      "e_max_beta_MeV": 0.4526,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 49.8,
@@ -30795,7 +30894,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 200.971656,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.24,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 69.1,
@@ -30993,7 +31093,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 200.971656,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.55,
+      "e_max_beta_MeV": 0.5604,
+      "beta_yield_per_decay": 0.8211,
       "photons": [
         {
           "energy_keV": 60.1,
@@ -31162,7 +31263,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 201.973809,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.26042,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 26.3,
@@ -31325,7 +31427,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 202.975154,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.95,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 69.1,
@@ -31438,7 +31541,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 124.914472,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.626,
+      "beta_yield_per_decay": 0.2084,
       "photons": [
         {
           "energy_keV": 30.6,
@@ -32527,7 +32631,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 126.911093,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.65,
+      "e_max_beta_MeV": 0.651,
+      "beta_yield_per_decay": 0.006302,
       "photons": [
         {
           "energy_keV": 30.6,
@@ -33046,7 +33151,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 127.908317,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.428,
+      "beta_yield_per_decay": 0.5424,
       "photons": [
         {
           "energy_keV": 30.6,
@@ -33441,6 +33547,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 30.6,
@@ -33579,7 +33686,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 129.90632,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.411,
+      "beta_yield_per_decay": 0.1853,
       "photons": [
         {
           "energy_keV": 30.6,
@@ -33808,7 +33916,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 129.90632,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.9,
+      "e_max_beta_MeV": 0.99295,
+      "beta_yield_per_decay": 0.01085,
       "photons": [
         {
           "energy_keV": 30.6,
@@ -34768,6 +34877,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 30.6,
@@ -35037,6 +35147,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 31.8,
@@ -35121,6 +35232,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 30.6,
@@ -35249,6 +35361,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 31.8,
@@ -35328,6 +35441,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 31.8,
@@ -35406,6 +35520,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 31.8,
@@ -35473,7 +35588,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 139.910604,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.3168,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 33,
@@ -35551,7 +35667,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 140.91441,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.01703,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 30,
@@ -35650,7 +35767,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 141.916452,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.23,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 33,
@@ -36494,7 +36612,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 142.920626,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.9557,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 33,
@@ -37013,7 +37132,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 10.013534,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.55,
+      "e_max_beta_MeV": 0.5562,
+      "beta_yield_per_decay": 1,
       "photons": [],
       "photon_count_total": 1,
       "photon_count_filtered": 0,
@@ -37036,6 +37156,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 477.6,
@@ -37063,7 +37184,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 197.979209,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3,
+      "e_max_beta_MeV": 3.08695,
+      "beta_yield_per_decay": 0.1839,
       "photons": [
         {
           "energy_keV": 73,
@@ -37787,7 +37909,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 200.977008,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.95941,
+      "beta_yield_per_decay": 0.1375,
       "photons": [
         {
           "energy_keV": 73,
@@ -38041,7 +38164,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 201.977741,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.19086,
+      "beta_yield_per_decay": 0.02343,
       "photons": [
         {
           "energy_keV": 73,
@@ -39110,7 +39234,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 202.976875,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.79615,
+      "beta_yield_per_decay": 0.07736,
       "photons": [
         {
           "energy_keV": 73,
@@ -40064,7 +40189,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 203.977812,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.224,
+      "beta_yield_per_decay": 0.002606,
       "photons": [
         {
           "energy_keV": 60,
@@ -41248,7 +41374,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 204.977388,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.3,
+      "e_max_beta_MeV": 1.35095,
+      "beta_yield_per_decay": 0.002114,
       "photons": [
         {
           "energy_keV": 29,
@@ -42666,7 +42793,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 205.978498,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.686,
+      "beta_yield_per_decay": 0.001531,
       "photons": [
         {
           "energy_keV": 73,
@@ -43425,7 +43553,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 206.97847,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.7,
+      "e_max_beta_MeV": 0.73828,
+      "beta_yield_per_decay": 0.000004223,
       "photons": [
         {
           "energy_keV": 35,
@@ -43843,7 +43972,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 207.979742,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.8,
+      "e_max_beta_MeV": 0.8065,
+      "beta_yield_per_decay": 0.0003895,
       "photons": [
         {
           "energy_keV": 73,
@@ -43957,6 +44087,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 73,
@@ -44044,7 +44175,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 210.987268,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.1615,
+      "beta_yield_per_decay": 1.001,
       "photons": [],
       "photon_count_total": 103,
       "photon_count_filtered": 0,
@@ -44073,6 +44205,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 71.1,
@@ -44186,7 +44319,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 211.991285,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.55,
+      "e_max_beta_MeV": 0.575,
+      "beta_yield_per_decay": 0.002763,
       "photons": [
         {
           "energy_keV": 71.1,
@@ -44255,7 +44389,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 212.994384,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.248,
+      "beta_yield_per_decay": 0.6414,
       "photons": [
         {
           "energy_keV": 39.9,
@@ -44399,7 +44534,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 212.994384,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.5,
+      "e_max_beta_MeV": 1.5301,
+      "beta_yield_per_decay": 1,
       "photons": [],
       "photon_count_total": 1,
       "photon_count_filtered": 0,
@@ -44421,7 +44557,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 213.998711,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.422,
+      "beta_yield_per_decay": 0.9798,
       "photons": [
         {
           "energy_keV": 77.1,
@@ -44550,7 +44687,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 213.998711,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.272,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 77.1,
@@ -45389,7 +45527,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 215.001769,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.9109,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 77.1,
@@ -45558,7 +45697,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 216.006305,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.5402,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 77.1,
@@ -45633,6 +45773,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20.3,
@@ -45882,6 +46023,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20.3,
@@ -46136,6 +46278,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 21.5,
@@ -46274,7 +46417,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 248.073089,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.85,
+      "e_max_beta_MeV": 0.87,
+      "beta_yield_per_decay": 0.7003,
       "photons": [
         {
           "energy_keV": 20.3,
@@ -46463,7 +46607,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 249.074986,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.12,
+      "e_max_beta_MeV": 0.124,
+      "beta_yield_per_decay": 1.001,
       "photons": [],
       "photon_count_total": 124,
       "photon_count_filtered": 0,
@@ -46491,7 +46636,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 250.078316,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.78,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20.1,
@@ -46680,7 +46826,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 251.080759,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.093,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 20.1,
@@ -46904,7 +47051,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 72.93169,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 6.5,
+      "e_max_beta_MeV": 6.99599,
+      "beta_yield_per_decay": 0.9946,
       "photons": [
         {
           "energy_keV": 75,
@@ -47103,7 +47251,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 73.929891,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.5423,
+      "beta_yield_per_decay": 0.9589,
       "photons": [
         {
           "energy_keV": 65,
@@ -47277,7 +47426,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 74.925776,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 5,
+      "e_max_beta_MeV": 5.25021,
+      "beta_yield_per_decay": 0.8925,
       "photons": [
         {
           "energy_keV": 218.9,
@@ -47755,7 +47905,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 74.925776,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 5,
+      "e_max_beta_MeV": 5.26378,
+      "beta_yield_per_decay": 0.8781,
       "photons": [
         {
           "energy_keV": 219,
@@ -48388,7 +48539,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 75.924541,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.008,
+      "beta_yield_per_decay": 0.7308,
       "photons": [
         {
           "energy_keV": 112.1,
@@ -48702,7 +48854,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 76.921379,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.941,
+      "beta_yield_per_decay": 0.5511,
       "photons": [
         {
           "energy_keV": 209.7,
@@ -49510,7 +49663,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 76.921379,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.71258,
+      "beta_yield_per_decay": 0.002842,
       "photons": [
         {
           "energy_keV": 45.5,
@@ -49564,7 +49718,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 77.921146,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.32,
+      "e_max_beta_MeV": 0.3431,
+      "beta_yield_per_decay": 0.007412,
       "photons": [
         {
           "energy_keV": 80.9,
@@ -49808,6 +49963,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 105.9,
@@ -49836,7 +49992,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 78.918337,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.552,
+      "beta_yield_per_decay": 0.9253,
       "photons": [
         {
           "energy_keV": 511,
@@ -49914,7 +50071,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 80.916291,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.001,
+      "beta_yield_per_decay": 0.9409,
       "photons": [
         {
           "energy_keV": 511,
@@ -49988,6 +50146,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 37.1,
@@ -50021,7 +50180,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 82.91518,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.31608,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 92.2,
@@ -50189,7 +50349,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 80.916291,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3,
+      "e_max_beta_MeV": 3.13855,
+      "beta_yield_per_decay": 0.024,
       "photons": [
         {
           "energy_keV": 45.9,
@@ -50233,7 +50394,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 83.916479,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.9,
+      "e_max_beta_MeV": 0.96359,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 520.4,
@@ -50276,7 +50438,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 84.915608,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.655,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 230.2,
@@ -50544,7 +50707,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 83.916479,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.2034,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 424,
@@ -50597,7 +50761,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 85.918798,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.56512,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 96.9,
@@ -50831,7 +50996,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 10.016853,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.91068,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 511,
@@ -50869,7 +51035,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 11.011434,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.9,
+      "e_max_beta_MeV": 0.9602,
+      "beta_yield_per_decay": 0.9977,
       "photons": [
         {
           "energy_keV": 511,
@@ -50897,7 +51064,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 14.003242,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.15,
+      "e_max_beta_MeV": 0.15648,
+      "beta_yield_per_decay": 1,
       "photons": [],
       "photon_count_total": 1,
       "photon_count_filtered": 0,
@@ -50920,6 +51088,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 23,
       "photon_count_filtered": 0,
@@ -50941,7 +51110,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 45.953693,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.24,
+      "e_max_beta_MeV": 0.2568,
+      "beta_yield_per_decay": 1.001,
       "photons": [],
       "photon_count_total": 39,
       "photon_count_filtered": 0,
@@ -50963,7 +51133,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 47.952534,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.9919,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 489.2,
@@ -51027,7 +51198,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 49.957519,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3,
+      "e_max_beta_MeV": 3.0336,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 143.2,
@@ -51111,7 +51283,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 101.914459,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.3599,
+      "beta_yield_per_decay": 0.7721,
       "photons": [
         {
           "energy_keV": 22,
@@ -51690,7 +51863,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 102.913418,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.07456,
+      "beta_yield_per_decay": 0.1298,
       "photons": [
         {
           "energy_keV": 22,
@@ -51889,7 +52063,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 103.909848,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3,
+      "e_max_beta_MeV": 3.12,
+      "beta_yield_per_decay": 0.3458,
       "photons": [
         {
           "energy_keV": 22,
@@ -53089,6 +53264,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 22,
@@ -53186,7 +53362,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 105.906458,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.69155,
+      "beta_yield_per_decay": 0.2799,
       "photons": [
         {
           "energy_keV": 22,
@@ -54630,7 +54807,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 107.904183,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.3,
+      "e_max_beta_MeV": 0.30187,
+      "beta_yield_per_decay": 0.002037,
       "photons": [
         {
           "energy_keV": 22,
@@ -54724,6 +54902,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 22,
@@ -54792,6 +54971,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 23,
@@ -54864,7 +55044,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 113.903358,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.32,
+      "e_max_beta_MeV": 0.32001,
+      "beta_yield_per_decay": 1.001,
       "photons": [],
       "photon_count_total": 1,
       "photon_count_filtered": 0,
@@ -54886,7 +55067,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 113.903358,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.55,
+      "e_max_beta_MeV": 0.5837,
+      "beta_yield_per_decay": 0.9997,
       "photons": [
         {
           "energy_keV": 23,
@@ -54925,7 +55107,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 115.904755,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.10974,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 24,
@@ -55008,7 +55191,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 115.904755,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.627,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 158,
@@ -55062,7 +55246,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 117.906914,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.2097,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 24,
@@ -55681,7 +55866,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 117.906914,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.6614,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 24,
@@ -56075,7 +56261,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 118.909919,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.5,
+      "e_max_beta_MeV": 0.52,
+      "beta_yield_per_decay": 1.001,
       "photons": [],
       "photon_count_total": 1,
       "photon_count_filtered": 0,
@@ -56098,7 +56285,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 119.909849,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.48593,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 24,
@@ -56557,7 +56745,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 119.909849,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.22306,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 24,
@@ -56966,7 +57155,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 130.914419,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.05799,
+      "beta_yield_per_decay": 0.04411,
       "photons": [
         {
           "energy_keV": 33,
@@ -57595,7 +57785,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 131.911459,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3,
+      "e_max_beta_MeV": 3.00178,
+      "beta_yield_per_decay": 0.4821,
       "photons": [
         {
           "energy_keV": 26.2,
@@ -58140,6 +58331,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 26.7,
@@ -58463,7 +58655,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 133.908924,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.96074,
+      "beta_yield_per_decay": 0.3708,
       "photons": [
         {
           "energy_keV": 33,
@@ -58577,7 +58770,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 133.908924,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.00716,
+      "beta_yield_per_decay": 0.04827,
       "photons": [
         {
           "energy_keV": 33,
@@ -60172,6 +60366,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 31.9,
@@ -60330,7 +60525,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 135.907171,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.7,
+      "e_max_beta_MeV": 0.73845,
+      "beta_yield_per_decay": 0.003607,
       "photons": [
         {
           "energy_keV": 33,
@@ -60984,7 +61180,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 137.90599,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.18,
+      "e_max_beta_MeV": 0.18954,
+      "beta_yield_per_decay": 0.00008555,
       "photons": [
         {
           "energy_keV": 33,
@@ -61119,6 +61316,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 33,
@@ -61258,6 +61456,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 33,
@@ -61340,7 +61539,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 141.909243,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.55,
+      "e_max_beta_MeV": 0.5807,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 35.6,
@@ -61418,7 +61618,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 143.913646,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.4614,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 35.6,
@@ -61632,7 +61833,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 144.917229,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.3,
+      "e_max_beta_MeV": 0.3187,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 33.6,
@@ -61726,7 +61928,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 145.918759,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.46746,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 35.6,
@@ -62241,6 +62444,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 22.1,
@@ -62284,7 +62488,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 246.068805,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 4,
+      "beta_yield_per_decay": 0.00000971,
       "photons": [
         {
           "energy_keV": 22.1,
@@ -62334,6 +62539,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20.1,
@@ -62587,7 +62793,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 248.072184,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 4,
+      "beta_yield_per_decay": 0.0001353,
       "photons": [
         {
           "energy_keV": 22.1,
@@ -62636,7 +62843,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 249.074853,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 4,
+      "beta_yield_per_decay": 2.538e-8,
       "photons": [
         {
           "energy_keV": 20.3,
@@ -62885,7 +63093,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 250.076406,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 4,
+      "beta_yield_per_decay": 0.004194,
       "photons": [
         {
           "energy_keV": 22.1,
@@ -63110,6 +63319,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20.3,
@@ -63358,7 +63568,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 252.081625,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 4,
+      "beta_yield_per_decay": 0.1926,
       "photons": [
         {
           "energy_keV": 22.1,
@@ -63737,7 +63948,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 253.085132,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.28,
+      "e_max_beta_MeV": 0.288,
+      "beta_yield_per_decay": 0.9983,
       "photons": [
         {
           "energy_keV": 20.3,
@@ -63861,7 +64073,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 254.087322,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 4,
+      "beta_yield_per_decay": 6.987,
       "photons": [
         {
           "energy_keV": 30,
@@ -64230,7 +64443,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 255.091049,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.7,
+      "e_max_beta_MeV": 0.72,
+      "beta_yield_per_decay": 1.001,
       "photons": [],
       "photon_count_total": 1,
       "photon_count_filtered": 0,
@@ -64253,7 +64467,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 34.968853,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.46928,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 511,
@@ -64281,7 +64496,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 34.968853,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.48808,
+      "beta_yield_per_decay": 0.5421,
       "photons": [
         {
           "energy_keV": 146.4,
@@ -64355,7 +64571,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 36.965903,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.7,
+      "e_max_beta_MeV": 0.7086,
+      "beta_yield_per_decay": 0.9812,
       "photons": [
         {
           "energy_keV": 511,
@@ -64383,7 +64600,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 38.968008,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.9168,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 1642.7,
@@ -64416,7 +64634,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 39.97042,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.441,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 250.3,
@@ -64525,7 +64744,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 40.97068,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 7,
+      "e_max_beta_MeV": 7.48,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 222.5,
@@ -64909,6 +65129,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 21.5,
@@ -65077,7 +65298,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 239.054959,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.55,
+      "e_max_beta_MeV": 0.591,
+      "beta_yield_per_decay": 0.0004761,
       "photons": [
         {
           "energy_keV": 21.5,
@@ -65266,7 +65488,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 240.055529,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 4,
+      "beta_yield_per_decay": 1.382e-7,
       "photons": [
         {
           "energy_keV": 20.8,
@@ -65311,6 +65534,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 21.5,
@@ -65624,7 +65848,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 242.058835,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 4,
+      "beta_yield_per_decay": 2.755e-7,
       "photons": [
         {
           "energy_keV": 20.8,
@@ -65669,6 +65894,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20.8,
@@ -65917,7 +66143,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 244.062752,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 4,
+      "beta_yield_per_decay": 0.000007001,
       "photons": [
         {
           "energy_keV": 20.8,
@@ -65961,7 +66188,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 245.065491,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 4,
+      "beta_yield_per_decay": 3.353e-8,
       "photons": [
         {
           "energy_keV": 20.8,
@@ -66190,7 +66418,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 246.067223,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 4,
+      "beta_yield_per_decay": 0.001548,
       "photons": [
         {
           "energy_keV": 20.8,
@@ -66280,6 +66509,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 21.5,
@@ -66388,7 +66618,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 248.072348,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 4,
+      "beta_yield_per_decay": 0.5595,
       "photons": [
         {
           "energy_keV": 20.8,
@@ -66762,7 +66993,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 249.075952,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.85,
+      "e_max_beta_MeV": 0.8922,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 20.1,
@@ -66876,7 +67108,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 250.078356,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 4,
+      "beta_yield_per_decay": 5.594,
       "photons": [
         {
           "energy_keV": 21.5,
@@ -67255,7 +67488,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 251.082284,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.42,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20.1,
@@ -67444,7 +67678,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 251.082284,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.47032,
+      "beta_yield_per_decay": 0.9981,
       "photons": [
         {
           "energy_keV": 411,
@@ -67487,7 +67722,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 55.939839,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.49803,
+      "beta_yield_per_decay": 0.759,
       "photons": [
         {
           "energy_keV": 91.9,
@@ -67626,7 +67862,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 56.936291,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.45892,
+      "beta_yield_per_decay": 0.1903,
       "photons": [
         {
           "energy_keV": 263.4,
@@ -67880,6 +68117,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 122.1,
@@ -67922,7 +68160,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 58.933195,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.2854,
+      "beta_yield_per_decay": 0.1494,
       "photons": [
         {
           "energy_keV": 511,
@@ -67966,6 +68205,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 24.9,
@@ -67994,7 +68234,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 60.932476,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.49139,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 1173.2,
@@ -68027,7 +68268,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 60.932476,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.5,
+      "e_max_beta_MeV": 1.54973,
+      "beta_yield_per_decay": 0.002401,
       "photons": [
         {
           "energy_keV": 58.6,
@@ -68061,7 +68303,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 61.934051,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.25428,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 67.4,
@@ -68099,7 +68342,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 62.933612,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 5,
+      "e_max_beta_MeV": 5.315,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 1128.9,
@@ -68187,7 +68431,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 62.933612,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3,
+      "e_max_beta_MeV": 3.0005,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 777.5,
@@ -68270,7 +68515,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 48.951336,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.2,
+      "e_max_beta_MeV": 0.21645,
+      "beta_yield_per_decay": 0.01609,
       "photons": [
         {
           "energy_keV": 112.3,
@@ -68314,7 +68560,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 49.946044,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.6087,
+      "beta_yield_per_decay": 0.9271,
       "photons": [
         {
           "energy_keV": 62.3,
@@ -68379,6 +68626,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 320.1,
@@ -68406,7 +68654,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 55.940653,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.6031,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 1528,
@@ -68434,7 +68683,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 56.943613,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.5,
+      "e_max_beta_MeV": 1.507,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 26,
@@ -68468,7 +68718,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 121.916109,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.378,
+      "beta_yield_per_decay": 0.8948,
       "photons": [
         {
           "energy_keV": 29.5,
@@ -68877,7 +69128,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 121.916109,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.23902,
+      "beta_yield_per_decay": 0.7268,
       "photons": [
         {
           "energy_keV": 29.5,
@@ -69496,7 +69748,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 123.912257,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3,
+      "e_max_beta_MeV": 3.183,
+      "beta_yield_per_decay": 0.7067,
       "photons": [
         {
           "energy_keV": 29.5,
@@ -69895,7 +70148,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 124.909727,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.893,
+      "beta_yield_per_decay": 0.9162,
       "photons": [
         {
           "energy_keV": 29.5,
@@ -70413,7 +70667,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 125.909451,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.077,
+      "beta_yield_per_decay": 0.3971,
       "photons": [
         {
           "energy_keV": 29.5,
@@ -70682,7 +70937,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 126.907417,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.802,
+      "beta_yield_per_decay": 0.8115,
       "photons": [
         {
           "energy_keV": 29.5,
@@ -71030,7 +71286,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 127.907748,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.059,
+      "beta_yield_per_decay": 0.03057,
       "photons": [
         {
           "energy_keV": 29.5,
@@ -71544,7 +71801,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 128.906063,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.907,
+      "beta_yield_per_decay": 0.6885,
       "photons": [
         {
           "energy_keV": 29.5,
@@ -71797,7 +72055,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 129.906708,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.16,
+      "e_max_beta_MeV": 0.173,
+      "beta_yield_per_decay": 0.00002711,
       "photons": [
         {
           "energy_keV": 29.5,
@@ -71980,7 +72239,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 130.905463,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.957,
+      "beta_yield_per_decay": 0.4523,
       "photons": [
         {
           "energy_keV": 29.5,
@@ -72144,6 +72404,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 29.5,
@@ -72288,6 +72549,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 29.5,
@@ -72360,7 +72622,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 132.905451,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.8,
+      "e_max_beta_MeV": 0.8155,
+      "beta_yield_per_decay": 0.02303,
       "photons": [
         {
           "energy_keV": 29.5,
@@ -72498,7 +72761,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 134.905976,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.45378,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 31.8,
@@ -72602,6 +72866,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 30.6,
@@ -72680,7 +72945,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 135.907311,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.26,
+      "e_max_beta_MeV": 0.2694,
+      "beta_yield_per_decay": 1.001,
       "photons": [],
       "photon_count_total": 1,
       "photon_count_filtered": 0,
@@ -72703,6 +72969,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 30.6,
@@ -72766,7 +73033,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 136.907089,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.65,
+      "e_max_beta_MeV": 0.6816,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 31.8,
@@ -72944,7 +73212,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 137.911016,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.17563,
+      "beta_yield_per_decay": 1.002,
       "photons": [],
       "photon_count_total": 75,
       "photon_count_filtered": 0,
@@ -72966,7 +73235,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 138.913363,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.94109,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 31.8,
@@ -73439,7 +73709,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 138.913363,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.3632,
+      "beta_yield_per_decay": 0.19,
       "photons": [
         {
           "energy_keV": 30.6,
@@ -73598,7 +73869,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 139.917281,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.213,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 31.8,
@@ -74412,7 +74684,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 140.920045,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 6,
+      "e_max_beta_MeV": 6.219,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 31.8,
@@ -75671,7 +75944,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 57.944538,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 7.5,
+      "e_max_beta_MeV": 7.748,
+      "beta_yield_per_decay": 0.998,
       "photons": [
         {
           "energy_keV": 511,
@@ -75735,7 +76009,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 59.937365,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.7776,
+      "beta_yield_per_decay": 0.9829,
       "photons": [
         {
           "energy_keV": 339.3,
@@ -75899,7 +76174,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 60.933458,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.77236,
+      "beta_yield_per_decay": 0.9234,
       "photons": [
         {
           "energy_keV": 120.5,
@@ -76342,7 +76618,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 61.932584,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.2152,
+      "beta_yield_per_decay": 0.6151,
       "photons": [
         {
           "energy_keV": 67.4,
@@ -76505,7 +76782,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 62.929597,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.926,
+      "beta_yield_per_decay": 0.9774,
       "photons": [
         {
           "energy_keV": 511,
@@ -76553,7 +76831,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 64.927789,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.65,
+      "e_max_beta_MeV": 0.6531,
+      "beta_yield_per_decay": 0.5649,
       "photons": [
         {
           "energy_keV": 511,
@@ -76586,7 +76865,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 66.92773,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.642,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 833,
@@ -76619,7 +76899,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 67.929611,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.55,
+      "e_max_beta_MeV": 0.5617,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 91.3,
@@ -76672,7 +76953,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 69.932392,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.6818,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 167.2,
@@ -76856,7 +77138,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 148.927304,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.03976,
+      "beta_yield_per_decay": 0.03806,
       "photons": [
         {
           "energy_keV": 43.8,
@@ -77075,7 +77358,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 149.925584,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.65824,
+      "beta_yield_per_decay": 0.08188,
       "photons": [
         {
           "energy_keV": 43.8,
@@ -77774,7 +78058,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 150.926184,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.36,
+      "e_max_beta_MeV": 0.3748,
+      "beta_yield_per_decay": 0.0005256,
       "photons": [
         {
           "energy_keV": 43.8,
@@ -77868,7 +78153,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 151.924717,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.82508,
+      "beta_yield_per_decay": 0.02953,
       "photons": [
         {
           "energy_keV": 22.9,
@@ -78828,6 +79114,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 43.8,
@@ -78921,7 +79208,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 153.924423,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.1484,
+      "beta_yield_per_decay": 0.01299,
       "photons": [
         {
           "energy_keV": 43.8,
@@ -81531,6 +81819,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 2,
       "photon_count_filtered": 0,
@@ -81553,7 +81842,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 155.924282,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.0725,
+      "beta_yield_per_decay": 0.01327,
       "photons": [
         {
           "energy_keV": 21,
@@ -82708,6 +82998,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 43.8,
@@ -82877,6 +83168,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 43.8,
@@ -82964,7 +83256,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 165.932806,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.2867,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 46.8,
@@ -83152,7 +83445,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 165.932806,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.03329,
+      "beta_yield_per_decay": 0.02241,
       "photons": [
         {
           "energy_keV": 45.3,
@@ -83281,7 +83575,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 166.935659,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.45,
+      "e_max_beta_MeV": 0.4869,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 28.2,
@@ -83400,7 +83695,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 167.937129,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.09066,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 46.8,
@@ -83619,7 +83915,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 168.940309,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.3,
+      "e_max_beta_MeV": 1.3128,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 43.8,
@@ -83728,7 +84025,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 154.933208,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.9,
+      "e_max_beta_MeV": 0.9831,
+      "beta_yield_per_decay": 0.02758,
       "photons": [
         {
           "energy_keV": 26.9,
@@ -83828,6 +84126,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 26.6,
@@ -83976,7 +84275,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 159.929082,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.5,
+      "e_max_beta_MeV": 1.54059,
+      "beta_yield_per_decay": 0.04887,
       "photons": [
         {
           "energy_keV": 46.8,
@@ -84825,7 +85125,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 161.928777,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.75,
+      "e_max_beta_MeV": 0.75756,
+      "beta_yield_per_decay": 0.0005087,
       "photons": [
         {
           "energy_keV": 46.8,
@@ -86094,7 +86395,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 163.929199,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.18,
+      "e_max_beta_MeV": 0.188,
+      "beta_yield_per_decay": 0.00002905,
       "photons": [
         {
           "energy_keV": 46.8,
@@ -86199,6 +86501,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 46.8,
@@ -86282,6 +86585,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 48.3,
@@ -86359,7 +86663,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 169.935464,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.32,
+      "e_max_beta_MeV": 0.3509,
+      "beta_yield_per_decay": 1.001,
       "photons": [],
       "photon_count_total": 88,
       "photon_count_filtered": 0,
@@ -86381,7 +86686,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 171.939355,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.4907,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 49.9,
@@ -86650,7 +86956,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 172.942399,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.85,
+      "e_max_beta_MeV": 0.891,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 49.9,
@@ -86839,7 +87146,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 173.944229,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.29227,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 49.9,
@@ -86963,7 +87271,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 249.076409,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.4,
+      "e_max_beta_MeV": 0.428,
+      "beta_yield_per_decay": 0.00002368,
       "photons": [
         {
           "energy_keV": 20.1,
@@ -87398,6 +87707,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20.1,
@@ -87781,7 +88091,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 250.078609,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.238,
+      "beta_yield_per_decay": 0.003464,
       "photons": [
         {
           "energy_keV": 20.1,
@@ -88131,6 +88442,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20.1,
@@ -88364,7 +88676,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 253.084824,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 4,
+      "beta_yield_per_decay": 4.998e-7,
       "photons": [
         {
           "energy_keV": 20.1,
@@ -88463,7 +88776,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 254.088021,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 4,
+      "beta_yield_per_decay": 1.802e-7,
       "photons": [
         {
           "energy_keV": 20.1,
@@ -88662,7 +88976,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 254.088021,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 4,
+      "beta_yield_per_decay": 0.9844,
       "photons": [
         {
           "energy_keV": 20.1,
@@ -89026,7 +89341,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 255.090272,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 4,
+      "beta_yield_per_decay": 0.9215,
       "photons": [],
       "photon_count_total": 80,
       "photon_count_filtered": 0,
@@ -89054,7 +89370,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 256.093599,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.7,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 20.4,
@@ -89143,7 +89460,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 142.920297,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 6.5,
+      "e_max_beta_MeV": 6.648,
+      "beta_yield_per_decay": 0.9284,
       "photons": [
         {
           "energy_keV": 39.6,
@@ -89282,7 +89600,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 142.920297,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.736,
+      "beta_yield_per_decay": 0.8288,
       "photons": [
         {
           "energy_keV": 24.1,
@@ -89521,7 +89840,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 143.918816,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.253,
+      "beta_yield_per_decay": 0.7426,
       "photons": [
         {
           "energy_keV": 39.6,
@@ -89870,7 +90190,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 144.916264,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 5,
+      "e_max_beta_MeV": 5.328,
+      "beta_yield_per_decay": 0.8731,
       "photons": [
         {
           "energy_keV": 39.6,
@@ -89963,7 +90284,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 145.917205,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.638,
+      "beta_yield_per_decay": 0.02047,
       "photons": [
         {
           "energy_keV": 39.6,
@@ -90387,7 +90709,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 146.916745,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.47571,
+      "beta_yield_per_decay": 0.04616,
       "photons": [
         {
           "energy_keV": 39.6,
@@ -92056,7 +92379,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 147.918085,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.7,
+      "e_max_beta_MeV": 0.708,
+      "beta_yield_per_decay": 0.003608,
       "photons": [
         {
           "energy_keV": 39.6,
@@ -92370,7 +92694,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 148.91793,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.8,
+      "e_max_beta_MeV": 0.83974,
+      "beta_yield_per_decay": 0.001028,
       "photons": [
         {
           "energy_keV": 39.6,
@@ -93520,6 +93845,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 22.5,
@@ -93672,7 +93998,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 150.91985,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.45,
+      "e_max_beta_MeV": 0.46565,
+      "beta_yield_per_decay": 0.0002043,
       "photons": [
         {
           "energy_keV": 39.6,
@@ -94385,7 +94712,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 150.91985,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.2811,
+      "beta_yield_per_decay": 0.8973,
       "photons": [
         {
           "energy_keV": 39.6,
@@ -94529,7 +94857,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 152.92123,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.47452,
+      "beta_yield_per_decay": 0.2794,
       "photons": [
         {
           "energy_keV": 39.6,
@@ -95073,7 +95402,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 152.92123,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.8644,
+      "beta_yield_per_decay": 0.721,
       "photons": [
         {
           "energy_keV": 39.6,
@@ -95288,6 +95618,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 39.8,
@@ -95376,7 +95707,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 154.922893,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.84533,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 40.2,
@@ -95835,6 +96167,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 27.5,
@@ -95943,7 +96276,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 155.924751,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.24,
+      "e_max_beta_MeV": 0.2522,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 26.5,
@@ -96061,7 +96395,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 156.925423,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.451,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 42.4,
@@ -96599,7 +96934,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 157.927849,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.29908,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 42.4,
@@ -97162,7 +97498,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 158.929088,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.40549,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 42.4,
@@ -97870,7 +98207,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 159.931969,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.44623,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 42.4,
@@ -98249,7 +98587,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 17.002095,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.7388,
+      "beta_yield_per_decay": 0.9994,
       "photons": [
         {
           "energy_keV": 511,
@@ -98282,7 +98621,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 18.998403,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.6,
+      "e_max_beta_MeV": 0.6335,
+      "beta_yield_per_decay": 0.9678,
       "photons": [
         {
           "energy_keV": 511,
@@ -98310,7 +98650,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 52.945308,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.8,
+      "e_max_beta_MeV": 0.80356,
+      "beta_yield_per_decay": 0.5547,
       "photons": [
         {
           "energy_keV": 168.7,
@@ -98363,7 +98704,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 53.93961,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.7216,
+      "beta_yield_per_decay": 0.9714,
       "photons": [
         {
           "energy_keV": 377.9,
@@ -98438,6 +98780,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 701.1,
@@ -98492,6 +98835,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 37,
       "photon_count_filtered": 0,
@@ -98513,7 +98857,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 59.934072,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.5,
+      "e_max_beta_MeV": 1.5652,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 142.7,
@@ -98571,7 +98916,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 60.936745,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.16,
+      "e_max_beta_MeV": 0.1774,
+      "beta_yield_per_decay": 1.002,
       "photons": [],
       "photon_count_total": 1,
       "photon_count_filtered": 0,
@@ -98593,7 +98939,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 61.936767,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.95051,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 120.3,
@@ -98857,7 +99204,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 62.94037,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.0239,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 506.1,
@@ -98886,7 +99234,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 251.081574,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.4,
+      "e_max_beta_MeV": 0.4437,
+      "beta_yield_per_decay": 0.00008352,
       "photons": [
         {
           "energy_keV": 20.3,
@@ -99320,7 +99669,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 252.082466,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 4,
+      "beta_yield_per_decay": 0.00009714,
       "photons": [
         {
           "energy_keV": 20.7,
@@ -99380,6 +99730,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20.3,
@@ -99723,7 +100074,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 254.086854,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 4,
+      "beta_yield_per_decay": 0.002963,
       "photons": [
         {
           "energy_keV": 20.7,
@@ -99947,7 +100299,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 255.089961,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 4,
+      "beta_yield_per_decay": 0.000001241,
       "photons": [
         {
           "energy_keV": 20.1,
@@ -100131,7 +100484,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 256.091772,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 4,
+      "beta_yield_per_decay": 5.317,
       "photons": [
         {
           "energy_keV": 20.7,
@@ -100510,7 +100864,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 257.095104,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 4,
+      "beta_yield_per_decay": 0.01297,
       "photons": [
         {
           "energy_keV": 20.1,
@@ -101004,7 +101359,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 212.996188,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.5965,
+      "beta_yield_per_decay": 0.04681,
       "photons": [
         {
           "energy_keV": 23.5,
@@ -101279,6 +101635,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 79.2,
@@ -101347,7 +101704,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 220.012326,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.209,
+      "beta_yield_per_decay": 0.003503,
       "photons": [
         {
           "energy_keV": 44.6,
@@ -101572,6 +101930,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 79.2,
@@ -101675,7 +102034,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 222.017551,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.032,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 54.1,
@@ -102094,7 +102454,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 223.019735,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.1491,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20.3,
@@ -102428,7 +102789,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 224.023249,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.83,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 74.4,
@@ -103087,7 +103449,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 227.031839,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.38697,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 37.9,
@@ -103806,7 +104169,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 64.932735,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 6,
+      "e_max_beta_MeV": 6.1473,
+      "beta_yield_per_decay": 0.9767,
       "photons": [
         {
           "energy_keV": 110.9,
@@ -104054,7 +104418,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 65.931589,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.17897,
+      "beta_yield_per_decay": 0.8941,
       "photons": [
         {
           "energy_keV": 53.9,
@@ -104328,7 +104693,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 66.928202,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.153,
+      "beta_yield_per_decay": 0.5531,
       "photons": [
         {
           "energy_keV": 171.9,
@@ -104722,6 +105088,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 91.3,
@@ -104794,7 +105161,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 68.925574,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.8991,
+      "beta_yield_per_decay": 0.8901,
       "photons": [
         {
           "energy_keV": 511,
@@ -104847,7 +105215,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 70.924701,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.656,
+      "beta_yield_per_decay": 0.9961,
       "photons": [
         {
           "energy_keV": 176.2,
@@ -104880,7 +105249,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 72.925175,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3,
+      "e_max_beta_MeV": 3.16708,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 50.9,
@@ -105308,7 +105678,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 73.926946,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.5,
+      "e_max_beta_MeV": 1.52626,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 53.5,
@@ -105416,7 +105787,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 74.9265,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.77715,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 233.2,
@@ -106044,7 +106416,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 142.926749,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.338,
+      "beta_yield_per_decay": 0.5257,
       "photons": [
         {
           "energy_keV": 40.9,
@@ -106468,7 +106841,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 143.922959,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.75107,
+      "beta_yield_per_decay": 0.6978,
       "photons": [
         {
           "energy_keV": 40.9,
@@ -106867,7 +107241,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 144.921708,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.84,
+      "beta_yield_per_decay": 0.4541,
       "photons": [
         {
           "energy_keV": 40.9,
@@ -107256,7 +107631,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 145.91831,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.21967,
+      "beta_yield_per_decay": 0.323,
       "photons": [
         {
           "energy_keV": 40.9,
@@ -108805,7 +109181,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 145.91831,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.082,
+      "beta_yield_per_decay": 0.04408,
       "photons": [
         {
           "energy_keV": 27.3,
@@ -108935,6 +109312,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 40.9,
@@ -109058,7 +109436,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 147.918114,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.165,
+      "beta_yield_per_decay": 0.001066,
       "photons": [
         {
           "energy_keV": 40.9,
@@ -109953,6 +110332,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 2,
       "photon_count_filtered": 0,
@@ -109974,7 +110354,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 149.918658,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.28,
+      "e_max_beta_MeV": 0.297,
+      "beta_yield_per_decay": 0.00003399,
       "photons": [
         {
           "energy_keV": 40.9,
@@ -110369,6 +110750,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 2,
       "photon_count_filtered": 0,
@@ -110392,6 +110774,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 21.5,
@@ -110541,6 +110924,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 2,
       "photon_count_filtered": 0,
@@ -110564,6 +110948,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 21.2,
@@ -110691,7 +111076,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 159.927054,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.9,
+      "e_max_beta_MeV": 0.9706,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 43.8,
@@ -110819,7 +111205,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 162.933989,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.04859,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 39,
@@ -110893,7 +111280,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 66.932734,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.03419,
+      "beta_yield_per_decay": 0.2348,
       "photons": [
         {
           "energy_keV": 22.4,
@@ -111372,7 +111760,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 67.928094,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3,
+      "e_max_beta_MeV": 3.03299,
+      "beta_yield_per_decay": 0.9299,
       "photons": [
         {
           "energy_keV": 167,
@@ -111662,6 +112051,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 41,
       "photon_count_filtered": 0,
@@ -111684,7 +112074,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 69.924247,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.2053,
+      "beta_yield_per_decay": 0.2358,
       "photons": [
         {
           "energy_keV": 200,
@@ -111893,6 +112284,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 41,
       "photon_count_filtered": 0,
@@ -111914,7 +112306,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 75.921403,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.1766,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 66,
@@ -111972,7 +112365,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 77.922853,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.50725,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 150.6,
@@ -112766,7 +113160,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 78.9254,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.65,
+      "e_max_beta_MeV": 0.6757,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 277.3,
@@ -112800,7 +113195,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 3.016049,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.018,
+      "e_max_beta_MeV": 0.01859,
+      "beta_yield_per_decay": 1.001,
       "photons": [],
       "photon_count_total": 1,
       "photon_count_filtered": 0,
@@ -112822,7 +113218,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 167.940569,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3,
+      "e_max_beta_MeV": 3.008,
+      "beta_yield_per_decay": 0.3802,
       "photons": [
         {
           "energy_keV": 53.1,
@@ -112926,7 +113323,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 169.939609,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.8351,
+      "beta_yield_per_decay": 0.1366,
       "photons": [
         {
           "energy_keV": 53.1,
@@ -113041,6 +113439,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 28.4,
@@ -113585,6 +113984,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 23.9,
@@ -113792,7 +114192,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 173.940045,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.4,
+      "e_max_beta_MeV": 0.44966,
+      "beta_yield_per_decay": 0.0001215,
       "photons": [
         {
           "energy_keV": 53.1,
@@ -114087,6 +114488,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 2,
       "photon_count_filtered": 0,
@@ -114109,6 +114511,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 53.1,
@@ -114232,6 +114635,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 54.7,
@@ -114555,6 +114959,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 54.7,
@@ -114713,6 +115118,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 54.7,
@@ -114855,7 +115261,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 180.949101,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.2,
+      "e_max_beta_MeV": 0.21308,
+      "beta_yield_per_decay": 0.003005,
       "photons": [
         {
           "energy_keV": 54.7,
@@ -114968,7 +115375,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 181.950553,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.0283,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 56.4,
@@ -115086,7 +115494,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 182.953529,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.1,
+      "e_max_beta_MeV": 0.10259,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 56.4,
@@ -115185,7 +115594,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 182.953529,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.85,
+      "e_max_beta_MeV": 0.8933,
+      "beta_yield_per_decay": 0.5808,
       "photons": [
         {
           "energy_keV": 50.8,
@@ -115544,7 +115954,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 183.955449,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.5,
+      "e_max_beta_MeV": 1.54993,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 56.4,
@@ -115863,7 +116274,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 184.958819,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.1116,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 41.4,
@@ -115967,7 +116379,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 190.967156,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.45,
+      "e_max_beta_MeV": 0.498,
+      "beta_yield_per_decay": 0.000168,
       "photons": [
         {
           "energy_keV": 28.9,
@@ -116166,7 +116579,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 191.965633,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.0698,
+      "beta_yield_per_decay": 0.031,
       "photons": [
         {
           "energy_keV": 67.2,
@@ -116656,6 +117070,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 31.6,
@@ -116859,7 +117274,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 193.965438,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.28277,
+      "beta_yield_per_decay": 0.008182,
       "photons": [
         {
           "energy_keV": 38.2,
@@ -117123,7 +117539,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 193.965438,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.1716,
+      "beta_yield_per_decay": 0.005303,
       "photons": [
         {
           "energy_keV": 39.5,
@@ -117873,6 +118290,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 59,
       "photon_count_filtered": 0,
@@ -117895,7 +118313,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 195.965832,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.5,
+      "e_max_beta_MeV": 0.548,
+      "beta_yield_per_decay": 0.0006224,
       "photons": [
         {
           "energy_keV": 61.5,
@@ -118124,7 +118543,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 195.965832,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.4,
+      "e_max_beta_MeV": 0.40548,
+      "beta_yield_per_decay": 0.0001184,
       "photons": [
         {
           "energy_keV": 37.1,
@@ -118469,6 +118889,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 67.2,
@@ -118567,6 +118988,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 67.2,
@@ -118731,6 +119153,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 69.1,
@@ -118828,7 +119251,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 203.973493,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.45,
+      "e_max_beta_MeV": 0.4918,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 71.1,
@@ -118906,7 +119330,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 205.977513,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.5,
+      "e_max_beta_MeV": 1.533,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 71.1,
@@ -118964,7 +119389,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 206.982589,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.3,
+      "e_max_beta_MeV": 1.307,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 71.1,
@@ -119053,7 +119479,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 207.985939,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.4719,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 71.1,
@@ -119262,7 +119689,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 150.931687,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 6,
+      "e_max_beta_MeV": 6.347,
+      "beta_yield_per_decay": 0.8157,
       "photons": [
         {
           "energy_keV": 45.3,
@@ -119361,7 +119789,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 153.930601,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.83754,
+      "beta_yield_per_decay": 0.4122,
       "photons": [
         {
           "energy_keV": 45.3,
@@ -119840,7 +120269,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 153.930601,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3,
+      "e_max_beta_MeV": 3.0678,
+      "beta_yield_per_decay": 0.4865,
       "photons": [
         {
           "energy_keV": 45.3,
@@ -120084,7 +120514,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 154.929102,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.39442,
+      "beta_yield_per_decay": 0.64,
       "photons": [
         {
           "energy_keV": 45.3,
@@ -120473,7 +120904,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 154.929102,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.22218,
+      "beta_yield_per_decay": 0.4151,
       "photons": [
         {
           "energy_keV": 45.3,
@@ -120722,7 +121154,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 155.929839,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.08,
+      "beta_yield_per_decay": 0.1941,
       "photons": [
         {
           "energy_keV": 22.2,
@@ -121716,7 +122149,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 156.928255,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.75381,
+      "beta_yield_per_decay": 0.4322,
       "photons": [
         {
           "energy_keV": 45.3,
@@ -123409,7 +123843,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 157.92894,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.5,
+      "e_max_beta_MeV": 1.51386,
+      "beta_yield_per_decay": 0.05468,
       "photons": [
         {
           "energy_keV": 23.1,
@@ -124183,7 +124618,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 159.928728,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.8,
+      "e_max_beta_MeV": 0.816,
+      "beta_yield_per_decay": 0.002377,
       "photons": [
         {
           "energy_keV": 30.4,
@@ -124742,7 +125178,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 160.927854,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.11216,
+      "beta_yield_per_decay": 0.004713,
       "photons": [
         {
           "energy_keV": 45.3,
@@ -125086,6 +125523,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 25.7,
@@ -125268,7 +125706,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 162.928733,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.117,
+      "beta_yield_per_decay": 0.03819,
       "photons": [
         {
           "energy_keV": 45.3,
@@ -125436,7 +125875,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 162.928733,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.9,
+      "e_max_beta_MeV": 0.9573,
+      "beta_yield_per_decay": 0.000108,
       "photons": [
         {
           "energy_keV": 38.3,
@@ -125761,6 +126201,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 12,
       "photon_count_filtered": 0,
@@ -125782,7 +126223,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 164.930322,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.9,
+      "e_max_beta_MeV": 0.9628,
+      "beta_yield_per_decay": 0.4001,
       "photons": [
         {
           "energy_keV": 45.3,
@@ -125906,6 +126348,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 37.3,
@@ -126009,7 +126452,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 166.933132,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.8539,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 48.3,
@@ -126117,7 +126561,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 166.933132,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.3,
+      "e_max_beta_MeV": 1.31444,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 48.3,
@@ -126490,7 +126935,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 167.935519,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.007,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 48.3,
@@ -126703,7 +127149,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 168.936871,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.66592,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 48.3,
@@ -127187,6 +127634,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 46.8,
@@ -127265,7 +127713,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 170.941469,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.32932,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 48.3,
@@ -127548,7 +127997,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 118.910069,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 5.5,
+      "e_max_beta_MeV": 5.731,
+      "beta_yield_per_decay": 0.9105,
       "photons": [
         {
           "energy_keV": 27.2,
@@ -127887,7 +128337,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 170.941469,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.0972,
+      "beta_yield_per_decay": 0.7879,
       "photons": [
         {
           "energy_keV": 27.2,
@@ -128231,7 +128682,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 119.910047,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.13052,
+      "beta_yield_per_decay": 0.5275,
       "photons": [
         {
           "energy_keV": 27.2,
@@ -129180,7 +129632,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 120.907366,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.593,
+      "beta_yield_per_decay": 0.6834,
       "photons": [
         {
           "energy_keV": 27.2,
@@ -129973,7 +130426,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 120.907366,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3,
+      "e_max_beta_MeV": 3.1368,
+      "beta_yield_per_decay": 0.6915,
       "photons": [
         {
           "energy_keV": 27.2,
@@ -130241,7 +130695,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 121.907588,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.0348,
+      "beta_yield_per_decay": 0.09938,
       "photons": [
         {
           "energy_keV": 27.2,
@@ -130885,7 +131340,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 122.905588,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.212,
+      "beta_yield_per_decay": 0.7801,
       "photons": [
         {
           "energy_keV": 27.2,
@@ -131119,6 +131575,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 27.2,
@@ -131267,7 +131724,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 124.90463,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.1376,
+      "beta_yield_per_decay": 0.2288,
       "photons": [
         {
           "energy_keV": 27.2,
@@ -131656,6 +132114,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 27.2,
@@ -131743,7 +132202,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 126.904472,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.258,
+      "beta_yield_per_decay": 0.4833,
       "photons": [
         {
           "energy_keV": 27.2,
@@ -131876,7 +132336,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 128.904987,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.119,
+      "beta_yield_per_decay": 0.9321,
       "photons": [
         {
           "energy_keV": 27.2,
@@ -131964,7 +132425,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 129.906673,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.15,
+      "e_max_beta_MeV": 0.15442,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 29.5,
@@ -132042,7 +132504,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 130.906124,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.74439,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 29.5,
@@ -132340,7 +132803,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 129.906673,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.45288,
+      "beta_yield_per_decay": 0.1602,
       "photons": [
         {
           "energy_keV": 28.3,
@@ -132494,7 +132958,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 131.907996,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.8,
+      "e_max_beta_MeV": 0.80687,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 29.5,
@@ -132617,7 +133082,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 132.907796,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.13967,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 29.5,
@@ -133395,7 +133861,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 132.907796,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.4849,
+      "beta_yield_per_decay": 0.1401,
       "photons": [
         {
           "energy_keV": 22,
@@ -133544,7 +134011,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 133.909743,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.5,
+      "e_max_beta_MeV": 1.53778,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 29.5,
@@ -133773,7 +134241,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 134.910047,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.32083,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 29.5,
@@ -134266,7 +134735,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 133.909743,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.40219,
+      "beta_yield_per_decay": 0.02303,
       "photons": [
         {
           "energy_keV": 28.3,
@@ -134390,7 +134860,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 135.914649,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.12145,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 29.5,
@@ -134849,7 +135320,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 103.918299,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.8401,
+      "beta_yield_per_decay": 0.8829,
       "photons": [
         {
           "energy_keV": 23,
@@ -135668,7 +136140,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 105.913464,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.69581,
+      "beta_yield_per_decay": 0.7341,
       "photons": [
         {
           "energy_keV": 23,
@@ -136482,7 +136955,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 106.910294,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.8664,
+      "beta_yield_per_decay": 0.7913,
       "photons": [
         {
           "energy_keV": 23,
@@ -136695,7 +137169,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 106.910294,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.89509,
+      "beta_yield_per_decay": 0.889,
       "photons": [
         {
           "energy_keV": 23,
@@ -136908,7 +137383,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 107.909697,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.19904,
+      "beta_yield_per_decay": 0.3467,
       "photons": [
         {
           "energy_keV": 23,
@@ -137757,7 +138233,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 108.90715,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.5,
+      "e_max_beta_MeV": 1.59391,
+      "beta_yield_per_decay": 0.2443,
       "photons": [
         {
           "energy_keV": 23,
@@ -138390,7 +138867,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 108.90715,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.53176,
+      "beta_yield_per_decay": 0.5395,
       "photons": [
         {
           "energy_keV": 23,
@@ -138678,7 +139156,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 109.907164,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.75,
+      "e_max_beta_MeV": 0.7947,
+      "beta_yield_per_decay": 0.04657,
       "photons": [
         {
           "energy_keV": 23,
@@ -139068,6 +139547,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 24,
@@ -139126,7 +139606,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 110.905102,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.55,
+      "e_max_beta_MeV": 0.5686,
+      "beta_yield_per_decay": 0.0002055,
       "photons": [
         {
           "energy_keV": 23,
@@ -139449,7 +139930,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 110.905102,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.2603,
+      "beta_yield_per_decay": 0.6183,
       "photons": [
         {
           "energy_keV": 23,
@@ -139863,6 +140345,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 23,
@@ -139936,6 +140419,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 24,
@@ -139994,7 +140478,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 112.904057,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.5,
+      "e_max_beta_MeV": 1.564,
+      "beta_yield_per_decay": 0.6553,
       "photons": [
         {
           "energy_keV": 23,
@@ -140108,6 +140593,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 24,
@@ -140177,6 +140663,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 24,
@@ -140239,7 +140726,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 114.903877,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.9887,
+      "beta_yield_per_decay": 0.9969,
       "photons": [
         {
           "energy_keV": 23,
@@ -140293,6 +140781,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 23,
@@ -140401,7 +140890,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 115.905259,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.45,
+      "e_max_beta_MeV": 0.496,
+      "beta_yield_per_decay": 1.002,
       "photons": [],
       "photon_count_total": 1,
       "photon_count_filtered": 0,
@@ -140423,7 +140913,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 115.905259,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.8,
+      "e_max_beta_MeV": 0.83124,
+      "beta_yield_per_decay": 0.05001,
       "photons": [
         {
           "energy_keV": 24,
@@ -140497,7 +140988,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 116.904513,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.13517,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 25,
@@ -140755,7 +141247,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 117.906353,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.14042,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 25,
@@ -140823,7 +141316,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 117.906353,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.7703,
+      "beta_yield_per_decay": 0.5295,
       "photons": [
         {
           "energy_keV": 24,
@@ -140922,7 +141416,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 118.905844,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.423,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 528,
@@ -140985,7 +141480,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 118.905844,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.24272,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 25,
@@ -141363,7 +141859,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 119.907959,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.5,
+      "e_max_beta_MeV": 1.57699,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 23.9,
@@ -141421,7 +141918,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 119.907959,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.67537,
+      "beta_yield_per_decay": 0.9445,
       "photons": [
         {
           "energy_keV": 23.9,
@@ -141550,7 +142048,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 121.910279,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.43942,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 25,
@@ -141644,7 +142143,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 121.910279,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.6786,
+      "beta_yield_per_decay": 0.9898,
       "photons": [
         {
           "energy_keV": 24,
@@ -141793,7 +142293,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 180.957624,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.95035,
+      "beta_yield_per_decay": 0.586,
       "photons": [
         {
           "energy_keV": 61.6,
@@ -142122,7 +142623,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 182.956845,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.41111,
+      "beta_yield_per_decay": 0.527,
       "photons": [
         {
           "energy_keV": 61.6,
@@ -142636,7 +143138,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 183.957479,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.33169,
+      "beta_yield_per_decay": 0.08403,
       "photons": [
         {
           "energy_keV": 26.1,
@@ -144045,7 +144548,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 184.956699,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.23523,
+      "beta_yield_per_decay": 0.1744,
       "photons": [
         {
           "energy_keV": 61.6,
@@ -145073,7 +145577,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 185.957945,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.3,
+      "e_max_beta_MeV": 1.3626,
+      "beta_yield_per_decay": 0.02371,
       "photons": [
         {
           "energy_keV": 24.2,
@@ -146062,7 +146567,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 186.957362,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.37491,
+      "beta_yield_per_decay": 0.05681,
       "photons": [
         {
           "energy_keV": 61.6,
@@ -146916,7 +147422,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 186.957362,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.67265,
+      "beta_yield_per_decay": 0.0627,
       "photons": [
         {
           "energy_keV": 61.6,
@@ -147355,7 +147862,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 187.958852,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.45,
+      "e_max_beta_MeV": 0.477,
+      "beta_yield_per_decay": 0.0003401,
       "photons": [
         {
           "energy_keV": 25.6,
@@ -147893,7 +148401,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 188.958718,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.63198,
+      "beta_yield_per_decay": 0.003308,
       "photons": [
         {
           "energy_keV": 61.6,
@@ -148767,6 +149276,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 25.7,
@@ -148960,6 +149470,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 61.6,
@@ -149373,6 +149884,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 63,
       "photon_count_filtered": 0,
@@ -149396,6 +149908,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 36.2,
@@ -149540,6 +150053,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 63.5,
@@ -149632,7 +150146,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 192.962926,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.65,
+      "e_max_beta_MeV": 0.67512,
+      "beta_yield_per_decay": 0.9524,
       "photons": [
         {
           "energy_keV": 61.6,
@@ -149850,7 +150365,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 192.962926,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.5,
+      "e_max_beta_MeV": 1.51644,
+      "beta_yield_per_decay": 0.0001751,
       "photons": [
         {
           "energy_keV": 56.7,
@@ -149880,6 +150396,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 63.5,
@@ -149934,6 +150451,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 63.5,
@@ -149981,7 +150499,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 194.965979,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.2468,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 65.3,
@@ -150189,7 +150708,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 194.965979,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.18,
+      "e_max_beta_MeV": 0.1934,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 65.3,
@@ -150317,7 +150837,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 195.968399,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.107,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 30.9,
@@ -150420,7 +150941,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 195.968399,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.9,
+      "e_max_beta_MeV": 0.94762,
+      "beta_yield_per_decay": 0.9508,
       "photons": [
         {
           "energy_keV": 27.8,
@@ -150984,7 +151506,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 196.969652,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.209,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 65.3,
@@ -151087,7 +151610,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 196.969652,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.9,
+      "e_max_beta_MeV": 0.9506,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 65.3,
@@ -151350,7 +151874,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 38.963707,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.8911,
+      "beta_yield_per_decay": 0.9953,
       "photons": [
         {
           "energy_keV": 511,
@@ -151388,7 +151913,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 40.961826,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.3,
+      "e_max_beta_MeV": 1.31109,
+      "beta_yield_per_decay": 0.8922,
       "photons": [
         {
           "energy_keV": 511,
@@ -151421,7 +151947,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 42.960716,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.52545,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 312.6,
@@ -151474,7 +152001,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 43.96156,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.815,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 220.6,
@@ -151547,7 +152075,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 44.960699,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 5.5,
+      "e_max_beta_MeV": 5.659,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 174.4,
@@ -152075,7 +152604,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 45.961977,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.205,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 174.3,
@@ -152309,7 +152839,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 46.961678,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 6,
+      "e_max_beta_MeV": 6.371,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 1235,
@@ -152412,7 +152943,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 74.930946,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.93816,
+      "beta_yield_per_decay": 0.7729,
       "photons": [
         {
           "energy_keV": 26.4,
@@ -152726,7 +153258,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 75.92591,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.67348,
+      "beta_yield_per_decay": 0.9567,
       "photons": [
         {
           "energy_keV": 22.1,
@@ -152966,6 +153499,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 35.6,
@@ -153359,7 +153893,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 77.920365,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.041,
+      "beta_yield_per_decay": 0.8191,
       "photons": [
         {
           "energy_keV": 24.2,
@@ -153533,7 +154068,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 79.916379,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.6,
+      "e_max_beta_MeV": 0.6038,
+      "beta_yield_per_decay": 0.06872,
       "photons": [
         {
           "energy_keV": 44.2,
@@ -153732,6 +154268,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 276,
@@ -153760,6 +154297,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 190.5,
@@ -153789,6 +154327,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 32.1,
@@ -153816,7 +154355,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 85.910611,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.65,
+      "e_max_beta_MeV": 0.6874,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 514,
@@ -153844,7 +154384,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 85.910611,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.8,
+      "e_max_beta_MeV": 0.84108,
+      "beta_yield_per_decay": 0.7862,
       "photons": [
         {
           "energy_keV": 129.8,
@@ -153888,7 +154429,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 87.914447,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.887,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 129.4,
@@ -154082,7 +154624,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 88.91763,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.913,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 27.5,
@@ -154531,7 +155074,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 89.919517,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.986,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 74.9,
@@ -156220,7 +156764,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 128.912692,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.98459,
+      "beta_yield_per_decay": 0.7967,
       "photons": [
         {
           "energy_keV": 31.8,
@@ -156739,7 +157284,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 129.912368,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.698,
+      "beta_yield_per_decay": 0.5421,
       "photons": [
         {
           "energy_keV": 31.8,
@@ -157388,7 +157934,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 130.910069,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.28666,
+      "beta_yield_per_decay": 0.7088,
       "photons": [
         {
           "energy_keV": 31.8,
@@ -157826,7 +158373,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 131.910099,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.888,
+      "beta_yield_per_decay": 0.2313,
       "photons": [
         {
           "energy_keV": 31.8,
@@ -158480,7 +159028,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 132.908219,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.688,
+      "beta_yield_per_decay": 0.4268,
       "photons": [
         {
           "energy_keV": 31.8,
@@ -158988,7 +159537,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 132.908219,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.75648,
+      "beta_yield_per_decay": 0.06394,
       "photons": [
         {
           "energy_keV": 31.8,
@@ -159197,7 +159747,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 133.908513,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.01868,
+      "beta_yield_per_decay": 0.06967,
       "photons": [
         {
           "energy_keV": 31.8,
@@ -159586,7 +160137,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 134.906976,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.688,
+      "beta_yield_per_decay": 0.6313,
       "photons": [
         {
           "energy_keV": 31.8,
@@ -159799,7 +160351,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 135.907639,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.16,
+      "e_max_beta_MeV": 0.178,
+      "beta_yield_per_decay": 0.00007115,
       "photons": [
         {
           "energy_keV": 31.8,
@@ -159922,7 +160475,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 136.906493,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.828,
+      "beta_yield_per_decay": 0.3539,
       "photons": [
         {
           "energy_keV": 31.8,
@@ -160056,6 +160610,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 31.8,
@@ -160133,7 +160688,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 138.906353,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.24,
+      "e_max_beta_MeV": 0.25526,
+      "beta_yield_per_decay": 0.3361,
       "photons": [
         {
           "energy_keV": 31.8,
@@ -160226,7 +160782,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 140.910961,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.7619,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 34.3,
@@ -160454,7 +161011,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 141.914078,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.502,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 662.1,
@@ -160518,7 +161076,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 142.916062,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.504,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 34.3,
@@ -161421,7 +161980,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 143.919599,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.4061,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 34.3,
@@ -161830,7 +162390,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 165.939859,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.818,
+      "beta_yield_per_decay": 0.2606,
       "photons": [
         {
           "energy_keV": 39.2,
@@ -162599,7 +163160,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 167.938739,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.03834,
+      "beta_yield_per_decay": 0.05952,
       "photons": [
         {
           "energy_keV": 20.2,
@@ -164898,7 +165460,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 169.938474,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.07979,
+      "beta_yield_per_decay": 0.001403,
       "photons": [
         {
           "energy_keV": 34.8,
@@ -166478,6 +167041,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 64,
       "photon_count_filtered": 0,
@@ -166500,7 +167064,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 170.937913,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.437,
+      "beta_yield_per_decay": 0.003291,
       "photons": [
         {
           "energy_keV": 51.4,
@@ -169428,7 +169993,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 171.939085,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.36,
+      "e_max_beta_MeV": 0.36232,
+      "beta_yield_per_decay": 0.00007036,
       "photons": [
         {
           "energy_keV": 27.1,
@@ -169822,6 +170388,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 53.1,
@@ -169870,7 +170437,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 172.93893,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.23703,
+      "beta_yield_per_decay": 0.000414,
       "photons": [
         {
           "energy_keV": 51.4,
@@ -170809,6 +171377,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 64,
       "photon_count_filtered": 0,
@@ -170832,6 +171401,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 51.4,
@@ -170999,7 +171569,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 174.940771,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.32,
+      "e_max_beta_MeV": 0.3523,
+      "beta_yield_per_decay": 0.00023,
       "photons": [
         {
           "energy_keV": 51.4,
@@ -171113,6 +171684,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 44.7,
@@ -171276,7 +171848,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 176.943758,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.55,
+      "e_max_beta_MeV": 0.59577,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 54.7,
@@ -171374,7 +171947,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 176.943758,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.3,
+      "e_max_beta_MeV": 1.3158,
+      "beta_yield_per_decay": 0.9999,
       "photons": [
         {
           "energy_keV": 51.4,
@@ -171462,7 +172036,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 177.945954,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.45,
+      "e_max_beta_MeV": 0.4978,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 54.7,
@@ -171555,7 +172130,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 177.945954,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.15,
+      "e_max_beta_MeV": 0.15252,
+      "beta_yield_per_decay": 0.7838,
       "photons": [
         {
           "energy_keV": 53.1,
@@ -171929,7 +172505,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 178.947326,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.0991,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 54.7,
@@ -172167,7 +172744,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 178.947326,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.07543,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 54.7,
@@ -172290,7 +172868,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 179.949879,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.405,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 54.7,
@@ -172398,7 +172977,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 180.951969,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.79145,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 54.7,
@@ -172636,7 +173216,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 181.955039,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.57118,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 45.8,
@@ -172815,7 +173396,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 27.983877,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.76684,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 170.7,
@@ -172853,7 +173435,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 28.9886,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.85,
+      "e_max_beta_MeV": 0.85963,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 30.6,
@@ -172922,7 +173505,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 28.9886,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.67605,
+      "beta_yield_per_decay": 0.9939,
       "photons": [
         {
           "energy_keV": 161,
@@ -173005,7 +173589,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 51.945565,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.1858,
+      "beta_yield_per_decay": 0.9719,
       "photons": [
         {
           "energy_keV": 511,
@@ -173069,7 +173654,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 52.94129,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.55,
+      "e_max_beta_MeV": 0.57582,
+      "beta_yield_per_decay": 0.2969,
       "photons": [
         {
           "energy_keV": 200.6,
@@ -173187,7 +173773,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 52.94129,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.63337,
+      "beta_yield_per_decay": 0.9659,
       "photons": [
         {
           "energy_keV": 377.7,
@@ -173257,6 +173844,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 32,
       "photon_count_filtered": 0,
@@ -173278,7 +173866,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 54.938045,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.65,
+      "e_max_beta_MeV": 0.6971,
+      "beta_yield_per_decay": 0.000002905,
       "photons": [
         {
           "energy_keV": 834.8,
@@ -173306,7 +173895,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 56.938285,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.84874,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 846.8,
@@ -173379,7 +173969,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 57.93998,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.67659,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 122.1,
@@ -173487,7 +174078,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 57.93998,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.24526,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 459.2,
@@ -173700,7 +174292,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 101.910296,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.61648,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20.6,
@@ -174684,7 +175277,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 102.913209,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.014,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20.6,
@@ -174758,7 +175352,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 89.913937,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.628,
+      "beta_yield_per_decay": 0.9688,
       "photons": [
         {
           "energy_keV": 496.4,
@@ -174842,7 +175437,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 90.91175,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.085,
+      "beta_yield_per_decay": 0.2563,
       "photons": [
         {
           "energy_keV": 42.7,
@@ -174986,7 +175582,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 91.906811,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.412,
+      "beta_yield_per_decay": 0.9371,
       "photons": [
         {
           "energy_keV": 511,
@@ -175065,7 +175662,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 90.91175,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.9604,
+      "beta_yield_per_decay": 0.4388,
       "photons": [
         {
           "energy_keV": 425.9,
@@ -175140,6 +175738,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 51,
       "photon_count_filtered": 0,
@@ -175162,6 +175761,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 114,
@@ -175255,7 +175855,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 99.907477,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.21452,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20.6,
@@ -175369,7 +175970,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 13.005739,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.19849,
+      "beta_yield_per_decay": 0.9995,
       "photons": [
         {
           "energy_keV": 511,
@@ -175398,6 +176000,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": 9,
+      "beta_yield_per_decay": 0.9949,
       "photons": [
         {
           "energy_keV": 1754.9,
@@ -175460,7 +176063,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 22.989769,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.8202,
+      "beta_yield_per_decay": 0.9004,
       "photons": [
         {
           "energy_keV": 511,
@@ -175493,7 +176097,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 24.989954,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.14493,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 1368.6,
@@ -175531,7 +176136,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 87.91833,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.8072,
+      "beta_yield_per_decay": 0.9623,
       "photons": [
         {
           "energy_keV": 135.1,
@@ -175570,7 +176176,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 88.913418,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.38829,
+      "beta_yield_per_decay": 0.9328,
       "photons": [
         {
           "energy_keV": 77,
@@ -175769,7 +176376,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 87.91833,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 5.5,
+      "e_max_beta_MeV": 5.51091,
+      "beta_yield_per_decay": 0.9337,
       "photons": [
         {
           "energy_keV": 97.4,
@@ -176243,7 +176851,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 89.911265,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3,
+      "e_max_beta_MeV": 3.196,
+      "beta_yield_per_decay": 0.7556,
       "photons": [
         {
           "energy_keV": 173.1,
@@ -176622,7 +177231,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 89.911265,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.638,
+      "beta_yield_per_decay": 0.8031,
       "photons": [
         {
           "energy_keV": 507.4,
@@ -176670,7 +177280,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 90.906996,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.49959,
+      "beta_yield_per_decay": 0.5376,
       "photons": [
         {
           "energy_keV": 132.7,
@@ -176898,7 +177509,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 91.907194,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.22,
+      "e_max_beta_MeV": 0.2314,
+      "beta_yield_per_decay": 0.001571,
       "photons": [
         {
           "energy_keV": 511,
@@ -176926,7 +177538,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 91.907194,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.32,
+      "e_max_beta_MeV": 0.336,
+      "beta_yield_per_decay": 0.00001192,
       "photons": [
         {
           "energy_keV": 104.6,
@@ -176961,6 +177574,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 561.1,
@@ -176993,7 +177607,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 92.906378,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.1191,
+      "beta_yield_per_decay": 0.0007112,
       "photons": [
         {
           "energy_keV": 511,
@@ -177037,6 +177652,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 58,
       "photon_count_filtered": 0,
@@ -177058,7 +177674,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 94.906836,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.45,
+      "e_max_beta_MeV": 0.47168,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 702.6,
@@ -177091,7 +177708,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 92.906378,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.21509,
+      "beta_yield_per_decay": 0.005005,
       "photons": [
         {
           "energy_keV": 40.9,
@@ -177125,7 +177743,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 95.908101,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.9,
+      "e_max_beta_MeV": 0.9256,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 204.1,
@@ -177163,7 +177782,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 95.908101,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.16129,
+      "beta_yield_per_decay": 0.05605,
       "photons": [
         {
           "energy_keV": 204.1,
@@ -177207,7 +177827,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 96.908099,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.7,
+      "e_max_beta_MeV": 0.74849,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 109,
@@ -177390,7 +178011,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 97.910328,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.27583,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 178,
@@ -177478,7 +178100,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 97.910328,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3,
+      "e_max_beta_MeV": 3.15999,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 86.7,
@@ -178831,7 +179454,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 99.914182,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.40349,
+      "beta_yield_per_decay": 0.9998,
       "photons": [
         {
           "energy_keV": 97.8,
@@ -178865,7 +179489,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 99.914182,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.0042,
+      "beta_yield_per_decay": 0.9818,
       "photons": [
         {
           "energy_keV": 97.8,
@@ -179614,7 +180239,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 134.91818,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.7324,
+      "beta_yield_per_decay": 0.2044,
       "photons": [
         {
           "energy_keV": 35.6,
@@ -179842,7 +180468,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 135.914975,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.68653,
+      "beta_yield_per_decay": 0.6678,
       "photons": [
         {
           "energy_keV": 35.6,
@@ -180131,7 +180758,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 136.914566,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.06481,
+      "beta_yield_per_decay": 0.04107,
       "photons": [
         {
           "energy_keV": 35.6,
@@ -180450,7 +181078,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 137.911949,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.5005,
+      "beta_yield_per_decay": 0.3056,
       "photons": [
         {
           "energy_keV": 35.6,
@@ -181410,6 +182039,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 35.6,
@@ -181573,7 +182203,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 139.909549,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.789,
+      "beta_yield_per_decay": 0.2528,
       "photons": [
         {
           "energy_keV": 35.6,
@@ -181792,7 +182423,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 139.909549,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.90629,
+      "beta_yield_per_decay": 0.01397,
       "photons": [
         {
           "energy_keV": 35.6,
@@ -182217,6 +182849,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 35.6,
@@ -182300,7 +182933,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 141.907723,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.8,
+      "e_max_beta_MeV": 0.801,
+      "beta_yield_per_decay": 0.02591,
       "photons": [
         {
           "energy_keV": 35.6,
@@ -182423,7 +183057,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 141.907723,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.4,
+      "e_max_beta_MeV": 0.43991,
+      "beta_yield_per_decay": 2.13e-7,
       "photons": [
         {
           "energy_keV": 36.1,
@@ -182508,6 +183143,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 2,
       "photon_count_filtered": 0,
@@ -182529,7 +183165,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 147.916892,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.85,
+      "e_max_beta_MeV": 0.8953,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 38.2,
@@ -182678,7 +183315,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 149.92089,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.5,
+      "e_max_beta_MeV": 1.57669,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 30,
@@ -183532,7 +184170,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 151.924681,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.442,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 31.7,
@@ -185816,7 +186455,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 152.927697,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.11,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 25.1,
@@ -186035,7 +186675,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 19.99244,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.2164,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 109.9,
@@ -186068,7 +186709,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 24.997737,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.99779,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 472.2,
@@ -186102,7 +186744,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 56.939793,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.114,
+      "beta_yield_per_decay": 0.00001582,
       "photons": [
         {
           "energy_keV": 158.4,
@@ -186156,7 +186799,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 57.935343,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.85,
+      "e_max_beta_MeV": 0.86455,
+      "beta_yield_per_decay": 0.4349,
       "photons": [
         {
           "energy_keV": 127.2,
@@ -186265,7 +186909,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 59.930786,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.05,
+      "e_max_beta_MeV": 0.0505,
+      "beta_yield_per_decay": 0.00001523,
       "photons": [],
       "photon_count_total": 34,
       "photon_count_filtered": 0,
@@ -186287,7 +186932,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 63.927966,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.065,
+      "e_max_beta_MeV": 0.06695,
+      "beta_yield_per_decay": 1.001,
       "photons": [],
       "photon_count_total": 1,
       "photon_count_filtered": 0,
@@ -186309,7 +186955,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 65.929139,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.1362,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 366.3,
@@ -186377,7 +187024,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 66.931569,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.24,
+      "e_max_beta_MeV": 0.252,
+      "beta_yield_per_decay": 1.001,
       "photons": [],
       "photon_count_total": 1,
       "photon_count_filtered": 0,
@@ -186400,7 +187048,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 232.040109,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.728,
+      "beta_yield_per_decay": 0.001083,
       "photons": [
         {
           "energy_keV": 20,
@@ -186700,6 +187349,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20.3,
@@ -186963,7 +187613,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 234.042894,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.75,
+      "e_max_beta_MeV": 0.786,
+      "beta_yield_per_decay": 0.0004571,
       "photons": [
         {
           "energy_keV": 20.3,
@@ -187423,6 +188074,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20.3,
@@ -187531,7 +188183,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 236.046569,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.32,
+      "e_max_beta_MeV": 0.3326,
+      "beta_yield_per_decay": 0.1252,
       "photons": [
         {
           "energy_keV": 20,
@@ -187795,7 +188448,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 236.046569,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.5,
+      "e_max_beta_MeV": 0.54,
+      "beta_yield_per_decay": 0.4808,
       "photons": [
         {
           "energy_keV": 20.3,
@@ -187965,6 +188619,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20,
@@ -188233,7 +188888,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 238.050946,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.24792,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20.8,
@@ -188452,7 +189108,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 239.052938,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.7,
+      "e_max_beta_MeV": 0.71414,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 20.8,
@@ -188716,7 +189373,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 240.056161,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.89369,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20.8,
@@ -189045,7 +189703,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 240.056161,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.208,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 20.8,
@@ -189459,7 +190118,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 241.058249,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.3,
+      "e_max_beta_MeV": 1.30001,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20.8,
@@ -189658,7 +190318,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 242.061639,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.7,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20.8,
@@ -189927,7 +190588,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 242.061639,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.6079,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 20.8,
@@ -190091,7 +190753,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 14.008596,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.12104,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 511,
@@ -190129,7 +190792,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 15.994915,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.732,
+      "beta_yield_per_decay": 0.9998,
       "photons": [
         {
           "energy_keV": 511,
@@ -190157,7 +190821,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 19.00358,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.8196,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 109.9,
@@ -190220,7 +190885,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 180.953239,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.4,
+      "e_max_beta_MeV": 0.4279,
+      "beta_yield_per_decay": 0.0005154,
       "photons": [
         {
           "energy_keV": 20.1,
@@ -190379,7 +191045,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 181.952109,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.5,
+      "e_max_beta_MeV": 1.50553,
+      "beta_yield_per_decay": 0.0217,
       "photons": [
         {
           "energy_keV": 59.9,
@@ -191129,6 +191796,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 27.5,
@@ -191371,7 +192039,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 183.952489,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.7,
+      "e_max_beta_MeV": 0.70276,
+      "beta_yield_per_decay": 0.002324,
       "photons": [
         {
           "energy_keV": 59.9,
@@ -191870,7 +192539,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 183.952489,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.4,
+      "e_max_beta_MeV": 0.42979,
+      "beta_yield_per_decay": 0.00002398,
       "photons": [
         {
           "energy_keV": 59.9,
@@ -192260,6 +192930,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 59.9,
@@ -192398,6 +193069,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 2,
       "photon_count_filtered": 0,
@@ -192420,6 +193092,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 64,
       "photon_count_filtered": 0,
@@ -192442,6 +193115,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 38.9,
@@ -192539,7 +193213,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 191.96148,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.14,
+      "e_max_beta_MeV": 0.14242,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 63.5,
@@ -192633,6 +193308,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 61.6,
@@ -192711,7 +193387,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 193.965182,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.1405,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 63.5,
@@ -192954,7 +193631,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 194.968129,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.09,
+      "e_max_beta_MeV": 0.0966,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 43.1,
@@ -193003,7 +193681,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 194.968129,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.16,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 63.5,
@@ -193127,7 +193806,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 30.973762,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.2103,
+      "beta_yield_per_decay": 0.9987,
       "photons": [
         {
           "energy_keV": 511,
@@ -193160,7 +193840,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 32.971725,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.71066,
+      "beta_yield_per_decay": 1,
       "photons": [],
       "photon_count_total": 1,
       "photon_count_filtered": 0,
@@ -193182,7 +193863,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 33.973636,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.24,
+      "e_max_beta_MeV": 0.2485,
+      "beta_yield_per_decay": 1.001,
       "photons": [],
       "photon_count_total": 1,
       "photon_count_filtered": 0,
@@ -193205,6 +193887,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 21.1,
@@ -193443,7 +194126,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 228.03105,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.06824,
+      "beta_yield_per_decay": 0.000699,
       "photons": [
         {
           "energy_keV": 20.2,
@@ -195138,6 +195822,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20.2,
@@ -195336,7 +196021,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 230.03454,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.5,
+      "e_max_beta_MeV": 0.51228,
+      "beta_yield_per_decay": 0.08413,
       "photons": [
         {
           "energy_keV": 20.2,
@@ -195751,6 +196437,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 25.5,
@@ -195999,7 +196686,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 232.038591,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.3,
+      "e_max_beta_MeV": 1.337,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20.3,
@@ -196273,7 +196961,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 233.040247,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.55,
+      "e_max_beta_MeV": 0.5721,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20.3,
@@ -196502,7 +197191,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 234.043307,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.2472,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 20,
@@ -198236,7 +198926,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 234.043307,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.273,
+      "beta_yield_per_decay": 0.9996,
       "photons": [
         {
           "energy_keV": 20.3,
@@ -198355,7 +199046,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 235.045439,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.40696,
+      "beta_yield_per_decay": 1.001,
       "photons": [],
       "photon_count_total": 19,
       "photon_count_filtered": 0,
@@ -198378,7 +199070,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 236.048679,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.8994,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20.3,
@@ -198822,7 +199515,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 237.051149,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.25,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20.3,
@@ -198991,7 +199685,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 194.974541,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.5,
+      "e_max_beta_MeV": 1.598,
+      "beta_yield_per_decay": 0.00565,
       "photons": [
         {
           "energy_keV": 45.5,
@@ -199695,7 +200390,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 195.972773,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.74522,
+      "beta_yield_per_decay": 0.1222,
       "photons": [
         {
           "energy_keV": 71.1,
@@ -200034,7 +200730,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 196.97343,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.9,
+      "e_max_beta_MeV": 0.9223,
+      "beta_yield_per_decay": 0.003023,
       "photons": [
         {
           "energy_keV": 71.1,
@@ -200208,7 +200905,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 197.972033,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.57,
+      "beta_yield_per_decay": 0.03971,
       "photons": [
         {
           "energy_keV": 71.1,
@@ -200497,7 +201195,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 197.972033,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.2807,
+      "beta_yield_per_decay": 0.02126,
       "photons": [
         {
           "energy_keV": 71.1,
@@ -200997,6 +201696,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 30.8,
@@ -201185,7 +201885,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 199.971826,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.798,
+      "beta_yield_per_decay": 0.02657,
       "photons": [
         {
           "energy_keV": 71.1,
@@ -201870,6 +202571,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 32.7,
@@ -202053,7 +202755,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 201.972158,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.9,
+      "e_max_beta_MeV": 0.901,
+      "beta_yield_per_decay": 0.0006384,
       "photons": [
         {
           "energy_keV": 58.9,
@@ -202488,6 +203191,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 73,
@@ -202577,6 +203281,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 67,
       "photon_count_filtered": 0,
@@ -202600,6 +203305,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 71.1,
@@ -202839,6 +203545,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 71.1,
@@ -202937,6 +203644,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 73,
@@ -203040,6 +203748,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 65,
       "photon_count_filtered": 0,
@@ -203061,7 +203770,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 209.984188,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.6,
+      "e_max_beta_MeV": 0.6444,
+      "beta_yield_per_decay": 1.001,
       "photons": [],
       "photon_count_total": 1,
       "photon_count_filtered": 0,
@@ -203083,7 +203793,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 210.988736,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.06,
+      "e_max_beta_MeV": 0.0631,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 46.5,
@@ -203117,7 +203828,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 211.991897,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.3,
+      "e_max_beta_MeV": 1.379,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 65.4,
@@ -203306,7 +204018,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 212.99658,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.55,
+      "e_max_beta_MeV": 0.574,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 75.1,
@@ -203415,7 +204128,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 212.99658,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.023,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 53.2,
@@ -203635,6 +204349,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20,
@@ -203768,7 +204483,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 101.905608,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.75,
+      "e_max_beta_MeV": 0.77613,
+      "beta_yield_per_decay": 0.05047,
       "photons": [
         {
           "energy_keV": 20,
@@ -204098,6 +204814,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20,
@@ -204165,7 +204882,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 107.903891,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.032,
+      "e_max_beta_MeV": 0.0341,
+      "beta_yield_per_decay": 1.001,
       "photons": [],
       "photon_count_total": 1,
       "photon_count_filtered": 0,
@@ -204187,7 +204905,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 109.905152,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.02786,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 22,
@@ -204276,6 +204995,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 21,
@@ -204339,7 +205059,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 111.907313,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.15715,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 22,
@@ -204668,7 +205389,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 112.910149,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.26,
+      "e_max_beta_MeV": 0.2695,
+      "beta_yield_per_decay": 1.001,
       "photons": [],
       "photon_count_total": 47,
       "photon_count_filtered": 0,
@@ -204691,7 +205413,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 114.913679,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.451,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 22,
@@ -204765,7 +205488,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 96.91648,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.4888,
+      "beta_yield_per_decay": 0.3389,
       "photons": [
         {
           "energy_keV": 20,
@@ -204923,7 +205647,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 97.912721,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.5026,
+      "beta_yield_per_decay": 0.6434,
       "photons": [
         {
           "energy_keV": 20,
@@ -205302,7 +206027,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 98.911768,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.7,
+      "e_max_beta_MeV": 0.73825,
+      "beta_yield_per_decay": 0.04796,
       "photons": [
         {
           "energy_keV": 20,
@@ -205451,7 +206177,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 99.908506,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.343,
+      "beta_yield_per_decay": 0.4802,
       "photons": [
         {
           "energy_keV": 20,
@@ -206060,7 +206787,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 136.920478,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 6,
+      "e_max_beta_MeV": 6.0017,
+      "beta_yield_per_decay": 0.8985,
       "photons": [
         {
           "energy_keV": 36.9,
@@ -206209,7 +206937,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 137.919547,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.1154,
+      "beta_yield_per_decay": 0.6559,
       "photons": [
         {
           "energy_keV": 36.9,
@@ -206778,7 +207507,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 139.916039,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.473,
+      "beta_yield_per_decay": 0.6818,
       "photons": [
         {
           "energy_keV": 36.9,
@@ -207132,7 +207862,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 140.913554,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 5,
+      "e_max_beta_MeV": 5.068,
+      "beta_yield_per_decay": 0.8899,
       "photons": [
         {
           "energy_keV": 36.9,
@@ -207286,7 +208017,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 140.913554,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.2215,
+      "beta_yield_per_decay": 0.6677,
       "photons": [
         {
           "energy_keV": 36.9,
@@ -207530,7 +208262,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 141.912873,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.661,
+      "beta_yield_per_decay": 0.503,
       "photons": [
         {
           "energy_keV": 36.9,
@@ -207894,7 +208627,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 142.910932,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.776,
+      "beta_yield_per_decay": 0.7681,
       "photons": [
         {
           "energy_keV": 36.9,
@@ -208028,6 +208762,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 36.9,
@@ -208116,6 +208851,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 36.9,
@@ -208245,6 +208981,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 36.9,
@@ -208337,7 +209074,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 146.915138,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.75,
+      "e_max_beta_MeV": 0.79476,
+      "beta_yield_per_decay": 0.3401,
       "photons": [
         {
           "energy_keV": 36.9,
@@ -208456,7 +209194,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 147.917474,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.22,
+      "e_max_beta_MeV": 0.2246,
+      "beta_yield_per_decay": 1.002,
       "photons": [],
       "photon_count_total": 92,
       "photon_count_filtered": 0,
@@ -208479,7 +209218,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 148.918333,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.468,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 39.6,
@@ -208608,7 +209348,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 148.918333,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.01159,
+      "beta_yield_per_decay": 0.9593,
       "photons": [
         {
           "energy_keV": 38.2,
@@ -208822,7 +209563,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 149.920983,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.071,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 22.5,
@@ -208930,7 +209672,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 150.921206,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.454,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 39.6,
@@ -209653,7 +210396,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 151.923496,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.187,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 25.7,
@@ -210637,7 +211381,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 152.924116,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.5,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 39.6,
@@ -211085,7 +211830,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 152.924116,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.2795,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 39.6,
@@ -211493,7 +212239,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 153.926459,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.881,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 28.3,
@@ -211827,7 +212574,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 154.928099,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.96,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 39.6,
@@ -212580,7 +213328,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 154.928099,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.81316,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 39.6,
@@ -213238,7 +213987,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 203.980317,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.218,
+      "beta_yield_per_decay": 0.07123,
       "photons": [
         {
           "energy_keV": 75.1,
@@ -213763,6 +214513,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 63.2,
@@ -214056,7 +214807,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 205.98048,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.507,
+      "beta_yield_per_decay": 0.02284,
       "photons": [
         {
           "energy_keV": 22.6,
@@ -214676,6 +215428,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 53.6,
@@ -215114,7 +215867,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 207.981245,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.14535,
+      "beta_yield_per_decay": 0.005199,
       "photons": [
         {
           "energy_keV": 75.1,
@@ -215474,6 +216228,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 226,
       "photon_count_filtered": 0,
@@ -215497,6 +216252,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 73,
@@ -215576,6 +216332,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 95,
       "photon_count_filtered": 0,
@@ -215598,6 +216355,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 75.3,
@@ -215636,6 +216394,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 2,
       "photon_count_filtered": 0,
@@ -215658,6 +216417,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 73,
@@ -215701,6 +216461,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 95,
       "photon_count_filtered": 0,
@@ -215724,6 +216485,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 799.7,
@@ -215753,6 +216515,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 438.8,
@@ -215782,6 +216545,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 95,
       "photon_count_filtered": 0,
@@ -215804,7 +216568,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 218.008972,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.24,
+      "e_max_beta_MeV": 0.259,
+      "beta_yield_per_decay": 0.0002003,
       "photons": [],
       "photon_count_total": 5,
       "photon_count_filtered": 0,
@@ -215832,7 +216597,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 134.913111,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.27412,
+      "beta_yield_per_decay": 0.7122,
       "photons": [
         {
           "energy_keV": 34.3,
@@ -216121,7 +216887,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 134.913111,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.91377,
+      "beta_yield_per_decay": 0.8089,
       "photons": [
         {
           "energy_keV": 34.3,
@@ -216385,7 +217152,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 135.912691,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.667,
+      "beta_yield_per_decay": 0.4979,
       "photons": [
         {
           "energy_keV": 34.3,
@@ -216719,7 +217487,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 136.910704,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.55177,
+      "beta_yield_per_decay": 0.5717,
       "photons": [
         {
           "energy_keV": 34.3,
@@ -217312,7 +218081,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 137.910754,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.68,
+      "beta_yield_per_decay": 0.2503,
       "photons": [
         {
           "energy_keV": 34.3,
@@ -217886,7 +218656,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 138.908937,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.415,
+      "beta_yield_per_decay": 0.75,
       "photons": [
         {
           "energy_keV": 34.3,
@@ -218039,7 +218810,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 138.908937,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.6338,
+      "beta_yield_per_decay": 0.2316,
       "photons": [
         {
           "energy_keV": 34.3,
@@ -218422,7 +219194,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 139.909075,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.107,
+      "beta_yield_per_decay": 0.08293,
       "photons": [
         {
           "energy_keV": 34.3,
@@ -218576,7 +219349,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 140.907652,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.366,
+      "beta_yield_per_decay": 0.5126,
       "photons": [
         {
           "energy_keV": 34.3,
@@ -218679,7 +219453,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 142.910816,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.1622,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 508.8,
@@ -218713,6 +219488,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 15,
       "photon_count_filtered": 0,
@@ -218735,7 +219511,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 143.913304,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.9,
+      "e_max_beta_MeV": 0.9339,
+      "beta_yield_per_decay": 1,
       "photons": [],
       "photon_count_total": 77,
       "photon_count_filtered": 0,
@@ -218757,7 +219534,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 144.914511,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.9975,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 696.5,
@@ -218796,7 +219574,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 144.914511,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.5,
+      "e_max_beta_MeV": 1.54593,
+      "beta_yield_per_decay": 0.0007007,
       "photons": [
         {
           "energy_keV": 35.6,
@@ -218905,7 +219684,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 145.917639,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.805,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 36.9,
@@ -219023,7 +219803,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 146.918995,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.22,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 36.9,
@@ -219616,7 +220397,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 147.922134,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.63016,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 36.9,
@@ -220190,7 +220972,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 148.923719,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.883,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 36.9,
@@ -220523,7 +221306,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 148.923719,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.1805,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 36.9,
@@ -220616,7 +221400,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 184.960619,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.02084,
+      "beta_yield_per_decay": 0.001662,
       "photons": [
         {
           "energy_keV": 49.4,
@@ -221356,6 +222141,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 32.6,
@@ -221869,7 +222655,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 187.959394,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.981,
+      "beta_yield_per_decay": 0.06018,
       "photons": [
         {
           "energy_keV": 63.5,
@@ -222299,6 +223086,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 42,
@@ -222462,7 +223250,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 189.959931,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.9,
+      "e_max_beta_MeV": 0.939,
+      "beta_yield_per_decay": 0.003352,
       "photons": [
         {
           "energy_keV": 62.7,
@@ -223387,6 +224176,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 2,
       "photon_count_filtered": 0,
@@ -223410,6 +224200,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 49.6,
@@ -223693,6 +224484,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 57,
       "photon_count_filtered": 0,
@@ -223715,6 +224507,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 65.3,
@@ -223794,6 +224587,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 30.9,
@@ -223911,7 +224705,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 197.967892,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.7,
+      "e_max_beta_MeV": 0.7189,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 67.2,
@@ -223989,7 +224784,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 197.967892,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.7,
+      "e_max_beta_MeV": 0.7095,
+      "beta_yield_per_decay": 0.03302,
       "photons": [
         {
           "energy_keV": 53.1,
@@ -224128,7 +224924,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 199.97144,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.702,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 55.2,
@@ -224397,7 +225194,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 200.974509,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.65,
+      "e_max_beta_MeV": 0.67,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 25.2,
@@ -224651,7 +225449,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 200.974509,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.8,
+      "beta_yield_per_decay": 1.002,
       "photons": [],
       "photon_count_total": 1,
       "photon_count_filtered": 0,
@@ -224675,6 +225474,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20.2,
@@ -224824,6 +225624,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20.2,
@@ -224998,6 +225799,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20.2,
@@ -225226,7 +226028,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 236.046057,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 4,
+      "beta_yield_per_decay": 5.46e-9,
       "photons": [
         {
           "energy_keV": 20.3,
@@ -225271,6 +226074,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20.2,
@@ -225449,7 +226253,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 238.049559,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 4,
+      "beta_yield_per_decay": 8.819e-9,
       "photons": [
         {
           "energy_keV": 20.3,
@@ -225489,6 +226294,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20.3,
@@ -225532,7 +226338,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 240.053813,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 4,
+      "beta_yield_per_decay": 3.19e-7,
       "photons": [
         {
           "energy_keV": 20.3,
@@ -225571,7 +226378,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 241.056851,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.02,
+      "e_max_beta_MeV": 0.02081,
+      "beta_yield_per_decay": 1.001,
       "photons": [],
       "photon_count_total": 196,
       "photon_count_filtered": 0,
@@ -225599,7 +226407,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 242.058742,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 4,
+      "beta_yield_per_decay": 0.00003506,
       "photons": [
         {
           "energy_keV": 20.3,
@@ -225638,7 +226447,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 243.062002,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.55,
+      "e_max_beta_MeV": 0.581,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 21.5,
@@ -225802,7 +226612,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 244.064203,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 4,
+      "beta_yield_per_decay": 0.008604,
       "photons": [
         {
           "energy_keV": 20.3,
@@ -226101,7 +226912,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 245.067746,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.15993,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 21.5,
@@ -226775,7 +227587,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 246.070204,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.36,
+      "e_max_beta_MeV": 0.371,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 21.5,
@@ -226999,6 +227812,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 81.4,
@@ -227113,6 +227927,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 84.1,
@@ -227147,6 +227962,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 56.2,
@@ -227311,6 +228127,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 81.4,
@@ -227355,6 +228172,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 33.6,
@@ -227689,6 +228507,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 81.4,
@@ -227742,7 +228561,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 225.023611,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.32,
+      "e_max_beta_MeV": 0.354,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 40,
@@ -227772,6 +228592,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 81.4,
@@ -227825,7 +228646,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 227.029177,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.29883,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 24.9,
@@ -228194,7 +229016,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 228.03107,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.036,
+      "e_max_beta_MeV": 0.03962,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 26.4,
@@ -228223,7 +229046,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 230.037055,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.7,
+      "e_max_beta_MeV": 0.71,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 49.2,
@@ -228542,7 +229366,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 77.928141,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.324,
+      "beta_yield_per_decay": 0.9646,
       "photons": [
         {
           "energy_keV": 39.2,
@@ -229036,7 +229861,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 78.923989,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 6,
+      "e_max_beta_MeV": 6.221,
+      "beta_yield_per_decay": 0.8906,
       "photons": [
         {
           "energy_keV": 416.8,
@@ -229659,7 +230485,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 77.928141,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 5,
+      "e_max_beta_MeV": 5.20972,
+      "beta_yield_per_decay": 0.8689,
       "photons": [
         {
           "energy_keV": 47.1,
@@ -230063,7 +230890,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 79.922519,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.6236,
+      "beta_yield_per_decay": 0.8359,
       "photons": [
         {
           "energy_keV": 52.4,
@@ -231077,7 +231905,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 80.918996,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.696,
+      "beta_yield_per_decay": 0.9856,
       "photons": [
         {
           "energy_keV": 511,
@@ -231125,7 +231954,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 81.918209,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.215,
+      "beta_yield_per_decay": 0.2727,
       "photons": [
         {
           "energy_keV": 49.6,
@@ -231414,7 +232244,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 81.918209,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.3,
+      "e_max_beta_MeV": 1.30131,
+      "beta_yield_per_decay": 0.009969,
       "photons": [
         {
           "energy_keV": 49.5,
@@ -231578,7 +232409,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 82.91511,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.379,
+      "beta_yield_per_decay": 0.9539,
       "photons": [
         {
           "energy_keV": 466.9,
@@ -231671,7 +232503,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 82.91511,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.67136,
+      "beta_yield_per_decay": 0.2159,
       "photons": [
         {
           "energy_keV": 92.2,
@@ -232015,6 +232848,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 119.3,
@@ -232077,7 +232911,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 84.91179,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.6589,
+      "beta_yield_per_decay": 0.309,
       "photons": [
         {
           "energy_keV": 511,
@@ -232121,6 +232956,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 215.6,
@@ -232159,7 +232995,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 86.909181,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.7742,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 1077,
@@ -232188,6 +233025,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 556.1,
@@ -232216,7 +233054,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 87.911316,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.28,
+      "e_max_beta_MeV": 0.2833,
+      "beta_yield_per_decay": 1,
       "photons": [],
       "photon_count_total": 1,
       "photon_count_filtered": 0,
@@ -232238,7 +233077,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 88.912278,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 5,
+      "e_max_beta_MeV": 5.316,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 339,
@@ -232386,7 +233226,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 89.914802,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.496,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 118.3,
@@ -232710,7 +233551,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 90.916537,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 6.5,
+      "e_max_beta_MeV": 6.587,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 196.8,
@@ -233194,7 +234036,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 90.916537,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 5.5,
+      "e_max_beta_MeV": 5.86223,
+      "beta_yield_per_decay": 0.975,
       "photons": [
         {
           "energy_keV": 106.9,
@@ -233733,7 +234576,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 178.949987,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.65195,
+      "beta_yield_per_decay": 0.3562,
       "photons": [
         {
           "energy_keV": 58.1,
@@ -234392,7 +235236,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 179.950788,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.25778,
+      "beta_yield_per_decay": 0.01087,
       "photons": [
         {
           "energy_keV": 24.3,
@@ -235381,7 +236226,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 180.950067,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.66947,
+      "beta_yield_per_decay": 0.1035,
       "photons": [
         {
           "energy_keV": 58.1,
@@ -235914,7 +236760,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 181.951209,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.32,
+      "e_max_beta_MeV": 0.3534,
+      "beta_yield_per_decay": 0.00003955,
       "photons": [
         {
           "energy_keV": 31.1,
@@ -236639,6 +237486,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 31.7,
@@ -237206,7 +238054,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 182.950819,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.73787,
+      "beta_yield_per_decay": 0.01673,
       "photons": [
         {
           "energy_keV": 31.7,
@@ -237690,6 +238539,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 41,
@@ -237907,7 +238757,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 184.952954,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.32,
+      "e_max_beta_MeV": 0.35879,
+      "beta_yield_per_decay": 0.00001004,
       "photons": [
         {
           "energy_keV": 58.1,
@@ -238086,6 +238937,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 55.3,
@@ -238374,7 +239226,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 186.955753,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.0695,
+      "beta_yield_per_decay": 0.9259,
       "photons": [
         {
           "energy_keV": 58.1,
@@ -238499,6 +239352,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 40.3,
@@ -238572,7 +239426,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 187.958114,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.0024,
+      "e_max_beta_MeV": 0.00247,
+      "beta_yield_per_decay": 1.001,
       "photons": [],
       "photon_count_total": 1,
       "photon_count_filtered": 0,
@@ -238594,7 +239449,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 188.959228,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.1204,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 61.6,
@@ -238783,6 +239639,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 59.9,
@@ -238891,7 +239748,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 189.961819,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.008,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 36.2,
@@ -239229,7 +240087,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 190.963124,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.75308,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 61.6,
@@ -239447,7 +240306,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 190.963124,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.80211,
+      "beta_yield_per_decay": 0.5445,
       "photons": [
         {
           "energy_keV": 59.9,
@@ -240031,7 +240891,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 100.906163,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.608,
+      "beta_yield_per_decay": 0.0388,
       "photons": [
         {
           "energy_keV": 21.6,
@@ -240634,7 +241495,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 100.906163,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.4939,
+      "beta_yield_per_decay": 0.004036,
       "photons": [
         {
           "energy_keV": 20,
@@ -240824,6 +241686,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 21.6,
@@ -240912,6 +241775,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20,
@@ -241040,7 +241904,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 102.905503,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.3,
+      "e_max_beta_MeV": 1.301,
+      "beta_yield_per_decay": 0.3743,
       "photons": [
         {
           "energy_keV": 21.6,
@@ -241223,7 +242088,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 102.905503,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.32,
+      "e_max_beta_MeV": 0.33539,
+      "beta_yield_per_decay": 0.0001866,
       "photons": [
         {
           "energy_keV": 20,
@@ -241388,6 +242254,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20,
@@ -241445,7 +242312,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 104.905693,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.441,
+      "beta_yield_per_decay": 0.9964,
       "photons": [
         {
           "energy_keV": 21.6,
@@ -241498,7 +242366,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 104.905693,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.24638,
+      "beta_yield_per_decay": 0.001302,
       "photons": [
         {
           "energy_keV": 20,
@@ -241582,7 +242451,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 105.907286,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.55,
+      "e_max_beta_MeV": 0.5662,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 21,
@@ -241650,7 +242520,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 106.906747,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.541,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 21,
@@ -241808,7 +242679,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 106.906747,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.74431,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 21,
@@ -242071,7 +242943,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 107.908729,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.5,
+      "e_max_beta_MeV": 1.511,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 21,
@@ -242315,7 +243188,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 108.908736,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.51,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 21,
@@ -242378,7 +243252,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 109.911139,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.591,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 21,
@@ -242617,7 +243492,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 94.9159,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 7,
+      "e_max_beta_MeV": 7.17729,
+      "beta_yield_per_decay": 0.9864,
       "photons": [
         {
           "energy_keV": 21.6,
@@ -242766,7 +243642,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 95.914461,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3,
+      "e_max_beta_MeV": 3.14625,
+      "beta_yield_per_decay": 0.717,
       "photons": [
         {
           "energy_keV": 21.6,
@@ -243155,7 +244032,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 95.914461,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.8436,
+      "beta_yield_per_decay": 0.08713,
       "photons": [
         {
           "energy_keV": 20,
@@ -243289,7 +244167,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 96.91134,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.22125,
+      "beta_yield_per_decay": 0.6954,
       "photons": [
         {
           "energy_keV": 21.6,
@@ -243882,7 +244761,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 96.91134,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.59045,
+      "beta_yield_per_decay": 0.3557,
       "photons": [
         {
           "energy_keV": 20,
@@ -244111,7 +244991,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 97.910708,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.06646,
+      "beta_yield_per_decay": 0.5847,
       "photons": [
         {
           "energy_keV": 21.6,
@@ -244550,7 +245431,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 97.910708,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.5576,
+      "beta_yield_per_decay": 0.1792,
       "photons": [
         {
           "energy_keV": 20,
@@ -245069,7 +245951,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 98.908132,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.3824,
+      "beta_yield_per_decay": 0.901,
       "photons": [
         {
           "energy_keV": 21.6,
@@ -245182,7 +246065,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 99.908122,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.081,
+      "beta_yield_per_decay": 0.04044,
       "photons": [
         {
           "energy_keV": 21.6,
@@ -245415,7 +246299,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 99.908122,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.0556,
+      "beta_yield_per_decay": 0.07342,
       "photons": [
         {
           "energy_keV": 21.6,
@@ -245688,7 +246573,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 207.989641,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.24347,
+      "beta_yield_per_decay": 0.1326,
       "photons": [
         {
           "energy_keV": 79.2,
@@ -246342,7 +247228,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 209.989695,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.49967,
+      "beta_yield_per_decay": 0.05985,
       "photons": [
         {
           "energy_keV": 79.2,
@@ -247457,6 +248344,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 72.7,
@@ -247760,7 +248648,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 211.990703,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.75,
+      "e_max_beta_MeV": 0.7538,
+      "beta_yield_per_decay": 0.00008364,
       "photons": [
         {
           "energy_keV": 68.5,
@@ -248095,6 +248984,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 686.5,
@@ -248124,6 +249014,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 2,
       "photon_count_filtered": 0,
@@ -248147,6 +249038,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 2,
       "photon_count_filtered": 0,
@@ -248170,6 +249062,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 2,
       "photon_count_filtered": 0,
@@ -248193,6 +249086,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 609.3,
@@ -248222,6 +249116,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 77.1,
@@ -248326,6 +249221,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 549.7,
@@ -248355,6 +249251,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 510,
@@ -248383,7 +249280,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 223.021789,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.88712,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 52.3,
@@ -249907,7 +250805,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 103.905432,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.75,
+      "e_max_beta_MeV": 0.7634,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20,
@@ -250005,7 +250904,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 105.907328,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.916,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20,
@@ -250399,7 +251299,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 106.909909,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.036,
+      "e_max_beta_MeV": 0.0394,
+      "beta_yield_per_decay": 1.001,
       "photons": [],
       "photon_count_total": 1,
       "photon_count_filtered": 0,
@@ -250422,7 +251323,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 107.910169,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.94,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 20,
@@ -251061,7 +251963,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 108.913199,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.3,
+      "e_max_beta_MeV": 1.35,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20,
@@ -251135,7 +252038,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 92.91705,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.79664,
+      "beta_yield_per_decay": 0.6334,
       "photons": [
         {
           "energy_keV": 20.6,
@@ -251464,7 +252368,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 94.910413,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.12,
+      "e_max_beta_MeV": 0.1255,
+      "beta_yield_per_decay": 0.00005004,
       "photons": [
         {
           "energy_keV": 20.6,
@@ -251532,7 +252437,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 95.907598,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.21355,
+      "beta_yield_per_decay": 0.1405,
       "photons": [
         {
           "energy_keV": 20.6,
@@ -252097,6 +253003,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20.6,
@@ -252200,7 +253107,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 35.967081,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.16,
+      "e_max_beta_MeV": 0.16714,
+      "beta_yield_per_decay": 1.001,
       "photons": [],
       "photon_count_total": 1,
       "photon_count_filtered": 0,
@@ -252222,7 +253130,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 37.971163,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.8653,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 906.4,
@@ -252275,7 +253184,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 38.97513,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.937,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 196.2,
@@ -252324,7 +253234,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 111.912397,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.035,
+      "beta_yield_per_decay": 0.8604,
       "photons": [
         {
           "energy_keV": 25,
@@ -252503,7 +253414,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 113.909269,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.81361,
+      "beta_yield_per_decay": 0.667,
       "photons": [
         {
           "energy_keV": 25,
@@ -252912,7 +253824,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 114.906597,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.71308,
+      "beta_yield_per_decay": 0.7925,
       "photons": [
         {
           "energy_keV": 25,
@@ -253535,7 +254448,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 115.906793,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.5,
+      "e_max_beta_MeV": 1.5107,
+      "beta_yield_per_decay": 0.3358,
       "photons": [
         {
           "energy_keV": 25,
@@ -253763,7 +254677,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 116.904835,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.39145,
+      "beta_yield_per_decay": 0.5268,
       "photons": [
         {
           "energy_keV": 25,
@@ -254066,7 +254981,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 116.904835,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.15919,
+      "beta_yield_per_decay": 0.1645,
       "photons": [
         {
           "energy_keV": 25,
@@ -254214,7 +255130,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 117.905528,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.55,
+      "e_max_beta_MeV": 0.5764,
+      "beta_yield_per_decay": 0.01841,
       "photons": [
         {
           "energy_keV": 25,
@@ -254347,7 +255264,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 118.903941,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.6346,
+      "beta_yield_per_decay": 0.7351,
       "photons": [
         {
           "energy_keV": 25,
@@ -254470,7 +255388,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 118.903941,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.3,
+      "e_max_beta_MeV": 0.30976,
+      "beta_yield_per_decay": 0.001601,
       "photons": [
         {
           "energy_keV": 25,
@@ -254594,6 +255513,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 23.9,
@@ -254671,7 +255591,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 120.903815,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.659,
+      "beta_yield_per_decay": 0.4102,
       "photons": [
         {
           "energy_keV": 25,
@@ -254760,6 +255681,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 25,
@@ -254857,7 +255779,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 122.904213,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.9786,
+      "beta_yield_per_decay": 0.9769,
       "photons": [
         {
           "energy_keV": 25,
@@ -254966,6 +255889,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 26.1,
@@ -255049,7 +255973,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 124.905253,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.30177,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 27.2,
@@ -255357,7 +256282,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 124.905253,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.66682,
+      "beta_yield_per_decay": 0.2503,
       "photons": [
         {
           "energy_keV": 27.2,
@@ -255422,6 +256348,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 53,
       "photon_count_filtered": 0,
@@ -255443,7 +256370,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 125.907249,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.6,
+      "e_max_beta_MeV": 0.62192,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 27.2,
@@ -255621,7 +256549,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 126.906923,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.8969,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 27.2,
@@ -255814,7 +256743,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 126.906923,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.9152,
+      "beta_yield_per_decay": 0.861,
       "photons": [
         {
           "energy_keV": 27.2,
@@ -255908,7 +256838,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 127.909168,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.49274,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 27.2,
@@ -256142,7 +257073,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 128.909147,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.04616,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 27.2,
@@ -256465,7 +257397,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 128.909147,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.58285,
+      "beta_yield_per_decay": 0.965,
       "photons": [
         {
           "energy_keV": 27.2,
@@ -256599,7 +257532,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 129.911655,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.2745,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 27.2,
@@ -257088,7 +258022,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 130.911981,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.90885,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 27.2,
@@ -257441,7 +258376,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 130.911981,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.43195,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 27.2,
@@ -257694,7 +258630,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 131.914466,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3,
+      "e_max_beta_MeV": 3.00775,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 27.2,
@@ -258103,7 +259040,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 133.920379,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.90678,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 27.2,
@@ -258637,7 +259575,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 133.920379,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.83079,
+      "beta_yield_per_decay": 0.9934,
       "photons": [
         {
           "energy_keV": 328.2,
@@ -258695,7 +259634,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 43.959403,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.1988,
+      "beta_yield_per_decay": 0.881,
       "photons": [
         {
           "energy_keV": 372.9,
@@ -258733,7 +259673,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 44.955912,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.47426,
+      "beta_yield_per_decay": 0.9431,
       "photons": [
         {
           "energy_keV": 511,
@@ -258777,6 +259718,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 270.9,
@@ -258820,7 +259762,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 46.952407,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.47741,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 889.3,
@@ -258853,7 +259796,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 47.952231,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.6,
+      "e_max_beta_MeV": 0.6001,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 159.4,
@@ -258881,7 +259825,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 48.950024,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.65,
+      "e_max_beta_MeV": 0.66079,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 175.4,
@@ -258929,7 +259874,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 49.952188,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.994,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 1622.6,
@@ -258962,7 +259908,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 50.953603,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 5,
+      "e_max_beta_MeV": 5.33421,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 523.8,
@@ -259055,7 +260002,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 70.93224,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.19644,
+      "beta_yield_per_decay": 0.4312,
       "photons": [
         {
           "energy_keV": 32.1,
@@ -259264,7 +260212,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 71.927112,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.758,
+      "beta_yield_per_decay": 0.9592,
       "photons": [
         {
           "energy_keV": 143.2,
@@ -259709,6 +260658,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 46,
@@ -259737,7 +260687,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 73.922476,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.65089,
+      "beta_yield_per_decay": 0.6548,
       "photons": [
         {
           "energy_keV": 67.1,
@@ -259936,7 +260887,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 73.922476,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.74371,
+      "beta_yield_per_decay": 0.2042,
       "photons": [
         {
           "energy_keV": 25.7,
@@ -260166,6 +261118,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 24.4,
@@ -260249,6 +261202,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 162,
@@ -260276,7 +261230,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 79.916521,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.15,
+      "e_max_beta_MeV": 0.151,
+      "beta_yield_per_decay": 1.001,
       "photons": [],
       "photon_count_total": 1,
       "photon_count_filtered": 0,
@@ -260298,7 +261253,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 75.919214,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.24,
+      "e_max_beta_MeV": 0.24677,
+      "beta_yield_per_decay": 0.0005606,
       "photons": [
         {
           "energy_keV": 95.7,
@@ -260327,7 +261283,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 81.916699,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.5,
+      "e_max_beta_MeV": 1.585,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 275.9,
@@ -260390,7 +261347,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 81.916699,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.15196,
+      "beta_yield_per_decay": 0.0005205,
       "photons": [
         {
           "energy_keV": 103,
@@ -260429,7 +261387,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 83.918462,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.31232,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 190,
@@ -260943,7 +261902,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 81.916699,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.8975,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 188.9,
@@ -261147,7 +262107,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 84.92225,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.848,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 408.2,
@@ -261181,7 +262142,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 31.974148,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.4905,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 1266.2,
@@ -261209,7 +262171,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 32.978,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.22,
+      "e_max_beta_MeV": 0.2245,
+      "beta_yield_per_decay": 1.001,
       "photons": [],
       "photon_count_total": 1,
       "photon_count_filtered": 0,
@@ -261232,7 +262195,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 139.918994,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.82627,
+      "beta_yield_per_decay": 0.6843,
       "photons": [
         {
           "energy_keV": 33,
@@ -261706,7 +262670,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 140.918475,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.728,
+      "beta_yield_per_decay": 0.1963,
       "photons": [
         {
           "energy_keV": 35.2,
@@ -262395,7 +263360,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 141.915197,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3,
+      "e_max_beta_MeV": 3.1491,
+      "beta_yield_per_decay": 0.5321,
       "photons": [
         {
           "energy_keV": 38.2,
@@ -262619,7 +263585,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 141.915197,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3,
+      "e_max_beta_MeV": 3.1004,
+      "beta_yield_per_decay": 0.3273,
       "photons": [
         {
           "energy_keV": 38.2,
@@ -262963,7 +263930,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 142.914627,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.143,
+      "beta_yield_per_decay": 0.07307,
       "photons": [
         {
           "energy_keV": 38.2,
@@ -263072,7 +264040,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 143.911998,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.421,
+      "beta_yield_per_decay": 0.4538,
       "photons": [
         {
           "energy_keV": 38.2,
@@ -263231,7 +264200,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 143.911998,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.21299,
+      "beta_yield_per_decay": 0.0009612,
       "photons": [
         {
           "energy_keV": 38.2,
@@ -263341,6 +264311,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 38.2,
@@ -263430,6 +264401,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 2,
       "photon_count_filtered": 0,
@@ -263452,6 +264424,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 2,
       "photon_count_filtered": 0,
@@ -263474,6 +264447,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 2,
       "photon_count_filtered": 0,
@@ -263496,7 +264470,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 151.919732,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.075,
+      "e_max_beta_MeV": 0.0767,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 21.5,
@@ -263524,7 +264499,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 153.922209,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.8,
+      "e_max_beta_MeV": 0.8082,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 40.9,
@@ -263682,7 +264658,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 155.925527,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.6271,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 25.7,
@@ -263906,7 +264883,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 156.928359,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.7,
+      "e_max_beta_MeV": 0.722,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 22.6,
@@ -264035,7 +265013,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 157.929989,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.73,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 31.1,
@@ -264424,7 +265403,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 106.915639,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.6521,
+      "beta_yield_per_decay": 0.1934,
       "photons": [
         {
           "energy_keV": 24,
@@ -264567,7 +265547,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 108.911282,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.75,
+      "e_max_beta_MeV": 0.7676,
+      "beta_yield_per_decay": 0.006402,
       "photons": [
         {
           "energy_keV": 24,
@@ -264745,7 +265726,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 109.907842,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.7288,
+      "beta_yield_per_decay": 0.07795,
       "photons": [
         {
           "energy_keV": 24,
@@ -265615,6 +266597,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 24,
@@ -265682,7 +266665,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 111.904817,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.423,
+      "beta_yield_per_decay": 0.2948,
       "photons": [
         {
           "energy_keV": 24,
@@ -266007,6 +266991,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 24,
@@ -266075,6 +267060,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 24,
@@ -266179,6 +267165,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 25,
@@ -266262,6 +267249,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 23.9,
@@ -266339,7 +267327,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 121.903438,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.36,
+      "e_max_beta_MeV": 0.39,
+      "beta_yield_per_decay": 1.001,
       "photons": [],
       "photon_count_total": 1,
       "photon_count_filtered": 0,
@@ -266361,7 +267350,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 121.903438,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.32,
+      "e_max_beta_MeV": 0.35915,
+      "beta_yield_per_decay": 0.2244,
       "photons": [
         {
           "energy_keV": 26.1,
@@ -266425,7 +267415,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 123.905273,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.4027,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 1030.2,
@@ -266458,7 +267449,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 123.905273,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.26697,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 26.1,
@@ -266531,7 +267523,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 125.907652,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.363,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 26.1,
@@ -266760,7 +267753,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 125.907652,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.05858,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 26.1,
@@ -266914,7 +267908,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 126.910359,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.24,
+      "e_max_beta_MeV": 0.2501,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 21.6,
@@ -267022,7 +268017,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 127.910536,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.201,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 26.1,
@@ -267886,7 +268882,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 127.910536,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.7144,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 26.1,
@@ -267950,7 +268947,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 128.913479,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.6,
+      "e_max_beta_MeV": 0.6288,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 26.1,
@@ -268083,7 +269081,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 129.913966,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.3848,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 26.1,
@@ -268282,7 +269281,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 130.916999,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.44568,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 26.1,
@@ -268520,7 +269520,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 130.916999,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.02684,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 26.1,
@@ -269059,7 +270060,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 79.924521,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.298,
+      "beta_yield_per_decay": 0.9805,
       "photons": [
         {
           "energy_keV": 39.4,
@@ -269158,7 +270160,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 80.923212,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.8,
+      "e_max_beta_MeV": 0.842,
+      "beta_yield_per_decay": 0.09979,
       "photons": [
         {
           "energy_keV": 175,
@@ -269222,7 +270225,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 81.918402,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.908,
+      "beta_yield_per_decay": 0.8762,
       "photons": [
         {
           "energy_keV": 56,
@@ -269662,6 +270666,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 44,
       "photon_count_filtered": 0,
@@ -269684,7 +270689,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 83.913425,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.254,
+      "beta_yield_per_decay": 0.2577,
       "photons": [
         {
           "energy_keV": 42.3,
@@ -270349,6 +271355,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 514,
@@ -270381,7 +271388,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 85.90926,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.13,
+      "e_max_beta_MeV": 0.13047,
+      "beta_yield_per_decay": 0.0000269,
       "photons": [
         {
           "energy_keV": 129.8,
@@ -270436,6 +271444,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 388.5,
@@ -270464,7 +271473,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 89.907738,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.4951,
+      "beta_yield_per_decay": 1,
       "photons": [],
       "photon_count_total": 60,
       "photon_count_filtered": 0,
@@ -270486,7 +271496,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 90.910203,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.5,
+      "e_max_beta_MeV": 0.546,
+      "beta_yield_per_decay": 1.001,
       "photons": [],
       "photon_count_total": 1,
       "photon_count_filtered": 0,
@@ -270509,7 +271520,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 91.911038,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.707,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 118.5,
@@ -270758,7 +271770,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 92.914026,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.94,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 241.6,
@@ -270827,7 +271840,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 93.915361,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.137,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 166.6,
@@ -271656,7 +272670,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 94.919359,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.508,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 520.8,
@@ -271755,7 +272770,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 170.944479,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.9972,
+      "beta_yield_per_decay": 0.7117,
       "photons": [
         {
           "energy_keV": 54.7,
@@ -271954,7 +272970,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 172.943749,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.71872,
+      "beta_yield_per_decay": 0.342,
       "photons": [
         {
           "energy_keV": 54.7,
@@ -272578,7 +273595,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 173.944449,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.90827,
+      "beta_yield_per_decay": 0.1052,
       "photons": [
         {
           "energy_keV": 22.2,
@@ -273652,7 +274670,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 174.943739,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.99302,
+      "beta_yield_per_decay": 0.2931,
       "photons": [
         {
           "energy_keV": 54.7,
@@ -274806,7 +275825,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 175.944859,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.9,
+      "e_max_beta_MeV": 0.9865,
+      "beta_yield_per_decay": 0.00375,
       "photons": [
         {
           "energy_keV": 50.5,
@@ -275905,7 +276925,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 176.944471,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.188,
+      "beta_yield_per_decay": 0.008908,
       "photons": [
         {
           "energy_keV": 54.7,
@@ -277954,6 +278975,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 54.7,
@@ -278126,7 +279148,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 178.945929,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.9,
+      "e_max_beta_MeV": 0.915,
+      "beta_yield_per_decay": 0.01236,
       "photons": [
         {
           "energy_keV": 54.7,
@@ -278310,6 +279333,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 54.7,
@@ -278428,6 +279452,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 54.7,
@@ -278510,7 +279535,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 180.947995,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.7,
+      "e_max_beta_MeV": 0.708,
+      "beta_yield_per_decay": 0.1401,
       "photons": [
         {
           "energy_keV": 54.7,
@@ -278628,7 +279654,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 182.951372,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.71349,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 31.7,
@@ -278907,6 +279934,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 56.4,
@@ -279015,7 +280043,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 183.954007,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.65,
+      "e_max_beta_MeV": 0.65841,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 41,
@@ -279258,7 +280287,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 184.955558,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.44107,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 55.3,
@@ -279686,7 +280716,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 185.958549,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.81809,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 23.6,
@@ -279890,7 +280921,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 186.960529,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.77771,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 58.1,
@@ -280438,7 +281470,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 146.924044,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 5.5,
+      "e_max_beta_MeV": 5.66549,
+      "beta_yield_per_decay": 0.731,
       "photons": [
         {
           "energy_keV": 42.4,
@@ -280567,7 +281600,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 147.924271,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.4348,
+      "beta_yield_per_decay": 0.2747,
       "photons": [
         {
           "energy_keV": 42.4,
@@ -280731,7 +281765,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 147.924271,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.6396,
+      "beta_yield_per_decay": 0.3146,
       "photons": [
         {
           "energy_keV": 42.4,
@@ -280930,7 +281965,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 148.923245,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.743,
+      "beta_yield_per_decay": 0.5372,
       "photons": [
         {
           "energy_keV": 42.4,
@@ -281404,7 +282440,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 148.923245,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.99221,
+      "beta_yield_per_decay": 0.2919,
       "photons": [
         {
           "energy_keV": 42.4,
@@ -281823,7 +282860,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 149.923659,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.45101,
+      "beta_yield_per_decay": 0.07157,
       "photons": [
         {
           "energy_keV": 42.4,
@@ -283447,7 +284485,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 149.923659,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.8548,
+      "beta_yield_per_decay": 0.2303,
       "photons": [
         {
           "energy_keV": 42.4,
@@ -283586,7 +284625,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 150.923102,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.634,
+      "beta_yield_per_decay": 0.2194,
       "photons": [
         {
           "energy_keV": 42.4,
@@ -286130,7 +287170,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 150.923102,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.5,
+      "e_max_beta_MeV": 1.5366,
+      "beta_yield_per_decay": 0.1371,
       "photons": [
         {
           "energy_keV": 42.4,
@@ -286319,7 +287360,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 151.924069,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.43491,
+      "beta_yield_per_decay": 0.01078,
       "photons": [
         {
           "energy_keV": 42.4,
@@ -287883,7 +288925,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 151.924069,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.26284,
+      "beta_yield_per_decay": 0.001622,
       "photons": [
         {
           "energy_keV": 22.9,
@@ -288012,7 +289055,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 152.923434,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.965,
+      "beta_yield_per_decay": 0.196,
       "photons": [
         {
           "energy_keV": 42.4,
@@ -289641,7 +290685,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 152.923434,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.72304,
+      "beta_yield_per_decay": 0.01221,
       "photons": [
         {
           "energy_keV": 42.4,
@@ -290055,7 +291100,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 153.924679,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.5,
+      "e_max_beta_MeV": 0.547,
+      "beta_yield_per_decay": 0.0008628,
       "photons": [
         {
           "energy_keV": 41.6,
@@ -292054,7 +293100,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 154.923504,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.54,
+      "beta_yield_per_decay": 0.02571,
       "photons": [
         {
           "energy_keV": 42.4,
@@ -292953,6 +294000,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 26.5,
@@ -293416,6 +294464,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 42.4,
@@ -294089,6 +295138,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 49.6,
@@ -294118,6 +295168,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 43.8,
@@ -294187,6 +295238,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 42.4,
@@ -294254,7 +295306,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 158.925346,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.8,
+      "e_max_beta_MeV": 0.83788,
+      "beta_yield_per_decay": 0.166,
       "photons": [
         {
           "energy_keV": 42.4,
@@ -294442,7 +295495,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 160.927569,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.74851,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 45.3,
@@ -294670,7 +295724,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 161.929489,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.55,
+      "e_max_beta_MeV": 0.5931,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 25.7,
@@ -294823,7 +295878,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 162.930647,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.51,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 45.3,
@@ -295046,7 +296102,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 163.933349,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.3,
+      "e_max_beta_MeV": 1.36312,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 38.6,
@@ -295519,7 +296576,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 164.934879,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.64778,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 37.7,
@@ -296562,7 +297620,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 165.937989,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.85184,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 45.3,
@@ -296726,7 +297785,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 101.909214,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.3,
+      "e_max_beta_MeV": 1.30617,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 21.6,
@@ -296924,7 +297984,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 102.90918,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.526,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 256.8,
@@ -297012,7 +298073,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 102.90918,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.4404,
+      "beta_yield_per_decay": 0.9814,
       "photons": [
         {
           "energy_keV": 21.6,
@@ -297221,7 +298283,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 104.911659,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 5,
+      "e_max_beta_MeV": 5.24198,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 21.6,
@@ -298074,7 +299137,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 105.914357,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.64,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20.5,
@@ -298718,7 +299782,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 91.91526,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 5,
+      "e_max_beta_MeV": 5.198,
+      "beta_yield_per_decay": 0.9299,
       "photons": [
         {
           "energy_keV": 205.6,
@@ -299282,7 +300347,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 91.91526,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.68436,
+      "beta_yield_per_decay": 0.9623,
       "photons": [
         {
           "energy_keV": 205.6,
@@ -299356,7 +300422,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 92.910249,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.088,
+      "beta_yield_per_decay": 0.9536,
       "photons": [
         {
           "energy_keV": 85,
@@ -299494,7 +300561,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 93.909657,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.8,
+      "e_max_beta_MeV": 0.81594,
+      "beta_yield_per_decay": 0.1091,
       "photons": [
         {
           "energy_keV": 114.2,
@@ -299593,7 +300661,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 93.909657,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.57074,
+      "beta_yield_per_decay": 0.02867,
       "photons": [
         {
           "energy_keV": 20.6,
@@ -299742,7 +300811,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 94.907657,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.8,
+      "e_max_beta_MeV": 0.81053,
+      "beta_yield_per_decay": 0.1069,
       "photons": [
         {
           "energy_keV": 83,
@@ -299825,7 +300895,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 94.907657,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.43843,
+      "beta_yield_per_decay": 0.7022,
       "photons": [
         {
           "energy_keV": 511,
@@ -300039,6 +301110,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 125.8,
@@ -300136,7 +301208,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 95.907871,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.7,
+      "e_max_beta_MeV": 0.70789,
+      "beta_yield_per_decay": 0.004469,
       "photons": [
         {
           "energy_keV": 20.6,
@@ -300241,6 +301314,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 120.3,
@@ -300398,7 +301472,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 96.906365,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.32,
+      "e_max_beta_MeV": 0.35723,
+      "beta_yield_per_decay": 0.00001071,
       "photons": [
         {
           "energy_keV": 20.6,
@@ -300538,6 +301613,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 51,
       "photon_count_filtered": 0,
@@ -300560,6 +301636,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20.6,
@@ -300618,7 +301695,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 98.906255,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.36,
+      "e_max_beta_MeV": 0.39823,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 21.6,
@@ -300661,7 +301739,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 99.907658,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.28,
+      "e_max_beta_MeV": 0.2935,
+      "beta_yield_per_decay": 1.001,
       "photons": [],
       "photon_count_total": 60,
       "photon_count_filtered": 0,
@@ -300683,7 +301762,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 99.907658,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.4,
+      "e_max_beta_MeV": 0.43618,
+      "beta_yield_per_decay": 0.00003705,
       "photons": [
         {
           "energy_keV": 20.6,
@@ -300737,7 +301817,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 113.912089,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 5,
+      "e_max_beta_MeV": 5.048,
+      "beta_yield_per_decay": 0.8955,
       "photons": [
         {
           "energy_keV": 26.1,
@@ -300991,7 +302072,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 114.911899,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.5,
+      "e_max_beta_MeV": 1.58059,
+      "beta_yield_per_decay": 0.1562,
       "photons": [
         {
           "energy_keV": 26.1,
@@ -301930,7 +303012,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 115.908459,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.918,
+      "beta_yield_per_decay": 0.6681,
       "photons": [
         {
           "energy_keV": 26.1,
@@ -302284,7 +303367,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 115.908459,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3,
+      "e_max_beta_MeV": 3.1576,
+      "beta_yield_per_decay": 0.5753,
       "photons": [
         {
           "energy_keV": 26.1,
@@ -302513,7 +303597,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 116.908644,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.4,
+      "e_max_beta_MeV": 0.43425,
+      "beta_yield_per_decay": 0.005009,
       "photons": [
         {
           "energy_keV": 26.1,
@@ -302697,7 +303782,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 117.905827,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.7933,
+      "beta_yield_per_decay": 0.2685,
       "photons": [
         {
           "energy_keV": 26.1,
@@ -302882,6 +303968,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 26.1,
@@ -302955,7 +304042,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 119.904019,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.6,
+      "e_max_beta_MeV": 0.62697,
+      "beta_yield_per_decay": 0.02053,
       "photons": [
         {
           "energy_keV": 26.1,
@@ -303149,7 +304237,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 119.904019,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.26142,
+      "beta_yield_per_decay": 0.003842,
       "photons": [
         {
           "energy_keV": 26.1,
@@ -303464,6 +304553,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 26.1,
@@ -303562,6 +304652,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 26.1,
@@ -303701,6 +304792,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 26.1,
@@ -303739,6 +304831,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 27.2,
@@ -303823,6 +304916,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 27.2,
@@ -303910,7 +305004,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 127.904463,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.65,
+      "e_max_beta_MeV": 0.698,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 28.3,
@@ -303973,7 +305068,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 127.904463,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.7,
+      "e_max_beta_MeV": 0.72862,
+      "beta_yield_per_decay": 0.024,
       "photons": [
         {
           "energy_keV": 27.2,
@@ -304092,7 +305188,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 129.906224,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.4701,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 27.8,
@@ -304221,7 +305318,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 129.906224,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.6034,
+      "beta_yield_per_decay": 0.3701,
       "photons": [
         {
           "energy_keV": 27.2,
@@ -304360,7 +305458,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 131.908552,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.08328,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 28.3,
@@ -304699,7 +305798,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 131.908552,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.41525,
+      "beta_yield_per_decay": 0.7793,
       "photons": [
         {
           "energy_keV": 27.2,
@@ -305653,7 +306753,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 132.910954,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.24,
+      "e_max_beta_MeV": 0.24014,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 28.3,
@@ -305747,7 +306848,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 133.911368,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.62992,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 28.3,
@@ -306816,7 +307918,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 133.911368,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.27626,
+      "beta_yield_per_decay": 0.8257,
       "photons": [
         {
           "energy_keV": 20.9,
@@ -307990,7 +309093,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 134.916449,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.65,
+      "e_max_beta_MeV": 0.66631,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 28.3,
@@ -308195,6 +309299,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 38.2,
@@ -308409,6 +309514,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 85.8,
@@ -308488,6 +309594,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 85.8,
@@ -308567,6 +309674,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20.3,
@@ -309171,6 +310279,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 84.4,
@@ -309230,6 +310339,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 27.5,
@@ -309689,6 +310799,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 67.7,
@@ -309727,7 +310838,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 231.036304,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.36,
+      "e_max_beta_MeV": 0.3895,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20,
@@ -309937,6 +311049,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 63.8,
@@ -309970,7 +311083,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 233.041581,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.2435,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20.1,
@@ -310409,7 +311523,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 234.0436,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.18,
+      "e_max_beta_MeV": 0.19497,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20.1,
@@ -310497,7 +311612,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 235.047509,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.92,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 92.7,
@@ -310636,7 +311752,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 236.049869,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.11,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20.1,
@@ -310806,6 +311923,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 67.9,
@@ -310844,7 +311962,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 45.952632,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1,
+      "e_max_beta_MeV": 1.0404,
+      "beta_yield_per_decay": 0.8485,
       "photons": [
         {
           "energy_keV": 425,
@@ -310897,7 +312016,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 51.946897,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.15342,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 320.1,
@@ -310935,7 +312055,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 52.94973,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.83439,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 124.5,
@@ -310964,7 +312085,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 190.971785,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 6,
+      "e_max_beta_MeV": 6.018,
+      "beta_yield_per_decay": 0.618,
       "photons": [
         {
           "energy_keV": 69.1,
@@ -311148,7 +312270,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 190.971785,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.31502,
+      "beta_yield_per_decay": 0.42,
       "photons": [
         {
           "energy_keV": 69.1,
@@ -311542,7 +312665,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 194.969773,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.348,
+      "beta_yield_per_decay": 0.334,
       "photons": [
         {
           "energy_keV": 69.1,
@@ -311666,7 +312790,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 194.969773,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.8485,
+      "beta_yield_per_decay": 0.1674,
       "photons": [
         {
           "energy_keV": 69.1,
@@ -311995,7 +313120,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 195.97048,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.78492,
+      "beta_yield_per_decay": 0.01236,
       "photons": [
         {
           "energy_keV": 37.1,
@@ -313544,7 +314670,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 196.969574,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.308,
+      "beta_yield_per_decay": 0.124,
       "photons": [
         {
           "energy_keV": 69.1,
@@ -313902,7 +315029,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 197.970479,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.161,
+      "beta_yield_per_decay": 0.01023,
       "photons": [
         {
           "energy_keV": 69.1,
@@ -314366,7 +315494,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 198.969879,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.438,
+      "beta_yield_per_decay": 0.007695,
       "photons": [
         {
           "energy_keV": 69.1,
@@ -315259,7 +316388,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 198.969879,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.3,
+      "e_max_beta_MeV": 1.3458,
+      "beta_yield_per_decay": 0.009503,
       "photons": [
         {
           "energy_keV": 23.1,
@@ -315583,7 +316713,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 199.970962,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.45,
+      "e_max_beta_MeV": 0.465,
+      "beta_yield_per_decay": 0.0002696,
       "photons": [
         {
           "energy_keV": 36.8,
@@ -315826,7 +316957,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 200.970818,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.434,
+      "beta_yield_per_decay": 0.003568,
       "photons": [
         {
           "energy_keV": 69.1,
@@ -316355,6 +317487,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 30.6,
@@ -316463,6 +317596,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 69.1,
@@ -316560,7 +317694,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 204.974427,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.75,
+      "e_max_beta_MeV": 0.7637,
+      "beta_yield_per_decay": 0.9715,
       "photons": [
         {
           "energy_keV": 69.1,
@@ -316613,7 +317748,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 206.977418,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.5,
+      "e_max_beta_MeV": 1.5335,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 73,
@@ -316647,6 +317783,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 71.1,
@@ -316810,7 +317947,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 207.982018,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.427,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 897.8,
@@ -316838,7 +317976,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 208.985358,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.79626,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 73,
@@ -317026,7 +318165,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 209.990073,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.94378,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 73,
@@ -317130,7 +318270,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 210.993479,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.394,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 73,
@@ -317324,7 +318465,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 161.933994,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.2285,
+      "beta_yield_per_decay": 0.1447,
       "photons": [
         {
           "energy_keV": 27.9,
@@ -318563,7 +319705,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 162.93265,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.817,
+      "beta_yield_per_decay": 0.3566,
       "photons": [
         {
           "energy_keV": 48.3,
@@ -320291,7 +321434,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 163.933559,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.417,
+      "beta_yield_per_decay": 0.006137,
       "photons": [
         {
           "energy_keV": 22.4,
@@ -321655,7 +322799,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 164.932434,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3,
+      "e_max_beta_MeV": 3.043,
+      "beta_yield_per_decay": 0.4229,
       "photons": [
         {
           "energy_keV": 48.3,
@@ -322543,7 +323688,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 165.933553,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.26,
+      "e_max_beta_MeV": 0.27243,
+      "beta_yield_per_decay": 0.00005567,
       "photons": [
         {
           "energy_keV": 47.2,
@@ -323357,7 +324503,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 166.932851,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.94442,
+      "beta_yield_per_decay": 0.01325,
       "photons": [
         {
           "energy_keV": 48.3,
@@ -324486,6 +325633,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 48.3,
@@ -324593,7 +325741,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 168.934213,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.55,
+      "e_max_beta_MeV": 0.5772,
+      "beta_yield_per_decay": 0.0001387,
       "photons": [
         {
           "energy_keV": 48.3,
@@ -324896,7 +326045,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 170.936429,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.9,
+      "e_max_beta_MeV": 0.968,
+      "beta_yield_per_decay": 0.9989,
       "photons": [
         {
           "energy_keV": 48.3,
@@ -324974,7 +326124,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 171.938399,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.09,
+      "e_max_beta_MeV": 0.0964,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 51.4,
@@ -325032,7 +326183,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 172.939603,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.88,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 51.4,
@@ -325295,7 +326447,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 173.942169,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.298,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 51.4,
@@ -325383,7 +326536,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 174.943839,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.1955,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 51.4,
@@ -325676,7 +326830,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 175.946989,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.8853,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 46.5,
@@ -326135,7 +327290,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 176.949039,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.84802,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 51.4,
@@ -326649,6 +327805,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20.2,
@@ -326793,6 +327950,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 90.3,
@@ -326852,6 +328010,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 72.2,
@@ -326911,6 +328070,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20,
@@ -327145,6 +328305,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 57.8,
@@ -327179,6 +328340,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20.2,
@@ -327238,6 +328400,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 53.2,
@@ -327272,6 +328435,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20.2,
@@ -327541,6 +328705,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 2,
       "photon_count_filtered": 0,
@@ -327564,6 +328729,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 49.4,
@@ -327597,7 +328763,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 237.04873,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.45,
+      "e_max_beta_MeV": 0.45906,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 20.2,
@@ -327831,7 +328998,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 238.050788,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 4,
+      "beta_yield_per_decay": 0.00000369,
       "photons": [
         {
           "energy_keV": 49.6,
@@ -327865,7 +329033,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 239.054293,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.2635,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20.2,
@@ -328074,7 +329243,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 240.056591,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.36,
+      "e_max_beta_MeV": 0.38,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20.2,
@@ -328232,7 +329402,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 242.062929,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.20001,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 20.9,
@@ -328376,7 +329547,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 47.952254,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.9058,
+      "beta_yield_per_decay": 0.9661,
       "photons": [
         {
           "energy_keV": 159.8,
@@ -328434,7 +329606,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 48.948516,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.00677,
+      "beta_yield_per_decay": 0.5027,
       "photons": [
         {
           "energy_keV": 511,
@@ -328498,6 +329671,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [],
       "photon_count_total": 32,
       "photon_count_filtered": 0,
@@ -328519,7 +329693,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 50.943959,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.24,
+      "e_max_beta_MeV": 0.2536,
+      "beta_yield_per_decay": 0.1702,
       "photons": [
         {
           "energy_keV": 783.3,
@@ -328552,7 +329727,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 52.944338,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.54152,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 647.5,
@@ -328605,7 +329781,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 53.94644,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.42983,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 247,
@@ -328663,7 +329840,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 177.945875,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.75,
+      "e_max_beta_MeV": 0.7814,
+      "beta_yield_per_decay": 0.002375,
       "photons": [
         {
           "energy_keV": 30.5,
@@ -329303,6 +330481,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 56.4,
@@ -329377,6 +330556,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 30.7,
@@ -329471,6 +330651,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 56.4,
@@ -329620,6 +330801,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 56.4,
@@ -329707,7 +330889,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 185.954364,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.4,
+      "e_max_beta_MeV": 0.433,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 59.9,
@@ -329746,6 +330929,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 23.5,
@@ -329879,7 +331063,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 187.958488,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.3,
+      "e_max_beta_MeV": 1.3124,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 59.9,
@@ -330128,7 +331313,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 188.961909,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.32,
+      "e_max_beta_MeV": 0.349,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 59.9,
@@ -330182,7 +331368,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 190.966599,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.9,
+      "e_max_beta_MeV": 0.9503,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 59.9,
@@ -330276,7 +331463,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 120.911461,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.55,
+      "e_max_beta_MeV": 0.56593,
+      "beta_yield_per_decay": 0.005591,
       "photons": [
         {
           "energy_keV": 25.1,
@@ -331375,7 +332563,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 121.908367,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.793,
+      "beta_yield_per_decay": 0.4809,
       "photons": [
         {
           "energy_keV": 28.3,
@@ -332705,6 +333894,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 28.3,
@@ -332888,7 +334078,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 123.905892,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.5,
+      "e_max_beta_MeV": 1.50509,
+      "beta_yield_per_decay": 0.226,
       "photons": [
         {
           "energy_keV": 28.3,
@@ -333457,7 +334648,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 125.904273,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.4,
+      "e_max_beta_MeV": 0.44258,
+      "beta_yield_per_decay": 0.003255,
       "photons": [
         {
           "energy_keV": 28.3,
@@ -333702,6 +334894,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 28.3,
@@ -333810,6 +335003,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 29.5,
@@ -333894,6 +335088,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 29.5,
@@ -333987,6 +335182,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 29.5,
@@ -334064,7 +335260,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 133.905394,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.32,
+      "e_max_beta_MeV": 0.3464,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 30.6,
@@ -334153,6 +335350,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 29.5,
@@ -334231,7 +335429,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 135.907218,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.9,
+      "e_max_beta_MeV": 0.91521,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 30.6,
@@ -334340,7 +335539,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 135.907218,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.6,
+      "e_max_beta_MeV": 1.69155,
+      "beta_yield_per_decay": 0.006001,
       "photons": [
         {
           "energy_keV": 29.5,
@@ -334414,7 +335614,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 137.913949,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.173,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 30.6,
@@ -334648,7 +335849,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 138.918792,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.6,
+      "e_max_beta_MeV": 2.72919,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 30.6,
@@ -335177,7 +336379,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 81.92679,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.488,
+      "beta_yield_per_decay": 0.9804,
       "photons": [
         {
           "energy_keV": 79.2,
@@ -335256,7 +336459,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 83.92039,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.447,
+      "beta_yield_per_decay": 0.9197,
       "photons": [
         {
           "energy_keV": 35.5,
@@ -335875,7 +337079,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 83.92039,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.2,
+      "e_max_beta_MeV": 3.24988,
+      "beta_yield_per_decay": 0.5629,
       "photons": [
         {
           "energy_keV": 62.1,
@@ -335929,7 +337134,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 83.92039,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 5,
+      "e_max_beta_MeV": 5.165,
+      "beta_yield_per_decay": 0.9127,
       "photons": [
         {
           "energy_keV": 462.7,
@@ -336082,7 +337288,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 85.914886,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.99923,
+      "beta_yield_per_decay": 0.6648,
       "photons": [
         {
           "energy_keV": 215.9,
@@ -336145,7 +337352,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 85.914886,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.2578,
+      "beta_yield_per_decay": 0.5812,
       "photons": [
         {
           "energy_keV": 129.6,
@@ -336839,7 +338047,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 86.910876,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3,
+      "e_max_beta_MeV": 3.14124,
+      "beta_yield_per_decay": 0.3193,
       "photons": [
         {
           "energy_keV": 132.3,
@@ -337357,7 +338566,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 86.910876,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.4808,
+      "beta_yield_per_decay": 0.004401,
       "photons": [
         {
           "energy_keV": 98.6,
@@ -337411,7 +338621,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 87.909501,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.45,
+      "e_max_beta_MeV": 0.45107,
+      "beta_yield_per_decay": 0.001806,
       "photons": [
         {
           "energy_keV": 484.8,
@@ -337444,7 +338655,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 87.909501,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.2,
+      "e_max_beta_MeV": 1.22042,
+      "beta_yield_per_decay": 0.007508,
       "photons": [
         {
           "energy_keV": 380.8,
@@ -337478,7 +338690,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 88.905848,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.75,
+      "e_max_beta_MeV": 0.76452,
+      "beta_yield_per_decay": 0.002099,
       "photons": [
         {
           "energy_keV": 511,
@@ -337532,6 +338745,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 909,
@@ -337559,7 +338773,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 90.907305,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.2801,
+      "beta_yield_per_decay": 1,
       "photons": [],
       "photon_count_total": 65,
       "photon_count_filtered": 0,
@@ -337581,7 +338796,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 90.907305,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.6,
+      "e_max_beta_MeV": 0.64315,
+      "beta_yield_per_decay": 0.00001801,
       "photons": [
         {
           "energy_keV": 202.5,
@@ -337620,7 +338836,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 91.908949,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.5,
+      "e_max_beta_MeV": 1.5448,
+      "beta_yield_per_decay": 1,
       "photons": [
         {
           "energy_keV": 1204.8,
@@ -337649,6 +338866,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 555.6,
@@ -337677,7 +338895,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 92.909583,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.639,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 448.5,
@@ -337765,7 +338984,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 93.911595,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.893,
+      "beta_yield_per_decay": 0.9998,
       "photons": [
         {
           "energy_keV": 266.9,
@@ -337919,7 +339139,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 94.912821,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.92,
+      "beta_yield_per_decay": 1.002,
       "photons": [
         {
           "energy_keV": 308.2,
@@ -338202,7 +339423,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 95.915891,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4,
+      "e_max_beta_MeV": 4.42,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 396.2,
@@ -338521,7 +339743,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 162.936333,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.6,
+      "e_max_beta_MeV": 0.636,
+      "beta_yield_per_decay": 0.00176,
       "photons": [
         {
           "energy_keV": 44.7,
@@ -338840,7 +340063,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 163.934488,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.4,
+      "e_max_beta_MeV": 2.407,
+      "beta_yield_per_decay": 0.2334,
       "photons": [
         {
           "energy_keV": 49.9,
@@ -339795,6 +341019,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 37.6,
@@ -340058,7 +341283,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 165.933881,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.4,
+      "e_max_beta_MeV": 1.45753,
+      "beta_yield_per_decay": 0.07049,
       "photons": [
         {
           "energy_keV": 30.8,
@@ -340953,6 +342179,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 49.9,
@@ -341041,7 +342268,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 167.933896,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.6,
+      "e_max_beta_MeV": 0.6498,
+      "beta_yield_per_decay": 0.004855,
       "photons": [
         {
           "energy_keV": 25.8,
@@ -341411,6 +342639,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 20.8,
@@ -341613,7 +342842,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 175.942571,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.45,
+      "e_max_beta_MeV": 0.4688,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 53.1,
@@ -341706,7 +342936,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 177.946646,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.3,
+      "e_max_beta_MeV": 1.398,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 53.1,
@@ -341905,7 +343136,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 178.950169,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.6,
+      "e_max_beta_MeV": 0.645,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 42.4,
@@ -341969,7 +343201,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 179.952329,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.0576,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 53.1,
@@ -342128,7 +343361,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 60.939511,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3,
+      "e_max_beta_MeV": 3.075,
+      "beta_yield_per_decay": 0.9664,
       "photons": [
         {
           "energy_keV": 61.4,
@@ -342192,7 +343426,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 61.93433,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 4.5,
+      "e_max_beta_MeV": 4.615,
+      "beta_yield_per_decay": 0.9859,
       "photons": [
         {
           "energy_keV": 149,
@@ -342451,7 +343686,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 62.933212,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.6,
+      "e_max_beta_MeV": 0.605,
+      "beta_yield_per_decay": 0.08397,
       "photons": [
         {
           "energy_keV": 40.8,
@@ -342580,7 +343816,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 63.929142,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.3449,
+      "beta_yield_per_decay": 0.9287,
       "photons": [
         {
           "energy_keV": 365.2,
@@ -342778,7 +344015,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 65.926033,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.32,
+      "e_max_beta_MeV": 0.3288,
+      "beta_yield_per_decay": 0.01402,
       "photons": [
         {
           "energy_keV": 511,
@@ -342811,7 +344049,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 69.925319,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.9,
+      "e_max_beta_MeV": 0.906,
+      "beta_yield_per_decay": 1,
       "photons": [],
       "photon_count_total": 58,
       "photon_count_filtered": 0,
@@ -342833,7 +344072,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 69.925319,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.75,
+      "e_max_beta_MeV": 0.77074,
+      "beta_yield_per_decay": 0.00033,
       "photons": [
         {
           "energy_keV": 438.6,
@@ -342867,7 +344107,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 71.926858,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.8,
+      "e_max_beta_MeV": 2.819,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 121.5,
@@ -343005,7 +344246,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 71.926858,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2,
+      "e_max_beta_MeV": 2.01193,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 98.5,
@@ -343303,7 +344545,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 72.92978,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.32,
+      "e_max_beta_MeV": 0.3388,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 41.9,
@@ -343367,7 +344610,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 85.91647,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 3.6,
+      "e_max_beta_MeV": 3.6482,
+      "beta_yield_per_decay": 0.9173,
       "photons": [
         {
           "energy_keV": 266.3,
@@ -343566,7 +344810,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 86.914816,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.16,
+      "e_max_beta_MeV": 0.1781,
+      "beta_yield_per_decay": 0.0005958,
       "photons": [
         {
           "energy_keV": 29.1,
@@ -343650,7 +344895,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 87.910227,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.2658,
+      "beta_yield_per_decay": 0.8189,
       "photons": [
         {
           "energy_keV": 511,
@@ -343820,6 +345066,7 @@ const ICRP107_DATA = {
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
       "e_max_beta_MeV": null,
+      "beta_yield_per_decay": null,
       "photons": [
         {
           "energy_keV": 392.9,
@@ -343848,7 +345095,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 89.904704,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.9,
+      "e_max_beta_MeV": 0.90155,
+      "beta_yield_per_decay": 0.2273,
       "photons": [
         {
           "energy_keV": 511,
@@ -343901,7 +345149,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 89.904704,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 2.2,
+      "e_max_beta_MeV": 2.39852,
+      "beta_yield_per_decay": 0.01514,
       "photons": [
         {
           "energy_keV": 511,
@@ -343940,7 +345189,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 93.906315,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 0.09,
+      "e_max_beta_MeV": 0.0914,
+      "beta_yield_per_decay": 1.001,
       "photons": [],
       "photon_count_total": 2,
       "photon_count_filtered": 0,
@@ -343962,7 +345212,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 95.908273,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.1,
+      "e_max_beta_MeV": 1.1248,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 724.2,
@@ -343996,7 +345247,8 @@ const ICRP107_DATA = {
       "atomic_mass_u": 97.912735,
       "dose_inhalation_Sv_per_Bq": null,
       "dose_ingestion_Sv_per_Bq": null,
-      "e_max_beta_MeV": 1.8,
+      "e_max_beta_MeV": 1.91495,
+      "beta_yield_per_decay": 1.001,
       "photons": [
         {
           "energy_keV": 111.6,

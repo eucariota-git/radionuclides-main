@@ -648,37 +648,27 @@
       const A = CALC.activityAtTime(A0_MBq, T_half_h, t_h_point);
       pts.push({ t_h: t_h_point, A: A });
     }
-    const labels = pts.map(p => (p.t_h * unitFactor).toFixed(timeUnit === 'y' ? 3 : 2));
+    // Linear time axis with {x, y} points. The axis used to be a category axis
+    // with `max` in time units, which Chart.js reads as an INDEX: Lu-177 was cut
+    // at 7.1 of 33 d and Tc-99m at 6 of 30 h (audit 2026-10-14, N-01).
+    const xs = pts.map(p => p.t_h * unitFactor);
 
     // Prepare data: activity or concentration
-    let vals, yAxisLabel, yAxisUnit, tooltipFormat;
+    let vals, yAxisLabel, yAxisUnit, tooltipFormat, valueAt;
     if (showConcentration) {
       // Convert to kBq/kg for display
-      vals = pts.map(p => {
-        const A_kBq = CALC.convertActivity(p.A, 'MBq', 'kBq');
-        return A_kBq / weight_kg;
-      });
+      valueAt = A_MBq => CALC.convertActivity(A_MBq, 'MBq', 'kBq') / weight_kg;
       yAxisLabel = 'Activity concentration (kBq/kg)';
       tooltipFormat = (val) => `${val.toExponential(4)} kBq/kg`;
     } else {
-      vals = pts.map(p => p.A);
+      valueAt = A_MBq => A_MBq;
       yAxisLabel = 'Activity (MBq)';
       tooltipFormat = (val) => `${val.toExponential(4)} MBq`;
     }
+    vals = pts.map((p, i) => ({ x: xs[i], y: valueAt(p.A) }));
 
-    // Find closest point to t_h for the orange mark
-    let closestIdx = -1;
-    let minDiff = Infinity;
-    pts.forEach((p, i) => {
-      const diff = Math.abs(p.t_h - t_h);
-      if (diff < minDiff) {
-        minDiff = diff;
-        closestIdx = i;
-      }
-    });
-
-    // Create data for vertical line (orange mark)
-    const orangeLineData = pts.map((p, i) => i === closestIdx ? vals[i] : null);
+    // Elapsed-time mark at the exact time and value (not the nearest grid node)
+    const orangeLineData = [{ x: t_h * unitFactor, y: valueAt(CALC.activityAtTime(A0_MBq, T_half_h, t_h)) }];
 
     // Prepare datasets
     const chartTheme = UI.getChartTheme();
@@ -713,7 +703,7 @@
         datasets.push({
           _themeRole: 'danger',
           label: `RD 1217/2024 clearance level: ${clearLevel} kBq/kg`,
-          data: pts.map(() => clearLevel),
+          data: [{ x: 0, y: clearLevel }, { x: tMax_h * unitFactor, y: clearLevel }],
           borderColor: chartTheme.danger,
           backgroundColor: 'transparent',
           borderWidth: 2,
@@ -728,15 +718,10 @@
         if (specA0_kBq > clearLevel) {
           const t_cross_h = (T_half_h / Math.LN2) * Math.log(specA0_kBq / clearLevel);
           if (isFinite(t_cross_h) && t_cross_h > 0 && t_cross_h <= tMax_h) {
-            let crossIdx = 0, crossMinDiff = Infinity;
-            pts.forEach((p, i) => {
-              const diff = Math.abs(p.t_h - t_cross_h);
-              if (diff < crossMinDiff) { crossMinDiff = diff; crossIdx = i; }
-            });
             datasets.push({
               _themeRole: 'success',
               label: `Table A1 level reached: ${(t_cross_h * unitFactor).toFixed(2)} ${timeUnit}`,
-              data: pts.map((_, i) => i === crossIdx ? clearLevel : null),
+              data: [{ x: t_cross_h * unitFactor, y: clearLevel }],
               borderColor: chartTheme.green,
               backgroundColor: chartTheme.green,
               borderWidth: 2,
@@ -753,10 +738,7 @@
     const ctx = document.getElementById('decayChart').getContext('2d');
     chart = new Chart(ctx, {
       type: 'line',
-      data: {
-        labels,
-        datasets: datasets
-      },
+      data: { datasets },
       options: {
         color: chartTheme.text,
         responsive: true,
@@ -764,15 +746,18 @@
         plugins: {
           legend: { position: 'top', labels: { font: { size: 11 }, usePointStyle: true, pointStyleWidth: 24 } },
           tooltip: { callbacks: {
-            label: ctx => `${ctx.dataset.label}: ${tooltipFormat(parseFloat(ctx.raw))}`
+            title: items => items.length ? `t = ${items[0].parsed.x.toPrecision(4)} ${timeUnit}` : '',
+            label: ctx => `${ctx.dataset.label}: ${tooltipFormat(ctx.parsed.y)}`
           }}
         },
         scales: {
           x: {
+            type: 'linear',
+            min: 0,
+            max: tMax_h * unitFactor,
             title: { display: true, text: `Time (${timeUnit})`, color: chartTheme.text },
             ticks: { maxTicksLimit: 10, color: chartTheme.text },
             grid: { color: chartTheme.grid },
-            max: tMax_h * unitFactor
           },
           y: {
             title: { display: true, text: yAxisLabel, color: chartTheme.text },

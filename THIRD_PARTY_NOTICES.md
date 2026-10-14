@@ -133,6 +133,29 @@ Files: `data/effluent-scenarios.json`, `data/effluent-scenarios-data.js`.
 - External dose-rate coefficients k for both scenarios: own PHITS
   calculations by the project author (not third-party data).
 
+### Caregiver page — proximity factors, kinetic presets and criteria
+Files: `data/caregiver.json`, `data/caregiver-data.js`. Numeric values cited
+with attribution; no article text, figure or table is reproduced, and none of
+the articles is included in the distribution package.
+- Proximity factors 14.9 / 2.5 / 1 at 0.1 / 0.5 / 1 m (medians of measurements)
+  and the DOTATATE kinetic preset: Monserrat Fuertes et al., *EJNMMI Physics*
+  10:50 (2023), DOI 10.1186/s40658-023-00570-7 — © The Author(s), licensed
+  **CC BY 4.0** (https://creativecommons.org/licenses/by/4.0/). Changes: numeric
+  values transcribed into the application.
+- Mean effective half-life 40.5 h (Lu-177-PSMA-617): Kurth et al., *EJNMMI
+  Research* 8:32 (2018) — © The Author(s), licensed **CC BY 4.0**. Changes:
+  numeric value transcribed.
+- Mean dose rates at 1 m (15 and 7 µSv/h at 6 and 24 h) from which the fast
+  half-life 16.4 h is consistent: Demir et al., *J. Radiol. Prot.* 36 (2016),
+  © 2016 IOP Publishing Ltd. Two numeric values cited with attribution.
+- Effective half-lives, cycles and the contact-at-0.4 m approximation: Gayol
+  Vilorio et al., *Rev. Fís. Méd.* 26(2) (2025), and Foro CSN-SEPR-SEFM (2011),
+  «Criterios de alta de pacientes … tratamientos metabólicos con 131I». No
+  licence is stated in either document; numeric values cited with attribution.
+- Default case, model and evaluation criteria per category: the author's
+  workbook *Dosis_acompanantes_simple_v2.1.xlsx* (own work; the criteria are
+  department criteria citing RD 601/2019, RD 1029/2022 and the documents above).
+
 ### RD 1217/2024 Annex IV and RD 783/2001 Annex III — regulatory values
 Files: `data/regulatory.json`, `data/regulatory-data.js`.
 - RD 1217/2024 Annex IV Tables A1 and B, their notes and progeny lists, and

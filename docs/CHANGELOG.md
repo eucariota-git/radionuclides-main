@@ -4,6 +4,14 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
+### v1.10.1 — audit 2026-10-14 (N-01, N-02, N-04, N-05, N-07, N-08, N-09)
+- Decay: the curve now covers its whole time range. Its category axis read the time `max` as an index, so Lu-177 (33 d) was cut at 7.1 d and Tc-99m (30 h) at 6 h since the first release; the elapsed-time and Table A1 marks now sit at their exact time.
+- Dose: the "d = X m" mark sits at the exact distance (it snapped to the nearest 0.05 m node) and the curve extends past 5 m when the requested distance does.
+- Properties: β E<sub>max</sub> is the true endpoint. The ICRP 107 parser dropped the last BET row (the endpoint, N = 0) and kept the previous grid node in 954 of 955 spectra (Lu-177 0.45 → 0.4978 MeV, K-42 3.2 → 3.525 MeV). The beta yield per decay is now stored and shown; minor branches (Tc-99m) and chain progeny (Ra-223, Ac-225) are labelled. Y-90 and Cs-137 gain the value. New `tools/sync-beta-emax.js`.
+- Caregiver: a 0-day solution is no longer rejected when the common "during" schedule would exceed 24 h/day (regression of v1.9.1); that check applies only to a positive common restriction.
+- Effluent and Caregiver register the service worker, so a direct first visit also installs the offline cache.
+- Notices and About: attribution of the Caregiver sources (Monserrat Fuertes 2023 and Kurth 2018, CC BY 4.0; Demir 2016; Gayol Vilorio 2025; Foro 2011). Acceptance sheet: cases A16–A19 and checks B12–B13; test README, development guide and manifest updated.
+
 ### v1.10.0 — caregiver kinetics presets
 - Caregiver: kinetics presets for Lu-177-PSMA-617 (Demir 2016 / Kurth 2018 — the workbook default — and Gayol Vilorio 2025), Lu-177-DOTATATE (Gayol Vilorio 2025, Monserrat Fuertes 2023) and I-131 NaI (Foro CSN-SEPR-SEFM 2011: ablation, metastases, hyperthyroidism). They fill the kinetics, cycles and profile only; the measured rate, discharge time, category and cohabitation stay as entered.
 - The Forum's «vida media efectiva» (3 / 5 / 7.2 d) is the mean life 1/λ of its equations: converted to half-lives (× ln 2), checked by reproducing its Tables 3.B 3 and 3.B 4.

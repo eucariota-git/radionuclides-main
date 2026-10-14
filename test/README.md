@@ -60,10 +60,22 @@ Covers integration and structure outside the mathematical modules:
 - empty, partial and offline database fallback behavior;
 - service-worker cache-first and explicit offline responses;
 - keyboard-accessible tooltips and dynamic light/dark chart themes;
-- JavaScript syntax of the inline application scripts.
+- JavaScript syntax of the inline application scripts;
+- Test 13, the caregiver page: reproduction of the source workbook
+  *Dosis_acompanantes_simple_v2.1.xlsx* (preloaded case, inverse calculations,
+  29-point curve, self-check and the nine workbook v6 reference cases),
+  validation messages and inverse branches, the review fixes of v1.9.1, the
+  kinetics presets and the reproduction of the Foro CSN-SEPR-SEFM (2011) Tables
+  3.B 3 and 3.B 4 with the I-131 presets (Tef = 1/λ);
+- Test 14, the regressions of the 2026-10-14 audit: linear chart axes in Decay
+  and Dose (N-01, N-08), beta endpoint and beta yield from the ICRP 107 BET
+  file (N-02), the 0-day caregiver solution (N-07) and service-worker
+  registration on every page (N-09).
 
 These are focused regressions, not a general HTML conformance or browser
-end-to-end suite. The manual and independent checks remain in
+end-to-end suite: they run the production modules and inspect the page
+sources, but they do not render the pages — a chart drawn on the wrong axis
+(N-01) passes them. Browser checks remain manual. The manual and independent checks remain in
 `docs/ACCEPTANCE_TEST.md`.
 
 ## Expected baseline

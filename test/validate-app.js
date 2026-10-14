@@ -42,7 +42,8 @@ async function main() {
   check('dose table H\'(0.07) uses sp007',
     /const Hdot_Ext\s*=\s*CALC\.doseRate\([^\n]+ap, sp007\)/.test(doseHtml));
   check('dose chart H\'(0.07) uses sp007',
-    /const doseExt\s*=\s*distances\.map\([^\n]+ap, sp007\)/.test(doseHtml));
+    /const rateExt\s*=\s*d => CALC\.doseRate\([^\n]+ap, sp007\)/.test(doseHtml) &&
+    /const doseExt\s*=\s*distances\.map\(d => \(\{ x: d, y: rateExt\(d\) \}\)\)/.test(doseHtml));
   console.log();
 
   console.log('Test 2: shared nuclide-ID normalization and curated lookup');
@@ -317,7 +318,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v39');
+    swVersion === 'nm-planner-v40');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -820,6 +821,63 @@ async function main() {
     /addEventListener\('nm-theme-change', applyCurveChartTheme\)/.test(caregiverHtml) &&
     /'App_version', 'App_build', 'Caregiver_data_version', 'Exported_UTC'/.test(caregiverHtml) &&
     /omitCommonSources: true/.test(caregiverHtml) && /spec\.omitCommonSources/.test(reportJs));
+
+  console.log();
+
+  console.log('Test 14: audit 2026-10-14 regressions (N-01, N-02, N-07, N-08, N-09)');
+  // N-01: Decay chart on a LINEAR time axis with {x, y} points. A category axis
+  // with `max` in time units is read as an index by Chart.js (Lu-177 cut at 7.1 of 33 d).
+  check('N-01: decay chart uses a linear time axis with {x, y} data, no category labels',
+    /x: \{\s*type: 'linear',\s*min: 0,\s*max: tMax_h \* unitFactor/.test(decayHtml) &&
+    /vals = pts\.map\(\(p, i\) => \(\{ x: xs\[i\], y: valueAt\(p\.A\) \}\)\)/.test(decayHtml) &&
+    !/data: \{\s*labels,/.test(decayHtml) && !/closestIdx/.test(decayHtml));
+  check('N-01: elapsed-time and Table A1 marks sit at their exact time',
+    /const orangeLineData = \[\{ x: t_h \* unitFactor, y: valueAt\(CALC\.activityAtTime\(A0_MBq, T_half_h, t_h\)\) \}\]/.test(decayHtml) &&
+    /data: \[\{ x: t_cross_h \* unitFactor, y: clearLevel \}\]/.test(decayHtml));
+  // N-08: Dose mark at the exact requested distance, grid extended past 5 m when needed
+  check('N-08: dose chart uses a linear distance axis and marks the exact distance',
+    /x: \{\s*type: 'linear',\s*min: 0\.10,\s*max: dMax/.test(doseHtml) &&
+    /const dMax = Math\.max\(5, d_m \* 1\.2\)/.test(doseHtml) &&
+    /const orangeMarkWB = d_m >= 0\.10 \? \[\{ x: d_m, y: rateWB\(d_m\) \}\] : \[\]/.test(doseHtml) &&
+    !/closestDistIdx/.test(doseHtml));
+
+  // N-02: beta endpoint = last row of each BET block (N = 0), plus beta yield per decay
+  const idx107 = JSON.parse(read('data/icrp107-index.json'));
+  const i107 = new Map(idx107.nuclides.map(n => [n.id, n]));
+  // Endpoints read from the last row of the ICRP-07.BET blocks (checked by hand)
+  const BET_ENDPOINTS = { 'Lu-177': 0.4978, 'K-42': 3.52545, 'Tc-99m': 0.43618, 'Y-90': 2.2801, 'Co-60': 1.49139, 'O-15': 1.732 };
+  check('N-02: ICRP 107 index stores the BET endpoint, not the previous grid node',
+    Object.entries(BET_ENDPOINTS).every(([id, e]) => i107.get(id) && i107.get(id).e_max_beta_MeV === e));
+  check('N-02: beta yield per decay = integral of the BET spectrum (Lu-177 ≈ 1, Tc-99m minor branch 3.7e-5, Ga-68 0.89)',
+    Math.abs(i107.get('Lu-177').beta_yield_per_decay - 1) < 0.01 &&
+    Math.abs(i107.get('Tc-99m').beta_yield_per_decay - 3.705e-5) < 1e-7 &&
+    Math.abs(i107.get('Ga-68').beta_yield_per_decay - 0.8901) < 1e-3);
+  const curated = JSON.parse(read('data/nuclides.json')).nuclides;
+  check('N-02: curated beta endpoints and yields are in sync with the index; chains flagged',
+    curated.filter(n => !n.e_max_beta_chain && n.e_max_beta_MeV != null).every(n =>
+      i107.get(n.id) && n.e_max_beta_MeV === i107.get(n.id).e_max_beta_MeV && n.beta_yield_per_decay === i107.get(n.id).beta_yield_per_decay) &&
+    ['Ra-223', 'Ac-225'].every(id => { const n = curated.find(x => x.id === id); return n.e_max_beta_chain === true && Math.abs(n.beta_yield_per_decay - 2) < 0.01; }) &&
+    curated.find(n => n.id === 'Y-90').e_max_beta_MeV === 2.2801);
+  check('N-02: Properties labels the value as the highest endpoint and flags minor branches and chain progeny',
+    /function betaEnergyItem\(n\)/.test(indexHtml) && /Highest endpoint over all β branches/.test(indexHtml) &&
+    /minor β branch/.test(indexHtml) && /from progeny in the decay chain/.test(indexHtml) &&
+    !/Endpoint energy \(MeV\)/.test(indexHtml));
+
+  // N-07: a 0-day solution never uses the "during" hours and must not be rejected
+  check('N-07: caregiver keeps the 0-day solution when the common "during" schedule exceeds 24 h/d',
+    (() => {
+      const x = CG.defaultInput(); x.rate_1m_uSv_h = 2;
+      x.rows.day = { days: 0, h_during: 20, d_during: 1, h_after: 0, d_after: null };
+      x.rows.sleep = { days: 3, h_during: 8, d_during: 1, h_after: 8, d_after: 0.1 };
+      const r = CG.evaluate(x);
+      return r.inverse.adopted_d === 0 && r.inverse.minRestriction_d === 0 && r.inverse.minRestrictionCode === null &&
+        r.inverse.floor_mSv === null && Math.abs(r.inverse.doseAtAdopted_mSv - 0.997698321818888) < 1e-9;
+    })());
+
+  // N-09: every page registers the service worker
+  check('N-09: every page registers the service worker (direct entry also installs the offline cache)',
+    [indexHtml, decayHtml, doseHtml, effluentHtml, caregiverHtml, aboutHtml].every(h =>
+      /navigator\.serviceWorker\.register\('sw\.js'\)/.test(h)));
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);
   process.exitCode = failed === 0 ? 0 : 1;

@@ -109,8 +109,14 @@ Each module (PHYSICS, CALC, DB, ICRP107, UI) is an IIFE returning public API. No
 # Wrap nuclides.json and effluent-scenarios.json as JS
 node tools/generate-data.js
 
-# Parse ICRP 107 (generates icrp107-index.json + icrp107-data.js)
+# Parse ICRP 107 (generates icrp107-index.json + icrp107-data.js). The beta
+# endpoint e_max_beta_MeV is the LAST energy of each BET block (the row with
+# N = 0); beta_yield_per_decay is the integral of the block.
 node tools/parse-icrp107.js
+
+# Copy beta endpoint / beta yield into the curated entries (chains: maximum over
+# progeny, flagged e_max_beta_chain), then wrap the JSON as JS
+node tools/sync-beta-emax.js && node tools/generate-data.js
 
 # Recalculate H*(10) and H'(0.07) constants (dry run by default; --write to apply).
 # gamma_Kair is not recalculated: its provenance is in gamma_Kair_source.
@@ -294,13 +300,14 @@ violated; step 5 remains manual.
    toolchain needed to reproduce it.
 4. Re-run the four test suites from the extracted folder (`node test/…`).
 5. Open via `file://` and via HTTP(S); check PWA install and offline reload of
-   all four pages, with and without `?id=` query parameters.
+   all six pages, with and without `?id=` query parameters, and check that the
+   Decay and Dose charts cover their whole range (see ACCEPTANCE_TEST B12).
 
 ---
 
 See also `docs/ACCEPTANCE_TEST.md` (independent validation sheet).
 
-**Document version:** 2.5 — this guide only; the application and database are
+**Document version:** 2.6 — this guide only; the application and database are
 versioned separately (`nuclides.json` v1.2, `UTILS.APP_VERSION` in
 `js/utils.js`, `CACHE_VERSION` in `sw.js`)  
-**Last updated:** 2026-07-16
+**Last updated:** 2026-10-14

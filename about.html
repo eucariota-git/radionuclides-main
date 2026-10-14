@@ -80,6 +80,7 @@
           <li><strong>Γ<sup>H*(10)</sup></strong>: ambient dose-equivalent rate constant (area monitoring; effective-dose estimator) — μSv·h⁻¹·GBq⁻¹·m²</li>
           <li><strong>Γ<sup>H'(0.07)</sup></strong>: directional dose-equivalent rate constant (area monitoring; skin/extremity indicator) — μSv·h⁻¹·GBq⁻¹·m²</li>
           <li>Representative photon energy (it can be an X-ray or the annihilation line, not only a γ line)</li>
+          <li><strong>β E&lt;sub&gt;max&lt;/sub&gt;</strong> (detail panel): the highest endpoint over all β branches, from the ICRP 107 beta spectra, with the β particles per decay; a negligible branch (Tc-99m, 0.0037 % of decays) and chain progeny (Ra-223, Ac-225) are labelled as such</li>
           <li><strong>Γ source</strong> states the provenance per quantity. For 32 entries Γ<sup>K-air</sup> is the value published by Cornejo et al. (2015), while Γ<sup>H*(10)</sup> and Γ<sup>H'(0.07)</sup> are recalculated from ICRP 107 (2008) photon data with ICRP 74 (1996) Table A.21 coefficients</li>
           <li>A cell without a value says why: <em>Not tabulated</em> (the regulatory table has no entry), <em>Not calculated</em> (the app does not compute it), <em>Not applicable</em>, or <em>See details</em></li>
         </ul>
@@ -856,6 +857,16 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
       <li>Inhalation dose coefficients for Lu-177, Lu-177m, I-131, Tc-99m and F-18 (adult members of the public): ICRP Publication 119 (2012), Table G.1, © ICRP. Five numeric values cited with attribution; the publication is not redistributed.</li>
       <li>Model structure and default parameter values (sludge density, dust loading, respirable fraction, exposure times, transit time) and the GENII factors of Table A.21 used in the indicative cross-check: Kennedy W.E. Jr. et al., NUREG/CR-5814 / PNL-7892 (1992), U.S. NRC; and IAEA Safety Reports Series No. 19 (2001), © IAEA. Numeric values cited with attribution; neither report is included in the distribution package.</li>
       <li>External dose-rate coefficients k for both scenarios: own PHITS calculations by the project author (not third-party data).</li>
+    </ul>
+
+    <h4>Caregiver page — proximity factors, kinetic presets and criteria</h4>
+    <p>Files: <code>data/caregiver.json</code>, <code>data/caregiver-data.js</code>. Numeric values cited with attribution; no article text, figure or table is reproduced, and none of the articles is included in the distribution package.</p>
+    <ul>
+      <li>Proximity factors 14.9 / 2.5 / 1 at 0.1 / 0.5 / 1 m (medians of measurements) and the DOTATATE kinetic preset: Monserrat Fuertes et al., <em>EJNMMI Physics</em> 10:50 (2023), DOI 10.1186/s40658-023-00570-7 — © The Author(s), licensed <strong>CC BY 4.0</strong> (<a href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a>). Changes: numeric values transcribed into the application.</li>
+      <li>Mean effective half-life 40.5 h (Lu-177-PSMA-617): Kurth et al., <em>EJNMMI Research</em> 8:32 (2018) — © The Author(s), licensed <strong>CC BY 4.0</strong>. Changes: numeric value transcribed.</li>
+      <li>Mean dose rates at 1 m (15 and 7 µSv/h at 6 and 24 h) from which the fast half-life 16.4 h is consistent: Demir et al., <em>J. Radiol. Prot.</em> 36 (2016), © 2016 IOP Publishing Ltd. Two numeric values cited with attribution.</li>
+      <li>Effective half-lives, cycles and the contact-at-0.4 m approximation: Gayol Vilorio et al., <em>Rev. Fís. Méd.</em> 26(2) (2025), and Foro CSN-SEPR-SEFM (2011), «Criterios de alta de pacientes … tratamientos metabólicos con 131I». No licence is stated in either document; numeric values cited with attribution.</li>
+      <li>Default case, model and evaluation criteria per category: the author's workbook <em>Dosis_acompanantes_simple_v2.1.xlsx</em> (own work; the criteria are department criteria citing RD 601/2019, RD 1029/2022 and the documents above).</li>
     </ul>
 
     <h4>RD 1217/2024 Annex IV and RD 783/2001 Annex III — regulatory values</h4>

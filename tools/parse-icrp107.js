@@ -249,6 +249,7 @@ function parseNDX(ndxPath) {
       dose_inhalation_Sv_per_Bq,
       dose_ingestion_Sv_per_Bq,
       e_max_beta_MeV: null,
+      beta_yield_per_decay: null,
       photons: [],
       photon_count_total: 0,
       photon_count_filtered: 0,
@@ -339,7 +340,19 @@ function parseRAD(radPath, nuclides) {
 }
 
 /**
- * Parse BET file to extract E_max for each nuclide
+ * Parse BET file: beta endpoint E_max and beta yield per decay for each nuclide.
+ *
+ * Each BET block is the beta spectrum N(E) [per MeV per nuclear transformation]
+ * on an energy grid that ENDS at the spectrum endpoint, a row with N = 0
+ * (Lu-177: "0.49780 0.000E+00"). Hence:
+ *   e_max_beta_MeV        = largest energy of the block, whatever its N — the
+ *                           highest endpoint over all beta branches. Requiring
+ *                           N > 0 (as before) kept the previous grid node, a lower
+ *                           bound shown as "endpoint" (Lu-177 0.45 instead of
+ *                           0.4978 MeV; 954 of 955 blocks) — audit 2026-10-14, N-02.
+ *   beta_yield_per_decay  = ∫N(E)dE (trapezoid): beta particles per decay. Flags
+ *                           negligible branches (Tc-99m 3.7e-5) whose endpoint
+ *                           must not be read as the nuclide's beta energy.
  */
 function parseBET(betPath, nuclides) {
   if (!fs.existsSync(betPath)) {
@@ -352,6 +365,15 @@ function parseBET(betPath, nuclides) {
 
   let currentNuclideId = null;
   let maxEnergyMeV = 0;
+  let integral = 0;
+  let prev = null;
+
+  function save() {
+    if (currentNuclideId && currentNuclideId in nuclides && maxEnergyMeV > 0) {
+      nuclides[currentNuclideId].e_max_beta_MeV = Math.round(maxEnergyMeV * 100000) / 100000;
+      nuclides[currentNuclideId].beta_yield_per_decay = Number(integral.toPrecision(4));
+    }
+  }
 
   for (const line of lines) {
     const trimmed = line.trim();
@@ -361,32 +383,29 @@ function parseBET(betPath, nuclides) {
     const headerMatch = trimmed.match(/^([A-Za-z]+-?\d+[a-z]*)\s+(\d+)$/i);
 
     if (headerMatch) {
-      // Save previous nuclide's E_max if we found one
-      if (currentNuclideId && currentNuclideId in nuclides && maxEnergyMeV > 0) {
-        nuclides[currentNuclideId].e_max_beta_MeV = Math.round(maxEnergyMeV * 100000) / 100000;
-      }
-
+      save();
       currentNuclideId = headerMatch[1];
       maxEnergyMeV = 0;
+      integral = 0;
+      prev = null;
       continue;
     }
 
-    // Parse data line: energy_MeV probability
+    // Data line: energy_MeV N(E)
     const parts = trimmed.split(/\s+/);
     if (parts.length < 2) continue;
 
     const energyMeV = parseFloat(parts[0]);
-    const probability = parseFloat(parts[1]);
+    const density = parseFloat(parts[1]);
+    if (isNaN(energyMeV) || isNaN(density) || density < 0) continue;
 
-    if (!isNaN(energyMeV) && !isNaN(probability) && probability > 0) {
-      maxEnergyMeV = Math.max(maxEnergyMeV, energyMeV);
-    }
+    maxEnergyMeV = Math.max(maxEnergyMeV, energyMeV);
+    if (prev) integral += (energyMeV - prev.E) * (density + prev.N) / 2;
+    prev = { E: energyMeV, N: density };
   }
 
   // Don't forget the last nuclide
-  if (currentNuclideId && currentNuclideId in nuclides && maxEnergyMeV > 0) {
-    nuclides[currentNuclideId].e_max_beta_MeV = Math.round(maxEnergyMeV * 100000) / 100000;
-  }
+  save();
 }
 
 /**

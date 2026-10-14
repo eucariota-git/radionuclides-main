@@ -1312,25 +1312,19 @@
       thick > 0 && mat !== 'none'
         ? `Dose-equivalent rate vs distance (${matLabel(mat)}, ${thick} cm${ap ? ' — Archer' : sp ? ' — narrow beam, spectrum + build-up' : ' — narrow beam + build-up'})`
         : 'Dose-equivalent rate vs distance (unshielded)';
+    // Linear distance axis with {x, y} points; the grid reaches past the
+    // requested distance when it exceeds 5 m. The mark sits at the EXACT
+    // distance with its own value — the category axis used to put it on the
+    // nearest 0.05 m node under the requested-distance label (audit 2026-10-14, N-08).
+    const dMax = Math.max(5, d_m * 1.2);
     const distances = [];
-    for (let d = 0.10; d <= 5.0; d += 0.05) distances.push(+d.toFixed(2));
+    for (let i = 0; i <= 98; i++) distances.push(0.10 + (dMax - 0.10) * i / 98);
 
-    const doseWB  = distances.map(d => CALC.doseRate(gammaWB,  A0_GBq, d, thick, E_MeV, mat, ap, sp) * patientTx);
-    const doseExt = distances.map(d => CALC.doseRate(gammaExt, A0_GBq, d, thick, E_MeV, mat, ap, sp007) * patientTx);
-
-    // Find closest distance index for orange mark
-    let closestDistIdx = -1;
-    let minDistDiff = Infinity;
-    distances.forEach((dist, i) => {
-      const diff = Math.abs(dist - d_m);
-      if (diff < minDistDiff) {
-        minDistDiff = diff;
-        closestDistIdx = i;
-      }
-    });
-
-    // Create data for orange mark at current distance
-    const orangeMarkWB = distances.map((dist, i) => i === closestDistIdx ? doseWB[i] : null);
+    const rateWB  = d => CALC.doseRate(gammaWB,  A0_GBq, d, thick, E_MeV, mat, ap, sp)    * patientTx;
+    const rateExt = d => CALC.doseRate(gammaExt, A0_GBq, d, thick, E_MeV, mat, ap, sp007) * patientTx;
+    const doseWB  = distances.map(d => ({ x: d, y: rateWB(d) }));
+    const doseExt = distances.map(d => ({ x: d, y: rateExt(d) }));
+    const orangeMarkWB = d_m >= 0.10 ? [{ x: d_m, y: rateWB(d_m) }] : [];
 
     if (distChart) distChart.destroy();
     let chartEl = document.getElementById('distChart');
@@ -1344,7 +1338,6 @@
     distChart = new Chart(ctx, {
       type: 'line',
       data: {
-        labels: distances.map(d => d.toFixed(2)),
         datasets: [
           {
             label: 'H*(10), ambient',
@@ -1378,11 +1371,15 @@
         plugins: {
           legend: { position: 'top', labels: { usePointStyle: true, pointStyleWidth: 24 } },
           tooltip: { callbacks: {
-            label: ctx => `${ctx.dataset.label}: ${CALC.formatDoseRate(ctx.raw).display}`
+            title: items => items.length ? `d = ${Number(items[0].parsed.x.toPrecision(3))} m` : '',
+            label: ctx => `${ctx.dataset.label}: ${CALC.formatDoseRate(ctx.parsed.y).display}`
           }}
         },
         scales: {
           x: {
+            type: 'linear',
+            min: 0.10,
+            max: dMax,
             title: { display: true, text: 'Distance (m)', color: chartTheme.text },
             ticks: { maxTicksLimit: 12, color: chartTheme.text },
             grid: { color: chartTheme.grid },

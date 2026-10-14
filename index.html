@@ -261,6 +261,24 @@
     return ` <span title="Recalculated using the stated nuclear data and conversion coefficients; difference not reconciled: ${dev > 0 ? '+' : ''}${dev.toFixed(1)}% from the published Cornejo et al. (2015) value (${pub})" style="cursor:help;color:var(--warning-text)">&#9888;</span>`;
   }
 
+  /**
+   * β endpoint card. ICRP 107 BET data: e_max_beta_MeV is the HIGHEST endpoint
+   * over all beta branches and beta_yield_per_decay the betas per decay, so a
+   * negligible branch (Tc-99m, 0.0037 %) or chain progeny (Ra-223, Ac-225) is
+   * said explicitly instead of being read as the nuclide's beta energy
+   * (audit 2026-10-14, N-02).
+   */
+  function betaEnergyItem(n) {
+    if (!n.e_max_beta_MeV) return '';
+    const y = n.beta_yield_per_decay;
+    const notes = ['Highest endpoint over all β branches (MeV), ICRP 107'];
+    if (n.e_max_beta_chain) notes.push('from progeny in the decay chain');
+    if (Number.isFinite(y) && y < 0.01) notes.push(`minor β branch: ${UTILS.fmt(y * 100)} % of decays`);
+    else if (Number.isFinite(y)) notes.push(`${UTILS.fmt(y)} β per decay`);
+    return `<div class="prop-item"><div class="prop-key">β E<sub>max</sub></div><div class="prop-val">${Number(n.e_max_beta_MeV.toPrecision(4))}</div>` +
+      `<div class="prop-note">${UTILS.escapeHtml(notes.join('; '))}</div></div>`;
+  }
+
   function fmtNumber(val) {
     return UTILS.fmt(val);
   }
@@ -562,11 +580,7 @@
         }
       }
 
-      // Build beta energy display
-      let betaEnergyHtml = '';
-      if (n.e_max_beta_MeV) {
-        betaEnergyHtml += `<div class="prop-item"><div class="prop-key">β E<sub>max</sub></div><div class="prop-val">${UTILS.fmt(n.e_max_beta_MeV)}</div><div class="prop-note">Endpoint energy (MeV)</div></div>`;
-      }
+      const betaEnergyHtml = betaEnergyItem(n);
 
       const hlParts = n.half_life_display.split(' ');
       document.getElementById('detailProps').innerHTML = `
@@ -645,11 +659,7 @@
         : 'Bq/L';
       const ingestionCoeff = fmtNumber(n.ingestion_dose_coeff_adult_Sv_per_Bq);
 
-      // Build beta energy display
-      let betaEnergyHtml = '';
-      if (n.e_max_beta_MeV) {
-        betaEnergyHtml += `<div class="prop-item"><div class="prop-key">β E<sub>max</sub></div><div class="prop-val">${UTILS.fmt(n.e_max_beta_MeV)}</div><div class="prop-note">Endpoint energy (MeV)</div></div>`;
-      }
+      const betaEnergyHtml = betaEnergyItem(n);
 
       const hlParts2 = n.half_life_display.split(' ');
       document.getElementById('detailProps').innerHTML = `
