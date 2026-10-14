@@ -221,6 +221,36 @@ a:hover { text-decoration: underline; }
   gap: .5rem;
 }
 
+/* Collapsible card (Properties notes, Effluent/Caregiver Method). display:flex
+   hides the browser's disclosure marker, so the title looked like plain text:
+   draw a ▸ that turns when open. Closed, the title loses its bottom rule. */
+summary.card-title {
+  cursor: pointer;
+  list-style: none;
+  margin-bottom: 0;
+  border-bottom-color: transparent;
+}
+summary.card-title::-webkit-details-marker { display: none; }
+summary.card-title::before {
+  content: '▶';
+  display: inline-block;
+  width: 1em;
+  font-size: .8em;
+  text-align: center;
+  color: var(--green-700);
+  transition: transform .15s ease;
+}
+details[open] > summary.card-title {
+  margin-bottom: .9rem;
+  border-bottom-color: var(--green-100);
+}
+details[open] > summary.card-title::before { transform: rotate(90deg); }
+summary.card-title:hover { text-decoration: underline; text-underline-offset: 3px; }
+summary.card-title:focus-visible { outline: 2px solid var(--green-700); outline-offset: 3px; border-radius: 4px; }
+@media (prefers-reduced-motion: reduce) {
+  summary.card-title::before { transition: none; }
+}
+
 /* ---- About / guide / licences ---- */
 .about-page {
   max-width: 980px;

@@ -35,7 +35,7 @@
   <div class="page-subtitle">
     Annual effective dose from activity excreted by nuclear-medicine patients, adapted from NUREG/CR-5814 (1992), for two receptors:
     <strong>Scenario 1</strong>, sewer system inspector (wastewater + aerosol inhalation), and
-    <strong>Scenario 2</strong>, sewage-treatment-plant (STP / EDAR) sludge operator (dewatered sludge + resuspended dust). Model and sources under <em>Method</em>.
+    <strong>Scenario 2</strong>, sewage-treatment-plant (STP / EDAR) sludge operator (dewatered sludge + resuspended dust). Model and sources under <a href="#methodDetails" data-open-details="methodDetails"><em>Method</em></a>.
   </div>
 
   <div class="alert alert-warning mb-1">
@@ -224,7 +224,8 @@
   </div>
 
   <div class="card mt-2">
-    <h2 class="card-title">&#128214; Method</h2>
+    <details id="methodDetails">
+    <summary class="card-title">&#128214; Method — formulas, sources and adaptations</summary>
     <div class="text-sm">
       <p>For each nuclide, with A the activity reaching the sewer in one year and DF = exp(−λ·t<sub>transit</sub>):</p>
       <p><strong>Scenario 1</strong> (NUREG/CR-5814 §5.2.1, transit ≈ 0.2 h, dilution in the facility's annual water volume V):</p>
@@ -251,6 +252,7 @@
       Table G.1), lung absorption type F (fast) or M (moderate). Half-lives are taken from the
       app database (Lu-177m, not a curated entry, from ICRP 107).</p>
     </div>
+    </details>
   </div>
 
 </main>

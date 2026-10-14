@@ -16,7 +16,7 @@ No installation or authentication is needed:
 - **Offline**: Calculators work offline with the complete local copy (opened from `file://`, or from the local cache of a copy first loaded over HTTP(S)); external references need a connection.
 - **Install as app (PWA)**: served through `localhost` or HTTPS, a compatible browser offers "Install" / "Add to Home screen"; the app then runs standalone and fully offline.
 - **Reports and CSV**: Decay, Dose, Effluent and Caregiver have a **📄 Report / PDF** button (inputs, results, method, sources, disclaimer and sign-off line; use the browser's "Save as PDF") and a CSV export in which every row repeats the application version, build, data version, export time (UTC) and the inputs needed to reproduce the result.
-- Each page explains its method, sources and limits in its own *Method* and notes blocks; this guide gives the purpose, the use and the key limits.
+- Each page explains its method, sources and limits in its own *Method* and notes blocks (collapsed: click the title marked ▸ to open them); this guide gives the purpose, the use and the key limits.
 
 ---
 

@@ -240,7 +240,8 @@
   </div>
 
   <div class="card mt-2">
-    <h2 class="card-title">&#128214; Method</h2>
+    <details id="methodDetails">
+    <summary class="card-title">&#128214; Method — formulas, assumptions, profiles, criteria and references</summary>
     <div class="text-sm">
       <p>With Ḣ<sub>0</sub> the rate at 1 m at discharge, t<sub>r</sub> = max(0, t<sub>fast end</sub> − t<sub>discharge</sub>) the
         remaining duration of the fast phase, λ = ln 2 / T<sub>eff</sub> (λ<sub>f</sub> = λ<sub>s</sub> when t<sub>r</sub> = 0), and
@@ -271,7 +272,7 @@
         </div>
         <p class="text-sm" id="profilesNote"></p>
       </details>
-      <details class="mt-1">
+      <details class="mt-1" id="criteriaDetails">
         <summary><strong>Criteria per category</strong></summary>
         <div class="overflow-x-auto mt-1">
           <table class="data-table">
@@ -287,6 +288,7 @@
       </details>
       <p class="mt-1" id="originNote"></p>
     </div>
+    </details>
   </div>
 
 </main>
@@ -547,7 +549,9 @@
     $('manual_criterion_mSv').disabled = !isOther;
     $('manualHint').textContent = isOther ? 'Required for «Other criterion».' : 'Not used (only for «Other criterion»).';
     const cat = data.categories.find(c => c.key === input.category);
-    $('categoryHint').textContent = cat ? `Basis: ${cat.basis_short} — see Method › Criteria per category.` : '';
+    $('categoryHint').innerHTML = cat
+      ? `Basis: ${UTILS.escapeHtml(cat.basis_short)} — see <a href="#criteriaDetails" data-open-details="methodDetails criteriaDetails">Method › Criteria per category</a>.`
+      : '';
     $('profileHint').textContent = data.profiles[input.profile] ? data.profiles[input.profile].distances_note : '';
     $('ownBlock').classList.toggle('hidden', input.profile !== 'own');
     $('own_fixed_rate').textContent = Number.isFinite(input.rate_1m_uSv_h) ? String(input.rate_1m_uSv_h) : '—';

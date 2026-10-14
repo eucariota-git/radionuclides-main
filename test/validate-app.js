@@ -318,7 +318,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v48');
+    swVersion === 'nm-planner-v49');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -980,6 +980,11 @@ async function main() {
   check('R-08/R-11: no duplicated t = 0 line in Decay; short-distance warning in the Dose result',
     /\$\{t_h > 0 \? `<br>t = \$\{UTILS\.fmt\(t_h\)\} h: \$\{status\(At_Bq/.test(read('decay.html')) &&
     /const distWarning = d_m < 0\.25/.test(doseHtml));
+  check('v1.12.2: Effluent and Caregiver Method collapsible (details > summary.card-title), visible marker, links open them',
+    /<details id="methodDetails">\s*<summary class="card-title">&#128214; Method/.test(effluentHtml) &&
+    /<details id="methodDetails">\s*<summary class="card-title">&#128214; Method/.test(caregiverHtml) &&
+    /summary\.card-title::before \{\s*content: '▶'/.test(styleCss) &&
+    /data-open-details="methodDetails criteriaDetails"/.test(caregiverHtml) && /a\[data-open-details\]/.test(uiJs));
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);
   process.exitCode = failed === 0 ? 0 : 1;

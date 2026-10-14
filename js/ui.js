@@ -20,6 +20,17 @@ if (typeof Chart !== 'undefined') {
 }
 
 const UI = (() => {
+  // A link into a collapsed <details> (e.g. "see Method › Criteria per category")
+  // opens the listed sections before the browser scrolls to the target.
+  document.addEventListener('click', e => {
+    const a = e.target.closest && e.target.closest('a[data-open-details]');
+    if (!a) return;
+    for (const id of a.dataset.openDetails.split(/\s+/)) {
+      const d = document.getElementById(id);
+      if (d && d.tagName === 'DETAILS') d.open = true;
+    }
+  });
+
   /* --- Dark Mode --- */
   function initDarkMode() {
     // Restore dark mode preference from localStorage

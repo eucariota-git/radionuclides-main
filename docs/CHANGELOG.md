@@ -4,6 +4,9 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
+### v1.12.2 — collapsible Method sections
+- Effluent and Caregiver: the *Method* card is collapsed by default and opens from its title, like the reference notes of Properties; titles name what they contain. Collapsible card titles now show a ▸/▾ marker (the Properties one had none) with keyboard focus outline. Links pointing inside ("Model and sources under Method", "see Method › Criteria per category") open the section before scrolling.
+
 ### v1.12.1 — no thousands separator on chart axes
 - Chart.js's en-US formatter printed "1,000" keV on the photon-spectrum axis, which a Spanish reader takes for a decimal comma. Default tick labels of linear and logarithmic axes no longer group thousands (all pages).
 - Photon spectrum: the yield axis ends a factor 2 above the tallest line instead of at the next decade (a 100 % line put the top at 1000 %).
