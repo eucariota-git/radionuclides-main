@@ -34,6 +34,7 @@ async function main() {
   const decayHtml = read('decay.html');
   const aboutHtml = read('about.html');
   const effluentHtml = read('effluent.html');
+  const caregiverHtml = read('caregiver.html');
   const reportJs = read('js/report.js');
   const icrpLoaderJs = read('js/icrp107-loader.js');
 
@@ -251,11 +252,11 @@ async function main() {
     /usePointStyle: true/.test(decayHtml) && /pointStyle: 'line'/.test(doseHtml) &&
     /pointStyle: 'circle'/.test(doseHtml) && /usePointStyle: true/.test(doseHtml));
   check('all public footers use the shared estimation disclaimer',
-    [indexHtml, decayHtml, doseHtml, effluentHtml, aboutHtml].every(html =>
+    [indexHtml, decayHtml, doseHtml, effluentHtml, caregiverHtml, aboutHtml].every(html =>
       /For radiation protection estimation purposes\.\s*\n\s*Verify against primary sources for regulatory submissions\./.test(html)) &&
     !/Dose rate constants: Cornejo/.test(`${decayHtml}\n${doseHtml}`));
   check('all public footers identify the original author and keep third-party scope separate',
-    [indexHtml, decayHtml, doseHtml, effluentHtml, aboutHtml].every(html =>
+    [indexHtml, decayHtml, doseHtml, effluentHtml, caregiverHtml, aboutHtml].every(html =>
       /Original application and code: &copy; 2026 Ramon Sendon &middot; EUPL-1\.2 &middot; Third-party data: separate terms/.test(html)));
   check('overflow-table tooltips no longer open upward outside the scrollport',
     !/tooltip-up/.test(indexHtml) && !/\.has-tooltip\.tooltip-up/.test(styleCss));
@@ -287,7 +288,7 @@ async function main() {
   console.log();
 
   console.log('Test 8: inline application scripts parse');
-  for (const [name, html] of [['index.html', indexHtml], ['decay.html', decayHtml], ['dose.html', doseHtml], ['effluent.html', effluentHtml]]) {
+  for (const [name, html] of [['index.html', indexHtml], ['decay.html', decayHtml], ['dose.html', doseHtml], ['effluent.html', effluentHtml], ['caregiver.html', caregiverHtml]]) {
     const inlineScripts = [...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)]
       .map(match => match[1]).filter(source => source.trim());
     let syntaxOk = true;
@@ -316,7 +317,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v36');
+    swVersion === 'nm-planner-v37');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -324,7 +325,7 @@ async function main() {
     ['favicon.svg', 'icon-180.png', 'icon-192.png', 'icon-512.png']
       .every(rel => !fs.existsSync(path.join(ROOT, rel))));
   check('all public pages reference the organized favicon and Apple Touch icon',
-    [indexHtml, decayHtml, doseHtml, effluentHtml, aboutHtml].every(html =>
+    [indexHtml, decayHtml, doseHtml, effluentHtml, caregiverHtml, aboutHtml].every(html =>
       /href="assets\/icons\/favicon\.svg"/.test(html) &&
       /href="assets\/icons\/icon-180\.png"/.test(html)));
   const manifest = JSON.parse(read('manifest.json'));
@@ -619,7 +620,7 @@ async function main() {
   check('effluent-scenarios-data.js is the exact twin of effluent-scenarios.json',
     JSON.stringify(effluentCtx.__E) === JSON.stringify(JSON.parse(read('data/effluent-scenarios.json'))));
   check('every page links the effluent page in its navigation',
-    [indexHtml, decayHtml, doseHtml, aboutHtml].every(html =>
+    [indexHtml, decayHtml, doseHtml, caregiverHtml, aboutHtml].every(html =>
       /<nav class="site-nav"[\s\S]*?href="effluent\.html"[\s\S]*?<\/nav>/.test(html)) &&
     /href="effluent\.html" class="active"/.test(effluentHtml));
   check('service worker precaches the effluent page, module and embedded data',
@@ -697,6 +698,85 @@ async function main() {
     /_regOnly: true/.test(indexHtml2));
   check('no user-facing page cites ICRP 119 Annex F for the discharge levels',
     ![indexHtml2, decayHtml, effluentHtml, aboutHtml].some(t => /ICRP 119 Annex F/.test(t)));
+
+  console.log();
+
+  console.log('Test 13: caregiver page (port of Dosis_acompanantes_simple_v2.1.xlsx)');
+  const caregiverJs = read('js/caregiver.js');
+  const cgData = JSON.parse(read('data/caregiver.json'));
+  const cgCtx = vm.createContext({ console });
+  vm.runInContext(read('data/caregiver-data.js') + ';this.__CD = CAREGIVER_DATA;', cgCtx);
+  check('caregiver-data.js is the exact twin of caregiver.json',
+    JSON.stringify(cgCtx.__CD) === JSON.stringify(cgData));
+  vm.runInContext(caregiverJs + ';this.__CG = CAREGIVER;', cgCtx);
+  const CG = cgCtx.__CG;
+  CG.setData(cgData);
+  const relEq = (a, b, tol = 1e-9) => Number.isFinite(a) && Math.abs(a - b) <= tol * Math.max(1, Math.abs(b));
+  const base = CG.defaultInput();
+  const o = CG.evaluate(base);
+  // Values of the workbook's preloaded case (sheet Dosis D5–D41, as calculated by Excel)
+  check('default case reproduces the workbook: dose per cycle and per treatment, margin',
+    relEq(o.perCycle_mSv, 0.488270752476576) && relEq(o.treatment_mSv, 2.92962451485945) &&
+    relEq(o.margin_mSv, 0.0703754851405458) && o.status === 'Within the applied criterion' && o.warnings.length === 0,
+    `${o.perCycle_mSv} / ${o.treatment_mSv} / ${o.status}`);
+  check('default case reproduces the workbook: fr, fn, rows and maximum hours',
+    relEq(o.fr, 0.25) && relEq(o.fn, 2.33333333333333) && o.maxHours === 14 &&
+    relEq(o.rows.day.dose_mSv, 0.149654748272833) && relEq(o.rows.sleep.dose_mSv, 0.338616004203743) &&
+    relEq(o.kinetics.Iinf, 0.000598618993091333) && relEq(o.kinetics.Itail, 0.000409564254266483));
+  check('default case reproduces the workbook: inverse calculations',
+    relEq(o.inverse.maxRate_uSv_h, 15.3603302306333) && relEq(o.inverse.floor_mSv, 0.897928489636999) &&
+    relEq(o.inverse.minRestriction_d, 2.91709788110968) && o.inverse.adopted_d === 3 &&
+    relEq(o.inverse.doseAtAdopted_mSv, 2.92962451485945) &&
+    o.inverse.adoptedNote === 'The cohabitation table covers the adopted restriction');
+  const curveRef = { 0: 8.38066590327866, 1: 5.51785451986307, 2: 3.96163300418015, 5: 1.79140356086076,
+    10: 1.01251716839319, 20: 0.899813267863821, 30: 0.897959490858087, 60: 0.897928489774953 };
+  const cv = CG.curve(base).points;
+  check('curve reproduces sheet Curva (29 points, sampled values)',
+    cv.length === 29 && Object.entries(curveRef).every(([d, v]) => relEq(cv.find(p => p.days === Number(d)).dose_mSv, v)));
+  const sc = CG.selfCheck(base);
+  check('self-check: independent formulation and the 9 workbook v6 reference cases pass',
+    sc.ok && sc.items.filter(i => i.reference).length === 9);
+  const mod = f => { const x = CG.defaultInput(); f(x); return CG.evaluate(x); };
+  check('discharge after the fast phase: slow half-life only, fast half-life not required, warning shown',
+    (() => { const r = mod(x => { x.discharge_h = 24; x.rate_1m_uSv_h = 7; x.T_fast_h = null; });
+      return r.ready && relEq(r.treatment_mSv, 2.10449073719245) && r.warnings.some(w => /slow phase/.test(w)); })());
+  check('validation messages: fast > slow half-life, hours over 24, distance without factor, missing criterion',
+    /0 < T fast ≤ T slow/.test(mod(x => { x.T_fast_h = 50; }).status) &&
+    /exceeds 24 hours/.test(mod(x => { x.rows.day.h_after = 20; }).status) &&
+    /distance without a valid factor/.test(mod(x => { x.rows.day.d_during = 0.25; }).status) &&
+    /positive dose criterion is missing/.test(mod(x => { x.category = 'other'; }).status));
+  check('inverse branches: unattainable, not dependent on the restriction, restriction does not reduce the dose',
+    mod(x => { x.rows.day.d_during = 0.1; }).inverse.minRestrictionCode === 'unattainable_reduce' &&
+    mod(x => { x.rows.sleep.h_after = 0; x.rows.sleep.d_after = null; }).inverse.minRestrictionCode === 'not_dependent' &&
+    mod(x => { x.rows.day.d_during = 0.5; x.rows.sleep.h_after = 0; }).inverse.minRestrictionCode === 'no_reduction');
+  check('profile warnings: DOTATATE profile on PSMA, Lu-177 profile on I-131; SmPC minimum raises the adopted restriction',
+    mod(x => { x.profile = 'dotatate_measured'; }).warnings.some(w => /DOTATATE/.test(w)) &&
+    mod(x => { x.radiopharmaceutical = 'I-131'; }).warnings.some(w => /Lu-177 profile/.test(w)) &&
+    (() => { const r = mod(x => { x.spc_min_restriction_d = 7; }); return r.inverse.adopted_d === 7 && r.warnings.some(w => /SmPC/.test(w)) &&
+      r.inverse.adoptedNote === 'The cohabitation table uses fewer days than the adopted restriction'; })());
+  check('own measurements: factor = rate / rate at 1 m; repeated distances give no factor',
+    (() => { const r = mod(x => { x.profile = 'own'; x.own_measurements[0] = { distance_m: 0.1, rate_uSv_h: 90 }; });
+      const dup = mod(x => { x.profile = 'own'; x.own_measurements[0] = { distance_m: 0.1, rate_uSv_h: 90 }; x.own_measurements[1] = { distance_m: 0.1, rate_uSv_h: 80 }; });
+      return r.ready && r.rows.sleep.fAfter === 6 && !dup.ready && /no factor|without a valid factor/.test(dup.status); })());
+  check('caregiver module has no DOM access; page loads data before the module and uses its API',
+    !/document\./.test(caregiverJs) &&
+    caregiverHtml.indexOf('data/caregiver-data.js') < caregiverHtml.indexOf('js/caregiver.js') &&
+    /CAREGIVER\.evaluate\(input, data\)/.test(caregiverHtml) && /CAREGIVER\.curve\(input, data\)/.test(caregiverHtml) &&
+    /CAREGIVER\.selfCheck\(input, data\)/.test(caregiverHtml));
+  check('service worker precaches the caregiver page, module and data; package allowlist includes them',
+    ['./caregiver.html', './js/caregiver.js', './data/caregiver-data.js'].every(a => swJs.includes(`'${a}'`)) &&
+    (hasTools
+      ? /'caregiver\.html'/.test(buildPackageJs) && /'data\/caregiver\.json', 'data\/caregiver-data\.js'/.test(buildPackageJs)
+      : ['caregiver.html', 'js/caregiver.js', 'data/caregiver.json', 'data/caregiver-data.js'].every(rel => fs.existsSync(path.join(ROOT, rel)))));
+  check('every page links the caregiver page; criteria are not presented as regulatory values',
+    [indexHtml, decayHtml, doseHtml, effluentHtml, aboutHtml].every(html =>
+      /<nav class="site-nav"[\s\S]*?href="caregiver\.html"[\s\S]*?<\/nav>/.test(html)) &&
+    /href="caregiver\.html" class="active"/.test(caregiverHtml) &&
+    /not values fixed by regulation for this treatment/.test(caregiverHtml) && /not values fixed by regulation/.test(cgData.criteria_note));
+  check('caregiver chart follows the live theme; report and CSV are self-describing',
+    /addEventListener\('nm-theme-change', applyCurveChartTheme\)/.test(caregiverHtml) &&
+    /'App_version', 'App_build', 'Caregiver_data_version', 'Exported_UTC'/.test(caregiverHtml) &&
+    /omitCommonSources: true/.test(caregiverHtml) && /spec\.omitCommonSources/.test(reportJs));
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);
   process.exitCode = failed === 0 ? 0 : 1;

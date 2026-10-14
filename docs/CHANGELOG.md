@@ -4,6 +4,10 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
+### v1.9.0 — caregiver dose page
+- New **Caregiver** page (`caregiver.html`, `js/caregiver.js`, `data/caregiver.json`): port of the workbook *Dosis_acompanantes_simple_v2.1.xlsx* — external dose to one caregiver or family member after discharge, two consecutive effective half-lives, day-time and sleeping cohabitation during and after a restriction, equal cycles, criteria per category, inverse calculations (maximum discharge rate, minimum and adopted restriction, floor), dose-vs-restriction curve, self-check, report and CSV. Reproduces the workbook to within 1e-9 (relative) on its preloaded case and its curve.
+- Reports: the *Database* row and the ICRP 107 common source are printed only when the report uses them.
+
 ### v1.8.1 — audit 2026-10-04 (A01–A07)
 - Decay: the target activity is validated before any result is shown; negative or non-numeric entries are rejected, and a target of zero is reported as never reached in finite time, on screen and in the report.
 - Decay, Dose and Effluent: values that overflow after unit conversion or in the products are rejected instead of producing results.

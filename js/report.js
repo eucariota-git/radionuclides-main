@@ -15,6 +15,9 @@
  *   // Optional, for reports that are not about one point-source nuclide:
  *   headerRows: [[label, value], ...],           // replace the Nuclide / Data status rows
  *   disclaimer: 'text',                          // replaces the point-source DISCLAIMER
+ *   omitCommonSources: true,                     // a report that uses no decay data
+ *                                                // (caregiver: measured rate and
+ *                                                // effective half-lives only)
  * }
  *
  * All values are rendered as escaped text — pass plain strings.
@@ -117,7 +120,7 @@ const REPORT = (() => {
         <table class="rpt-meta">
           <tr><td>Generated</td><td>${esc(ts)}</td></tr>
           <tr><td>Application</td><td>NM Radionuclide Planner v${esc(appVersion)} (build ${esc(appBuild)})</td></tr>
-          <tr><td>Database</td><td>nuclides.json v${esc(meta.version || '?')} — ${esc(meta.reference ? String(meta.reference).slice(0, 90) : '')}&hellip;</td></tr>
+          ${typeof DB !== 'undefined' ? `<tr><td>Database</td><td>nuclides.json v${esc(meta.version || '?')} — ${esc(meta.reference ? String(meta.reference).slice(0, 90) : '')}&hellip;</td></tr>` : ''}
           ${nuclideRows}
         </table>
       </div>`;
@@ -137,7 +140,7 @@ const REPORT = (() => {
     }
 
     html += `<div class="rpt-section"><div class="rpt-heading">Data sources</div><ul class="rpt-list">`;
-    for (const src of COMMON_SOURCES.concat(spec.sources || [])) html += `<li>${esc(src)}</li>`;
+    for (const src of (spec.omitCommonSources ? [] : COMMON_SOURCES).concat(spec.sources || [])) html += `<li>${esc(src)}</li>`;
     html += `</ul></div>`;
 
     html += `

@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NM Radionuclide Planner — Caregiver Dose after Discharge</title>
+  <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+  <link rel="apple-touch-icon" href="assets/icons/icon-180.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2d6a4f">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/chart.umd.min.js"></script>
+</head>
+<body>
+
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<header class="site-header">
+  <div class="inner">
+    <div class="site-logo">&#9762; <span>NM</span> Radionuclide Planner</div>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="index.html">Properties</a>
+      <a href="decay.html">Decay</a>
+      <a href="dose.html">Dose</a>
+      <a href="effluent.html">Effluent</a>
+      <a href="caregiver.html" class="active">Caregiver</a>
+    </nav>
+    <button id="darkToggle" type="button" class="btn-icon" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
+      <span id="darkIcon">🌙</span>
+    </button>
+  </div>
+</header>
+
+<main class="page-body" id="main-content">
+  <h1 class="page-title">Caregiver Dose — External Exposure after Discharge</h1>
+  <div class="page-subtitle">
+    External dose to one caregiver, family member or third party from a radionuclide-therapy patient (Lu-177, I-131),
+    from the dose rate measured at 1 m at discharge, a two-phase effective kinetics, the daily cohabitation pattern during
+    and after a restriction period, and equal treatment cycles. Inverse calculations give the maximum discharge rate and
+    the minimum restriction that meet the selected criterion.
+  </div>
+
+  <div class="alert alert-warning mb-1">
+    <strong>Screening estimate for one person and equal cycles.</strong>
+    The integral of the measured operational quantity is used as an estimator of external exposure; it is not
+    automatically the individual effective dose nor the fetal dose. Internal contamination, the dose before discharge
+    and other sources are not included. The criteria per category are <strong>evaluation criteria adopted by the
+    department</strong>, not values fixed by regulation for this treatment.
+  </div>
+
+  <!-- A. Case data -->
+  <div class="card">
+    <h2 class="card-title">&#128138; A. Case data</h2>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label" for="radiopharmaceutical">Radiopharmaceutical</label>
+        <select class="form-select" id="radiopharmaceutical" title="Radiopharmaceutical"></select>
+        <div class="form-hint">Used only to warn when the proximity profile does not match it.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="rate_1m_uSv_h">Dose rate measured at 1 m at discharge (µSv/h)</label>
+        <input type="number" class="form-input" id="rate_1m_uSv_h" min="0" step="any" title="Dose rate at 1 m at discharge">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="discharge_h">Discharge time after administration (h)</label>
+        <input type="number" class="form-input" id="discharge_h" min="0" step="any" title="Discharge time after administration">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="fast_end_h">End of the fast phase after administration (h)</label>
+        <input type="number" class="form-input" id="fast_end_h" min="0" step="any" title="End of the fast phase after administration">
+        <div class="form-hint">24 h in Kurth et al. (2018) and Demir et al. (2016); 0 = no fast phase.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="T_fast_h">Fast effective half-life (h)</label>
+        <input type="number" class="form-input" id="T_fast_h" min="0" step="any" title="Fast effective half-life">
+        <div class="form-hint" id="T_fast_hint"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="T_slow_h">Slow effective half-life (h)</label>
+        <input type="number" class="form-input" id="T_slow_h" min="0" step="any" title="Slow effective half-life">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="cycles">Number of equal cycles</label>
+        <input type="number" class="form-input" id="cycles" min="1" step="1" title="Number of equal cycles">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="category">Category of the exposed person</label>
+        <select class="form-select" id="category" title="Category of the exposed person"></select>
+        <div class="form-hint" id="categoryHint"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="manual_criterion_mSv">Manual criterion (mSv per treatment)</label>
+        <input type="number" class="form-input" id="manual_criterion_mSv" min="0" step="any" title="Manual criterion">
+        <div class="form-hint" id="manualHint"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="spc_min_restriction_d">Minimum restriction of the product information (d, optional)</label>
+        <input type="number" class="form-input" id="spc_min_restriction_d" min="0" step="any" title="Minimum restriction of the product information">
+        <div class="form-hint">Lower bound for the adopted restriction.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="profile">Proximity profile</label>
+        <select class="form-select" id="profile" title="Proximity profile"></select>
+        <div class="form-hint" id="profileHint"></div>
+      </div>
+    </div>
+
+    <div id="ownBlock" class="mt-2 hidden">
+      <h3 class="card-title">Own measurements</h3>
+      <div class="overflow-x-auto">
+        <table class="data-table" id="ownTable">
+          <thead>
+            <tr>
+              <th>Distance (m)</th>
+              <th>Rate (µSv/h)</th>
+              <th class="text-right">Factor relative to 1 m</th>
+            </tr>
+          </thead>
+          <tbody id="ownBody"></tbody>
+        </table>
+      </div>
+      <div class="form-hint mt-1" id="ownNote"></div>
+    </div>
+  </div>
+
+  <!-- B. Cohabitation -->
+  <div class="card mt-2">
+    <h2 class="card-title">&#127968; B. Cohabitation</h2>
+    <div class="overflow-x-auto">
+      <table class="data-table" id="rowsTable">
+        <thead>
+          <tr>
+            <th>Contact</th>
+            <th title="Restriction days counted from discharge">Restriction (d from discharge)</th>
+            <th>During (h/d)</th>
+            <th>During (m)</th>
+            <th>After (h/d)</th>
+            <th>After (m)</th>
+            <th class="text-right">Dose / cycle (mSv)</th>
+          </tr>
+        </thead>
+        <tbody id="rowsBody"></tbody>
+      </table>
+    </div>
+    <div class="alert alert-info mt-1">
+      Hours are mutually exclusive: sleeping is not counted as day-time cohabitation. «Sleeping in the same room» during
+      the restriction is usually 0 h (sleeping apart). Zero hours = no contact; the distance may then be left empty.
+      The distance is chosen from the profile list; 0.1 m = contact.
+      Days are counted from discharge and each cycle is integrated to infinity. The criterion covers only the
+      administrations entered; it does not by itself demonstrate annual compliance.
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="card mt-2" id="resultsCard">
+    <h2 class="card-title">&#128202; Results</h2>
+    <div id="calcError" class="alert alert-danger hidden" role="alert"></div>
+    <div id="resultBlock">
+      <div class="alert mb-1" id="statusBox" role="status"></div>
+      <ul class="text-sm" id="warningList"></ul>
+
+      <div class="result-grid">
+        <div class="result-box">
+          <div class="result-label">Dose per administration</div>
+          <div class="result-value" id="perCycle">—</div>
+          <div class="result-unit">mSv</div>
+        </div>
+        <div class="result-box" id="treatmentBox">
+          <div class="result-label">Dose of the treatment</div>
+          <div class="result-value" id="treatment">—</div>
+          <div class="result-unit" id="treatmentUnit">mSv</div>
+        </div>
+        <div class="result-box">
+          <div class="result-label">Applied criterion</div>
+          <div class="result-value" id="criterion">—</div>
+          <div class="result-unit" id="criterionUnit">mSv</div>
+        </div>
+        <div class="result-box">
+          <div class="result-label">Margin to the criterion</div>
+          <div class="result-value" id="margin">—</div>
+          <div class="result-unit">mSv</div>
+        </div>
+      </div>
+
+      <h3 class="card-title mt-2">Inverse calculations (same restriction in both rows)</h3>
+      <div class="overflow-x-auto">
+        <table class="data-table" id="inverseTable">
+          <tbody>
+            <tr><td>Maximum rate at 1 m at discharge with the restrictions entered</td><td class="num" id="maxRate">—</td><td>µSv/h</td></tr>
+            <tr><td>Treatment dose with an indefinite restriction (floor)</td><td class="num" id="floor">—</td><td>mSv</td></tr>
+            <tr><td>Minimum restriction</td><td class="num" id="minRestriction">—</td><td>d</td></tr>
+            <tr><td>Adopted restriction (rounded up, ≥ product information)</td><td class="num" id="adopted">—</td><td>d</td></tr>
+            <tr><td>Treatment dose with the adopted restriction</td><td class="num" id="doseAdopted">—</td><td>mSv</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="form-hint mt-1" id="adoptedNote"></div>
+      <div class="d-flex gap-2 mt-1" data-no-print>
+        <button class="btn btn-secondary btn-sm" id="btnApplyAdopted" type="button" title="Write the adopted restriction in the days column of both cohabitation rows">Use the adopted restriction in the table</button>
+      </div>
+      <p class="text-sm mt-1" id="inverseNote"></p>
+
+      <h3 class="card-title mt-2">Treatment dose vs restriction</h3>
+      <p class="text-sm">Same restriction in both cohabitation rows, with the hours and distances of the table. The curve tends to the
+        floor (indefinite restriction): below it the dose can only be lowered by reducing contact during the restriction.</p>
+      <div class="chart-wrap">
+        <canvas id="curveChart" aria-label="Treatment dose versus restriction days" role="img"></canvas>
+      </div>
+
+      <details class="mt-2" id="selfCheckDetails">
+        <summary><strong>Self-check: <span id="selfCheckStatus">—</span></strong></summary>
+        <p class="text-sm mt-1">A: the result is recomputed with an independent formulation in µSv and h for the current inputs.
+          B: that formulation reproduces the reference cases of the source workbook v6 (restriction 3 d from discharge,
+          6 cycles, fast phase ending at 24 h). «REVIEW» means a formula has been altered.</p>
+        <div class="overflow-x-auto">
+          <table class="data-table">
+            <thead><tr><th>Check</th><th class="text-right">Value</th><th>Status</th></tr></thead>
+            <tbody id="selfCheckBody"></tbody>
+          </table>
+        </div>
+        <p class="text-sm" id="refCasesNote"></p>
+      </details>
+
+      <div class="d-flex gap-2 mt-2 mb-1" data-no-print>
+        <button class="btn btn-secondary btn-sm" id="btnPrint" type="button" title="Generate a printable calculation report with traceability (sources, method, disclaimer)">📄 Report / PDF</button>
+        <button class="btn btn-secondary btn-sm" id="btnCsv" type="button" title="Export results as CSV">⬇ Export CSV</button>
+        <button class="btn btn-secondary btn-sm" id="btnReset" type="button" title="Restore the default values">↺ Defaults</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mt-2">
+    <h2 class="card-title">&#128214; Method</h2>
+    <div class="text-sm">
+      <p>With Ḣ<sub>0</sub> the rate at 1 m at discharge, t<sub>r</sub> = max(0, t<sub>fast end</sub> − t<sub>discharge</sub>) the
+        remaining duration of the fast phase, λ = ln 2 / T<sub>eff</sub> (λ<sub>f</sub> = λ<sub>s</sub> when t<sub>r</sub> = 0), and
+        two <strong>consecutive</strong> exponentials (the slow phase starts from the rate reached at the end of the fast phase):</p>
+      <ul>
+        <li>I<sub>tail</sub> = Ḣ<sub>0</sub> e<sup>−λ<sub>f</sub>t<sub>r</sub></sup> / λ<sub>s</sub>;
+          I<sub>∞</sub> = Ḣ<sub>0</sub> (1 − e<sup>−λ<sub>f</sub>t<sub>r</sub></sup>) / λ<sub>f</sub> + I<sub>tail</sub></li>
+        <li>For a restriction of C days: I<sub>before</sub>(C) = ∫<sub>0</sub><sup>C</sup> Ḣ dt and I<sub>after</sub>(C) = ∫<sub>C</sub><sup>∞</sup> Ḣ dt</li>
+        <li>Dose per cycle and row = I<sub>before</sub> · h<sub>during</sub>/24 · f<sub>during</sub> + I<sub>after</sub> · h<sub>after</sub>/24 · f<sub>after</sub>,
+          with f the spatial factor of the profile relative to 1 m; treatment dose = cycles × Σ rows</li>
+        <li>f<sub>r</sub> = Σ h<sub>during</sub> f<sub>during</sub> / 24, f<sub>n</sub> = Σ h<sub>after</sub> f<sub>after</sub> / 24;
+          floor = cycles · f<sub>r</sub> · I<sub>∞</sub></li>
+        <li>Maximum rate = Ḣ<sub>0</sub> · criterion / treatment dose (the dose is proportional to the rate).
+          Minimum restriction: the C that solves cycles · [f<sub>r</sub> I<sub>∞</sub> + (f<sub>n</sub> − f<sub>r</sub>) I<sub>after</sub>(C)] = criterion, analytically in either phase</li>
+      </ul>
+      <p>Integration in SI (Sv/s, s, Sv); the interface uses µSv/h, h, d and mSv.</p>
+      <details class="mt-1">
+        <summary><strong>Assumptions</strong></summary>
+        <ul class="mt-1" id="assumptionList"></ul>
+      </details>
+      <details class="mt-1">
+        <summary><strong>Proximity profiles and provenance</strong></summary>
+        <div class="overflow-x-auto mt-1">
+          <table class="data-table">
+            <thead><tr><th>Profile</th><th class="text-right">Distance (m)</th><th class="text-right">Factor relative to 1 m</th><th>Source</th><th>Nature</th><th>Note</th></tr></thead>
+            <tbody id="profileBody"></tbody>
+          </table>
+        </div>
+      </details>
+      <details class="mt-1">
+        <summary><strong>Criteria per category</strong></summary>
+        <div class="overflow-x-auto mt-1">
+          <table class="data-table">
+            <thead><tr><th>Category</th><th class="text-right">Criterion (mSv / treatment)</th><th>Basis</th></tr></thead>
+            <tbody id="categoryBody"></tbody>
+          </table>
+        </div>
+        <p id="criteriaNote"></p>
+      </details>
+      <details class="mt-1">
+        <summary><strong>References</strong></summary>
+        <ul class="ref-list mt-1" id="refList"></ul>
+      </details>
+      <p class="mt-1" id="originNote"></p>
+    </div>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  NM Radionuclide Planner &mdash; For radiation protection estimation purposes.
+  Verify against primary sources for regulatory submissions.
+  <br>Original application and code: &copy; 2026 Ramon Sendon &middot; EUPL-1.2 &middot; Third-party data: separate terms &mdash;
+  <a href="about.html">About, guide &amp; licences</a>
+</footer>
+
+<script src="data/caregiver-data.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/report.js"></script>
+<script src="js/caregiver.js"></script>
+<script>
+(async () => {
+  UI.initDarkMode();
+  UI.initPrint();
+  UI.initKeyboard();
+
+  let data;
+  try {
+    data = await CAREGIVER.load();
+  } catch (err) {
+    console.error('Failed to initialize caregiver calculator:', err);
+    UI.showFatalError(`Error loading data: ${err.message}`);
+    return;
+  }
+
+  const esc = UTILS.escapeHtml;
+  const $ = id => document.getElementById(id);
+  const NUM_FIELDS = ['rate_1m_uSv_h', 'discharge_h', 'fast_end_h', 'T_fast_h', 'T_slow_h', 'cycles',
+    'manual_criterion_mSv', 'spc_min_restriction_d'];
+  const ROWS = [['day', 'Day-time cohabitation'], ['sleep', 'Sleeping in the same room']];
+  const OWN_N = data.defaults.own_measurements.length;
+
+  // ---- Static content from the data file ----
+  $('radiopharmaceutical').innerHTML = data.radiopharmaceuticals.map(r => `<option value="${UTILS.safeAttr(r)}">${esc(r)}</option>`).join('');
+  $('category').innerHTML = data.categories.map(c =>
+    `<option value="${c.key}">${esc(c.label)}${c.criterion_mSv !== null ? ` — ${c.criterion_mSv} mSv` : ''}</option>`).join('');
+  $('profile').innerHTML = Object.entries(data.profiles).map(([k, p]) => `<option value="${k}">${esc(p.label)}</option>`).join('');
+  $('assumptionList').innerHTML = data.assumptions.map(a => `<li>${esc(a)}</li>`).join('');
+  $('profileBody').innerHTML = Object.values(data.profiles).flatMap(p => (p.points.length ? p.points : [null]).map(pt => pt
+    ? `<tr><td>${esc(p.label)}</td><td class="num">${pt.distance_m}</td><td class="num">${+pt.factor.toPrecision(6)}</td><td>${esc(p.ref)}</td><td>${esc(p.nature)}</td><td class="text-sm">${esc(pt.note)}</td></tr>`
+    : `<tr><td>${esc(p.label)}</td><td class="num">entered</td><td class="num">rate / rate at 1 m</td><td>${esc(p.ref)}</td><td>${esc(p.nature)}</td><td class="text-sm">${esc(data.own_protocol_note)}</td></tr>`)).join('');
+  $('categoryBody').innerHTML = data.categories.map(c =>
+    `<tr><td>${esc(c.label)}</td><td class="num">${c.criterion_mSv === null ? '—' : c.criterion_mSv}</td><td>${esc(c.basis)}</td></tr>`).join('');
+  $('criteriaNote').textContent = data.criteria_note;
+  $('refList').innerHTML = data.references.map(r => `<li>${esc(r)}</li>`).join('');
+  $('originNote').textContent = data.meta.origin;
+  $('inverseNote').textContent = data.inverse_note;
+  $('ownNote').textContent = data.own_protocol_note;
+  $('refCasesNote').textContent = data.reference_cases.note;
+
+  $('ownBody').innerHTML = `<tr><td>1 (fixed)</td><td class="num" id="own_fixed_rate">—</td><td class="num">1</td></tr>` +
+    Array.from({ length: OWN_N }, (_, i) => `<tr>
+      <td><input type="number" class="form-input" id="own_${i}_d" min="0" step="any" aria-label="Own measurement ${i + 1} distance (m)" title="Distance (m)"></td>
+      <td><input type="number" class="form-input" id="own_${i}_r" min="0" step="any" aria-label="Own measurement ${i + 1} rate (µSv/h)" title="Rate (µSv/h)"></td>
+      <td class="num" id="own_${i}_f">—</td>
+    </tr>`).join('');
+
+  $('rowsBody').innerHTML = ROWS.map(([k, label]) => `<tr>
+    <td>${esc(label)}</td>
+    <td><input type="number" class="form-input" id="${k}_days" min="0" step="any" aria-label="${UTILS.safeAttr(label)} restriction days" title="Restriction (d from discharge)"></td>
+    <td><input type="number" class="form-input" id="${k}_h_during" min="0" max="24" step="any" aria-label="${UTILS.safeAttr(label)} hours per day during" title="Hours per day during the restriction"></td>
+    <td><select class="form-select" id="${k}_d_during" aria-label="${UTILS.safeAttr(label)} distance during" title="Distance during the restriction (m)"></select></td>
+    <td><input type="number" class="form-input" id="${k}_h_after" min="0" max="24" step="any" aria-label="${UTILS.safeAttr(label)} hours per day after" title="Hours per day after the restriction"></td>
+    <td><select class="form-select" id="${k}_d_after" aria-label="${UTILS.safeAttr(label)} distance after" title="Distance after the restriction (m)"></select></td>
+    <td class="num" id="${k}_dose">—</td>
+  </tr>`).join('');
+
+  // ---- Reading and writing the form ----
+  const readNum = el => {
+    const s = el.value.trim();
+    if (s === '') return null;
+    const v = parseFloat(s);
+    return Number.isFinite(v) ? v : NaN;
+  };
+  const distOf = el => (el.value === '' ? null : parseFloat(el.value));
+
+  function readInputs() {
+    const input = { radiopharmaceutical: $('radiopharmaceutical').value, category: $('category').value, profile: $('profile').value };
+    for (const f of NUM_FIELDS) {
+      const v = readNum($(f));
+      if (Number.isNaN(v)) throw new RangeError(`"${$(f).title}" must be a number`);
+      input[f] = v;
+    }
+    input.rows = {};
+    for (const [k] of ROWS) {
+      const r = { d_during: distOf($(`${k}_d_during`)), d_after: distOf($(`${k}_d_after`)) };
+      for (const f of ['days', 'h_during', 'h_after']) {
+        const v = readNum($(`${k}_${f}`));
+        if (Number.isNaN(v)) throw new RangeError(`"${$(`${k}_${f}`).getAttribute('aria-label')}" must be a number`);
+        r[f] = v;
+      }
+      input.rows[k] = r;
+    }
+    input.own_measurements = Array.from({ length: OWN_N }, (_, i) => ({ distance_m: readNum($(`own_${i}_d`)), rate_uSv_h: readNum($(`own_${i}_r`)) }))
+      .map(m => ({ distance_m: Number.isNaN(m.distance_m) ? null : m.distance_m, rate_uSv_h: Number.isNaN(m.rate_uSv_h) ? null : m.rate_uSv_h }));
+    return input;
+  }
+
+  // Distance lists follow the selected profile; a distance no longer listed is cleared.
+  function fillDistanceSelects(input) {
+    const pts = CAREGIVER.profilePoints(input, data).filter(p => Number.isFinite(p.distance_m) && p.distance_m > 0);
+    const seen = new Set();
+    const options = pts.filter(p => !seen.has(p.distance_m) && seen.add(p.distance_m)).sort((a, b) => a.distance_m - b.distance_m);
+    for (const [k] of ROWS) for (const f of ['d_during', 'd_after']) {
+      const sel = $(`${k}_${f}`);
+      const cur = sel.value;
+      sel.innerHTML = '<option value="">—</option>' + options.map(p =>
+        `<option value="${p.distance_m}">${p.distance_m}</option>`).join('');
+      sel.value = options.some(p => String(p.distance_m) === cur) ? cur : '';
+    }
+  }
+
+  function writeInputs(inp) {
+    $('radiopharmaceutical').value = inp.radiopharmaceutical;
+    $('category').value = inp.category;
+    $('profile').value = inp.profile;
+    for (const f of NUM_FIELDS) $(f).value = inp[f] ?? '';
+    inp.own_measurements.forEach((m, i) => { $(`own_${i}_d`).value = m.distance_m ?? ''; $(`own_${i}_r`).value = m.rate_uSv_h ?? ''; });
+    for (const [k] of ROWS) for (const f of ['days', 'h_during', 'h_after']) $(`${k}_${f}`).value = inp.rows[k][f] ?? '';
+    fillDistanceSelects(inp);
+    for (const [k] of ROWS) for (const f of ['d_during', 'd_after']) $(`${k}_${f}`).value = inp.rows[k][f] ?? '';
+  }
+
+  // ---- Formatting ----
+  const f3 = v => (Number.isFinite(v) ? (Math.abs(v) >= 1e5 || (v !== 0 && Math.abs(v) < 1e-3) ? v.toExponential(3) : v.toPrecision(4)) : '—');
+  const f2d = v => (Number.isFinite(v) ? v.toFixed(2) : '—');
+
+  // ---- Chart ----
+  let chart = null;
+  function datasetsFor(cv, out) {
+    const theme = UI.getChartTheme();
+    const pts = cv.points.map(p => ({ x: p.days, y: p.dose_mSv }));
+    const xMax = pts.length ? pts[pts.length - 1].x : 60;
+    const ds = [{ label: 'Treatment dose (mSv)', data: pts, _themeRole: 'dose', borderColor: theme.green, backgroundColor: theme.green,
+      borderWidth: 2, pointRadius: 2, showLine: true, pointStyle: 'line' }];
+    const crit = out.criterion.value;
+    if (Number.isFinite(crit) && crit > 0) {
+      ds.push({ label: 'Criterion (mSv)', data: [{ x: 0, y: crit }, { x: xMax, y: crit }], _themeRole: 'danger', borderColor: theme.danger,
+        backgroundColor: theme.danger, borderDash: [6, 4], borderWidth: 1.5, pointRadius: 0, showLine: true, pointStyle: 'line' });
+    }
+    if (Number.isFinite(out.inverse.floor_mSv)) {
+      ds.push({ label: 'Floor — indefinite restriction (mSv)', data: [{ x: 0, y: out.inverse.floor_mSv }, { x: xMax, y: out.inverse.floor_mSv }],
+        _themeRole: 'warning', borderColor: theme.orange, backgroundColor: theme.orange, borderDash: [2, 3], borderWidth: 1.5, pointRadius: 0, showLine: true, pointStyle: 'line' });
+    }
+    if (Number.isFinite(out.inverse.adopted_d) && pts.length) {
+      const yMax = Math.max(...pts.map(p => p.y));
+      ds.push({ label: 'Adopted restriction', data: [{ x: out.inverse.adopted_d, y: 0 }, { x: out.inverse.adopted_d, y: yMax }],
+        _themeRole: 'text', borderColor: theme.text, backgroundColor: theme.text, borderWidth: 1, pointRadius: 0, showLine: true, pointStyle: 'line' });
+    }
+    return ds;
+  }
+  function drawChart(cv, out) {
+    const theme = UI.getChartTheme();
+    const datasets = datasetsFor(cv, out);
+    if (chart) chart.destroy();
+    chart = new Chart($('curveChart').getContext('2d'), {
+      type: 'scatter',
+      data: { datasets },
+      options: {
+        color: theme.text, responsive: true, maintainAspectRatio: false, animation: false,
+        plugins: {
+          legend: { position: 'top', labels: { font: { size: 11 }, usePointStyle: true, pointStyleWidth: 24 } },
+          tooltip: { callbacks: { label: c => `${c.dataset.label}: ${f3(c.parsed.y)} at ${c.parsed.x} d` } },
+        },
+        scales: {
+          x: { type: 'linear', min: 0, title: { display: true, text: 'Restriction (d from discharge)', color: theme.text },
+            ticks: { color: theme.text }, grid: { color: theme.grid } },
+          y: { min: 0, title: { display: true, text: 'Treatment dose (mSv)', color: theme.text },
+            ticks: { color: theme.text }, grid: { color: theme.grid } },
+        },
+      },
+    });
+  }
+  function applyCurveChartTheme() {
+    if (!chart) return;
+    const theme = UI.getChartTheme();
+    const colour = { dose: theme.green, danger: theme.danger, warning: theme.orange, text: theme.text };
+    for (const d of chart.data.datasets) d.borderColor = d.backgroundColor = colour[d._themeRole];
+    chart.options.color = theme.text;
+    for (const scale of Object.values(chart.options.scales)) {
+      scale.ticks.color = theme.text;
+      scale.title.color = theme.text;
+      scale.grid.color = theme.grid;
+    }
+    chart.update('none');
+  }
+  document.addEventListener('nm-theme-change', applyCurveChartTheme);
+
+  // ---- Render ----
+  let last = null;
+  function render() {
+    const errBox = $('calcError');
+    let input, out, cv, sc;
+    try {
+      input = readInputs();
+      out = CAREGIVER.evaluate(input, data);
+      // Finite inputs can still overflow in the products (audit 2026-10-04, A07)
+      const nums = [out.perCycle_mSv, out.treatment_mSv, out.inverse.maxRate_uSv_h, out.inverse.floor_mSv, out.inverse.doseAtAdopted_mSv];
+      if (nums.some(v => v !== null && !Number.isFinite(v))) throw new RangeError('The entered values are outside the representable range');
+      cv = CAREGIVER.curve(input, data);
+      sc = CAREGIVER.selfCheck(input, data);
+    } catch (err) {
+      errBox.textContent = err.message;
+      errBox.classList.remove('hidden');
+      $('resultBlock').classList.add('hidden');
+      last = null;
+      return;
+    }
+    errBox.classList.add('hidden');
+    $('resultBlock').classList.remove('hidden');
+    last = { input, out, cv, sc };
+
+    // Input-dependent hints
+    const tr = input.fast_end_h > input.discharge_h;
+    $('T_fast_hint').textContent = tr ? 'Required: discharge precedes the end of the fast phase.' : 'Not used: discharge is at or after the end of the fast phase.';
+    $('T_fast_h').disabled = !tr;
+    const isOther = input.category === 'other';
+    $('manual_criterion_mSv').disabled = !isOther;
+    $('manualHint').textContent = isOther ? 'Required for «Other criterion».' : 'Not used (only for «Other criterion»).';
+    $('categoryHint').textContent = out.criterion.basis ? `Basis: ${out.criterion.basis}` : '';
+    $('profileHint').textContent = data.profiles[input.profile] ? data.profiles[input.profile].distances_note : '';
+    $('ownBlock').classList.toggle('hidden', input.profile !== 'own');
+    $('own_fixed_rate').textContent = Number.isFinite(input.rate_1m_uSv_h) ? String(input.rate_1m_uSv_h) : '—';
+    input.own_measurements.forEach((m, i) => {
+      const p = out.points.slice(1).find(q => q.distance_m === m.distance_m && q.rate_uSv_h === m.rate_uSv_h);
+      $(`own_${i}_f`).textContent = input.profile === 'own' && p && Number.isFinite(p.factor) ? p.factor.toPrecision(4) : '—';
+    });
+
+    // Status
+    const statusBox = $('statusBox');
+    const good = out.status === 'Within the applied criterion';
+    const bad = out.status === 'Exceeds the applied criterion';
+    statusBox.className = `alert mb-1 ${good ? 'alert-success' : bad ? 'alert-danger' : 'alert-warning'}`;
+    statusBox.textContent = out.status;
+    $('warningList').innerHTML = out.warnings.map(w => `<li style="color:var(--warning-text);">&#9888; ${esc(w)}</li>`).join('');
+
+    for (const [k] of ROWS) $(`${k}_dose`).textContent = Number.isFinite(out.rows[k].dose_mSv) ? out.rows[k].dose_mSv.toPrecision(4) : '—';
+    $('perCycle').textContent = f3(out.perCycle_mSv);
+    $('treatment').textContent = f3(out.treatment_mSv);
+    $('treatmentUnit').textContent = `mSv — ${Number.isFinite(input.cycles) ? input.cycles : '?'} cycle(s)`;
+    $('treatmentBox').className = `result-box${bad ? ' danger' : ''}`;
+    $('criterion').textContent = Number.isFinite(out.criterion.value) ? String(out.criterion.value) : '—';
+    $('criterionUnit').textContent = out.criterion.label ? `mSv — ${out.criterion.label}` : 'mSv';
+    $('margin').textContent = f3(out.margin_mSv);
+
+    const inv = out.inverse;
+    $('maxRate').textContent = f3(inv.maxRate_uSv_h);
+    $('floor').textContent = f3(inv.floor_mSv);
+    $('minRestriction').textContent = inv.minRestriction_d !== null ? f2d(inv.minRestriction_d)
+      : (inv.minRestrictionCode ? CAREGIVER.INVERSE_TEXT[inv.minRestrictionCode] : '—');
+    $('adopted').textContent = inv.adopted_d !== null ? String(inv.adopted_d) : '—';
+    $('doseAdopted').textContent = f3(inv.doseAtAdopted_mSv);
+    $('adoptedNote').textContent = inv.adoptedNote;
+    $('btnApplyAdopted').disabled = inv.adopted_d === null;
+
+    $('selfCheckStatus').textContent = sc.ok ? 'OK' : 'REVIEW';
+    $('selfCheckStatus').className = sc.ok ? 'meets-yes' : '';
+    $('selfCheckBody').innerHTML = sc.items.map(i => `<tr><td>${esc(i.label)}</td><td class="num">${Number.isFinite(i.value) ? i.value.toFixed(i.reference ? 2 : 4) : ''}</td>` +
+      `<td>${i.ok ? '<span class="meets-yes">OK</span>' : '<strong style="color:var(--danger);">REVIEW</strong>'}</td></tr>`).join('');
+
+    drawChart(cv, out);
+  }
+
+  document.querySelectorAll('main input, main select').forEach(el => {
+    const handler = () => {
+      if (el.id === 'profile' || /^own_|^rate_1m/.test(el.id)) {
+        try { fillDistanceSelects(readInputs()); } catch (e) { /* render reports it */ }
+      }
+      render();
+    };
+    el.addEventListener('input', handler);
+    el.addEventListener('change', handler);
+  });
+
+  $('btnApplyAdopted').addEventListener('click', () => {
+    if (!last || last.out.inverse.adopted_d === null) return;
+    for (const [k] of ROWS) $(`${k}_days`).value = last.out.inverse.adopted_d;
+    render();
+  });
+
+  $('btnReset').addEventListener('click', () => {
+    writeInputs(CAREGIVER.defaultInput(data));
+    render();
+  });
+
+  const distText = d => (d === null ? '—' : `${d} m`);
+  const rowText = (input, out, k) => {
+    const r = input.rows[k], o = out.rows[k];
+    return `${r.days ?? '—'} d restriction; during ${r.h_during ?? '—'} h/d at ${distText(r.d_during)} (factor ${o.fDuring ?? 'none'}); ` +
+      `after ${r.h_after ?? '—'} h/d at ${distText(r.d_after)} (factor ${o.fAfter ?? 'none'}); dose/cycle ${f3(o.dose_mSv)} mSv`;
+  };
+
+  $('btnPrint').addEventListener('click', () => {
+    if (!last) { alert('Correct the input errors first.'); return; }
+    const { input, out, cv, sc } = last;
+    const inv = out.inverse;
+    const prof = data.profiles[input.profile];
+    REPORT.print({
+      title: 'Caregiver Dose after Discharge',
+      headerRows: [
+        ['Radiopharmaceutical', input.radiopharmaceutical],
+        ['Data status', `caregiver.json v${data.meta.version} (${data.meta.date}). ${data.meta.origin}`],
+      ],
+      omitCommonSources: true,
+      sections: [
+        { heading: 'Case data', rows: [
+          ['Dose rate at 1 m at discharge', `${input.rate_1m_uSv_h} µSv/h`],
+          ['Discharge time after administration', `${input.discharge_h} h`],
+          ['End of the fast phase after administration', `${input.fast_end_h} h`],
+          ['Fast effective half-life', input.fast_end_h > input.discharge_h ? `${input.T_fast_h} h` : 'not used'],
+          ['Slow effective half-life', `${input.T_slow_h} h`],
+          ['Number of equal cycles', String(input.cycles)],
+          ['Category / criterion', `${out.criterion.label}: ${out.criterion.value ?? '—'} mSv per treatment (${out.criterion.basis})`],
+          ['Minimum restriction of the product information', input.spc_min_restriction_d === null ? 'not entered' : `${input.spc_min_restriction_d} d`],
+          ['Proximity profile', `${prof.label} ${prof.ref} — ${prof.nature}`],
+        ].concat(input.profile === 'own' ? out.points.map(p => [`Own measurement ${p.distance_m ?? '—'} m`, `${p.rate_uSv_h ?? '—'} µSv/h → factor ${Number.isFinite(p.factor) ? p.factor.toPrecision(4) : 'none'}`]) : []) },
+        { heading: 'Cohabitation', rows: ROWS.map(([k, label]) => [label, rowText(input, out, k)]) },
+        { heading: 'Results', rows: [
+          ['Status', out.status],
+          ['Warnings', out.warnings.join(' ') || 'none'],
+          ['Dose per administration', `${f3(out.perCycle_mSv)} mSv`],
+          ['Dose of the treatment', `${f3(out.treatment_mSv)} mSv`],
+          ['Margin to the criterion', `${f3(out.margin_mSv)} mSv`],
+        ] },
+        { heading: 'Inverse calculations (same restriction in both rows)', rows: [
+          ['Maximum rate at 1 m at discharge', `${f3(inv.maxRate_uSv_h)} µSv/h`],
+          ['Treatment dose with an indefinite restriction (floor)', `${f3(inv.floor_mSv)} mSv`],
+          ['Minimum restriction', inv.minRestriction_d !== null ? `${f2d(inv.minRestriction_d)} d` : (CAREGIVER.INVERSE_TEXT[inv.minRestrictionCode] || '—')],
+          ['Adopted restriction', inv.adopted_d !== null ? `${inv.adopted_d} d — ${inv.adoptedNote}` : '—'],
+          ['Treatment dose with the adopted restriction', `${f3(inv.doseAtAdopted_mSv)} mSv`],
+        ] },
+        { heading: 'Treatment dose vs restriction', rows: cv.points.map(p => [`${p.days} d`, `${f3(p.dose_mSv)} mSv`]) },
+        { heading: 'Self-check', rows: [['Overall', sc.ok ? 'OK' : 'REVIEW']].concat(sc.items.map(i => [i.label, i.ok ? 'OK' : 'REVIEW'])) },
+      ],
+      notes: [data.inverse_note].concat(data.assumptions),
+      sources: data.references,
+      disclaimer: 'Screening estimate of the external dose to one person from a discharged radionuclide-therapy patient, for radiation protection planning. ' +
+        'The criteria per category are evaluation criteria adopted by the department, not values fixed by regulation for this treatment. ' +
+        'Literature factors are not an individual validation of the patient. Results must be reviewed by a qualified radiation protection ' +
+        'expert before use. Generated by NM Radionuclide Planner, an open-source reference tool provided without warranty of any kind.',
+    });
+  });
+
+  $('btnCsv').addEventListener('click', () => {
+    if (!last) { alert('Correct the input errors first.'); return; }
+    const { input, out, cv } = last;
+    // Rectangular, self-describing CSV (as the Decay and Effluent exports):
+    // identity, versions, inputs and status repeated on every row.
+    const p6 = v => (typeof v === 'number' && Number.isFinite(v) ? v.toPrecision(6) : (v ?? ''));
+    const exportedUtc = new Date().toISOString();
+    const inv = out.inverse;
+    const head = ['App_version', 'App_build', 'Caregiver_data_version', 'Exported_UTC', 'Radiopharmaceutical',
+      'Row_type', 'Item', 'Restriction_d', 'Value', 'Unit', 'Status', 'Criterion_mSv', 'Criterion_basis', 'Assumptions'];
+    const assumptions = [
+      `rate_1m=${input.rate_1m_uSv_h} uSv/h`, `discharge=${input.discharge_h} h`, `fast_end=${input.fast_end_h} h`,
+      `T_fast=${input.T_fast_h} h`, `T_slow=${input.T_slow_h} h`, `cycles=${input.cycles}`, `category=${input.category}`,
+      `spc_min=${input.spc_min_restriction_d ?? ''} d`, `profile=${input.profile}`,
+      ...ROWS.map(([k]) => { const r = input.rows[k], o = out.rows[k];
+        return `${k}: ${r.days} d, during ${r.h_during} h/d @ ${r.d_during ?? ''} m (f=${o.fDuring ?? 'none'}), after ${r.h_after} h/d @ ${r.d_after ?? ''} m (f=${o.fAfter ?? 'none'})`; }),
+      ...(input.profile === 'own' ? out.points.map(p => `own ${p.distance_m ?? ''} m: ${p.rate_uSv_h ?? ''} uSv/h, f=${p.factor ?? 'none'}`) : []),
+    ].join('; ');
+    const common = [UTILS.APP_VERSION, UTILS.APP_BUILD, data.meta.version, exportedUtc, input.radiopharmaceutical];
+    const tail = [out.status, out.criterion.value ?? '', out.criterion.basis, assumptions];
+    const rows = [head];
+    const add = (type, item, R, v, unit) => rows.push([...common, type, item, R, p6(v), unit, ...tail]);
+    for (const [k, label] of ROWS) add('row', `${label} dose per cycle`, input.rows[k].days, out.rows[k].dose_mSv, 'mSv');
+    add('result', 'Dose per administration', '', out.perCycle_mSv, 'mSv');
+    add('result', 'Dose of the treatment', '', out.treatment_mSv, 'mSv');
+    add('result', 'Margin to the criterion', '', out.margin_mSv, 'mSv');
+    add('inverse', 'Maximum rate at 1 m at discharge', '', inv.maxRate_uSv_h, 'uSv/h');
+    add('inverse', 'Floor (indefinite restriction)', '', inv.floor_mSv, 'mSv');
+    add('inverse', 'Minimum restriction', '', inv.minRestriction_d !== null ? inv.minRestriction_d : (CAREGIVER.INVERSE_TEXT[inv.minRestrictionCode] || ''), 'd');
+    add('inverse', 'Adopted restriction', '', inv.adopted_d, 'd');
+    add('inverse', 'Treatment dose with the adopted restriction', inv.adopted_d ?? '', inv.doseAtAdopted_mSv, 'mSv');
+    for (const p of cv.points) add('curve', 'Treatment dose', p.days, p.dose_mSv, 'mSv');
+    const csv = rows.map(r => r.map(v => {
+      const str = String(v);
+      const safe = /^[=+\-@\t\r]/.test(str) ? "'" + str : str;
+      return `"${safe.replace(/"/g, '""')}"`;
+    }).join(',')).join('\r\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    a.href = url;
+    a.download = `caregiver_dose_${exportedUtc.slice(0, 10)}.csv`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 0);
+  });
+
+  writeInputs(CAREGIVER.defaultInput(data));
+  render();
+})();
+</script>
+</body>
+</html>

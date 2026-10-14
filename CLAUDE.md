@@ -21,6 +21,7 @@ index.html        Radionuclide properties database
 decay.html        Decay calculator
 dose.html         External dose estimator
 effluent.html     Liquid effluent screening — NUREG/CR-5814 Scenarios 1 (sewer inspector) and 2 (STP sludge operator)
+caregiver.html    Caregiver dose after discharge — port of references/Dosis_acompanantes_simple_v2.1.xlsx
 
 css/style.css     Shared styles (CSS variables, responsive grid)
 
@@ -30,11 +31,13 @@ js/db.js          DB module — nuclide database, search/filter
 js/report.js      REPORT module — printable calculation reports with traceability
 js/effluent.js    EFFLUENT module — Scenario 1/2 data loading, unit conversion, cross-checks (no DOM)
 js/regulatory.js  REGULATORY module — RD 1217/2024 A1/B, RD 783/2001 e(g), IS-28 levels (no DOM)
+js/caregiver.js   CAREGIVER module — two-phase kinetics, cohabitation dose, inverse calcs, self-check (no DOM)
 
 data/nuclides.json        Main radionuclide database (40 entries — source of truth)
 data/nuclides-data.js     Auto-generated from nuclides.json for file:// compatibility
 data/effluent-scenarios.json / -data.js  Effluent Scenario 1 and 2 parameters and coefficients (+ generated twin)
 data/regulatory.json / -data.js  RD 1217/2024 Annex IV A1/B + adult public e(g) (built by tools/build-regulatory-data.js)
+data/caregiver.json / -data.js   Caregiver profiles, criteria per category, references, workbook v6 reference cases
 
 manifest.json / sw.js                 PWA manifest and cache-first service worker
 assets/icons/                         Favicon, Apple Touch and install icons
@@ -82,6 +85,8 @@ RD 1217/2024 Annex IV: Table A1 (clearance; exemption of unlimited quantities) a
 IS-28 Anexo II II.A.4 (liquid discharges to public sewer) has THREE numeric conditions. The app implements only the per-nuclide concentration level (1 mSv / e(g))/600 L. It does not evaluate the mixture sum of fractions Σ(Cᵢ/Lᵢ) ≤ 1 or the annual activity limits (≤ 10 GBq H-3, ≤ 1 GBq C-14, strictly < 1 GBq the sum of the rest). RD 1217/2024 clearance is implemented only for a single nuclide; mixture clearance must be evaluated separately. Always present single-nuclide values as "individual level", not as a complete discharge/clearance assessment.
 
 Effluent page (`effluent.html`): Scenarios 1 (sewer inspector) and 2 (STP sludge operator) are DIFFERENT receptors — never add their doses. Source term: A_adm = patients × cycles × administered activity (all excreted); the in-hospital fraction leaves through the facility (for nuclides in decay tanks only their proportional share of the annual tank discharge, default 1 GBq/y for the sum, no decay credit); the rest is excreted at home. Scenario 1 gets only what leaves the hospital, diluted in the facility's annual water volume; Scenario 2 gets that plus the home part × catchment fraction; its PHITS k (600 × 200 × 50 cm water slab, receptor at 1 m) is photon-only, bremsstrahlung not bounded. A nuclide without a Scenario 2 external coefficient (F-18) keeps its inhalation; its external pathway is null (never zero) and the scenario total is flagged as a PARTIAL sum (`complete: false`, `missing`) everywhere. Solids fraction, 5090 t/y and the 1 GBq/y tank default are site hypotheses / boundary values, not regulatory values. Scenario 2: screening model, all discharged activity retained in one year of sludge (C = Q/S, SRS-19 §4.9 b), decay only during transit to the press. External coefficients k are own PHITS effective-dose-rate values (ICRP 116 ROT) for 10 × 10 × 3 m and 45 × 45 × 3 m sludge masses, receptor at 2 m — never replace them with point-source Γ, and never claim they cover the infinite slab NUREG prescribes (Lu-177 L45 captures 73–75 % of it). Inhalation uses ICRP 119 G.1 adult PUBLIC coefficients (Lu-177/Lu-177m/Tc-99m/F-18 type M, I-131 type F). The dose criterion is user-defined; do not attribute a regulatory basis to it. The workbook's I-131 shortcut (NUREG B.7 factor rescaled by dry mass only) is replaced by the explicit model and kept only as an indicative cross-check.
+
+Caregiver page (`caregiver.html`): faithful port of the workbook v2.1 (sheets Dosis, Curva, Comprobación) — keep it numerically identical to the workbook (test reproduces its preloaded case and curve to 1e-9). Two CONSECUTIVE exponentials (the slow phase starts from the rate reached at the end of the fast phase; never a simultaneous sum of components), each cycle integrated to infinity. The measured operational quantity is used as an estimator of external exposure, not as effective or fetal dose. Distances come only from the profile list (no interpolation); contact 0.1 m takes the 0.4 m factor (1/0.4)² in the approximate profiles. The criteria per category (3/5/1/0.3 mSv) are department evaluation criteria as cited by the workbook, not regulatory values for this treatment; the criterion never changes the calculated dose.
 
 ## UI / Styling Guidelines
 

@@ -13,7 +13,7 @@
 'use strict';
 
 const CACHE_PREFIX = 'nm-planner-';
-const CACHE_VERSION = 'nm-planner-v36';
+const CACHE_VERSION = 'nm-planner-v37';
 
 const ASSETS = [
   './',
@@ -21,6 +21,7 @@ const ASSETS = [
   './decay.html',
   './dose.html',
   './effluent.html',
+  './caregiver.html',
   './about.html',
   './assets/icons/favicon.svg',
   './assets/icons/icon-180.png',
@@ -31,6 +32,7 @@ const ASSETS = [
   './js/chart.umd.min.js',
   './js/data.js',
   './js/effluent.js',
+  './js/caregiver.js',
   './js/nuclide-id.js',
   './js/db.js',
   './js/icrp107-loader.js',
@@ -45,6 +47,7 @@ const ASSETS = [
   './data/nuclides-data.js',
   './data/icrp107-data.js',
   './data/effluent-scenarios-data.js',
+  './data/caregiver-data.js',
   './data/regulatory-data.js',
 ];
 

@@ -1,6 +1,6 @@
 # NM Radionuclide Planner — User Guide
 
-A web application for nuclear medicine radionuclide properties, decay calculations, external dose estimation and liquid-effluent screening (sewer and STP workers).
+A web application for nuclear medicine radionuclide properties, decay calculations, external dose estimation, liquid-effluent screening (sewer and STP workers) and caregiver dose after the discharge of a therapy patient.
 
 **Local distribution:** Keep the supplied folder intact and open `index.html` in a modern web browser.
 
@@ -17,8 +17,8 @@ The application has no installation or authentication. It can be used in either 
 - **Mobile**: iOS Safari, Chrome mobile (with landscape mode for better experience)
 - **Offline**: Calculators work offline with the complete local copy (opened from `file://`, or from the local cache of a copy first loaded over HTTP(S)); external references need a connection
 - **Install as app (PWA)**: when served through `localhost` or HTTPS, a compatible browser can offer "Install" / "Add to Home screen" — the app then runs standalone with its own icon and a service worker keeps all assets cached for fully offline use
-- **Reports**: the Decay, Dose and Effluent calculators include a **📄 Report / PDF** button that generates a printable calculation report (timestamp, database version, inputs, results, method, data sources, disclaimer and sign-off line) — use the browser's "Save as PDF" destination to archive it
-- **CSV exports**: Decay, Dose and Effluent CSVs are rectangular and self-describing — every row repeats the application version and build, database version, export time (UTC), nuclide and the inputs needed to reproduce the result; the Effluent CSV also states whether each scenario total is complete or a partial sum
+- **Reports**: the Decay, Dose, Effluent and Caregiver calculators include a **📄 Report / PDF** button that generates a printable calculation report (timestamp, database version, inputs, results, method, data sources, disclaimer and sign-off line) — use the browser's "Save as PDF" destination to archive it
+- **CSV exports**: Decay, Dose, Effluent and Caregiver CSVs are rectangular and self-describing — every row repeats the application version and build, database version, export time (UTC), nuclide and the inputs needed to reproduce the result; the Effluent CSV also states whether each scenario total is complete or a partial sum
 
 ---
 
@@ -194,7 +194,34 @@ The short text under each input says what it means; the sources of the defaults 
 
 ---
 
-### 5. ICRP 107 data integrity
+### 5. Caregiver Dose after Discharge (`caregiver.html`)
+
+**Purpose**: External dose to one caregiver, family member or third party from a radionuclide-therapy patient (Lu-177-PSMA-617, Lu-177-DOTATATE, I-131) after discharge, for equal treatment cycles, with the maximum discharge rate and the minimum restriction period that meet a criterion. Port of the workbook *Dosis_acompanantes_simple_v2.1.xlsx*.
+
+**How to use**:
+1. **Case data**: dose rate measured at 1 m at discharge (µSv/h); discharge time and end of the fast phase, both counted from administration (24 h in Kurth et al. 2018 and Demir et al. 2016; 0 = no fast phase); fast and slow effective half-lives (the fast one is only required when discharge precedes the end of the fast phase, and must not exceed the slow one); number of equal cycles; category of the exposed person (or *Other criterion* with a manual value); optional minimum restriction of the product information; proximity profile
+2. **Proximity profile**: *DOTATATE measured* (factors 14.9 / 2.5 / 1 at 0.1 / 0.5 / 1 m, medians of Monserrat Fuertes et al. 2023), *I-131 approximate* and *Lu-177 approximate* (contact at 0.1 m takes the factor of 0.4 m, (1/0.4)² = 6.25; inverse square at 0.5, 1, 1.5, 2 and 3 m), or *Own measurements* (up to five distances with the rate measured at the same time as the 1 m reading; factor = rate / rate at 1 m). Distances are chosen from the profile list — there is no interpolation. A warning appears when the profile does not match the radiopharmaceutical
+3. **Cohabitation**: two rows, *day-time cohabitation* and *sleeping in the same room* (hours are mutually exclusive), each with the restriction days counted from discharge, hours/day and distance during the restriction, and hours/day and distance after it. Zero hours = no contact (the distance may be empty). The sum of hours in any period may not exceed 24 h/day
+
+Results update as you type: dose per administration and per treatment, applied criterion and margin, status and warnings; the inverse calculations (same restriction in both rows): maximum discharge rate, the floor (treatment dose with an indefinite restriction), the minimum restriction, the adopted restriction (rounded up and not below the product information; *Use the adopted restriction in the table* writes it into both rows) and the treatment dose with it; the curve of treatment dose versus restriction with the criterion, the floor and the adopted restriction; and a self-check (independent recalculation in µSv and h, plus the reference cases of the source workbook v6). **📄 Report / PDF** and **⬇ Export CSV** record every input.
+
+**Model**: two **consecutive** exponentials — the fast effective half-life from discharge to the end of the fast phase, then the slow one starting from the rate reached; each cycle integrated to infinity, in SI. Dose per cycle and row = I_before(C) · h_during/24 · f_during + I_after(C) · h_after/24 · f_after; treatment dose = cycles × Σ rows. The minimum restriction is solved analytically.
+
+**Criteria per category** (evaluation criteria adopted by the department, as cited by the source workbook — not values fixed by regulation for this treatment): carer ≤ 60 years 3 mSv, carer > 60 years 5 mSv, public 1 mSv, co-worker 0.3 mSv per treatment. The criterion only changes the comparison and the inverse calculations, never the calculated dose.
+
+**Limitations**:
+- One person and equal cycles (same discharge rate, kinetics and cohabitation); the criterion covers only the administrations entered and does not by itself demonstrate annual compliance
+- The integral of the measured operational quantity is used as an estimator of external exposure; it is not automatically the individual effective dose nor the fetal dose. Internal contamination, the dose before discharge and other sources are not included
+- Occupancy h/24 is a daily average; trips and contacts concentrated during the fast phase need a specific time-resolved assessment. Spatial factors are constant in both phases
+- Approximate profiles are published conventions, not universal measured factors
+
+**Example** (default values: Lu-177-PSMA-617, 15 µSv/h at 1 m, discharge at 6 h, fast phase ending at 24 h, 16.4 / 40.5 h, 6 cycles, carer ≤ 60 years, Lu-177 approximate; day-time 3 d at 6 h/d and 1 m, then 6 h/d at 1 m; sleeping apart for 3 d, then 8 h/d at 0.1 m):
+- Dose per administration 0.488 mSv; treatment 2.93 mSv against 3 mSv — within the criterion, margin 0.070 mSv
+- Maximum discharge rate 15.4 µSv/h; floor 0.898 mSv; minimum restriction 2.92 d → adopted 3 d
+
+---
+
+### 6. ICRP 107 data integrity
 
 Constants for the extended ICRP 107 nuclides are computed from the parsed photon
 emissions and cross-checked against the published Cornejo (2015) values by the

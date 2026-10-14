@@ -53,6 +53,12 @@ Target users: medical physicists and radiation protection specialists.
 - Not a complete discharge assessment: the IS-28 Annex II II.A.4 conditions and mixture clearance are evaluated separately
 - Indicative cross-check against NUREG/CR-5814 Tables A.21 and B.7 and IAEA SRS-19 Table I–IV; 📄 Report / PDF and CSV export
 
+### Caregiver dose after discharge (`caregiver.html`)
+- External dose to one caregiver, family member or third party from a Lu-177 or I-131 therapy patient, from the rate measured at 1 m at discharge, two consecutive effective half-lives, day-time and sleeping cohabitation during and after a restriction, and equal cycles (port of the workbook *Dosis_acompanantes_simple_v2.1.xlsx*)
+- Proximity profiles: DOTATATE measured (Monserrat Fuertes et al. 2023), I-131 / Lu-177 approximate (contact = factor of 0.4 m; inverse square), or own measurements
+- Inverse calculations: maximum discharge rate, minimum and adopted restriction, floor with an indefinite restriction; dose-vs-restriction curve; self-check against the workbook v6 reference cases; 📄 Report / PDF and CSV export
+- Criteria per category (3 / 5 / 1 / 0.3 mSv) are evaluation criteria adopted by the department, not regulatory values for this treatment
+
 ### Extended database — ICRP 107 (`index.html`)
 - Main database contains 40 curated radionuclides. For any other nuclide, the Properties page offers fallback search in **ICRP Publication 107** (1252 nuclides)
 - **"Search in ICRP 107" button** appears when a nuclide is not found in the main database
@@ -156,6 +162,7 @@ index.html              Properties page (with ICRP 107 extended search)
 decay.html              Decay calculator
 dose.html               Dose estimator (with Y-90 Zanzonico, distance-aware output)
 effluent.html           Liquid effluent screening — NUREG/CR-5814 Scenarios 1 (sewer) and 2 (STP sludge)
+caregiver.html          Caregiver dose after discharge of a therapy patient
 about.html              In-app guide, licensing and third-party notices
 
 assets/icons/           Favicon, Apple Touch and PWA install icons
@@ -171,6 +178,7 @@ js/ui.js                UI module — dark mode, print, keyboard, history
 js/utils.js             Formatting, escaping, dates and CSV helpers
 js/report.js            Printable traceable calculation reports
 js/effluent.js          EFFLUENT module — Scenario 1/2 data loading, unit conversion and cross-checks
+js/caregiver.js         CAREGIVER module — two-phase kinetics, cohabitation dose, inverse calculations, self-check (no DOM)
 js/regulatory.js        REGULATORY module — RD 1217/2024 Tables A1/B, RD 783/2001 e(g), IS-28 individual levels
 
 data/nuclides.json      Radionuclide database (directly editable, source of truth)
@@ -181,12 +189,14 @@ data/effluent-scenarios.json     Effluent Scenarios 1 and 2: parameters, PHITS c
 data/effluent-scenarios-data.js  Auto-generated from effluent-scenarios.json (for file:// compatibility)
 data/regulatory.json             RD 1217/2024 Annex IV A1 (257) and B (297 rows) with notes and progeny; adult public e(g) (759 rows)
 data/regulatory-data.js          Auto-generated from regulatory.json
+data/caregiver.json              Caregiver page: proximity profiles, criteria per category, references, reference cases
+data/caregiver-data.js           Auto-generated from caregiver.json
 
 data/sources/icrp107/   ICRP 107 raw files — LOCAL ONLY, gitignored (© ICRP; download free from icrp.org, verify SHA256 in icrp107-index.json)
 
 tools/parse-icrp107.js  NDX/RAD/BET parser (FORTRAN fixed-width, generates icrp107-index.json)
 tools/recalc-gamma.js   Recalculates curated Γ (incl. chains) with the A.21 table of js/data.js
-tools/generate-data.js  Wraps nuclides.json, effluent-scenarios.json and regulatory.json as JS for offline compatibility
+tools/generate-data.js  Wraps nuclides.json, effluent-scenarios.json, regulatory.json and caregiver.json as JS for offline compatibility
 tools/build-regulatory-data.js  Builds regulatory.json from the verified library CSVs + the BOE HTML extraction
 tools/add-max-energy.js Adds max_photon_energy_keV to ICRP 107 nuclides
 

@@ -62,6 +62,12 @@ Each module (PHYSICS, CALC, DB, ICRP107, UI) is an IIFE returning public API. No
 - `crossChecks(nuclide, half_life_s, plant)` — NUREG/CR-5814 Table B.7 rescaled to the plant and IAEA SRS-19 Table I–IV; `nuregComparison(nuclide, geometry)` — PHITS k vs NUREG Table A.21 GENII factors (indicative only, never used in the result)
 - No DOM access. Half-lives come from `nuclides.json`, not from the effluent data file
 
+### `CAREGIVER` (`js/caregiver.js`)
+- `load()` — `data/caregiver.json` by fetch, falling back to the embedded `CAREGIVER_DATA` (same coherence rule as `DB.load()`); `setData(d)` for Node tests
+- `evaluate(input)` — port of sheet *Dosis* of `Dosis_acompanantes_simple_v2.1.xlsx` (cells cited in the code): validations, two consecutive exponentials integrated to infinity in SI, dose per row/cycle/treatment, status, warnings and inverse calculations (maximum rate, floor, minimum and adopted restriction)
+- `curve(input)` — sheet *Curva*; `selfCheck(input)` — sheet *Comprobación* (independent µSv/h formulation + the workbook v6 reference cases stored in `caregiver.json`)
+- No DOM access
+
 ### `REGULATORY` (`js/regulatory.js`)
 - `clearanceA1(id)`, `exemptionB(id)` — RD 1217/2024 Annex IV; return `{status: 'listed', rows}` or `{status: 'not_tabulated', text}`; composite entries resolve to their parent (`Mo-99+Tc-99m` → `Mo-99`)
 - `ingestionAdult(id)` — all chemical-form rows and the governing (largest) e(g); `dischargeLevel(id)` — IS-28 II.A.4 individual level, unrounded
@@ -82,11 +88,14 @@ Each module (PHYSICS, CALC, DB, ICRP107, UI) is an IIFE returning public API. No
 
 **`data/effluent-scenarios.json`** — source of truth for the effluent page: parameter defaults (groups `common`, `s1`, `s2`) with unit, range and source; facility presets; per-nuclide PHITS coefficients (`k_ext.s1`, `k_ext.s2.L10/L45` or `null`) with uncertainty and report id; ICRP 119 inhalation coefficients; default source terms; cross-check factors
 
+**`data/caregiver.json`** — source of truth for the caregiver page: defaults, proximity profiles (points and factors), criteria per category with their basis as cited by the source workbook, assumptions, references and the reference cases used by the self-check
+
 **`data/regulatory.json`** — built by `tools/build-regulatory-data.js` from the verified CSVs of the professional library (RD 1217/2024 Annex IV values and progeny; ICRP 119 F.1) plus the extraction of the BOE consolidated HTML. The library CSV has per-table note columns (`nota_A1`, `nota_B`) since its 2026-10-03 correction; every id, note and value must match in both extractions or the build aborts. Kept as printed and flagged: four note/progeny inconsistencies of the BOE (A1 Ce-144, U-231; B Ag-108m, U-230). Added by hand, checked on the rendered page: A1 progeny `Es-254m → Fm-254`, missing from the library CSV.
 
 **Auto-generated:**
 - `nuclides-data.js` — JavaScript wrapper for file:// compatibility
 - `effluent-scenarios-data.js` — JavaScript wrapper of `effluent-scenarios.json`
+- `caregiver-data.js` — JavaScript wrapper of `caregiver.json`
 - `icrp107-index.json` — 1252 nuclides with photon emissions
 - `icrp107-data.js` — Embedded for offline use
 
@@ -240,11 +249,12 @@ builds made with another compressor version remain auditable, although their
 compressed bytes are not promised to match. The allowlist (duplicated in that
 script — keep both in sync) is:
 
-- `index.html`, `decay.html`, `dose.html`, `effluent.html`, `about.html`
+- `index.html`, `decay.html`, `dose.html`, `effluent.html`, `caregiver.html`, `about.html`
 - `css/`
 - `js/` (includes the locally bundled `chart.umd.min.js`)
 - `data/nuclides.json`, `data/nuclides-data.js`
 - `data/effluent-scenarios.json`, `data/effluent-scenarios-data.js`
+- `data/caregiver.json`, `data/caregiver-data.js`
 - `data/regulatory.json`, `data/regulatory-data.js`
 - `data/icrp107-index.json`, `data/icrp107-data.js`
 - `assets/icons/`
