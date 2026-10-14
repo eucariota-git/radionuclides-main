@@ -6,7 +6,18 @@
 // Chart.js formats tick labels with the BROWSER locale, so a Spanish browser
 // drew "33,2" and "0,5" on axes while the rest of the app uses a decimal point
 // (audit 2026-10-14 v1.11, R-06). Every page loads Chart.js before this file.
-if (typeof Chart !== 'undefined') Chart.defaults.locale = 'en-US';
+// The en-US formatter still groups thousands ("1,000" keV on the photon-spectrum
+// axis), which a Spanish reader takes for a decimal comma: strip the grouping in
+// the default tick labels of linear and logarithmic axes. Axes with their own
+// callback are unaffected.
+if (typeof Chart !== 'undefined') {
+  Chart.defaults.locale = 'en-US';
+  const ungrouped = fmt => function (value, index, ticks) {
+    return String(fmt.call(this, value, index, ticks)).replace(/,/g, '');
+  };
+  Chart.defaults.scales.linear.ticks.callback = ungrouped(Chart.Ticks.formatters.numeric);
+  Chart.defaults.scales.logarithmic.ticks.callback = ungrouped(Chart.Ticks.formatters.logarithmic);
+}
 
 const UI = (() => {
   /* --- Dark Mode --- */

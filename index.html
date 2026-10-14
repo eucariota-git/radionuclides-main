@@ -346,8 +346,9 @@
     // at least a factor 2 below the weakest line, so no bar has zero height
     // (a line exactly on a decade, or a single line such as F-18's 193.5 %)
     const yMin = Math.pow(10, Math.floor(Math.log10(Math.min(...pts.map(p => p.y)) / 2)));
-    // next decade above the tallest bar; a share never exceeds 100 %
-    const yMax = Math.min(dose ? 100 : Infinity, Math.pow(10, Math.ceil(Math.log10(Math.max(...pts.map(p => p.y)) * 1.2))));
+    // a factor 2 above the tallest bar (not the next decade: a 100 % line put the
+    // top at 1000 %); the log axis labels decades only. A share never exceeds 100 %.
+    const yMax = Math.min(dose ? 100 : Infinity, 2 * Math.max(...pts.map(p => p.y)));
     const datasets = SPECTRUM_TYPES.map(([type, label]) => ({
       _type: type,
       label,

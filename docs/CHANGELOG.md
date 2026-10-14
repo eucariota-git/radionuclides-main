@@ -4,6 +4,10 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
+### v1.12.1 — no thousands separator on chart axes
+- Chart.js's en-US formatter printed "1,000" keV on the photon-spectrum axis, which a Spanish reader takes for a decimal comma. Default tick labels of linear and logarithmic axes no longer group thousands (all pages).
+- Photon spectrum: the yield axis ends a factor 2 above the tallest line instead of at the next decade (a 100 % line put the top at 1000 %).
+
 ### v1.12.0 — review of v1.11.0 (R-01…R-11)
 - **Extended entries with short-lived progeny** (R-01): Γ came from the parent's lines only, so Ge-68 and Sr-82 showed no photon dose and Sn-113 a third of it. The ICRP 107 parser dropped metastable daughters (`[mn]?` missing in the daughter regex: Mo-99 listed only Tc-99, Cs-137 and Sn-113 none); fixed and the index regenerated (114 decay records, no other field changed). `ICRP107.progeny()` adds the descendants with T½ ≤ 1/10 of the parent's and ≤ 30 d at their Bateman equilibrium ratio; Dose includes them by default with a *Short-lived progeny* selector (parent only for a fresh source), Properties shows both Γ and the spectrum with the emitter of each line.
 - **Pd-103 includes Rh-103m** (56 min, always in equilibrium): Γ^H*(10) 20.51 → 22.7 and Γ^H'(0.07) 34.42 → 38.09 µSv·h⁻¹·GBq⁻¹·m², now 1.7 % and 0.2 % from Cornejo et al. (2015) (23.1 / 38.0) instead of −11 %.

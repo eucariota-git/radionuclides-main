@@ -310,6 +310,12 @@ async function main() {
       await open('decay.html?id=Lu-177', 1280);
       const ticks = await ev(`Chart.getChart(document.querySelector('canvas')).scales.x.ticks.map(t => t.label).join(' ')`);
       check('decay chart: x tick labels use a decimal point', !/\d,\d/.test(ticks), ticks);
+      // en-US still groups thousands ("1,000"), which reads as a decimal comma in Spain
+      await open('index.html?id=Na-24', 1280);
+      const sp = await ev(`(() => { const c = Chart.getChart('spectrumChart');
+        return { x: c.scales.x.ticks.map(t => t.label).join(' '), y: c.scales.y.ticks.map(t => t.label).join(' '), max: c.scales.y.max }; })()`);
+      check('properties Na-24 spectrum: no comma in tick labels (1000, not 1,000) and the y axis ends below 1000 %',
+        !/,/.test(sp.x + sp.y) && /\b1000\b/.test(sp.x) && sp.max < 1000, JSON.stringify(sp));
     });
     await guard('Report: the print path builds the report without errors', async () => {
       // Report: the print path builds the report without errors
