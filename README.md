@@ -200,6 +200,7 @@ tools/generate-data.js  Wraps nuclides.json, effluent-scenarios.json, regulatory
 tools/build-regulatory-data.js  Builds regulatory.json from the verified library CSVs + the BOE HTML extraction
 tools/add-max-energy.js Adds max_photon_energy_keV to ICRP 107 nuclides
 tools/sync-beta-emax.js Copies the beta endpoint and beta yield of the curated entries from the ICRP 107 index
+tools/set-half-life-sources.js Records the source of each curated half-life (ICRP 107 or DDEP) and replaces unsourced values
 
 references/             Open-license sources only (BOE legal texts, CC BY Oumano 2025); copyrighted PDFs (Cornejo, Zanzonico, ICRP) kept locally, gitignored
 test/                   Mathematical, data, constants and application-integration validation

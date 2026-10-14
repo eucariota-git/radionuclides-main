@@ -4,6 +4,13 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
+### v1.10.2 — half-life provenance and presentation (audit 2026-10-14, N-03, N-06)
+- Every curated half-life now names its source (`half_life_source`, shown in Properties and in the reports). Checked against ICRP 107 (2008) and the DDEP recommended values (LNHB/CEA, consulted 2026-10-14): 23 match ICRP 107 and 12 match DDEP within 0.015 %. Five matched neither and were replaced: Lu-177 6.6443 d, Y-90 2.6684 d, O-15 122.266 s and Mo-99 2.7479 d (DDEP), K-42 (ICRP 107). Lu-177 changes by +0.03 %: the Scenario 2 effluent results rise by 0.01 %.
+- Properties: modality tags use the filter labels (Therapy, Other…).
+- Caregiver: 3 significant figures on screen and in the report (the CSV keeps 6).
+- Effluent: the E (mSv/y) column comes right after the nuclide in both result tables.
+- Decay: the concentration chart uses a logarithmic axis, so the crossing with the Table A1 level is visible.
+
 ### v1.10.1 — audit 2026-10-14 (N-01, N-02, N-04, N-05, N-07, N-08, N-09)
 - Decay: the curve now covers its whole time range. Its category axis read the time `max` as an index, so Lu-177 (33 d) was cut at 7.1 d and Tc-99m (30 h) at 6 h since the first release; the elapsed-time and Table A1 marks now sit at their exact time.
 - Dose: the "d = X m" mark sits at the exact distance (it snapped to the nearest 0.05 m node) and the curve extends past 5 m when the requested distance does.

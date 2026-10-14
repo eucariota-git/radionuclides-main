@@ -82,6 +82,15 @@ const REPORT = (() => {
     return 'Curated entry computed from ICRP 107 photon data with ICRP 74 Table A.21 coefficients — no published comparison is recorded in this app';
   }
 
+  /**
+   * Provenance of the half-life: per-nuclide `half_life_source` for curated
+   * entries (ICRP 107 or DDEP, audit 2026-10-14, N-03); ICRP 107 for extended ones.
+   */
+  function halfLifeSource(n) {
+    if (n._icrp107) return 'ICRP Publication 107 (2008), extended entry — not manually validated';
+    return n.half_life_source || 'Curated database entry — no half-life source recorded';
+  }
+
   function buildHtml(spec) {
     const meta = (typeof DB !== 'undefined' && DB.getMeta) ? DB.getMeta() : {};
     const now  = new Date();
@@ -101,10 +110,9 @@ const REPORT = (() => {
       // constants (and the Y-90 container warning) does not belong in it
       // (copy audit 2026-10-03, T34).
       ? `<tr><td>Nuclide</td><td><strong>${esc(n.id)}</strong> — ${esc(n.name)} (T&#189; = ${esc(n.half_life_display)})</td></tr>
-          <tr><td>Half-life source</td><td>${esc(n._icrp107
-            ? 'ICRP Publication 107 (2008), extended entry — not manually validated'
-            : 'Curated database entry — half-life as stored in data/nuclides.json (no per-nuclide half-life reference is recorded in this app)')}</td></tr>`
+          <tr><td>Half-life source</td><td>${esc(halfLifeSource(n))}</td></tr>`
       : `<tr><td>Nuclide</td><td><strong>${esc(n.id)}</strong> — ${esc(n.name)} (T&#189; = ${esc(n.half_life_display)})</td></tr>
+          <tr><td>Half-life source</td><td>${esc(halfLifeSource(n))}</td></tr>
           <tr><td>Data status</td><td>${esc(validationStatus(n))}</td></tr>
           ${n.source ? `<tr><td>Nuclide source</td><td>${esc(n.source)}</td></tr>` : ''}`;
 

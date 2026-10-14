@@ -759,9 +759,17 @@
             ticks: { maxTicksLimit: 10, color: chartTheme.text },
             grid: { color: chartTheme.grid },
           },
-          y: {
+          // Concentration on a log axis: the Table A1 level sits orders of
+          // magnitude below the start, and on a linear axis the crossing was
+          // invisible (audit 2026-10-14, N-06). Decade ticks only.
+          y: showConcentration ? {
+            type: 'logarithmic',
             title: { display: true, text: yAxisLabel, color: chartTheme.text },
-            ticks: { callback: v => showConcentration ? v.toFixed(2) : v.toExponential(2), color: chartTheme.text },
+            ticks: { callback: v => (Math.abs(Math.log10(v) - Math.round(Math.log10(v))) < 1e-9 ? v.toExponential(0) : ''), color: chartTheme.text },
+            grid: { color: chartTheme.grid },
+          } : {
+            title: { display: true, text: yAxisLabel, color: chartTheme.text },
+            ticks: { callback: v => v.toExponential(2), color: chartTheme.text },
             grid: { color: chartTheme.grid },
           }
         }

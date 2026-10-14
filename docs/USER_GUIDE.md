@@ -33,7 +33,7 @@ The application has no installation or authentication. It can be used in either 
    - The modality buttons (PET, SPECT, Therapy, Brachytherapy, Other) filter the 40 curated entries
    - If no curated entry matches, the extended ICRP 107 results, and the identifiers that exist only in the regulatory tables, are shown automatically. Extended results have no modality classification, so the modality filter is not applied to them
 2. **Read the table**:
-   - Half-life and decay modes (α, β⁻, β⁺, EC, IT)
+   - Half-life and decay modes (α, β⁻, β⁺, EC, IT). Each curated half-life names its source in the detail panel and in the reports: ICRP Publication 107 (2008) or the DDEP recommended value (LNHB/CEA *Table de Radionucléides*). The photon data and Γ constants are ICRP 107 in both cases
    - **Γ^K-air**: air-kerma rate constant — μGy·h⁻¹·GBq⁻¹·m²
    - **Γ^H\*(10)**: ambient dose-equivalent rate constant (area monitoring; effective-dose estimator) — μSv·h⁻¹·GBq⁻¹·m²
    - **Γ^H'(0.07)**: directional dose-equivalent rate constant (area monitoring; skin/extremity indicator) — μSv·h⁻¹·GBq⁻¹·m²

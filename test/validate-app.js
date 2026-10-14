@@ -318,7 +318,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v40');
+    swVersion === 'nm-planner-v41');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -824,7 +824,7 @@ async function main() {
 
   console.log();
 
-  console.log('Test 14: audit 2026-10-14 regressions (N-01, N-02, N-07, N-08, N-09)');
+  console.log('Test 14: audit 2026-10-14 regressions (N-01, N-02, N-03, N-06, N-07, N-08, N-09)');
   // N-01: Decay chart on a LINEAR time axis with {x, y} points. A category axis
   // with `max` in time units is read as an index by Chart.js (Lu-177 cut at 7.1 of 33 d).
   check('N-01: decay chart uses a linear time axis with {x, y} data, no category labels',
@@ -873,6 +873,31 @@ async function main() {
       return r.inverse.adopted_d === 0 && r.inverse.minRestriction_d === 0 && r.inverse.minRestrictionCode === null &&
         r.inverse.floor_mSv === null && Math.abs(r.inverse.doseAtAdopted_mSv - 0.997698321818888) < 1e-9;
     })());
+
+  // N-03: every curated half-life names its source and matches it
+  const ddepRef = { 'Lu-177': 6.6443 * 86400, 'Y-90': 2.6684 * 86400, 'O-15': 122.266, 'Mo-99+Tc-99m': 2.7479 * 86400, 'Tc-99m': 6.0067 * 3600, 'I-131': 8.0233 * 86400 };
+  check('N-03: every curated half-life has a half_life_source (ICRP 107 or DDEP)',
+    curated.every(n => /^(ICRP Publication 107 \(2008\)|DDEP — LNHB\/CEA Table de Radionucléides)/.test(n.half_life_source || '')));
+  check('N-03: values attributed to ICRP 107 match the index within 0.015 %',
+    curated.filter(n => n.half_life_source === 'ICRP Publication 107 (2008)').every(n => {
+      const t = i107.get(n.id === 'Mo-99+Tc-99m' ? 'Mo-99' : n.id).half_life_s; return Math.abs(n.half_life_s / t - 1) <= 1.5e-4; }));
+  check('N-03: replaced values equal the DDEP recommended value (Lu-177 6.6443 d, Y-90 2.6684 d, O-15 122.266 s, Mo-99 2.7479 d); K-42 = ICRP 107',
+    Object.entries(ddepRef).every(([id, t]) => Math.abs(curated.find(n => n.id === id).half_life_s / t - 1) <= 1.5e-4) &&
+    curated.find(n => n.id === 'K-42').half_life_s === i107.get('K-42').half_life_s &&
+    curated.find(n => n.id === 'Y-90').half_life_display === '64.04 h');
+  check('N-03: reports and Properties show the half-life source',
+    /function halfLifeSource\(n\)/.test(reportJs) && /<td>Half-life source<\/td><td>\$\{esc\(halfLifeSource\(n\)\)\}/.test(reportJs) &&
+    /n\.half_life_source\.startsWith\('DDEP'\)/.test(indexHtml) && !/no per-nuclide half-life reference/.test(reportJs));
+
+  // N-06: presentation
+  check('N-06: Properties modality tags use the filter labels (Therapy, Other…)',
+    /label = \{ PET:'PET', SPECT:'SPECT', therapy:'Therapy', brachytherapy:'Brachytherapy', other:'Other' \}/.test(indexHtml));
+  check('N-06: caregiver shows 3 significant figures; the CSV keeps 6',
+    /v\.toPrecision\(3\)\) : '—'\);/.test(caregiverHtml) && /toPrecision\(6\)/.test(caregiverHtml));
+  check('N-06: effluent tables put E (mSv/y) right after the nuclide',
+    (effluentHtml.match(/<th>Nuclide<\/th>\s*<th class="text-right">E \(mSv\/y\)<\/th>/g) || []).length === 2);
+  check('N-06: decay concentration chart uses a logarithmic y axis',
+    /y: showConcentration \? \{\s*type: 'logarithmic'/.test(decayHtml));
 
   // N-09: every page registers the service worker
   check('N-09: every page registers the service worker (direct entry also installs the offline cache)',

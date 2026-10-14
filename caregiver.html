@@ -449,7 +449,9 @@
   }
 
   // ---- Formatting ----
-  const f3 = v => (Number.isFinite(v) ? (Math.abs(v) >= 1e5 || (v !== 0 && Math.abs(v) < 1e-3) ? v.toExponential(3) : v.toPrecision(4)) : '—');
+  // 3 significant figures on screen and in the report: the 1 m rate is usually
+  // measured to 2–3 figures (audit 2026-10-14, N-06); the CSV keeps 6 for traceability.
+  const f3 = v => (Number.isFinite(v) ? (Math.abs(v) >= 1e5 || (v !== 0 && Math.abs(v) < 1e-3) ? v.toExponential(2) : v.toPrecision(3)) : '—');
   const f2d = v => (Number.isFinite(v) ? v.toFixed(2) : '—');
 
   // ---- Chart ----
@@ -561,7 +563,7 @@
     statusBox.textContent = out.status;
     $('warningList').innerHTML = out.warnings.map(w => `<li style="color:var(--warning-text);">&#9888; ${esc(w)}</li>`).join('');
 
-    for (const [k] of ROWS) $(`${k}_dose`).textContent = Number.isFinite(out.rows[k].dose_mSv) ? out.rows[k].dose_mSv.toPrecision(4) : '—';
+    for (const [k] of ROWS) $(`${k}_dose`).textContent = Number.isFinite(out.rows[k].dose_mSv) ? out.rows[k].dose_mSv.toPrecision(3) : '—';
     $('perCycle').textContent = f3(out.perCycle_mSv);
     $('treatment').textContent = f3(out.treatment_mSv);
     $('treatmentUnit').textContent = `mSv — ${Number.isFinite(input.cycles) ? input.cycles : '?'} cycle(s)`;

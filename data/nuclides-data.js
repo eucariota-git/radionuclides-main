@@ -20,11 +20,12 @@ const NUCLIDE_DATA = {
     "generated_at_note": "generated_at/generated_by_script record when the gamma constants themselves were last recomputed. The file is NOT the product of a single script: other tools and hand edits touch it afterwards, so last_modified_at below is the one to read for freshness.",
     "icrp107_index_sha256": "3845347ee2fb71e18b84a844905e44dab9d2d8a12939173575040b7b9b6707f2",
     "clearance_note": "clearance_a1_kBq_per_kg values verified 2026-06 against RD 1217/2024 Anexo IV Tabla A1 (BOE-A-2024-25205, consolidated HTML). Nuclides not listed in Tabla A1 carry null (e.g. Ga-67, Yb-169, Ra-223 — the latter appears only in Tabla B for moderate quantities ≤1000 kg).",
-    "last_modified_at": "2026-10-14T17:08:33.322Z",
+    "last_modified_at": "2026-10-14T17:22:11.766Z",
     "last_modified_by_script": "tools/add-shielding-spectra.js",
     "gamma_regenerated": "2026-10-03 by tools/recalc-gamma.js with the ICRP 74 Table A.21 conversion table of js/data.js",
     "yield_threshold_note": "Lines with a stored yield EQUAL to 0.01 % are kept (filter n ≥ 0.01 %). Cornejo et al. (2015) state yields above 0.01 %; keeping the boundary lines is a project choice applied to all 1252 nuclides (audit 2026-10-03, H14).",
-    "conversion_table_note": "Γ^H*(10) and Γ^H'(0.07) use the 25 printed fluence coefficients of ICRP 74 (1996) Table A.21 (js/data.js), log-log interpolated, since 2026-10-03. Before that the H*(10) column above 1 MeV and the H'(0.07) column did not match A.21 (audit 2026-10-03, H-01/H-02)."
+    "conversion_table_note": "Γ^H*(10) and Γ^H'(0.07) use the 25 printed fluence coefficients of ICRP 74 (1996) Table A.21 (js/data.js), log-log interpolated, since 2026-10-03. Before that the H*(10) column above 1 MeV and the H'(0.07) column did not match A.21 (audit 2026-10-03, H-01/H-02).",
+    "half_life_source_note": "Per-nuclide provenance in half_life_source (audit 2026-10-14, N-03): each curated half-life matches ICRP Publication 107 (2008) or the DDEP recommended value (LNHB/CEA) within 0.015 %; the values that matched neither (O-15, Mo-99, Lu-177, Y-90 → DDEP; K-42 → ICRP 107) were replaced. Photon yields and Γ constants remain ICRP 107."
   },
   "nuclides": [
     {
@@ -80,7 +81,8 @@ const NUCLIDE_DATA = {
           1
         ]
       ],
-      "beta_yield_per_decay": 0.9977
+      "beta_yield_per_decay": 0.9977,
+      "half_life_source": "DDEP — LNHB/CEA Table de Radionucléides: T½ = 20.361(23) min (consulted 2026-10-14)"
     },
     {
       "id": "N-13",
@@ -132,7 +134,8 @@ const NUCLIDE_DATA = {
           1
         ]
       ],
-      "beta_yield_per_decay": 0.9995
+      "beta_yield_per_decay": 0.9995,
+      "half_life_source": "ICRP Publication 107 (2008)"
     },
     {
       "id": "O-15",
@@ -140,7 +143,7 @@ const NUCLIDE_DATA = {
       "Z": 8,
       "A": 15,
       "name": "Oxygen-15",
-      "half_life_s": 122.2,
+      "half_life_s": 122.266,
       "half_life_display": "2.04 min",
       "decay_modes": [
         {
@@ -184,7 +187,8 @@ const NUCLIDE_DATA = {
           1
         ]
       ],
-      "beta_yield_per_decay": 0.9998
+      "beta_yield_per_decay": 0.9998,
+      "half_life_source": "DDEP — LNHB/CEA Table de Radionucléides: T½ = 122.266(49) s (consulted 2026-10-14)"
     },
     {
       "id": "F-18",
@@ -256,7 +260,8 @@ const NUCLIDE_DATA = {
           1
         ]
       ],
-      "beta_yield_per_decay": 0.9678
+      "beta_yield_per_decay": 0.9678,
+      "half_life_source": "ICRP Publication 107 (2008)"
     },
     {
       "id": "Na-24",
@@ -323,7 +328,8 @@ const NUCLIDE_DATA = {
           0.000401
         ]
       ],
-      "beta_yield_per_decay": 1.001
+      "beta_yield_per_decay": 1.001,
+      "half_life_source": "DDEP — LNHB/CEA Table de Radionucléides: T½ = 14.958(2) h (consulted 2026-10-14)"
     },
     {
       "id": "K-42",
@@ -331,7 +337,7 @@ const NUCLIDE_DATA = {
       "Z": 19,
       "A": 42,
       "name": "Potassium-42",
-      "half_life_s": 44478,
+      "half_life_s": 44496,
       "half_life_display": "12.36 h",
       "decay_modes": [
         {
@@ -414,7 +420,8 @@ const NUCLIDE_DATA = {
           0.001511
         ]
       ],
-      "beta_yield_per_decay": 1.002
+      "beta_yield_per_decay": 1.002,
+      "half_life_source": "ICRP Publication 107 (2008)"
     },
     {
       "id": "Cr-51",
@@ -463,7 +470,8 @@ const NUCLIDE_DATA = {
           320.1,
           1
         ]
-      ]
+      ],
+      "half_life_source": "ICRP Publication 107 (2008)"
     },
     {
       "id": "Co-57",
@@ -536,7 +544,8 @@ const NUCLIDE_DATA = {
           692.4,
           0.008394
         ]
-      ]
+      ],
+      "half_life_source": "ICRP Publication 107 (2008)"
     },
     {
       "id": "Co-58",
@@ -615,7 +624,8 @@ const NUCLIDE_DATA = {
           0.00728
         ]
       ],
-      "beta_yield_per_decay": 0.1494
+      "beta_yield_per_decay": 0.1494,
+      "half_life_source": "ICRP Publication 107 (2008)"
     },
     {
       "id": "Fe-59",
@@ -714,7 +724,8 @@ const NUCLIDE_DATA = {
           0.000687
         ]
       ],
-      "beta_yield_per_decay": 1.002
+      "beta_yield_per_decay": 1.002,
+      "half_life_source": "DDEP — LNHB/CEA Table de Radionucléides: T½ = 44.494(12) d (consulted 2026-10-14)"
     },
     {
       "id": "Co-60",
@@ -773,7 +784,8 @@ const NUCLIDE_DATA = {
           0.522522
         ]
       ],
-      "beta_yield_per_decay": 1.001
+      "beta_yield_per_decay": 1.001,
+      "half_life_source": "ICRP Publication 107 (2008)"
     },
     {
       "id": "Cu-64",
@@ -840,7 +852,8 @@ const NUCLIDE_DATA = {
           0.028299
         ]
       ],
-      "beta_yield_per_decay": 0.5649
+      "beta_yield_per_decay": 0.5649,
+      "half_life_source": "DDEP — LNHB/CEA Table de Radionucléides: T½ = 12.7004(20) h (consulted 2026-10-14)"
     },
     {
       "id": "Ga-67",
@@ -961,7 +974,8 @@ const NUCLIDE_DATA = {
           887.7,
           0.007769
         ]
-      ]
+      ],
+      "half_life_source": "ICRP Publication 107 (2008)"
     },
     {
       "id": "Ga-68",
@@ -1050,7 +1064,8 @@ const NUCLIDE_DATA = {
           0.002035
         ]
       ],
-      "beta_yield_per_decay": 0.8901
+      "beta_yield_per_decay": 0.8901,
+      "half_life_source": "ICRP Publication 107 (2008)"
     },
     {
       "id": "Se-75",
@@ -1187,7 +1202,8 @@ const NUCLIDE_DATA = {
           572.2,
           0.000522
         ]
-      ]
+      ],
+      "half_life_source": "ICRP Publication 107 (2008)"
     },
     {
       "id": "Tc-99m",
@@ -1295,7 +1311,8 @@ const NUCLIDE_DATA = {
           0.000207
         ]
       ],
-      "beta_yield_per_decay": 0.00003705
+      "beta_yield_per_decay": 0.00003705,
+      "half_life_source": "DDEP — LNHB/CEA Table de Radionucléides: T½ = 6.0067(10) h (consulted 2026-10-14)"
     },
     {
       "id": "Mo-99+Tc-99m",
@@ -1303,8 +1320,8 @@ const NUCLIDE_DATA = {
       "Z": 42,
       "A": 99,
       "name": "Molybdenum-99 + Technetium-99m (equilibrium)",
-      "half_life_s": 237513.6,
-      "half_life_display": "65.98 h",
+      "half_life_s": 237418.56,
+      "half_life_display": "65.95 h",
       "decay_modes": [
         {
           "mode": "β-",
@@ -1542,7 +1559,8 @@ const NUCLIDE_DATA = {
           960.8,
           0.003096
         ]
-      ]
+      ],
+      "half_life_source": "DDEP — LNHB/CEA Table de Radionucléides: T½ = 2.7479(6) d (Mo-99) (consulted 2026-10-14)"
     },
     {
       "id": "Pd-103",
@@ -1655,7 +1673,8 @@ const NUCLIDE_DATA = {
           357.5,
           0.000393
         ]
-      ]
+      ],
+      "half_life_source": "ICRP Publication 107 (2008)"
     },
     {
       "id": "In-111",
@@ -1776,7 +1795,8 @@ const NUCLIDE_DATA = {
           245.4,
           0.401864
         ]
-      ]
+      ],
+      "half_life_source": "ICRP Publication 107 (2008)"
     },
     {
       "id": "I-123",
@@ -2017,7 +2037,8 @@ const NUCLIDE_DATA = {
           783.6,
           0.001472
         ]
-      ]
+      ],
+      "half_life_source": "DDEP — LNHB/CEA Table de Radionucléides: T½ = 13.2234(37) h (consulted 2026-10-14)"
     },
     {
       "id": "I-125",
@@ -2162,7 +2183,8 @@ const NUCLIDE_DATA = {
           35.5,
           0.032564
         ]
-      ]
+      ],
+      "half_life_source": "DDEP — LNHB/CEA Table de Radionucléides: T½ = 59.388(28) d (consulted 2026-10-14)"
     },
     {
       "id": "I-131",
@@ -2382,7 +2404,8 @@ const NUCLIDE_DATA = {
           0.031024
         ]
       ],
-      "beta_yield_per_decay": 1.001
+      "beta_yield_per_decay": 1.001,
+      "half_life_source": "DDEP — LNHB/CEA Table de Radionucléides: T½ = 8.0233(19) d (consulted 2026-10-14)"
     },
     {
       "id": "Xe-133",
@@ -2531,7 +2554,8 @@ const NUCLIDE_DATA = {
           0.000984
         ]
       ],
-      "beta_yield_per_decay": 1.001
+      "beta_yield_per_decay": 1.001,
+      "half_life_source": "DDEP — LNHB/CEA Table de Radionucléides: T½ = 5.2474(5) d (consulted 2026-10-14)"
     },
     {
       "id": "Cs-137",
@@ -2645,7 +2669,8 @@ const NUCLIDE_DATA = {
         ]
       ],
       "e_max_beta_MeV": 1.17563,
-      "beta_yield_per_decay": 1.002
+      "beta_yield_per_decay": 1.002,
+      "half_life_source": "ICRP Publication 107 (2008)"
     },
     {
       "id": "Sm-153",
@@ -2904,7 +2929,8 @@ const NUCLIDE_DATA = {
           0.000876
         ]
       ],
-      "beta_yield_per_decay": 1.001
+      "beta_yield_per_decay": 1.001,
+      "half_life_source": "ICRP Publication 107 (2008)"
     },
     {
       "id": "Yb-169",
@@ -3233,7 +3259,8 @@ const NUCLIDE_DATA = {
           307.7,
           0.079445
         ]
-      ]
+      ],
+      "half_life_source": "DDEP — LNHB/CEA Table de Radionucléides: T½ = 32.018(5) d (consulted 2026-10-14)"
     },
     {
       "id": "Tm-170",
@@ -3364,7 +3391,8 @@ const NUCLIDE_DATA = {
           0.436214
         ]
       ],
-      "beta_yield_per_decay": 0.9989
+      "beta_yield_per_decay": 0.9989,
+      "half_life_source": "ICRP Publication 107 (2008)"
     },
     {
       "id": "Lu-177",
@@ -3372,7 +3400,7 @@ const NUCLIDE_DATA = {
       "Z": 71,
       "A": 177,
       "name": "Lutetium-177",
-      "half_life_s": 573875.5,
+      "half_life_s": 574067.52,
       "half_life_display": "6.64 d",
       "decay_modes": [
         {
@@ -3536,7 +3564,8 @@ const NUCLIDE_DATA = {
           0.020108
         ]
       ],
-      "beta_yield_per_decay": 1.002
+      "beta_yield_per_decay": 1.002,
+      "half_life_source": "DDEP — LNHB/CEA Table de Radionucléides, Metrologia 63 (2026) 019001: T½ = 6.6443(9) d (consulted 2026-10-14)"
     },
     {
       "id": "Re-186",
@@ -3743,7 +3772,8 @@ const NUCLIDE_DATA = {
           0.010898
         ]
       ],
-      "beta_yield_per_decay": 0.9259
+      "beta_yield_per_decay": 0.9259,
+      "half_life_source": "ICRP Publication 107 (2008)"
     },
     {
       "id": "Re-188",
@@ -4050,7 +4080,8 @@ const NUCLIDE_DATA = {
           0.003931
         ]
       ],
-      "beta_yield_per_decay": 1.001
+      "beta_yield_per_decay": 1.001,
+      "half_life_source": "ICRP Publication 107 (2008)"
     },
     {
       "id": "Ir-192",
@@ -4409,7 +4440,8 @@ const NUCLIDE_DATA = {
           0.000594
         ]
       ],
-      "beta_yield_per_decay": 0.9524
+      "beta_yield_per_decay": 0.9524,
+      "half_life_source": "ICRP Publication 107 (2008)"
     },
     {
       "id": "Au-198",
@@ -4532,7 +4564,8 @@ const NUCLIDE_DATA = {
           0.003668
         ]
       ],
-      "beta_yield_per_decay": 1.001
+      "beta_yield_per_decay": 1.001,
+      "half_life_source": "DDEP — LNHB/CEA Table de Radionucléides: T½ = 2.6943(3) d (consulted 2026-10-14)"
     },
     {
       "id": "Tl-201",
@@ -4709,7 +4742,8 @@ const NUCLIDE_DATA = {
           167.4,
           0.166329
         ]
-      ]
+      ],
+      "half_life_source": "DDEP — LNHB/CEA Table de Radionucléides: T½ = 3.0421(17) d (consulted 2026-10-14)"
     },
     {
       "id": "Y-90",
@@ -4717,8 +4751,8 @@ const NUCLIDE_DATA = {
       "Z": 39,
       "A": 90,
       "name": "Yttrium-90",
-      "half_life_s": 230590.8,
-      "half_life_display": "64.05 h",
+      "half_life_s": 230549.76,
+      "half_life_display": "64.04 h",
       "decay_modes": [
         {
           "mode": "β-",
@@ -4741,7 +4775,8 @@ const NUCLIDE_DATA = {
       "effluent_liquid_limit_source": "IS-28 Annex II II.A.4; e(g) adult (> 17 y): RD 783/2001 Annex III table a), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1)",
       "max_photon_energy_keV": null,
       "e_max_beta_MeV": 2.2801,
-      "beta_yield_per_decay": 1
+      "beta_yield_per_decay": 1,
+      "half_life_source": "DDEP — LNHB/CEA Table de Radionucléides: T½ = 2.6684(13) d (consulted 2026-10-14)"
     },
     {
       "id": "Zr-89",
@@ -4825,7 +4860,8 @@ const NUCLIDE_DATA = {
           0.001528
         ]
       ],
-      "beta_yield_per_decay": 0.2273
+      "beta_yield_per_decay": 0.2273,
+      "half_life_source": "ICRP Publication 107 (2008)"
     },
     {
       "id": "Cu-67",
@@ -4909,7 +4945,8 @@ const NUCLIDE_DATA = {
           0.007782
         ]
       ],
-      "beta_yield_per_decay": 1.002
+      "beta_yield_per_decay": 1.002,
+      "half_life_source": "ICRP Publication 107 (2008)"
     },
     {
       "id": "Tb-161",
@@ -5153,7 +5190,8 @@ const NUCLIDE_DATA = {
           0.002115
         ]
       ],
-      "beta_yield_per_decay": 1.002
+      "beta_yield_per_decay": 1.002,
+      "half_life_source": "ICRP Publication 107 (2008)"
     },
     {
       "id": "Ho-166",
@@ -5325,7 +5363,8 @@ const NUCLIDE_DATA = {
           0.012483
         ]
       ],
-      "beta_yield_per_decay": 1.002
+      "beta_yield_per_decay": 1.002,
+      "half_life_source": "ICRP Publication 107 (2008)"
     },
     {
       "id": "Ra-223",
@@ -6361,7 +6400,8 @@ const NUCLIDE_DATA = {
         ]
       ],
       "beta_yield_per_decay": 2.001,
-      "e_max_beta_chain": true
+      "e_max_beta_chain": true,
+      "half_life_source": "ICRP Publication 107 (2008)"
     },
     {
       "id": "Ac-225",
@@ -7237,7 +7277,8 @@ const NUCLIDE_DATA = {
         ]
       ],
       "beta_yield_per_decay": 2.001,
-      "e_max_beta_chain": true
+      "e_max_beta_chain": true,
+      "half_life_source": "ICRP Publication 107 (2008)"
     }
   ]
 };

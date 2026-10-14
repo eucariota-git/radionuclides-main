@@ -143,6 +143,7 @@
           <thead>
             <tr>
               <th>Nuclide</th>
+              <th class="text-right">E (mSv/y)</th>
               <th class="text-right">DF (transit decay)</th>
               <th class="text-right">C wastewater (Bq/m³ per GBq)</th>
               <th class="text-right">C air (Bq/m³ per GBq)</th>
@@ -150,7 +151,6 @@
               <th class="text-right" title="Activity leaving the hospital in one year">Leaving hospital (GBq/y)</th>
               <th class="text-right">External (mSv/y)</th>
               <th class="text-right">Inhalation (mSv/y)</th>
-              <th class="text-right">E (mSv/y)</th>
             </tr>
           </thead>
           <tbody id="s1Body"></tbody>
@@ -163,6 +163,7 @@
           <thead>
             <tr>
               <th>Nuclide</th>
+              <th class="text-right">E (mSv/y)</th>
               <th class="text-right">DF (transit decay)</th>
               <th class="text-right">C dry sludge (Bq/kg per GBq)</th>
               <th class="text-right">C wet sludge (Bq/m³ per GBq)</th>
@@ -170,7 +171,6 @@
               <th class="text-right" title="Hospital discharge plus the activity excreted at home in the catchment">Activity reaching STP (GBq/y)</th>
               <th class="text-right">External (mSv/y)</th>
               <th class="text-right">Inhalation (mSv/y)</th>
-              <th class="text-right">E (mSv/y)</th>
             </tr>
           </thead>
           <tbody id="s2Body"></tbody>
@@ -458,6 +458,7 @@
 
     document.getElementById('s1Body').innerHTML = out.s1.rows.map(r => `<tr>
       <td class="sym">${esc(r.id)}</td>
+      <td class="num"><strong>${sci(r.E_mSv_y)}</strong></td>
       <td class="num">${fmtDF(r.DF)}</td>
       <td class="num">${sci(r.per_GBq.C_water_Bq_m3)}</td>
       <td class="num">${sci(r.per_GBq.C_air_Bq_m3)}</td>
@@ -465,13 +466,13 @@
       <td class="num">${sci(r.A_GBq_y)}</td>
       <td class="num">${sci(r.E_ext_mSv_y)}</td>
       <td class="num">${sci(r.E_inh_mSv_y)}</td>
-      <td class="num"><strong>${sci(r.E_mSv_y)}</strong></td>
     </tr>`).join('') || '<tr><td colspan="9">No nuclide included.</td></tr>';
 
     // Rows without a Scenario 2 external coefficient: inhalation only, external
     // "n/a" (not a zero dose), row and scenario flagged partial (audit H-06).
     document.getElementById('s2Body').innerHTML = out.s2.rows.map(r => `<tr>
       <td class="sym">${esc(r.id)}${r.partial ? ' <span class="text-sm" title="No external coefficient for Scenario 2">(partial)</span>' : ''}</td>
+      <td class="num"><strong>${r.partial ? '≥ ' : ''}${sci(r.E_mSv_y)}</strong></td>
       <td class="num">${fmtDF(r.DF)}</td>
       <td class="num">${sci(r.per_GBq.C_dry_Bq_kg)}</td>
       <td class="num">${sci(r.per_GBq.C_wet_Bq_m3)}</td>
@@ -479,7 +480,6 @@
       <td class="num">${sci(r.A_GBq_y)}</td>
       <td class="num">${r.partial ? 'n/a — no coefficient (not zero)' : sci(r.E_ext_mSv_y)}</td>
       <td class="num">${sci(r.E_inh_mSv_y)}</td>
-      <td class="num"><strong>${r.partial ? '≥ ' : ''}${sci(r.E_mSv_y)}</strong></td>
     </tr>`).join('') || '<tr><td colspan="9">No nuclide included.</td></tr>';
 
     const totalText = res => (res.complete ? '' : '≥ ') + sci(res.total_mSv_y);
@@ -513,7 +513,7 @@
       (nd.k_ext.s1.report_file ? ` [report: ${esc(nd.k_ext.s1.report_file.file)}, SHA-256 ${esc(nd.k_ext.s1.report_file.sha256.slice(0, 12))}…]` : '') +
       (nd.k_ext.s2 ? ` k Sc. 2: ${esc(nd.k_ext.s2.quantity)} ${esc(nd.k_ext.s2.source)}` +
         (nd.k_ext.s2.report_file ? ` [report: ${esc(nd.k_ext.s2.report_file.file)}, SHA-256 ${esc(nd.k_ext.s2.report_file.sha256.slice(0, 12))}…]` : '') : '') +
-      ` e(inh): ${esc(nd.e_inh.source)}${nd.half_life_source ? ' Half-life: ' + esc(nd.half_life_source) : ''}</li>`).join('');
+      ` e(inh): ${esc(nd.e_inh.source)} Half-life: ${esc(nd.half_life_source || (DB.getById(nd.id) || {}).half_life_source || 'app database')}</li>`).join('');
 
     const ccHtml = nuclides.map(({ nd, T }) => {
       const cc = EFFLUENT.crossChecks(nd, T, input.s2);
@@ -597,7 +597,7 @@
         { heading: 'Scenario 2 parameters', rows: paramRows(input, 's2').concat([['External coefficient geometry', data.geometries[geo].label]]) },
         { heading: 'Common parameters', rows: paramRows(input, 'common') },
         { heading: 'Coefficients', rows: nuclides.flatMap(({ nd, T }) => [
-          [`${nd.id} half-life`, `${(T / 86400).toFixed(3)} d${nd.half_life_source ? ' — ' + nd.half_life_source : ' (app database)'}`],
+          [`${nd.id} half-life`, `${(T / 86400).toFixed(3)} d — ${nd.half_life_source || (DB.getById(nd.id) || {}).half_life_source || 'app database'}`],
           [`${nd.id} k Scenario 1`, `${nd.k_ext.s1.value.toExponential(4)} (nSv/h)/(Bq/m³), u = ${(nd.k_ext.s1.u_rel * 100).toFixed(2)} %`],
           [`${nd.id} k Scenario 2 (${geo})`, nd.k_ext.s2 ? `${nd.k_ext.s2[geo].value.toExponential(4)} (nSv/h)/(Bq/m³), u = ${(nd.k_ext.s2[geo].u_rel * 100).toFixed(2)} % — ${nd.k_ext.s2[geo].report_id}` : 'no coefficient'],
           [`${nd.id} e(inh)`, `${nd.e_inh.value.toExponential(1)} Sv/Bq, type ${nd.e_inh.type}`],

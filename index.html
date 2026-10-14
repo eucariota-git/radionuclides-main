@@ -242,8 +242,10 @@
   // ---- Render table ----
   function modalityTag(n) {
     const map = { PET:'pet', SPECT:'spect', therapy:'therapy', brachytherapy:'brachy', other:'other' };
+    // Same labels as the filter buttons (the stored keys are lowercase for therapy/other)
+    const label = { PET:'PET', SPECT:'SPECT', therapy:'Therapy', brachytherapy:'Brachytherapy', other:'Other' };
     const cls = map[n.modality] || 'other';
-    return `<span class="tag tag-${cls}">${n.modality || '—'}</span>`;
+    return `<span class="tag tag-${cls}">${UTILS.escapeHtml(label[n.modality] || n.modality || '—')}</span>`;
   }
 
   function fmtGamma(val) {
@@ -587,7 +589,7 @@
         <div class="prop-item">
           <div class="prop-key">Half-life</div>
           <div class="prop-val">${UTILS.escapeHtml(hlParts.slice(0, -1).join(' '))}</div>
-          <div class="prop-note">${UTILS.escapeHtml(hlParts.slice(-1)[0])}</div>
+          <div class="prop-note" title="ICRP Publication 107 (2008)">${UTILS.escapeHtml(hlParts.slice(-1)[0])} — ICRP 107</div>
         </div>
         <div class="prop-item">
           <div class="prop-key">Decay mode</div>
@@ -666,7 +668,7 @@
         <div class="prop-item">
           <div class="prop-key">Half-life</div>
           <div class="prop-val">${UTILS.escapeHtml(hlParts2.slice(0, -1).join(' '))}</div>
-          <div class="prop-note">${UTILS.escapeHtml(hlParts2.slice(-1)[0])}</div>
+          <div class="prop-note" title="${UTILS.safeAttr(n.half_life_source || '')}">${UTILS.escapeHtml(hlParts2.slice(-1)[0])}${n.half_life_source ? ' — ' + UTILS.escapeHtml(n.half_life_source.startsWith('DDEP') ? 'DDEP (LNHB)' : 'ICRP 107') : ''}</div>
         </div>
         <div class="prop-item">
           <div class="prop-key">Decay mode</div>

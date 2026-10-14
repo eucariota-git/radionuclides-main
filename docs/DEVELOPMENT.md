@@ -114,6 +114,11 @@ node tools/generate-data.js
 # N = 0); beta_yield_per_decay is the integral of the block.
 node tools/parse-icrp107.js
 
+# Record / check the source of every curated half-life (ICRP 107 or DDEP;
+# dry run by default). A value matching neither within 0.015 % is replaced.
+node tools/set-half-life-sources.js
+node tools/set-half-life-sources.js --write
+
 # Copy beta endpoint / beta yield into the curated entries (chains: maximum over
 # progeny, flagged e_max_beta_chain), then wrap the JSON as JS
 node tools/sync-beta-emax.js && node tools/generate-data.js

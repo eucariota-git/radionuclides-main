@@ -816,13 +816,16 @@ console.log('TEST 13: Effluent Scenarios 1 and 2 (CALC.sewerInspectorScenario1, 
   test('app Sc.1 F-18 FD equals the workbook factor (0.333591 µSv/GBq)', row(l45.s1, 'F-18').per_GBq.FD_uSv, 0.333590987210136, 1e-5);   // app transit 0.2 h vs workbook 0.008333 d
   test('app Sc.1 Tc-99m default source term is zero (no workbook default)', row(l45.s1, 'Tc-99m').E_mSv_y, 0, 0);
   test('app Sc.2 Lu-177 to STP = 1498.5 + 3330 × 0.55 × 0.40 = 2231.1 GBq/y', row(l45.s2, 'Lu-177').A_GBq_y, 2231.1, 1e-9);
-  test('app Sc.2 L45 Lu-177 FD = 1.06479 µSv/GBq (unchanged)', row(l45.s2, 'Lu-177').per_GBq.FD_uSv, 1.064791672, 1e-6);
-  test('app Sc.2 L45 Lu-177 E = 2.37566 mSv/y', row(l45.s2, 'Lu-177').E_mSv_y, 2.375656699, 1e-6);
+  // Lu-177 T½ = DDEP 6.6443 d since v1.10.2 (was an unsourced 6.6421 d): the 3-d
+  // transit decay factor rises by exp[ln2·3·(1/6.6421 − 1/6.6443)] = 1.000105, so
+  // the three Lu-177 Scenario 2 anchors below are the former ones × 1.000105.
+  test('app Sc.2 L45 Lu-177 FD = 1.06490 µSv/GBq', row(l45.s2, 'Lu-177').per_GBq.FD_uSv, 1.064903182, 1e-6);
+  test('app Sc.2 L45 Lu-177 E = 2.37591 mSv/y', row(l45.s2, 'Lu-177').E_mSv_y, 2.375905489, 1e-6);
   test('app Sc.2 I-131 to STP = 20 + 40 × 0.5 × 0.40 = 28 GBq/y', row(l45.s2, 'I-131').A_GBq_y, 28, 1e-9);
   test('app Sc.2 L45 I-131 DF = 0.771688', row(l45.s2, 'I-131').DF, 0.7716876942, 1e-6);
   test('app Sc.2 L45 I-131 FD = 13.0990 µSv/GBq (unchanged)', row(l45.s2, 'I-131').per_GBq.FD_uSv, 13.09901400, 1e-6);
   test('app Sc.2 L45 I-131 E = 0.366772 mSv/y', row(l45.s2, 'I-131').E_mSv_y, 0.366772392, 1e-6);
-  test('app Sc.2 L10 Lu-177 E = 1.63164 mSv/y', row(l10.s2, 'Lu-177').E_mSv_y, 1.631635434, 1e-6);
+  test('app Sc.2 L10 Lu-177 E = 1.63181 mSv/y', row(l10.s2, 'Lu-177').E_mSv_y, 1.631806306, 1e-6);
   test('app Sc.2 L10 I-131 E = 0.259874 mSv/y', row(l10.s2, 'I-131').E_mSv_y, 0.2598737855, 1e-6);
   test('app Sc.1 total is the sum of its rows', l45.s1.total_mSv_y,
     l45.s1.rows.reduce((a, r) => a + r.E_mSv_y, 0), 1e-12);
