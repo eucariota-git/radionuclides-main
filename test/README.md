@@ -75,7 +75,13 @@ Covers integration and structure outside the mathematical modules:
 These are focused regressions, not a general HTML conformance or browser
 end-to-end suite: they run the production modules and inspect the page
 sources, but they do not render the pages — a chart drawn on the wrong axis
-(N-01) passes them. Browser checks remain manual. The manual and independent checks remain in
+(N-01) passes them. `node tools/browser-smoke.js` covers that layer: it renders
+the six pages in headless Chrome/Edge and checks console errors, overflow at
+1280/390 px, that every Chart.js point lies inside its axes (no category axes),
+key values of the acceptance cases and the dark-mode toggle. Run against
+v1.10.0 it reports the N-01, N-02, N-06 and N-08 defects; it needs a local
+Chrome or Edge, so it is a tool, not a fifth suite. Printing, PWA installation,
+offline reload and `content://` remain manual (ACCEPTANCE_TEST). The manual and independent checks remain in
 `docs/ACCEPTANCE_TEST.md`.
 
 ## Expected baseline

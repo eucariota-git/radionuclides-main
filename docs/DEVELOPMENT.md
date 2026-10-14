@@ -304,9 +304,11 @@ violated; step 5 remains manual.
    `PACKAGE-INFO.txt` records the source commit, epoch and compression
    toolchain needed to reproduce it.
 4. Re-run the four test suites from the extracted folder (`node test/…`).
-5. Open via `file://` and via HTTP(S); check PWA install and offline reload of
-   all six pages, with and without `?id=` query parameters, and check that the
-   Decay and Dose charts cover their whole range (see ACCEPTANCE_TEST B12).
+5. Run `node tools/browser-smoke.js` (Chrome/Edge headless over `file://`, or
+   `--base http://localhost:8000/`): six pages at 1280 and 390 px, console
+   errors, horizontal overflow, Chart.js axes and points, key values and the
+   dark-mode toggle. Then open via HTTP(S) by hand to check PWA install and
+   offline reload, which the script does not cover.
 
 ---
 
