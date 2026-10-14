@@ -71,6 +71,8 @@ const UI = (() => {
       orange,
       orangeFill: colorWithAlpha(orange, 0.06),
       danger: token('--danger'),
+      // photon-spectrum hues by photon type (Properties detail panel)
+      spectrum: { G: token('--spectrum-g'), X: token('--spectrum-x'), AQ: token('--spectrum-aq') },
     };
   }
 

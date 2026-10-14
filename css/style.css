@@ -30,6 +30,12 @@
   --danger:   #b00020;
   --info:     #0096c7;
   --success:  #2ecc71;
+  /* Photon-spectrum chart, one hue per photon type (G, X, AQ). Validated with the
+     dataviz palette script against the card surface: lightness band, chroma,
+     CVD separation (all pairs, ΔE ≥ 8) and contrast, light and dark. */
+  --spectrum-g:  #2e8b57;
+  --spectrum-x:  #0077b6;
+  --spectrum-aq: #c05600;
 
   --border:      var(--gray-200);
   --bg-elevated: var(--white);
@@ -73,6 +79,9 @@
   --danger:  #e63946;
   --info:    #48cae4;
   --success: #6bcf7f;
+  --spectrum-g:  #3fa874;
+  --spectrum-x:  #3a9ad9;
+  --spectrum-aq: #cf7630;
 
   --border:      var(--gray-200);
   --bg-elevated: var(--gray-800);

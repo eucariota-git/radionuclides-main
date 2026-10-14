@@ -9,6 +9,7 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#2d6a4f">
   <link rel="stylesheet" href="css/style.css">
+  <script src="js/chart.umd.min.js"></script>
 </head>
 <body>
 
@@ -95,6 +96,8 @@
     </div>
 
     <div class="prop-grid" id="detailProps"></div>
+
+    <div id="detailSpectrum" class="mt-2"></div>
 
     <div class="mt-2 d-flex gap-2 flex-wrap">
       <a id="btnDecay" class="btn btn-primary btn-sm" href="#">&#8635; Open in Decay Calculator</a>
@@ -266,6 +269,124 @@
    * said explicitly instead of being read as the nuclide's beta energy
    * (audit 2026-10-14, N-02).
    */
+  // ---- Photon spectrum: chart + table, one implementation for curated and
+  // extended entries. Linear energy axis with {x, y} bars (never a category
+  // axis); logarithmic y because yields span ~4 decades and the weak lines are
+  // the ones that dominate behind a shield. Two views: yield per 100 decays, and
+  // each line's share of Γ^H*(10) — n·h*(10)(E) from PHYSICS.calcGammaConstants,
+  // the same calculation that gives Γ.
+  let spectrumChart = null;
+  let spectrumState = null;   // { photons, chain, id, view }
+  const SPECTRUM_TYPES = [['G', 'Gamma'], ['X', 'X-ray'], ['AQ', 'Annihilation']];
+
+  function renderSpectrum(photons, opts = {}) {
+    const host = document.getElementById('detailSpectrum');
+    if (spectrumChart) { spectrumChart.destroy(); spectrumChart = null; }
+    spectrumState = null;
+    if (!photons || !photons.length) { host.innerHTML = opts.note || ''; return; }
+    const rows = photons.map(p => `<tr><td class="mono">${p.energy_keV}</td><td class="mono">${UTILS.fmt(p.yield_percent)}</td><td class="mono">${UTILS.escapeHtml(p.type)}</td></tr>`).join('');
+    host.innerHTML = `
+      <div class="d-flex justify-between flex-wrap gap-1 align-center">
+        <div style="font-weight:600;">${opts.chain ? 'Parent-only photon spectrum; dose constants include the stated progeny' : 'Photon spectrum'} (E ≥ 20 keV, yield ≥ 0.01%)</div>
+        <div class="filter-bar" role="group" aria-label="Spectrum view" style="margin-bottom:0;">
+          <button type="button" class="filter-btn active" data-spectrum-view="yield" aria-pressed="true">Yield</button>
+          <button type="button" class="filter-btn" data-spectrum-view="dose" aria-pressed="false">Share of &#915;<sup>H*(10)</sup></button>
+        </div>
+      </div>
+      <div class="chart-wrap" style="height:240px;">
+        <canvas id="spectrumChart" role="img" aria-label="Photon spectrum of ${UTILS.safeAttr(opts.id || '')}: energy against yield or dose share; the table below lists the same lines"></canvas>
+      </div>
+      <div class="form-hint" id="spectrumHint"></div>
+      <div class="overflow-x-auto mt-1" style="max-height:200px;overflow-y:auto;">
+        <table style="font-size:0.9em;width:100%;">
+          <thead style="position:sticky;top:0;background:var(--white);border-bottom:1px solid var(--border);">
+            <tr>
+              <th style="padding:0.3rem 0.5rem;text-align:left;border-right:1px solid var(--border);">E [keV]</th>
+              <th style="padding:0.3rem 0.5rem;text-align:left;border-right:1px solid var(--border);">Yield [%]</th>
+              <th style="padding:0.3rem 0.5rem;text-align:left;">Type</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+      <div class="form-hint">Type — G: gamma; X: X-ray; AQ: annihilation photons. Yield: photons emitted per 100 decays.</div>`;
+    spectrumState = { photons, chain: !!opts.chain, id: opts.id, view: 'yield' };
+    host.querySelectorAll('[data-spectrum-view]').forEach(btn => btn.addEventListener('click', () => {
+      host.querySelectorAll('[data-spectrum-view]').forEach(b => {
+        const on = b === btn;
+        b.classList.toggle('active', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+      spectrumState.view = btn.dataset.spectrumView;
+      drawSpectrum();
+    }));
+    drawSpectrum();
+  }
+
+  function drawSpectrum() {
+    if (!spectrumState || typeof Chart === 'undefined') return;
+    const { photons, chain, view } = spectrumState;
+    const theme = UI.getChartTheme();
+    const calc = PHYSICS.calcGammaConstants(photons);
+    if (!calc.contributions.length || !(calc.gammaH10 > 0)) return;
+    const dose = view === 'dose';
+    const pts = calc.contributions.map(c => ({
+      x: c.energy_keV,
+      y: dose ? 100 * c.contrib_H10 / calc.gammaH10 : c.yield_percent,
+      type: String(c.type).toUpperCase(),
+      yieldPct: c.yield_percent,
+      share: 100 * c.contrib_H10 / calc.gammaH10,
+    }));
+    // at least a factor 2 below the weakest line, so no bar has zero height
+    // (a line exactly on a decade, or a single line such as F-18's 193.5 %)
+    const yMin = Math.pow(10, Math.floor(Math.log10(Math.min(...pts.map(p => p.y)) / 2)));
+    // next decade above the tallest bar; a share never exceeds 100 %
+    const yMax = Math.min(dose ? 100 : Infinity, Math.pow(10, Math.ceil(Math.log10(Math.max(...pts.map(p => p.y)) * 1.2))));
+    const datasets = SPECTRUM_TYPES.map(([type, label]) => ({
+      _type: type,
+      label,
+      data: pts.filter(p => p.type === type),
+      backgroundColor: theme.spectrum[type],
+      borderColor: theme.spectrum[type],
+      barThickness: 3,
+      grouped: false,
+      borderRadius: 1,
+    })).filter(d => d.data.length);
+    if (spectrumChart) spectrumChart.destroy();
+    spectrumChart = new Chart(document.getElementById('spectrumChart').getContext('2d'), {
+      type: 'bar',
+      data: { datasets },
+      options: {
+        color: theme.text, responsive: true, maintainAspectRatio: false, animation: false,
+        plugins: {
+          legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } },
+          tooltip: { callbacks: {
+            title: items => items.length ? `${items[0].raw.x} keV` : '',
+            label: c => `${c.dataset.label}: yield ${UTILS.fmt(c.raw.yieldPct)} % · share of Γ H*(10) ${UTILS.fmt(c.raw.share)} %`,
+          } },
+        },
+        scales: {
+          x: {
+            type: 'linear', min: 0, grace: '3%',   // rounded maximum chosen by Chart.js
+            title: { display: true, text: 'Photon energy (keV)', color: theme.text },
+            ticks: { color: theme.text, maxTicksLimit: 10 }, grid: { color: theme.grid },
+          },
+          y: {
+            type: 'logarithmic', min: yMin, max: yMax,
+            title: { display: true, text: dose ? 'Share of Γ H*(10) (%)' : 'Yield (% per decay)', color: theme.text },
+            ticks: { color: theme.text, callback: v => (Math.abs(Math.log10(v) - Math.round(Math.log10(v))) < 1e-9 ? `${Number(v.toPrecision(1))} %` : '') },
+            grid: { color: theme.grid },
+          },
+        },
+      },
+    });
+    document.getElementById('spectrumHint').textContent = dose
+      ? `Each line's share of Γ H*(10), n·h*(10)(E) with ICRP 74 Table A.21; the bars add up to 100 %.${chain ? " Share of the parent's lines only; the stored Γ includes the progeny." : ''}`
+      : 'Photons per 100 decays, logarithmic scale.';
+  }
+
+  document.addEventListener('nm-theme-change', drawSpectrum);
+
   function betaEnergyItem(n) {
     if (!n.e_max_beta_MeV) return '';
     const y = n.beta_yield_per_decay;
@@ -507,6 +628,7 @@
   function showRegulatoryOnly(id) {
     const panel = document.getElementById('detailPanel');
     panel.classList.add('visible');
+    renderSpectrum(null);
     document.getElementById('detailTitle').textContent = id;
     document.getElementById('detailSymbol').textContent = id;
     document.getElementById('detailName').textContent = id;
@@ -545,6 +667,7 @@
 
     const panel = document.getElementById('detailPanel');
     panel.classList.add('visible');
+    renderSpectrum(null);
 
     document.getElementById('detailTitle').textContent = n.id;
     document.getElementById('detailSymbol').textContent = n.symbol;
@@ -609,35 +732,7 @@
         </div>
       `;
 
-      // Show photon table for ICRP 107
-      if (n.photons && n.photons.length > 0) {
-        const photonRows = n.photons.map(p => `
-          <tr>
-            <td class="mono">${p.energy_keV}</td>
-            <td class="mono">${UTILS.fmt(p.yield_percent)}</td>
-            <td class="mono">${UTILS.escapeHtml(p.type)}</td>
-          </tr>
-        `).join('');
-
-        document.getElementById('detailProps').innerHTML += `
-          <div style="margin-top:1rem;">
-            <div style="font-weight:600;margin-bottom:0.5rem;">Photon spectrum (filtered):</div>
-            <div class="overflow-x-auto" style="max-height:200px;overflow-y:auto;">
-              <table style="font-size:0.9em;width:100%;">
-                <thead style="position:sticky;top:0;background:var(--bg-elevated);border-bottom:1px solid var(--border);">
-                  <tr>
-                    <th style="padding:0.3rem 0.5rem;text-align:left;border-right:1px solid var(--border);">E [keV]</th>
-                    <th style="padding:0.3rem 0.5rem;text-align:left;border-right:1px solid var(--border);">Yield [%]</th>
-                    <th style="padding:0.3rem 0.5rem;text-align:left;">Type</th>
-                  </tr>
-                </thead>
-                <tbody>${photonRows}</tbody>
-              </table>
-            </div>
-            <div class="form-hint">Type — G: gamma; X: X-ray; AQ: annihilation photons. Yield: photons emitted per 100 decays.</div>
-          </div>
-        `;
-      }
+      renderSpectrum(n.photons, { id: n.id });
 
       // Regulatory values (RD 1217/2024 A1/B; RD 783/2001 e(g) and IS-28 level).
       // The ICRP 107 index carries no dose coefficients, so they come from REGULATORY.
@@ -699,43 +794,12 @@
         </div>
       `;
 
-      // Show photon spectrum table for curated nuclides (from ICRP 107)
-      // Try to get photon data from ICRP 107 if available
-      let photonTable = '';
-      if (ICRP107 && ICRP107.isReady()) {
-        const icrpNuclide = ICRP107.get(n.id);
-        if (icrpNuclide && icrpNuclide.photons && icrpNuclide.photons.length > 0) {
-          const photonRows = icrpNuclide.photons.map(p => `
-            <tr>
-              <td class="mono">${p.energy_keV}</td>
-              <td class="mono">${UTILS.fmt(p.yield_percent)}</td>
-              <td class="mono">${p.type}</td>
-            </tr>
-          `).join('');
-          photonTable = `
-            <div style="margin-top:1rem;">
-              <div style="font-weight:600;margin-bottom:0.5rem;">${n.chain_members ? 'Parent-only photon spectrum; dose constants include the stated progeny' : 'Photon spectrum'} (E ≥ 20 keV, yield ≥ 0.01%):</div>
-              <div class="overflow-x-auto" style="max-height:200px;overflow-y:auto;">
-                <table style="font-size:0.9em;width:100%;">
-                  <thead style="position:sticky;top:0;background:var(--bg-elevated);border-bottom:1px solid var(--border);">
-                    <tr>
-                      <th style="padding:0.3rem 0.5rem;text-align:left;border-right:1px solid var(--border);">E [keV]</th>
-                      <th style="padding:0.3rem 0.5rem;text-align:left;border-right:1px solid var(--border);">Yield [%]</th>
-                      <th style="padding:0.3rem 0.5rem;text-align:left;">Type</th>
-                    </tr>
-                  </thead>
-                  <tbody>${photonRows}</tbody>
-                </table>
-              </div>
-              <div class="form-hint">Type — G: gamma; X: X-ray; AQ: annihilation photons. Yield: photons emitted per 100 decays.</div>
-            </div>
-          `;
-        } else if (n.id.includes('+')) {
-          photonTable = `<div class="form-hint" style="margin-top:1rem;">No combined photon spectrum is shown for this composite entry; see its components (${UTILS.escapeHtml(n.id.split('+').join(', '))}).</div>`;
-        }
-      }
-      if (photonTable) {
-        document.getElementById('detailProps').innerHTML += photonTable;
+      // Photon spectrum of curated nuclides (ICRP 107 lines; parent only for the chains)
+      const icrpNuclide = ICRP107 && ICRP107.isReady() ? ICRP107.get(n.id) : null;
+      if (icrpNuclide && icrpNuclide.photons && icrpNuclide.photons.length > 0) {
+        renderSpectrum(icrpNuclide.photons, { id: n.id, chain: !!n.chain_members });
+      } else if (n.id.includes('+')) {
+        renderSpectrum(null, { note: `<div class="form-hint">No combined photon spectrum is shown for this composite entry; see its components (${UTILS.escapeHtml(n.id.split('+').join(', '))}).</div>` });
       }
     }
 

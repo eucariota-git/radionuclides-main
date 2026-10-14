@@ -318,7 +318,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v45');
+    swVersion === 'nm-planner-v46');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -905,6 +905,29 @@ async function main() {
   check('N-09: every page registers the service worker (direct entry also installs the offline cache)',
     [indexHtml, decayHtml, doseHtml, effluentHtml, caregiverHtml, aboutHtml].every(h =>
       /navigator\.serviceWorker\.register\('sw\.js'\)/.test(h)));
+
+  console.log();
+
+  console.log('Test 15: photon-spectrum chart in the Properties detail panel');
+  const indexHtml15 = read('index.html');
+  check('Properties loads the local Chart.js and has one spectrum renderer for curated and extended entries',
+    /<script src="js\/chart\.umd\.min\.js"><\/script>/.test(indexHtml15) &&
+    (indexHtml15.match(/function renderSpectrum\(/g) || []).length === 1 &&
+    (indexHtml15.match(/<tbody>\$\{rows\}<\/tbody>/g) || []).length === 1 &&
+    !/Photon spectrum \(filtered\)/.test(indexHtml15) &&
+    /renderSpectrum\(n\.photons, \{ id: n\.id \}\)/.test(indexHtml15) &&
+    /renderSpectrum\(icrpNuclide\.photons, \{ id: n\.id, chain: !!n\.chain_members \}\)/.test(indexHtml15));
+  check('spectrum chart: linear energy axis, logarithmic y axis, bars as {x, y} points',
+    /type: 'linear', min: 0, grace: '3%'/.test(indexHtml15) && /type: 'logarithmic', min: yMin, max: yMax/.test(indexHtml15) &&
+    /type: 'bar'/.test(indexHtml15) && /x: c\.energy_keV,/.test(indexHtml15));
+  check('dose-share view uses the Γ calculation itself (PHYSICS.calcGammaConstants) and states the chain caveat',
+    /const calc = PHYSICS\.calcGammaConstants\(photons\)/.test(indexHtml15) &&
+    /100 \* c\.contrib_H10 \/ calc\.gammaH10/.test(indexHtml15) &&
+    /Share of the parent's lines only; the stored Γ includes the progeny/.test(indexHtml15));
+  check('spectrum colours come from theme tokens (light and dark) and follow the live theme',
+    /--spectrum-g:\s*#2e8b57/.test(styleCss) && /--spectrum-g:\s*#3fa874/.test(styleCss) &&
+    /spectrum: \{ G: token\('--spectrum-g'\)/.test(uiJs) &&
+    /addEventListener\('nm-theme-change', drawSpectrum\)/.test(indexHtml15));
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);
   process.exitCode = failed === 0 ? 0 : 1;

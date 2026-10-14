@@ -273,6 +273,24 @@ async function main() {
       await open('index.html?id=Lu-177', 1280);
       check('properties Lu-177: half-life source shown (DDEP)', /DDEP \(LNHB\)/.test(await ev(`document.getElementById('detailProps').textContent`)));
     });
+    await guard('Properties: photon-spectrum chart', async () => {
+      // Linear energy axis, log y, every point inside the axes (generic audit),
+      // and the dose-share view: Lu-177 208 keV ≈ 62.7 %, shares add up to 100 %
+      await open('index.html?id=Lu-177', 1280);
+      const charts = await pageChecks('properties Lu-177 spectrum');
+      const s = await ev(`(() => { const c = Chart.getChart('spectrumChart'); return c ? { x: c.scales.x.type, y: c.scales.y.type } : null; })()`);
+      check('properties: spectrum chart on a linear energy axis and a logarithmic y axis',
+        !!s && s.x === 'linear' && s.y === 'logarithmic' && charts.some(c => c.id === 'spectrumChart'), JSON.stringify(s));
+      await ev(`document.querySelector('[data-spectrum-view="dose"]').click()`); await sleep(200);
+      const d = await ev(`(() => { const pts = Chart.getChart('spectrumChart').data.datasets.flatMap(ds => ds.data);
+        return { sum: pts.reduce((a, p) => a + p.y, 0), l208: (pts.find(p => Math.abs(p.x - 208.4) < 0.2) || {}).y }; })()`);
+      check('properties: dose-share view adds up to 100 % and gives Lu-177 208 keV ≈ 62.7 %',
+        Math.abs(d.sum - 100) < 1e-6 && Math.abs(d.l208 - 62.70) < 0.01, JSON.stringify(d));
+      await pageChecks('properties Lu-177 dose share');
+      await open('index.html?id=Y-90', 1280);
+      check('properties Y-90: no spectrum chart and no errors', realErrors().length === 0 &&
+        await ev(`!document.getElementById('spectrumChart')`));
+    });
     await guard('Report: the print path builds the report without errors', async () => {
       // Report: the print path builds the report without errors
       await open('caregiver.html', 1280);

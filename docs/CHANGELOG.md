@@ -4,6 +4,10 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
+### v1.11.0 — photon-spectrum chart in Properties
+- The detail panel shows the photon spectrum as a chart above the table: energy on a linear axis, yield per 100 decays on a logarithmic axis, one colour per photon type (G, X, AQ; palette validated for colour-vision deficiency in light and dark), and a second view with each line's share of Γ^H*(10) (n·h*(10)(E), the same calculation that gives Γ; Lu-177 208 keV = 62.7 %). For Ra-223 and Ac-225 the share refers to the parent's lines only.
+- One renderer for curated and extended entries replaces the two duplicated tables; the table header is now readable in dark mode.
+
 ### v1.10.6 — user guide rewritten
 - The guide (and its copy in About) now gives, per page, the purpose, the use, the key limits and an example, and points to each page's *Method* and notes for formulas and sources instead of repeating them: 6742 → 3261 words. The developer-oriented "ICRP 107 data integrity" section is removed; the verified examples, references and transparency notice are kept.
 
