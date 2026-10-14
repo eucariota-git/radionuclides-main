@@ -4,6 +4,9 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
+### v1.10.4 — database version
+- `nuclides.json` is now **v1.3**. It had kept v1.2 since the first release although its content changed several times (ICRP 74 A.21 recalculation in v1.7.0, beta endpoints and half-life sources in v1.10.1–v1.10.2), so reports printed the same database version for different data. Rule added to the development guide: bump it whenever its content changes.
+
 ### v1.10.3 — caregiver criteria documented
 - Caregiver: the basis of each criterion per category names its international source — 5 mSv per episode for carers in ICRP 103 (2007) para. 351, ICRP 94 (2004) and IAEA SSG-46 (2018) para. 2.49; 3 mSv up to 60 years and 0.3 mSv for third persons in EC RP 97 (1998) and the Forum (2011) — and states the scope: one person, the whole treatment (the ICRP "episode" read as the complete treatment). Values unchanged.
 
