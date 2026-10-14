@@ -4,6 +4,10 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
+### v1.10.0 — caregiver kinetics presets
+- Caregiver: kinetics presets for Lu-177-PSMA-617 (Demir 2016 / Kurth 2018 — the workbook default — and Gayol Vilorio 2025), Lu-177-DOTATATE (Gayol Vilorio 2025, Monserrat Fuertes 2023) and I-131 NaI (Foro CSN-SEPR-SEFM 2011: ablation, metastases, hyperthyroidism). They fill the kinetics, cycles and profile only; the measured rate, discharge time, category and cohabitation stay as entered.
+- The Forum's «vida media efectiva» (3 / 5 / 7.2 d) is the mean life 1/λ of its equations: converted to half-lives (× ln 2), checked by reproducing its Tables 3.B 3 and 3.B 4.
+
 ### v1.9.1 — caregiver review fixes
 - Inverse calculations and the dose-vs-restriction curve are withheld when applying the same restriction to both rows would put more than 24 h/day in the restriction period (the source workbook does not check it and could recommend an impossible schedule).
 - The minimum restriction of the product information must be empty or ≥ 0; negative values are rejected by the engine, not only by the form.

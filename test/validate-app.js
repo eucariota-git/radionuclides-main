@@ -317,7 +317,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v38');
+    swVersion === 'nm-planner-v39');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -788,6 +788,34 @@ async function main() {
       return CG.curve(x).points.length === 0 && s.ok === false && s.currentOk === null && s.referencesOk === true; })());
   check('review fix 4: the caregiver CSV carries warnings, adopted note and self-check state',
     /'Status', 'Warnings', 'Adopted_restriction_note', 'Self_check'/.test(caregiverHtml) && /out\.warnings\.join\(' \| '\)/.test(caregiverHtml));
+  check('kinetics presets: every preset is complete, its profile exists and it gives a ready result with the default case',
+    cgData.kinetic_presets.length === 7 && cgData.kinetic_presets.every(p => {
+      const x = CG.defaultInput();
+      for (const f of ['radiopharmaceutical', 'fast_end_h', 'T_fast_h', 'T_slow_h', 'cycles', 'profile']) x[f] = p[f];
+      x.rows.day.d_during = x.rows.day.d_after = 1;
+      const r = CG.evaluate(x);
+      return cgData.profiles[p.profile] && r.ready && r.warnings.length === 0 && p.source.length > 40; }));
+  check('the default preset is the workbook kinetics (default case unchanged)',
+    (() => { const p = cgData.kinetic_presets.find(q => q.key === cgData.defaults.preset);
+      return ['radiopharmaceutical', 'fast_end_h', 'T_fast_h', 'T_slow_h', 'cycles', 'profile'].every(f => p[f] === cgData.defaults[f]); })());
+  // Foro CSN-SEPR-SEFM (2011) Tables 3.B 3 (ablation, Tef 3 d) and 3.B 4 (metastases, 5 d), partner < 60 years:
+  // RD 2 mSv; normal 6 h at 1 m + 8 h at 0.1 m (= 0.4 m); restriction: sleeping apart. Its «Tef» is 1/λ,
+  // so the presets store Tef·ln 2 as half-life; restriction days rounded to the nearest day as printed.
+  const foro = { i131_ablation: [0, 0, 1, 2, 3, 3, 4, 5], i131_metastases: [0, 2, 4, 6, 8, 10, 11, 13] };
+  check('I-131 presets reproduce the Foro restriction tables (partner < 60 years), confirming Tef = mean life',
+    Object.entries(foro).every(([key, days]) => {
+      const p = cgData.kinetic_presets.find(q => q.key === key);
+      return [5, 10, 15, 20, 25, 30, 35, 40].every((rate, i) => {
+        const x = CG.defaultInput();
+        Object.assign(x, { rate_1m_uSv_h: rate, fast_end_h: 0, T_fast_h: null, T_slow_h: p.T_slow_h, cycles: 1,
+          profile: 'i131_approx', radiopharmaceutical: 'I-131', category: 'other', manual_criterion_mSv: 2 });
+        const inv = CG.evaluate(x).inverse;
+        return Math.round(inv.minRestriction_d) === days[i];
+      });
+    }));
+  check('caregiver page applies presets to the kinetics fields only and switches to Custom on manual edits',
+    /const PRESET_FIELDS = \['radiopharmaceutical', 'fast_end_h', 'T_fast_h', 'T_slow_h', 'cycles', 'profile'\]/.test(caregiverHtml) &&
+    /\$\('preset'\)\.value = match \? match\.key : 'custom'/.test(caregiverHtml));
   check('caregiver chart follows the live theme; report and CSV are self-describing',
     /addEventListener\('nm-theme-change', applyCurveChartTheme\)/.test(caregiverHtml) &&
     /'App_version', 'App_build', 'Caregiver_data_version', 'Exported_UTC'/.test(caregiverHtml) &&

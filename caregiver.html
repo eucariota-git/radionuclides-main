@@ -53,6 +53,11 @@
     <h2 class="card-title">&#128138; A. Case data</h2>
     <div class="form-grid">
       <div class="form-group">
+        <label class="form-label" for="preset">Kinetics preset</label>
+        <select class="form-select" id="preset" title="Kinetics preset"></select>
+        <div class="form-hint" id="presetHint"></div>
+      </div>
+      <div class="form-group">
         <label class="form-label" for="radiopharmaceutical">Radiopharmaceutical</label>
         <select class="form-select" id="radiopharmaceutical" title="Radiopharmaceutical"></select>
         <div class="form-hint">Used only to warn when the proximity profile does not match it.</div>
@@ -104,6 +109,12 @@
         <div class="form-hint" id="profileHint"></div>
       </div>
     </div>
+
+    <details class="mt-1">
+      <summary><strong>Kinetics presets and their sources</strong></summary>
+      <p class="text-sm mt-1" id="presetNote"></p>
+      <ul class="text-sm ref-list" id="presetList"></ul>
+    </details>
 
     <div id="ownBlock" class="mt-2 hidden">
       <h3 class="card-title">Own measurements</h3>
@@ -316,6 +327,36 @@
   const OWN_N = data.defaults.own_measurements.length;
 
   // ---- Static content from the data file ----
+  // Kinetics presets: they fill these fields only, never the measured rate,
+  // the discharge time, the category or the cohabitation table.
+  const PRESET_FIELDS = ['radiopharmaceutical', 'fast_end_h', 'T_fast_h', 'T_slow_h', 'cycles', 'profile'];
+  const PRESETS = data.kinetic_presets;
+  $('preset').innerHTML = PRESETS.map(p => `<option value="${p.key}">${esc(p.label)}</option>`).join('') +
+    '<option value="custom">Custom (values entered)</option>';
+  $('presetNote').textContent = data.kinetic_presets_note;
+  $('presetList').innerHTML = PRESETS.map(p => `<li><strong>${esc(p.label)}</strong> — ` +
+    `${p.fast_end_h > 0 ? `fast phase until ${p.fast_end_h} h, T fast ${p.T_fast_h} h, ` : 'single exponential, '}T slow ${p.T_slow_h} h, ` +
+    `${p.cycles} cycle(s), profile ${esc(data.profiles[p.profile].label)}. ${esc(p.source)}</li>`).join('');
+  const presetHint = () => {
+    const p = PRESETS.find(q => q.key === $('preset').value);
+    $('presetHint').textContent = p ? 'Fills radiopharmaceutical, fast phase, half-lives, cycles and profile. See the sources below.'
+      : 'Values entered by hand. Choose a preset to fill the kinetics from the literature.';
+  };
+  function applyPreset(key) {
+    const p = PRESETS.find(q => q.key === key);
+    if (!p) return;
+    for (const f of PRESET_FIELDS) $(f).value = p[f] ?? '';
+  }
+  // Any manual edit of a preset field switches the selector to the matching preset or to Custom
+  function syncPreset() {
+    const cur = { radiopharmaceutical: $('radiopharmaceutical').value, profile: $('profile').value };
+    for (const f of ['fast_end_h', 'T_fast_h', 'T_slow_h', 'cycles']) cur[f] = readNum($(f));
+    const match = PRESETS.find(p => PRESET_FIELDS.every(f => (p[f] ?? null) === (cur[f] ?? null) ||
+      (f === 'T_fast_h' && !(p.fast_end_h > 0))));
+    $('preset').value = match ? match.key : 'custom';
+    presetHint();
+  }
+
   $('radiopharmaceutical').innerHTML = data.radiopharmaceuticals.map(r => `<option value="${UTILS.safeAttr(r)}">${esc(r)}</option>`).join('');
   $('category').innerHTML = data.categories.map(c =>
     `<option value="${c.key}">${esc(c.label)}${c.criterion_mSv !== null ? ` — ${c.criterion_mSv} mSv` : ''}</option>`).join('');
@@ -360,7 +401,7 @@
   const distOf = el => (el.value === '' ? null : parseFloat(el.value));
 
   function readInputs() {
-    const input = { radiopharmaceutical: $('radiopharmaceutical').value, category: $('category').value, profile: $('profile').value };
+    const input = { preset: $('preset').value, radiopharmaceutical: $('radiopharmaceutical').value, category: $('category').value, profile: $('profile').value };
     for (const f of NUM_FIELDS) {
       const v = readNum($(f));
       if (Number.isNaN(v)) throw new RangeError(`"${$(f).title}" must be a number`);
@@ -396,6 +437,7 @@
   }
 
   function writeInputs(inp) {
+    $('preset').value = inp.preset || 'custom';
     $('radiopharmaceutical').value = inp.radiopharmaceutical;
     $('category').value = inp.category;
     $('profile').value = inp.profile;
@@ -559,7 +601,10 @@
 
   document.querySelectorAll('main input, main select').forEach(el => {
     const handler = () => {
-      if (el.id === 'profile' || /^own_|^rate_1m/.test(el.id)) {
+      if (el.id === 'preset') applyPreset(el.value);
+      else if (PRESET_FIELDS.includes(el.id)) syncPreset();
+      if (el.id === 'preset') presetHint();
+      if (el.id === 'profile' || el.id === 'preset' || /^own_|^rate_1m/.test(el.id)) {
         try { fillDistanceSelects(readInputs()); } catch (e) { /* render reports it */ }
       }
       render();
@@ -576,6 +621,7 @@
 
   $('btnReset').addEventListener('click', () => {
     writeInputs(CAREGIVER.defaultInput(data));
+    presetHint();
     render();
   });
 
@@ -595,6 +641,8 @@
       title: 'Caregiver Dose after Discharge',
       headerRows: [
         ['Radiopharmaceutical', input.radiopharmaceutical],
+        ['Kinetics', (() => { const p = PRESETS.find(q => q.key === input.preset);
+          return p ? `Preset «${p.label}». ${p.source}` : 'Entered by hand (no preset)'; })()],
         ['Data status', `caregiver.json v${data.meta.version} (${data.meta.date}). ${data.meta.origin}`],
       ],
       omitCommonSources: true,
@@ -650,7 +698,7 @@
       'Criterion_mSv', 'Criterion_basis', 'Assumptions'];
     const assumptions = [
       `rate_1m=${input.rate_1m_uSv_h} uSv/h`, `discharge=${input.discharge_h} h`, `fast_end=${input.fast_end_h} h`,
-      `T_fast=${input.T_fast_h} h`, `T_slow=${input.T_slow_h} h`, `cycles=${input.cycles}`, `category=${input.category}`,
+      `preset=${input.preset}`, `T_fast=${input.T_fast_h} h`, `T_slow=${input.T_slow_h} h`, `cycles=${input.cycles}`, `category=${input.category}`,
       `spc_min=${input.spc_min_restriction_d ?? ''} d`, `profile=${input.profile}`,
       ...ROWS.map(([k]) => { const r = input.rows[k], o = out.rows[k];
         return `${k}: ${r.days} d, during ${r.h_during} h/d @ ${r.d_during ?? ''} m (f=${o.fDuring ?? 'none'}), after ${r.h_after} h/d @ ${r.d_after ?? ''} m (f=${o.fAfter ?? 'none'})`; }),
@@ -688,6 +736,7 @@
   });
 
   writeInputs(CAREGIVER.defaultInput(data));
+  presetHint();
   render();
 })();
 </script>

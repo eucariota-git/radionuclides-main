@@ -6,7 +6,46 @@
     "origin": "Ported from the workbook Dosis_acompanantes_simple_v2.1.xlsx (version 2.1, 14/10/2026), sheets Dosis, Curva and Comprobación. Redesign basis of that workbook: IRA-C_Lu-177_dosis_acompanantes_v4.xlsx (sheet IRA-C); reference cases from Lu-177_dosis_acompanantes_v6_taller.xlsx."
   },
   "radiopharmaceuticals": ["Lu-177-PSMA-617", "Lu-177-DOTATATE", "I-131", "Other"],
+  "kinetic_presets_note": "A preset fills the radiopharmaceutical, the end of the fast phase, the effective half-lives, the number of cycles and the proximity profile. It never changes the measured discharge rate, the discharge time, the category or the cohabitation table. Literature values describe a cohort, not the patient.",
+  "kinetic_presets": [
+    {
+      "key": "psma_workbook", "label": "Lu-177-PSMA-617 — Demir (2016) / Kurth (2018)",
+      "radiopharmaceutical": "Lu-177-PSMA-617", "fast_end_h": 24, "T_fast_h": 16.4, "T_slow_h": 40.5, "cycles": 6, "profile": "lu177_approx",
+      "source": "Default of the source workbook. T fast 16.4 h is consistent with the mean dose rates at 1 m of Demir et al. (2016) Table 1, 15 µSv/h at 6 h and 7 µSv/h at 24 h: 18 h · ln 2 / ln(15/7) = 16.37 h. T slow 40.5 h: mean effective half-life after 48 h, Kurth et al. (2018) (cohort range 21.7–85.7 h). 6 cycles as in Gayol Vilorio et al. (2025)."
+    },
+    {
+      "key": "psma_gayol", "label": "Lu-177-PSMA-617 — Gayol Vilorio (2025)",
+      "radiopharmaceutical": "Lu-177-PSMA-617", "fast_end_h": 24, "T_fast_h": 22, "T_slow_h": 42, "cycles": 6, "profile": "lu177_approx",
+      "source": "Gayol Vilorio et al. (2025), Tables 4 and 6: Tef,1 = 22 h (median of the early mono-exponential fits, 12–24 h post-infusion, Table 2), Tef,2 = 42 h (median of the late values), 6 cycles; fast phase until 24 h post-infusion."
+    },
+    {
+      "key": "dotatate_gayol", "label": "Lu-177-DOTATATE — Gayol Vilorio (2025)",
+      "radiopharmaceutical": "Lu-177-DOTATATE", "fast_end_h": 24, "T_fast_h": 25, "T_slow_h": 55, "cycles": 4, "profile": "dotatate_measured",
+      "source": "Gayol Vilorio et al. (2025), Tables 3 and 5: Tef,1 = 25 h (median of the early mono-exponential fits, Table 2), Tef,2 = 55 h (median of the late values), 4 cycles; fast phase until 24 h post-infusion."
+    },
+    {
+      "key": "dotatate_monserrat", "label": "Lu-177-DOTATATE — Monserrat Fuertes (2023)",
+      "radiopharmaceutical": "Lu-177-DOTATATE", "fast_end_h": 24, "T_fast_h": 25, "T_slow_h": 58, "cycles": 4, "profile": "dotatate_measured",
+      "source": "Monserrat Fuertes et al. (2023), Table 2, 20 patients: median Teff from the 6 h and 24 h values 25 h (range 12–92 h); median Teff from the 24, 48 and 168 h values 58 h (range 35–119 h); 4 cycles of 7.4 GBq. In that cohort patients were discharged at 24 h with a median rate at 1 m of 5.4 µSv/h."
+    },
+    {
+      "key": "i131_ablation", "label": "I-131 (NaI) — thyroid remnant ablation, Foro (2011)",
+      "radiopharmaceutical": "I-131", "fast_end_h": 0, "T_fast_h": null, "T_slow_h": 49.9, "cycles": 1, "profile": "i131_approx",
+      "source": "Foro CSN-SEPR-SEFM (2011), Annex 3.B, Table 3.B 3: «Tef (vida media efectiva) = 3 días», single exponential. In the Forum's equations Tef = 1/λ (mean life), so the effective half-life is 3 d · ln 2 = 49.9 h; with this reading the app reproduces Tables 3.B 3 and 3.B 4 (partner < 60 years, 2 mSv), with the half-life reading it does not. In-patients for 48–72 h."
+    },
+    {
+      "key": "i131_metastases", "label": "I-131 (NaI) — thyroid cancer metastases, Foro (2011)",
+      "radiopharmaceutical": "I-131", "fast_end_h": 0, "T_fast_h": null, "T_slow_h": 83.2, "cycles": 1, "profile": "i131_approx",
+      "source": "Foro CSN-SEPR-SEFM (2011), Annex 3.B, Table 3.B 4: «T.ef. (vida media efectiva) = 5 días» = 1/λ, i.e. effective half-life 5 d · ln 2 = 83.2 h. Single exponential."
+    },
+    {
+      "key": "i131_hyperthyroidism", "label": "I-131 (NaI) — hyperthyroidism, Foro (2011)",
+      "radiopharmaceutical": "I-131", "fast_end_h": 0, "T_fast_h": null, "T_slow_h": 119.8, "cycles": 1, "profile": "i131_approx",
+      "source": "Foro CSN-SEPR-SEFM (2011), Annex 3.C, Table 3.C 2: «T.ef. (vida media efectiva) = 7,2 días», computed with the equation of Annex 3.B, where Tef = 1/λ: effective half-life 7.2 d · ln 2 = 119.8 h. Single exponential from discharge; the thyroid uptake peaks at 24–48 h, so early urinary excretion of an out-patient is not modelled. Usually out-patient; the Forum gives this table by administered activity (185–800 MBq), the app needs the rate measured at 1 m."
+    }
+  ],
   "defaults": {
+    "preset": "psma_workbook",
     "radiopharmaceutical": "Lu-177-PSMA-617",
     "rate_1m_uSv_h": 15,
     "discharge_h": 6,
