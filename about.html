@@ -289,7 +289,14 @@
     </ol>
     <p>Results update as you type: dose per administration and per treatment, applied criterion and margin, status and warnings; the inverse calculations (same restriction in both rows): maximum discharge rate, the floor (treatment dose with an indefinite restriction), the minimum restriction, the adopted restriction (rounded up and not below the product information; <em>Use the adopted restriction in the table</em> writes it into both rows) and the treatment dose with it; the curve of treatment dose versus restriction with the criterion, the floor and the adopted restriction; and a self-check (independent recalculation in µSv and h, plus the reference cases of the source workbook v6). <strong>📄 Report / PDF</strong> and <strong>⬇ Export CSV</strong> record every input.</p>
     <p><strong>Model</strong>: two <strong>consecutive</strong> exponentials — the fast effective half-life from discharge to the end of the fast phase, then the slow one starting from the rate reached; each cycle integrated to infinity, in SI. Dose per cycle and row = I_before(C) · h_during/24 · f_during + I_after(C) · h_after/24 · f_after; treatment dose = cycles × Σ rows. The minimum restriction is solved analytically.</p>
-    <p><strong>Criteria per category</strong> (evaluation criteria adopted by the department, as cited by the source workbook — not values fixed by regulation for this treatment): carer ≤ 60 years 3 mSv, carer &gt; 60 years 5 mSv, public 1 mSv, co-worker 0.3 mSv per treatment. The criterion only changes the comparison and the inverse calculations, never the calculated dose.</p>
+    <p><strong>Criteria per category</strong> (evaluation criteria adopted by the department, as cited by the source workbook — not values fixed by regulation for this treatment; RD 601/2019 requires carer constraints but sets no value), per treatment with all cycles together:</p>
+    <ul>
+      <li>Carer ≤ 60 years, <strong>3 mSv</strong>: EC RP 97 (1998) and Foro CSN-SEPR-SEFM (2011) — more restrictive than the international 5 mSv per episode</li>
+      <li>Carer &gt; 60 years, <strong>5 mSv</strong>: ICRP 103 (2007) para. 351 and ICRP 94 (2004), 5 mSv per episode for carers; IAEA SSG-46 (2018) para. 2.49 (usually 5 mSv for adults, less severe constraints allowed for elderly people). Adopted by Gayol Vilorio et al. (2025) instead of the 15 mSv of RP 97 and the Forum</li>
+      <li>Public (adults, children, pregnant women), <strong>1 mSv</strong>: RD 1029/2022 art. 15, applied to the whole treatment</li>
+      <li>Co-worker, <strong>0.3 mSv</strong>: RP 97 and the Forum (third persons)</li>
+    </ul>
+    <p>The ICRP «episode» (the duration of a given release after therapy) is applied to the complete treatment, the more restrictive reading. The criterion only changes the comparison and the inverse calculations, never the calculated dose.</p>
     <p><strong>Limitations</strong>:</p>
     <ul>
       <li>One person and equal cycles (same discharge rate, kinetics and cohabitation); the criterion covers only the administrations entered and does not by itself demonstrate annual compliance</li>

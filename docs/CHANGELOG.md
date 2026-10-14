@@ -4,6 +4,9 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
+### v1.10.3 — caregiver criteria documented
+- Caregiver: the basis of each criterion per category names its international source — 5 mSv per episode for carers in ICRP 103 (2007) para. 351, ICRP 94 (2004) and IAEA SSG-46 (2018) para. 2.49; 3 mSv up to 60 years and 0.3 mSv for third persons in EC RP 97 (1998) and the Forum (2011) — and states the scope: one person, the whole treatment (the ICRP "episode" read as the complete treatment). Values unchanged.
+
 ### Tooling — browser smoke test (audit 2026-10-14, M-07; no application change)
 - `tools/browser-smoke.js` renders the six pages in headless Chrome/Edge and fails on console errors, horizontal overflow (1280 and 390 px), Chart.js category axes or points outside the axes, wrong key values (acceptance cases) and a dark-mode toggle that does not recolour the charts. Against v1.10.0 it reports the N-01, N-02, N-06 and N-08 defects; v1.10.2 passes 62/62.
 

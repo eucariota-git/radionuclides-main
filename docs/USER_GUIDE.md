@@ -213,7 +213,13 @@ Results update as you type: dose per administration and per treatment, applied c
 
 **Model**: two **consecutive** exponentials — the fast effective half-life from discharge to the end of the fast phase, then the slow one starting from the rate reached; each cycle integrated to infinity, in SI. Dose per cycle and row = I_before(C) · h_during/24 · f_during + I_after(C) · h_after/24 · f_after; treatment dose = cycles × Σ rows. The minimum restriction is solved analytically.
 
-**Criteria per category** (evaluation criteria adopted by the department, as cited by the source workbook — not values fixed by regulation for this treatment): carer ≤ 60 years 3 mSv, carer > 60 years 5 mSv, public 1 mSv, co-worker 0.3 mSv per treatment. The criterion only changes the comparison and the inverse calculations, never the calculated dose.
+**Criteria per category** (evaluation criteria adopted by the department, as cited by the source workbook — not values fixed by regulation for this treatment; RD 601/2019 requires carer constraints but sets no value), per treatment with all cycles together:
+- Carer ≤ 60 years, **3 mSv**: EC RP 97 (1998) and Foro CSN-SEPR-SEFM (2011) — more restrictive than the international 5 mSv per episode
+- Carer > 60 years, **5 mSv**: ICRP 103 (2007) para. 351 and ICRP 94 (2004), 5 mSv per episode for carers; IAEA SSG-46 (2018) para. 2.49 (usually 5 mSv for adults, less severe constraints allowed for elderly people). Adopted by Gayol Vilorio et al. (2025) instead of the 15 mSv of RP 97 and the Forum
+- Public (adults, children, pregnant women), **1 mSv**: RD 1029/2022 art. 15, applied to the whole treatment
+- Co-worker, **0.3 mSv**: RP 97 and the Forum (third persons)
+
+The ICRP «episode» (the duration of a given release after therapy) is applied to the complete treatment, the more restrictive reading. The criterion only changes the comparison and the inverse calculations, never the calculated dose.
 
 **Limitations**:
 - One person and equal cycles (same discharge rate, kinetics and cohabitation); the criterion covers only the administrations entered and does not by itself demonstrate annual compliance

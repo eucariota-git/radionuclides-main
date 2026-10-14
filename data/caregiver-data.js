@@ -265,25 +265,25 @@ const CAREGIVER_DATA = {
       "key": "carer_le60",
       "label": "Carer ≤ 60 years",
       "criterion_mSv": 3,
-      "basis": "RD 601/2019, arts. 6.2, 7 and 8; Forum, table 2"
+      "basis": "EC RP 97 (1998), table 1, and Foro CSN-SEPR-SEFM (2011), table 2: 3 mSv for adults up to 60 years — more restrictive than the international 5 mSv per episode (ICRP 103, para. 351). RD 601/2019, arts. 6.2, 7 and 8, requires carer constraints but sets no value"
     },
     {
       "key": "carer_gt60",
       "label": "Carer > 60 years",
       "criterion_mSv": 5,
-      "basis": "RD 601/2019; ICRP 103 as cited by Gayol Vilorio et al. (2025)"
+      "basis": "ICRP 103 (2007), para. 351, and ICRP 94 (2004): 5 mSv per episode for carers; IAEA SSG-46 (2018), para. 2.49: usually 5 mSv per episode for adult carers, less severe constraints allowed for elderly people. Adopted by Gayol Vilorio et al. (2025) instead of the 15 mSv of EC RP 97 and the Forum"
     },
     {
       "key": "public",
       "label": "Public (adult, child or pregnant woman)",
       "criterion_mSv": 1,
-      "basis": "RD 1029/2022, art. 15: annual limit applied to the treatment"
+      "basis": "RD 1029/2022, art. 15: public annual limit, applied to the whole treatment; ICRP 94 (2004) and ICRP 103, para. 351: the public limit applies to infants, children and casual visitors"
     },
     {
       "key": "coworker",
       "label": "Co-worker",
       "criterion_mSv": 0.3,
-      "basis": "Forum, table 2 (p. 13): third parties"
+      "basis": "EC RP 97 (1998) and Foro CSN-SEPR-SEFM (2011), table 2 (p. 13): 0.3 mSv for third persons"
     },
     {
       "key": "other",
@@ -292,7 +292,7 @@ const CAREGIVER_DATA = {
       "basis": "Value entered as manual criterion"
     }
   ],
-  "criteria_note": "Evaluation criteria adopted by the department [5], not values fixed by regulation for this treatment. The criterion only changes the comparison and the inverse calculations, never the calculated dose.",
+  "criteria_note": "Evaluation criteria adopted by the department [5], not values fixed by regulation for this treatment. Scope: one person, the whole treatment (all cycles together) — the ICRP «episode» (the duration of a given release after therapy) is applied to the complete treatment, which is the more restrictive reading. Carers are people who, outside their occupation, knowingly and voluntarily help in the care of the patient (RD 601/2019, art. 7.1); children and pregnant women are assessed with the public category. The criterion only changes the comparison and the inverse calculations, never the calculated dose.",
   "curve_days": [
     0,
     1,
@@ -350,7 +350,11 @@ const CAREGIVER_DATA = {
     "IAEA Safety Reports Series No. 63 (2009), Appendix II: limitations of the inverse square law at short distance and the d^-1.5 approximation. Not incorporated as a universal profile.",
     "Demir et al. (2016), Table 1. https://doi.org/10.1088/0952-4746/36/2/269. The time variation of the spatial ratios prevents automatically adopting a single measured factor.",
     "Kurth et al. (2018). External radiation exposure, excretion and effective half-life in 177Lu-PSMA-targeted therapies — biexponential model with the fast phase ending at 24 h (as used by the source workbook).",
-    "[5] Department criteria (workbook v6, sheet Notación y fuentes): RD 601/2019, arts. 6.2, 7 and 8 (carers); RD 1029/2022, art. 15 (public, annual limit applied to the whole treatment while the CSN sets no specific constraints); Foro CSN-SEPR-SEFM (2011), table 2, p. 13 (third parties, 0.3 mSv); Gayol Vilorio et al. (2025), table 1 (5 mSv from 60 years of age)."
+    "[5] Department criteria (workbook v6, sheet Notación y fuentes): RD 601/2019, arts. 6.2, 7 and 8 (carers); RD 1029/2022, art. 15 (public, annual limit applied to the whole treatment while the CSN sets no specific constraints); Foro CSN-SEPR-SEFM (2011), table 2, p. 13 (third parties, 0.3 mSv); Gayol Vilorio et al. (2025), table 1 (5 mSv from 60 years of age).",
+    "ICRP Publication 94 (2004), Release of patients after therapy with unsealed radionuclides: 5 mSv per episode for relatives, visitors and caregivers; 1 mSv/year for infants, children and casual visitors.",
+    "ICRP Publication 103 (2007), para. 351: for individuals directly involved in comforting and caring, other than young children and infants, a dose constraint of 5 mSv per episode (the duration of a given release after therapy), to be used flexibly.",
+    "IAEA SSG-46 (2018), para. 2.49: for adult carers and comforters the constraint is usually 5 mSv per episode; less severe constraints may be used for elderly people. IAEA SRS-63 (2009) quotes the 1996 BSS: 5 mSv during the patient's treatment.",
+    "European Commission, Radiation Protection 97 (1998), table 1: children (including the unborn) 1 mSv, adults up to 60 years 3 mSv, adults over 60 years 15 mSv per treatment with I-131; third persons 0.3 mSv."
   ],
   "reference_cases": {
     "note": "Reference cases of workbook v6 (Comprobación sheet B): restriction 3 d from discharge, 6 cycles, fast phase ending at 24 h. Carer: 6 h/d at 1 m during the restriction; afterwards 6 h/d at 1 m and 8 h/d in contact (factor 6.25) → fr = 0.25, fn = 2.3333. Non-carer adult: 6 h/d at 1 m with no shared rest → fr = fn = 0.25. Expected values rounded to 2 decimals.",
