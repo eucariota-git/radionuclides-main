@@ -49,281 +49,100 @@
 
     <hr>
     <h3 id="guide-quick-start">Quick Start</h3>
-    <p>The application has no installation or authentication. It can be used in either of these local modes:</p>
+    <p>No installation or authentication is needed:</p>
     <ul>
       <li><strong>Direct from disk</strong>: open <code>index.html</code>; the address will start with <code>file://</code>.</li>
-      <li><strong>Local web server (optional)</strong>: serve the application folder with any static server and open its <code>localhost</code> address, for example <code>http://localhost:8000/</code>.</li>
-      <li><strong>Desktop</strong>: Firefox, Chrome, Safari, Edge (recommended)</li>
-      <li><strong>Mobile</strong>: iOS Safari, Chrome mobile (with landscape mode for better experience)</li>
-      <li><strong>Offline</strong>: Calculators work offline with the complete local copy (opened from <code>file://</code>, or from the local cache of a copy first loaded over HTTP(S)); external references need a connection</li>
-      <li><strong>Install as app (PWA)</strong>: when served through <code>localhost</code> or HTTPS, a compatible browser can offer "Install" / "Add to Home screen" — the app then runs standalone with its own icon and a service worker keeps all assets cached for fully offline use</li>
-      <li><strong>Reports</strong>: the Decay, Dose, Effluent and Caregiver calculators include a <strong>📄 Report / PDF</strong> button that generates a printable calculation report (timestamp, database version, inputs, results, method, data sources, disclaimer and sign-off line) — use the browser's "Save as PDF" destination to archive it</li>
-      <li><strong>CSV exports</strong>: Decay, Dose, Effluent and Caregiver CSVs are rectangular and self-describing — every row repeats the application version and build, database version, export time (UTC), nuclide and the inputs needed to reproduce the result; the Effluent CSV also states whether each scenario total is complete or a partial sum</li>
+      <li><strong>Local web server (optional)</strong>: serve the folder with any static server and open its <code>localhost</code> address, for example <code>http://localhost:8000/</code>.</li>
+      <li><strong>Browsers</strong>: current Firefox, Chrome, Safari or Edge, on desktop or mobile.</li>
+      <li><strong>Offline</strong>: Calculators work offline with the complete local copy (opened from <code>file://</code>, or from the local cache of a copy first loaded over HTTP(S)); external references need a connection.</li>
+      <li><strong>Install as app (PWA)</strong>: served through <code>localhost</code> or HTTPS, a compatible browser offers "Install" / "Add to Home screen"; the app then runs standalone and fully offline.</li>
+      <li><strong>Reports and CSV</strong>: Decay, Dose, Effluent and Caregiver have a <strong>📄 Report / PDF</strong> button (inputs, results, method, sources, disclaimer and sign-off line; use the browser's "Save as PDF") and a CSV export in which every row repeats the application version, build, data version, export time (UTC) and the inputs needed to reproduce the result.</li>
+      <li>Each page explains its method, sources and limits in its own <em>Method</em> and notes blocks; this guide gives the purpose, the use and the key limits.</li>
     </ul>
 
     <hr>
     <h3 id="guide-main-pages">Main Pages</h3>
     <h4>1. Properties (<code>index.html</code>)</h4>
-    <p><strong>Purpose</strong>: Look up half-lives, decay modes, dose-rate constants and Spanish regulatory values of radionuclides.</p>
+    <p><strong>Purpose</strong>: half-lives, decay modes, dose-rate constants and Spanish regulatory values of radionuclides.</p>
     <p><strong>How to use</strong>:</p>
     <ol>
-      <li><strong>Search</strong> by nuclide (<code>Tc-99m</code>, <code>99mTc</code>), element name in English or Spanish ("technetium", "tecnecio") or application text
-        <ul>
-          <li>The modality buttons (PET, SPECT, Therapy, Brachytherapy, Other) filter the 40 curated entries</li>
-          <li>If no curated entry matches, the extended ICRP 107 results, and the identifiers that exist only in the regulatory tables, are shown automatically. Extended results have no modality classification, so the modality filter is not applied to them</li>
-        </ul>
-      </li>
-      <li><strong>Read the table</strong>:
-        <ul>
-          <li>Half-life and decay modes (α, β⁻, β⁺, EC, IT). Each curated half-life names its source in the detail panel and in the reports: ICRP Publication 107 (2008) or the DDEP recommended value (LNHB/CEA <em>Table de Radionucléides</em>). The photon data and Γ constants are ICRP 107 in both cases</li>
-          <li><strong>Γ<sup>K-air</sup></strong>: air-kerma rate constant — μGy·h⁻¹·GBq⁻¹·m²</li>
-          <li><strong>Γ<sup>H*(10)</sup></strong>: ambient dose-equivalent rate constant (area monitoring; effective-dose estimator) — μSv·h⁻¹·GBq⁻¹·m²</li>
-          <li><strong>Γ<sup>H'(0.07)</sup></strong>: directional dose-equivalent rate constant (area monitoring; skin/extremity indicator) — μSv·h⁻¹·GBq⁻¹·m²</li>
-          <li>Representative photon energy (it can be an X-ray or the annihilation line, not only a γ line)</li>
-          <li><strong>β E&lt;sub&gt;max&lt;/sub&gt;</strong> (detail panel): the highest endpoint over all β branches, from the ICRP 107 beta spectra, with the β particles per decay; a negligible branch (Tc-99m, 0.0037 % of decays) and chain progeny (Ra-223, Ac-225) are labelled as such</li>
-          <li><strong>Γ source</strong> states the provenance per quantity. For 32 entries Γ<sup>K-air</sup> is the value published by Cornejo et al. (2015), while Γ<sup>H*(10)</sup> and Γ<sup>H'(0.07)</sup> are recalculated from ICRP 107 (2008) photon data with ICRP 74 (1996) Table A.21 coefficients</li>
-          <li>A cell without a value says why: <em>Not tabulated</em> (the regulatory table has no entry), <em>Not calculated</em> (the app does not compute it), <em>Not applicable</em>, or <em>See details</em></li>
-        </ul>
-      </li>
-      <li><strong>Individual discharge concentration level</strong> (column "Liquid effluent"): (1 mSv / e(g)) / 600 L with the adult ingestion coefficient of RD 783/2001 Annex III table a), adult (&gt; 17 y), kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1); when several chemical forms are tabulated, the most restrictive governs. It is one of the IS-28 II.A.4 conditions for controlled sewer discharge; a complete assessment also requires the mixture sum of fractions, the annual activity limits, an express discharge authorisation and soluble or readily dispersible material. For nuclides outside the curated table the level is calculated in the same way from the same table</li>
-      <li><strong>RD 1217/2024 Annex IV</strong>, for <strong>every</strong> nuclide in the detail panel (curated and ICRP 107 extended):
-        <ul>
-          <li><strong>Table A1</strong> (257 entries) — activity-concentration value for exemption of practices or clearance of materials, any quantity and any type of solid material; entries marked (a) refer to the parent and already account for the listed progeny. Nuclides not in A1 are shown as <em>not tabulated</em>: Annex III.1.b refers to the European Commission's "Radiation Protection 122 Part 1" (not included); natural radionuclides fall under Table A2 (not implemented)</li>
-          <li><strong>Table B</strong> (297 rows) — exemption of moderate quantities (≤ 1000 kg): column 2 concentration (kBq/kg) and column 3 total activity (Bq). Not tabulated: Annex II A.3.a refers to the CSN values</li>
-          <li>Four note/progeny inconsistencies of the BOE itself (A1 Ce-144, U-231; B Ag-108m, U-230) are shown as printed, with a warning</li>
-          <li>Identifiers that appear only in these regulatory tables and have no nuclear data in the app (e.g. Nb-98) can be searched and show their regulatory values only; Decay and Dose are disabled for them. They are not mapped to similar identifiers (Nb-98 ≠ Nb-98m ≠ the "Nb-98s" printed in ICRP 119)</li>
-        </ul>
-      </li>
-      <li><strong>Example applications</strong>: illustrative uses of the curated nuclides. They mix current, historical and research uses and do not indicate marketing authorisation, clinical status or availability in Spain</li>
-      <li><strong>Photon spectrum</strong> in the detail panel: lines with E ≥ 20 keV and yield ≥ 0.01 %; type G = gamma, X = X-ray, AQ = annihilation photons; yield in photons per 100 decays. For the chain entries (Ra-223, Ac-225) the spectrum shown is the parent's, while the constants assume all progeny retained and in secular equilibrium</li>
-      <li><strong>Export</strong>: download the table as CSV. The file states the provenance of the constants per quantity (<code>gamma_source</code>, <code>gamma_Kair_source</code>) and the origin of each record (<code>record_origin</code>)</li>
+      <li><strong>Search</strong> by nuclide (<code>Tc-99m</code>, <code>99mTc</code>), element name in English or Spanish ("technetium", "tecnecio") or application. The modality buttons filter the 40 curated entries. With no curated match, the ICRP 107 extended results (1,252 nuclides) and the identifiers that exist only in the regulatory tables appear automatically.</li>
+      <li><strong>Read the table</strong>: half-life, decay, the constants <strong>Γ<sup>K-air</sup></strong> (μGy·h⁻¹·GBq⁻¹·m²), <strong>Γ<sup>H*(10)</sup></strong> and <strong>Γ<sup>H'(0.07)</sup></strong> (μSv·h⁻¹·GBq⁻¹·m²), representative photon energy, the individual discharge concentration level (IS-28) and the RD 1217/2024 Table A1 value. A cell without a value says why (<em>Not tabulated</em>, <em>Not calculated</em>, <em>Not applicable</em>).</li>
+      <li><strong>Open a nuclide</strong> for the detail panel: half-life and its source (ICRP 107 or DDEP), β E&lt;sub&gt;max&lt;/sub&gt; (highest endpoint over all β branches, with β per decay; minor branches and chain progeny are labelled), photon spectrum (E ≥ 20 keV, yield ≥ 0.01 %), RD 1217/2024 Tables A1 and B, and the adult ingestion coefficient behind the discharge level.</li>
+      <li><strong>Export</strong> the table as CSV, with the provenance of each constant.</li>
     </ol>
-    <p><strong>Main database</strong>: 40 radionuclides — 32 with published comparison values in <strong>Cornejo et al. (2015)</strong>, <strong>Ga-68</strong>, the special case <strong>Y-90</strong> (predominantly a β⁻ emitter: no photon dose-rate constants, and direct beta dose is not calculated) and 6 therapy/imaging additions (<strong>Zr-89, Cu-67, Tb-161, Ho-166, Ra-223+daughters, Ac-225+daughters</strong>). Where the recalculated values differ from the published comparison values, the difference is reported with the nuclide and in the calculation reports; it has not been reconciled.</p>
-    <h5>Extended Database — ICRP 107</h5>
-    <p>The application includes an <strong>extended database of 1,252 radionuclides</strong> from ICRP Publication 107 (2008). When a search has no match in the main database, its results appear automatically, with:</p>
-    <ul>
-      <li><strong>Nuclide ID</strong> (e.g. "Am-241"), <strong>half-life</strong> and <strong>decay modes</strong> as given in ICRP 107</li>
-      <li><strong>Photon emissions</strong> — the selected lines (energy in keV, yield in % per decay, type G / X / AQ)</li>
-      <li><strong>Calculated constants</strong>: Γ<sup>H*(10)</sup> and Γ<sup>H'(0.07)</sup>, computed from the selected photon lines with the method of Cornejo et al. (2015) and the ICRP 74 (1996) Table A.21 coefficients. Γ<sup>K-air</sup> is not calculated for extended entries</li>
-      <li>A warning that these constants have <strong>not</strong> been manually validated</li>
-    </ul>
-    <p><strong>Use ICRP 107 for</strong>:</p>
-    <ul>
-      <li>Quick reference on any radionuclide (half-life, decay modes, spectrum)</li>
-      <li>Estimating dose constants for nuclides not in the curated database</li>
-      <li>Exploring photon spectra for shielding calculations</li>
-      <li>Educational purposes</li>
-    </ul>
-    <p><strong>Do NOT use ICRP 107 for</strong>:</p>
-    <ul>
-      <li>Clinical or regulatory submissions without independent verification</li>
-      <li>High-precision dosimetry — use published, peer-reviewed constants</li>
-      <li>Safety decisions without expert review</li>
-    </ul>
-    <p><strong>Example</strong> (result of the app's model, not a validated reference value): search for "Am-241":</p>
-    <ul>
-      <li>T½ = 432.2 y, α decay; 21 selected photon lines (X and γ)</li>
-      <li>Calculated Γ<sup>H*(10)</sup> ≈ 7.0 μSv·h⁻¹·GBq⁻¹·m²</li>
-    </ul>
+    <p><strong>Key limits</strong>: the discharge level is only one of the IS-28 II.A.4 conditions (the mixture sum and annual limits are not evaluated); RD 1217/2024 values are for a single nuclide; extended ICRP 107 constants are computed, not manually validated; example applications are illustrative, not an indication of authorisation or availability in Spain.</p>
+    <p><strong>Example</strong> (result of the app's model, not a validated reference value): "Am-241" — T½ = 432.2 y, α decay; 21 selected photon lines (X and γ); calculated Γ<sup>H*(10)</sup> ≈ 7.0 μSv·h⁻¹·GBq⁻¹·m².</p>
 
     <hr>
     <h4>2. Decay Calculator (<code>decay.html</code>)</h4>
-    <p><strong>Purpose</strong>: Calculate the activity of an isolated nuclide after a time, or the time needed to reach a target activity.</p>
+    <p><strong>Purpose</strong>: activity of an isolated nuclide after a time, the time to reach a target activity, and the single-nuclide clearance and exemption checks of RD 1217/2024.</p>
     <p><strong>How to use</strong>:</p>
     <ol>
-      <li>Select a nuclide in the search box (curated or ICRP 107 extended)</li>
-      <li>Enter the <strong>initial activity</strong> and its unit (MBq, GBq, mCi, Ci, kBq). The value is used in the unit chosen</li>
-      <li>Give the <strong>elapsed time</strong> in one of two ways:
-        <ul>
-          <li><strong>Reference and target date/time</strong>: both are local times of the device</li>
-          <li><strong>Elapsed time</strong> entered manually (s, min, h or d). When this field is filled it is used and the target date is ignored; the report and the CSV record it</li>
-        </ul>
-      </li>
-      <li>Optional <strong>target activity</strong>: the time needed to reach it. A target equal to A₀ is reported as already reached at t = 0; a target above A₀ cannot be reached by decay; a target of zero is reported as never reached in finite time; a negative or non-numeric target is rejected before any result is shown</li>
-      <li>Optional <strong>mass of material being assessed</strong>: the mass that corresponds to the entered activity and to the material covered by the assessment. State whether the container is included — the app does not know</li>
-      <li>Press <strong>Calculate</strong>. Results: A(t), fraction remaining (%), elapsed time and activity lost; the <strong>decay curve</strong> A(t) = A₀ · e^(−λt) and a table of values</li>
-      <li>If an input is edited after calculating, a notice asks to recalculate. The report and the CSV always describe the last calculation, not the current form</li>
-      <li><strong>Clearance and exemption</strong> (RD 1217/2024 Annex IV, single nuclide; mixtures and sums over sources are not evaluated):
-        <ul>
-          <li><strong>Table A1</strong>: A/m is compared with the A1 value at t = 0 and at t ("at or below the individual level" / "above"), with the time to reach the Table A1 concentration level. Reaching that level is not by itself a clearance: the conditions of Annex III apply. Works for curated and extended entries; Mo-99 gives the same result from either entry</li>
-          <li><strong>Exemption, Table B</strong> — Annex II A.1 sets <em>separate</em> criteria: a) a source — total activity vs column 3; b) material in moderate quantity (≤ 1000 kg) — A/m vs column 2. Above 1000 kg, c) applies: Table A1</li>
-        </ul>
-      </li>
+      <li>Select a nuclide (curated or extended) and enter the <strong>initial activity</strong> (MBq, GBq, mCi, Ci, kBq).</li>
+      <li>Give the time either as <strong>reference and target date/time</strong> (local time of the device) or as an <strong>elapsed time</strong>, which takes precedence when filled.</li>
+      <li>Optional <strong>target activity</strong>: the time to reach it (a target ≥ A₀ is reported as already reached or unreachable; zero as never reached in finite time).</li>
+      <li>Optional <strong>mass of material being assessed</strong>, the mass that contains the activity (state whether the container is included). It enables the Table A1 clearance check and the Table B exemption criteria, which Annex II A.1 sets <em>separately</em>: a) total activity of a source vs column 3; b) moderate quantity (≤ 1000 kg) vs column 2.</li>
+      <li>Press <strong>Calculate</strong>: A(t), fraction remaining, the decay curve and a table of values. If an input changes afterwards, a notice asks to recalculate; the report and CSV describe the last calculation.</li>
     </ol>
-    <p><strong>Example</strong> (stored half-life 6.007 h):</p>
-    <ul>
-      <li>Initial: 1000 MBq Tc-99m</li>
-      <li>After 6 hours: ≈ 500 MBq</li>
-      <li>Time to reach 100 MBq: ≈ 20.0 hours</li>
-    </ul>
+    <p><strong>Key limits</strong>: one nuclide; mixtures and sums over sources are not evaluated; reaching the Table A1 level is not by itself a clearance (Annex III applies).</p>
+    <p><strong>Example</strong> (stored half-life 6.007 h): 1000 MBq Tc-99m → after 6 hours ≈ 500 MBq; time to reach 100 MBq ≈ 20.0 hours.</p>
 
     <hr>
     <h4>3. Dose Estimator (<code>dose.html</code>)</h4>
-    <p><strong>Purpose</strong>: Estimate the dose-equivalent rate and the integrated dose equivalent at a distance from a point source.</p>
+    <p><strong>Purpose</strong>: dose-equivalent rate and integrated dose equivalent at a distance from a point source, with optional shielding.</p>
     <p><strong>How to use</strong>:</p>
     <ol>
-      <li><strong>Select nuclide</strong> and <strong>activity</strong> (MBq, GBq, mCi, Ci). A₀ is the activity at the start of each exposure</li>
-      <li><strong>Distance</strong> from the source, in m or cm. Check that the entered value matches the selected unit</li>
-      <li><strong>Optional shielding</strong>: material (lead, elemental iron, normal or light-weight concrete; iron is modelled as Fe at ρ = 7.874 g/cm³, not as a generic steel alloy) and thickness in cm or mm
-        <ul>
-          <li>Uses the <strong>Archer broad-beam</strong> fit of Oumano et al. (2025) for Tc-99m, F-18, I-131 and Lu-177 behind lead or concrete (iron has no fit and uses the spectral method). The published transmission is based on dose at 1 cm depth in tissue; the app applies it to both H*(10) and H'(0.07) as an approximation, and does not check its applicability range</li>
-          <li>Otherwise uses <strong>spectrum-weighted narrow-beam attenuation with build-up</strong> (dose-weighted sum over the nuclide's ICRP 107 photon lines; NIST XCOM attenuation; ANSI/ANS-6.4.3 point-isotropic exposure build-up factors). ICRP 107 extended entries build the spectrum at selection time</li>
-          <li>"Shielding details" names the method used and gives the first half-value and tenth-value layers and the transmission for each quantity. Later layers are thicker as the beam hardens, so thickness / first HVL is not the number of halvings</li>
-          <li>A warning is shown, printed and exported when part of the dose weight falls outside the tabulated attenuation or build-up range (e.g. beyond 40 mean free paths, where the build-up factor is clamped)</li>
-        </ul>
-      </li>
-      <li><strong>Optional patient attenuation</strong>: a transmission &gt; 0 % and ≤ 100 %. There is no default; it depends on photon energy, anatomy and geometry</li>
-      <li><strong>Exposure</strong>: time per administration (h, min or d) and number of administrations per year
-        <ul>
-          <li><em>Integrate physical decay during exposure?</em> affects only the integrated dose. The rate "after decay" is always calculated with decay</li>
-          <li>Annual integrated dose = dose of one administration × number of administrations. Each administration repeats the same A₀; decay between administrations is not modelled</li>
-        </ul>
-      </li>
-      <li>Press <strong>Calculate Dose</strong>. For each quantity the table gives the dose-equivalent rate at t = 0 and after physical decay over the exposure time, the reference rate at 1 m and the annual integrated dose equivalent; a chart shows the rate against distance (0.1–5 m)
-        <ul>
-          <li>Both quantities are always shown: <strong>H*(10)</strong> (ambient dose equivalent, effective-dose estimator) and <strong>H'(0.07)</strong> (directional dose equivalent, skin/extremity indicator — falls back to the H*(10) value when no Γ<sup>H'(0.07)</sup> constant exists)</li>
-          <li>These are <strong>area-monitoring</strong> quantities. These estimates do not establish compliance: apply the dose-assessment and monitoring methods required for the exposure situation (personal quantities are Hp(10), Hp(0.07), Hp(3); under RD 1029/2022 art. 34 the doses of category B workers may be estimated from workplace monitoring)</li>
-          <li>Ḣ = Γ × A × T / r², with T the transmission of the shield and of the patient</li>
-        </ul>
-      </li>
-      <li><strong>Annual limit screening</strong> (indicative only): the annual integrated values are shown as percentages of the limits of the Spanish Royal Decree 1029/2022 (transposing Directive 2013/59/Euratom):
-        <ul>
-          <li><strong>Effective dose</strong>: 20 mSv/year (worker), 1 mSv/year (public)</li>
-          <li><strong>Skin / extremities</strong>: 500 mSv/year</li>
-          <li><strong>Lens of eye</strong>: <em>Both conditions must be satisfied:</em> 50 mSv/year max annual AND 100 mSv over any consecutive 5-year period (current regime since 2024-06-22)</li>
-          <li>The percentage is coloured above 50 % and above 100 %. The app issues no "safe" verdict</li>
-        </ul>
-      </li>
-      <li>If an input is edited after calculating, a notice asks to recalculate; the report and the CSV describe the last calculation</li>
-      <li><strong>Special case — Y-90</strong>:
-        <ul>
-          <li>No photon line passes the filter, so there are no photon dose-rate constants. Dose provides a separate experimental <strong>bremsstrahlung</strong> scenario; <strong>direct beta dose is excluded</strong>, so its H'(0.07) figure is not a complete skin/extremity assessment</li>
-          <li>Select an assumed container geometry: PMMA, Lead, Tungsten, or None</li>
-          <li>The displayed container-dependent values are estimates inspired by the Zanzonico et al. (1999) formalism; that publication does <strong>not</strong> tabulate these container constants</li>
-          <li>The scenario reports no regulatory verdict, and its report and CSV carry the state "experimental container estimates; validity not established". Do not use it for shielding design or regulatory submissions without a primary source or measurements for the actual geometry</li>
-        </ul>
-      </li>
-      <li>For any other nuclide with no photon line passing the filter, the page says so and makes no estimate. That is not evidence that there is no external hazard: direct beta/electron dose and bremsstrahlung are not calculated</li>
+      <li>Select the nuclide and <strong>activity</strong> (A₀ is the activity at the start of each exposure).</li>
+      <li><strong>Distance</strong> in m or cm.</li>
+      <li>Optional <strong>shielding</strong> — lead, elemental iron (ρ = 7.874 g/cm³, not a generic steel) or normal / light-weight concrete — and optional <strong>patient transmission</strong> (no default: it depends on energy, anatomy and geometry). <em>Shielding details</em> names the method used: the Archer broad-beam fit of Oumano et al. (2025) for Tc-99m, F-18, I-131 and Lu-177 behind lead or concrete, otherwise spectrum-weighted narrow-beam attenuation with build-up; it gives the first HVL/TVL and warns when part of the spectrum falls outside the tabulated range.</li>
+      <li><strong>Exposure</strong> time per administration and administrations per year; choose whether physical decay is integrated during each exposure.</li>
+      <li>Press <strong>Calculate Dose</strong>: rate at t = 0 and after decay, reference rate at 1 m, annual integrated dose for <strong>H*(10)</strong> (estimator of effective dose) and <strong>H'(0.07)</strong> (skin/extremity indicator), and the rate against distance.</li>
+      <li><strong>Annual limit screening</strong> (indicative): percentages of the limits of the Spanish Royal Decree 1029/2022 — 20 mSv/y effective (workers), 1 mSv/y (public), 500 mSv/y skin and extremities, lens of the eye 100 mSv in 5 consecutive years with at most 50 mSv in one year. No "safe" verdict is issued.</li>
     </ol>
-    <p><strong>Example</strong>:</p>
+    <p><strong>Key limits</strong>: point source; room scatter and source distribution are not modelled. H*(10) and H'(0.07) are area-monitoring quantities: these estimates do not establish compliance (personal quantities are Hp(10), Hp(0.07), Hp(3); RD 1029/2022 art. 34 allows estimating category B doses from workplace monitoring). Decay between administrations is not modelled. <strong>Y-90</strong> has no photon line: Dose offers only an experimental container-dependent bremsstrahlung scenario, with direct beta dose excluded and no regulatory verdict. For other nuclides without photon lines no estimate is made — which is not evidence that there is no external hazard.</p>
+    <p><strong>Example</strong>: 100 MBq Tc-99m, point source at 50 cm, no shielding, 10 min per administration, 200 administrations per year, decay integrated:</p>
     <ul>
-      <li>Inputs: 100 MBq Tc-99m, point source at 50 cm, no shielding, no patient attenuation, 10 min per administration, 200 administrations per year, decay integrated during each exposure</li>
-      <li>Dose rate at t = 0: Ḣ*(10) = Γ·A/r² = 21.72 × 0.100 / 0.50² ≈ 8.7 μSv/h (Γ = 21.72 μSv·h⁻¹·GBq⁻¹·m²)</li>
-      <li>Annual integrated H*(10): ≈ 0.29 mSv/y (200 × ≈ 1.43 μSv)</li>
-      <li>These are results of the app's point-source model for the stated inputs, not a measured dose and not a statement of safety or compliance</li>
+      <li>Ḣ*(10) = Γ·A/r² = 21.72 × 0.100 / 0.50² ≈ 8.7 μSv/h</li>
+      <li>Annual integrated H*(10) ≈ 0.29 mSv/y (200 × ≈ 1.43 μSv)</li>
+      <li>Results of the app's point-source model for these inputs, not a measured dose nor a statement of safety or compliance.</li>
     </ul>
 
     <hr>
     <h4>4. Liquid Effluent — Sewer and STP Workers (<code>effluent.html</code>)</h4>
-    <p><strong>Purpose</strong>: Screening estimate of the annual effective dose from Lu-177, I-131, Lu-177m, Tc-99m and F-18 excreted by nuclear-medicine patients, for two workers adapted from NUREG/CR-5814 (1992) who are members of the public with respect to the licensee:</p>
-    <ul>
-      <li><strong>Scenario 1 — sewer system inspector</strong> (§5.2.1): external irradiation from the facility's wastewater (water slab; receptor 1 m above its surface) and inhalation of aerosol in the interceptor</li>
-      <li><strong>Scenario 2 — STP / EDAR sludge process operator</strong> (§5.2.2): external exposure to dewatered sludge and inhalation of resuspended dry sludge, with the screening philosophy of IAEA SRS-19 (2001) §4.9 and §6.6</li>
-    </ul>
-    <p>The two scenarios concern <strong>different receptors: each total is compared with the criterion on its own and they are never added together</strong>.</p>
+    <p><strong>Purpose</strong>: screening annual effective dose from Lu-177, I-131, Lu-177m, Tc-99m and F-18 excreted by nuclear-medicine patients, for two receptors adapted from NUREG/CR-5814 (1992), both members of the public with respect to the licensee: <strong>Scenario 1</strong>, a sewer system inspector (wastewater and aerosol), and <strong>Scenario 2</strong>, an STP / EDAR sludge operator (dewatered sludge and resuspended dust). The two are different receptors and are never added together.</p>
     <p><strong>How to use</strong>:</p>
     <ol>
-      <li><strong>Source term</strong> (one row per nuclide; tick <em>Include</em> — only Lu-177 and I-131 are included by default): A_adm = patients/year × cycles/patient × administered activity per cycle, all of it assumed to be excreted; <em>fraction excreted in hospital</em>; <em>decay tanks</em> if the nuclide is controlled in hospital decay tanks
-        <ul>
-          <li>The fraction excreted in hospital leaves through the facility's sewer connection. For nuclides controlled in decay tanks only the annual tank discharge leaves (common parameter, default 1 GBq/y for the sum of controlled nuclides — the IS-28 Annex II II.A.4 annual limit), shared among them in proportion to the activity excreted into the tanks; when that activity is below the limit, all of it is assumed discharged (no decay credit)</li>
-          <li>The rest is excreted at home</li>
-          <li><strong>Scenario 1</strong> receives only the activity leaving the hospital; <strong>Scenario 2</strong> receives the activity leaving the hospital plus the activity excreted at home by the patients living in the STP catchment</li>
-          <li>I-131: one treatment per patient is an assumption of this scenario, not a clinical rule; the default 0.8 GBq is the workbook's activity at hospital DISCHARGE, not the administered activity — replace it with the administered activity and a justified in-hospital fraction</li>
-          <li>Lu-177m: impurity of carrier-added Lu-177 (default 0.01 % of 7.4 GBq per cycle)</li>
-          <li>Tc-99m: no default in the reference workbooks — enter the facility's data</li>
-        </ul>
-      </li>
-      <li><strong>Scenario 1</strong>: facility type (hospital 20 000 m³/y, clinic 3650 m³/y, or the licensee's figure — consumption ≈ discharge), water density, aerosol loading, respirable fraction, exposure times, geometry factor and transit time (≈ 0.2 h)</li>
-      <li><strong>Scenario 2</strong>: wet (dewatered) sludge production — plant-specific, from PRTR-España, waste code LER 19 08 05 —, solids fraction, wet density, fraction retained in sludge, transit time to the press (≈ 3 d), dust loading, respirable fraction, exposure times, geometry factor and the external-coefficient geometry (model geometries of 10 × 10 × 3 m or 45 × 45 × 3 m, receptor 2 m above the centre; the coefficient belongs to the model geometry and its use for a specific plant must be justified)</li>
-      <li><strong>Common</strong>: breathing rate, annual discharge from decay tanks and a <strong>user-defined</strong> dose criterion (default 1 mSv/y; the app attributes no regulatory basis to it)</li>
+      <li><strong>Source term</strong>: tick the nuclides; patients/year × cycles × administered activity per cycle, all assumed excreted; the fraction excreted in hospital; <em>Tanks</em> for nuclides held in decay tanks (then only their share of the annual tank discharge leaves). Scenario 1 receives what leaves the hospital; Scenario 2 also the activity excreted at home in the STP catchment.</li>
+      <li><strong>Scenario 1</strong> and <strong>Scenario 2</strong> parameters: each input has a short explanation and its default source in <em>Sources and assumptions</em>. Plant data (water volume, sludge production from PRTR-España) are site-specific.</li>
+      <li><strong>Common</strong>: breathing rate, annual tank discharge and a <strong>user-defined</strong> dose criterion (no regulatory basis is attributed to it).</li>
+      <li>Results update as you type: dose per nuclide and per scenario, with the coefficients used and an indicative cross-check against NUREG/CR-5814 and IAEA SRS-19 factors.</li>
     </ol>
-    <p>The short text under each input says what it means; the sources of the defaults (workbook cells, report sections) are in the collapsible <em>Sources and assumptions</em> blocks. Results update as you type: per scenario, decay factor, concentrations and dose factor per GBq discharged; annual external, inhalation and total dose per nuclide; per-scenario sum and percentage of the criterion. <strong>📄 Report / PDF</strong> and <strong>⬇ Export CSV</strong> record every input and coefficient.</p>
-    <p><strong>Model</strong> (per nuclide, A = activity leaving the hospital (Scenario 1) or reaching the STP (Scenario 2) in one year, DF = exp(−λ·t_transit)):</p>
+    <p><strong>Key limits</strong>: screening model (annual discharge over annual water volume or sludge production, transit decay only); the external coefficients are own PHITS calculations valid only for their model geometries, photon-only in Scenario 1, and none covers the infinite slab of NUREG/CR-5814; F-18 has no Scenario 2 external coefficient, so that total is a partial sum (≥); the I-131 default of 0.8 GBq is the workbook's activity at discharge, not the administered activity — replace it. <strong>Not a complete discharge assessment</strong>: the IS-28 II.A.4 conditions and mixture clearance are evaluated separately.</p>
+    <p><strong>Example</strong> (defaults, Lu-177 and I-131 included, no decay tanks, 45 × 45 × 3 m geometry):</p>
     <ul>
-      <li>Scenario 1: C_water [Bq/m³] = A · DF / V; C_air = (C_water / ρ_water) · aerosol loading · f_resp; E_ext = C_water · k₁ · t_ext · g; E_inh = C_air · BR · t_inh · e(inh)</li>
-      <li>Scenario 2: C_dry [Bq/kg] = A · f_sludge · DF / (M_wet · f_solids); C_wet [Bq/m³] = A · f_sludge · DF · ρ_wet / M_wet; C_air = C_dry · dust loading · f_resp; E_ext = C_wet · k₂ · t_ext · f_geom; E_inh = C_air · BR · t_inh · e(inh)</li>
-    </ul>
-    <p><strong>Data</strong>:</p>
-    <ul>
-      <li><strong>k₁, k₂</strong> (external): effective-dose-rate coefficients (ICRP 116 (2010), rotational geometry) calculated with PHITS — Scenario 1 for a 600 × 200 × 50 cm water slab with the receptor at 1 m, Scenario 2 for a uniform 3 m deep sludge source with the receptor at 2 m. They are <strong>not</strong> point-source Γ constants and apply only to those geometries. F-18 has no Scenario 2 external coefficient: its external pathway is shown as <em>n/a</em> (not zero), its inhalation is still computed, and the Scenario 2 total is labelled a <strong>partial sum</strong> (≥) on screen, in the report and in the CSV</li>
-      <li><strong>e(inh)</strong>: RD 783/2001 Annex III table b), adult (&gt; 17 y) member of the public, kept in force by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 (2012) Table G.1; lung absorption type F = fast, M = moderate) — Lu-177 M 1.1×10⁻⁹, Lu-177m M 1.3×10⁻⁸, I-131 F 7.4×10⁻⁹, Tc-99m M 1.9×10⁻¹¹, F-18 M 5.6×10⁻¹¹ Sv/Bq</li>
-      <li>Half-lives from the app database; Lu-177m, which is not a curated entry, from ICRP 107 (160.4 d)</li>
-    </ul>
-    <p><strong>Limitations</strong>:</p>
-    <ul>
-      <li>Screening models: annual discharge divided by annual water volume or annual sludge production, with transit decay only and no decay during the exposure year. A continuous discharge does not by itself demonstrate mixing or steady state. The fraction retained in sludge is the value entered (default 100 %)</li>
-      <li>Site hypotheses, not regulatory values: the 25 % solids fraction (reference workbook; no 20–25 % range found in the PEMAR it cites; NUREG uses 30 %; it only affects inhalation), the 5090 t/y sludge production (workbook value, not verified against the PRTR declaration) and the 1 GBq/y tank discharge (equal to the IS-28 boundary, which requires strictly less)</li>
-      <li>Adaptations of NUREG/CR-5814, not reproductions. The PHITS coefficients carry the path and SHA-256 of their original reports</li>
-      <li>Densities, volumes and masses must be greater than zero; with a criterion ≤ 0 the totals are not compared</li>
-      <li>Scenario 1 coefficients are photon-only: bremsstrahlung from beta and positron emission is not included and has not been bounded for this geometry — the limitation is larger for F-18 and I-131</li>
-      <li>NUREG/CR-5814 prescribes an infinite slab for Scenario 2, which neither coefficient covers. For Lu-177 the PHITS study measured that the 45 × 45 m coefficient captures 73–75 % of the infinite slab</li>
-      <li>Inhalation uses public dose coefficients: neither worker is an exposed worker of the licensee</li>
-      <li><strong>Not a complete discharge assessment.</strong> The IS-28 Annex II II.A.4 sewer conditions (per-nuclide level, sum of fractions, annual activity limits) and mixture clearance are evaluated separately</li>
-      <li>A collapsible panel compares the coefficients with the GENII-1990 factors of NUREG/CR-5814 Table A.21 (I-131, F-18, Tc-99m; the PHITS Scenario 1 coefficients are 2.7–3.6 times higher, a difference that has not been investigated) and the I-131 Scenario 2 result with NUREG/CR-5814 Table B.7 and IAEA SRS-19 Table I–IV. All are indicative only; SRS-19 Annex I uses an occupancy of 0.288 where 2000/8760 = 0.228</li>
-    </ul>
-    <p><strong>Example</strong> (default values, Lu-177 and I-131 included, no decay tanks, 45 × 45 × 3 m geometry):</p>
-    <ul>
-      <li>Lu-177: A_adm = 75 patients × 6 cycles × 7.4 GBq = 3330 GBq/y; 45 % excreted in hospital = 1498.5 GBq/y; at home 1831.5 GBq/y</li>
-      <li>I-131: A_adm = 50 × 0.8 GBq = 40 GBq/y; 50 % excreted in hospital = 20 GBq/y; at home 20 GBq/y</li>
-      <li>Scenario 1: Lu-177 1498.5 GBq/y → 0.0115 µSv/GBq → 0.0172 mSv/y; I-131 20 GBq/y → 0.135 µSv/GBq → 0.0027 mSv/y; total 0.0199 mSv/y</li>
-      <li>Scenario 2 (home part × 40 % catchment): Lu-177 1498.5 + 732.6 = 2231.1 GBq/y → 1.065 µSv/GBq → 2.38 mSv/y; I-131 20 + 8 = 28 GBq/y → 13.10 µSv/GBq → 0.367 mSv/y; total 2.74 mSv/y</li>
-      <li>With both nuclides in decay tanks, 1 GBq/y leaves the hospital in total (Lu-177 0.987, I-131 0.013 GBq/y) and Scenario 2 falls to 0.886 mSv/y</li>
+      <li>Scenario 1: Lu-177 1498.5 GBq/y → 0.0172 mSv/y; I-131 20 GBq/y → 0.0027 mSv/y; total 0.0199 mSv/y</li>
+      <li>Scenario 2 (40 % catchment): Lu-177 2231.1 GBq/y → 2.38 mSv/y; I-131 28 GBq/y → 0.367 mSv/y; total 2.74 mSv/y</li>
+      <li>With both nuclides in decay tanks (1 GBq/y in total), Scenario 2 falls to 0.886 mSv/y</li>
     </ul>
 
     <hr>
     <h4>5. Caregiver Dose after Discharge (<code>caregiver.html</code>)</h4>
-    <p><strong>Purpose</strong>: External dose to one caregiver, family member or third party from a radionuclide-therapy patient (Lu-177-PSMA-617, Lu-177-DOTATATE, I-131) after discharge, for equal treatment cycles, with the maximum discharge rate and the minimum restriction period that meet a criterion. Port of the workbook <em>Dosis_acompanantes_simple_v2.1.xlsx</em>.</p>
+    <p><strong>Purpose</strong>: external dose to one caregiver, relative or third party from a Lu-177 or I-131 therapy patient after discharge, with the maximum discharge rate and the minimum restriction period that meet a criterion. Port of the author's workbook <em>Dosis_acompanantes_simple_v2.1.xlsx</em>.</p>
     <p><strong>How to use</strong>:</p>
     <ol>
-      <li><strong>Kinetics preset</strong> (optional): fills the radiopharmaceutical, the end of the fast phase, the effective half-lives, the number of cycles and the proximity profile from the literature — never the measured rate, the discharge time, the category or the cohabitation table; editing any of those fields switches it to <em>Custom</em>:
-        <ul>
-          <li>Lu-177-PSMA-617 — Demir (2016) / Kurth (2018) (default, the source workbook's values): fast phase until 24 h, 16.4 / 40.5 h, 6 cycles</li>
-          <li>Lu-177-PSMA-617 — Gayol Vilorio (2025): 22 / 42 h, 6 cycles</li>
-          <li>Lu-177-DOTATATE — Gayol Vilorio (2025): 25 / 55 h, 4 cycles; Monserrat Fuertes (2023): 25 / 58 h, 4 cycles (both with the measured DOTATATE profile)</li>
-          <li>I-131 (NaI), single exponential, 1 administration, Foro CSN-SEPR-SEFM (2011): thyroid remnant ablation 49.9 h, metastases 83.2 h, hyperthyroidism 119.8 h. The Forum's «vida media efectiva» of 3, 5 and 7.2 d is the mean life 1/λ of its equations (that reading reproduces its Tables 3.B 3 and 3.B 4), so the half-lives are those values × ln 2</li>
-        </ul>
-      </li>
-      <li><strong>Case data</strong>: dose rate measured at 1 m at discharge (µSv/h); discharge time and end of the fast phase, both counted from administration (24 h in Kurth et al. 2018 and Demir et al. 2016; 0 = no fast phase); fast and slow effective half-lives (the fast one is only required when discharge precedes the end of the fast phase, and must not exceed the slow one); number of equal cycles; category of the exposed person (or <em>Other criterion</em> with a manual value); optional minimum restriction of the product information; proximity profile</li>
-      <li><strong>Proximity profile</strong>: <em>DOTATATE measured</em> (factors 14.9 / 2.5 / 1 at 0.1 / 0.5 / 1 m, medians of Monserrat Fuertes et al. 2023), <em>I-131 approximate</em> and <em>Lu-177 approximate</em> (contact at 0.1 m takes the factor of 0.4 m, (1/0.4)² = 6.25; inverse square at 0.5, 1, 1.5, 2 and 3 m), or <em>Own measurements</em> (up to five distances with the rate measured at the same time as the 1 m reading; factor = rate / rate at 1 m). Distances are chosen from the profile list — there is no interpolation. A warning appears when the profile does not match the radiopharmaceutical</li>
-      <li><strong>Cohabitation</strong>: two rows, <em>day-time cohabitation</em> and <em>sleeping in the same room</em> (hours are mutually exclusive), each with the restriction days counted from discharge, hours/day and distance during the restriction, and hours/day and distance after it. Zero hours = no contact (the distance may be empty). The sum of hours in any period may not exceed 24 h/day</li>
+      <li>Optional <strong>kinetics preset</strong> (Lu-177-PSMA-617, Lu-177-DOTATATE or I-131 NaI by indication, from the literature listed on the page): it fills the radiopharmaceutical, the fast phase, the effective half-lives, the cycles and the profile, never the measured rate or the cohabitation.</li>
+      <li><strong>Case data</strong>: dose rate measured at 1 m at discharge, discharge time and end of the fast phase (both from administration), effective half-lives, cycles, category of the exposed person, optional minimum restriction of the product information, and the <strong>proximity profile</strong> (measured DOTATATE factors, the I-131 / Lu-177 approximations with contact taken at 0.4 m, or own measurements). Distances are chosen from the profile list; there is no interpolation.</li>
+      <li><strong>Cohabitation</strong>: day-time and sleeping rows, each with restriction days from discharge and hours/day and distance during and after the restriction.</li>
+      <li>Results update as you type: dose per administration and per treatment against the criterion, the inverse calculations (maximum rate, minimum and adopted restriction, floor with an indefinite restriction), the dose-versus-restriction curve and a self-check.</li>
     </ol>
-    <p>Results update as you type: dose per administration and per treatment, applied criterion and margin, status and warnings; the inverse calculations (same restriction in both rows): maximum discharge rate, the floor (treatment dose with an indefinite restriction), the minimum restriction, the adopted restriction (rounded up and not below the product information; <em>Use the adopted restriction in the table</em> writes it into both rows) and the treatment dose with it; the curve of treatment dose versus restriction with the criterion, the floor and the adopted restriction; and a self-check (independent recalculation in µSv and h, plus the reference cases of the source workbook v6). <strong>📄 Report / PDF</strong> and <strong>⬇ Export CSV</strong> record every input.</p>
-    <p><strong>Model</strong>: two <strong>consecutive</strong> exponentials — the fast effective half-life from discharge to the end of the fast phase, then the slow one starting from the rate reached; each cycle integrated to infinity, in SI. Dose per cycle and row = I_before(C) · h_during/24 · f_during + I_after(C) · h_after/24 · f_after; treatment dose = cycles × Σ rows. The minimum restriction is solved analytically.</p>
-    <p><strong>Criteria per category</strong> (evaluation criteria adopted by the department, as cited by the source workbook — not values fixed by regulation for this treatment; RD 601/2019 requires carer constraints but sets no value), per treatment with all cycles together:</p>
-    <ul>
-      <li>Carer ≤ 60 years, <strong>3 mSv</strong>: EC RP 97 (1998) and Foro CSN-SEPR-SEFM (2011) — more restrictive than the international 5 mSv per episode</li>
-      <li>Carer &gt; 60 years, <strong>5 mSv</strong>: ICRP 103 (2007) para. 351 and ICRP 94 (2004), 5 mSv per episode for carers; IAEA SSG-46 (2018) para. 2.49 (usually 5 mSv for adults, less severe constraints allowed for elderly people). Adopted by Gayol Vilorio et al. (2025) instead of the 15 mSv of RP 97 and the Forum</li>
-      <li>Public (adults, children, pregnant women), <strong>1 mSv</strong>: RD 1029/2022 art. 15, applied to the whole treatment</li>
-      <li>Co-worker, <strong>0.3 mSv</strong>: RP 97 and the Forum (third persons)</li>
-    </ul>
-    <p>The ICRP «episode» (the duration of a given release after therapy) is applied to the complete treatment, the more restrictive reading. The criterion only changes the comparison and the inverse calculations, never the calculated dose.</p>
-    <p><strong>Limitations</strong>:</p>
-    <ul>
-      <li>One person and equal cycles (same discharge rate, kinetics and cohabitation); the criterion covers only the administrations entered and does not by itself demonstrate annual compliance</li>
-      <li>The integral of the measured operational quantity is used as an estimator of external exposure; it is not automatically the individual effective dose nor the fetal dose. Internal contamination, the dose before discharge and other sources are not included</li>
-      <li>Occupancy h/24 is a daily average; trips and contacts concentrated during the fast phase need a specific time-resolved assessment. Spatial factors are constant in both phases</li>
-      <li>Approximate profiles are published conventions, not universal measured factors</li>
-    </ul>
-    <p><strong>Example</strong> (default values: Lu-177-PSMA-617, 15 µSv/h at 1 m, discharge at 6 h, fast phase ending at 24 h, 16.4 / 40.5 h, 6 cycles, carer ≤ 60 years, Lu-177 approximate; day-time 3 d at 6 h/d and 1 m, then 6 h/d at 1 m; sleeping apart for 3 d, then 8 h/d at 0.1 m):</p>
-    <ul>
-      <li>Dose per administration 0.488 mSv; treatment 2.93 mSv against 3 mSv — within the criterion, margin 0.070 mSv</li>
-      <li>Maximum discharge rate 15.4 µSv/h; floor 0.898 mSv; minimum restriction 2.92 d → adopted 3 d</li>
-    </ul>
-
-    <hr>
-    <h4>6. ICRP 107 data integrity</h4>
-    <p>Constants for the extended ICRP 107 nuclides are computed from the parsed photon emissions and cross-checked against the published Cornejo (2015) values by the automated test suite (<code>node test/validate-constants.js</code>), not by an in-browser page. Data integrity is backed by:</p>
-    <ul>
-      <li>SHA256 hashes of source files (NDX, RAD) stored in JSON metadata</li>
-      <li>Timestamps showing when data was last regenerated</li>
-      <li>Parser version (2.0 fixed-width columns) documented</li>
-    </ul>
+    <p><strong>Criteria per category</strong> (per treatment, all cycles together; department criteria, not values fixed by regulation for this treatment — RD 601/2019 requires carer constraints but sets no value): carer ≤ 60 years 3 mSv (EC RP 97, Foro 2011); carer &gt; 60 years 5 mSv (ICRP 103 para. 351, ICRP 94, IAEA SSG-46); public 1 mSv (RD 1029/2022 art. 15); co-worker 0.3 mSv (RP 97, Foro). The criterion never changes the calculated dose.</p>
+    <p><strong>Key limits</strong>: one person and equal cycles; the integral of the measured operational quantity estimates external exposure, not the individual effective or fetal dose; internal contamination and the dose before discharge are not included; occupancy is a daily average.</p>
+    <p><strong>Example</strong> (defaults: Lu-177-PSMA-617, 15 µSv/h at 1 m at 6 h, carer ≤ 60 years; day-time 6 h/d at 1 m; sleeping apart for 3 d, then 8 h/d in contact): dose per administration 0.488 mSv; treatment 2.93 mSv against 3 mSv; maximum discharge rate 15.4 µSv/h; minimum restriction 2.92 d → adopted 3 d.</p>
 
     <hr>
     <h3 id="guide-dark-mode">Dark Mode</h3>
-    <p>Toggle dark/light mode using the <strong>moon icon</strong> (🌙) in the top-right corner. Preference is saved in browser.</p>
-
-    <hr>
+    <p>The <strong>moon icon</strong> (🌙) in the top-right corner toggles dark mode; the choice is saved in the browser.</p>
     <h3 id="guide-keyboard-shortcuts">Keyboard Shortcuts</h3>
     <div class="overflow-x-auto">
       <table class="about-table">
@@ -339,93 +158,42 @@
 
     <hr>
     <h3 id="guide-data-quality-and-limitations">Data Quality &amp; Limitations</h3>
-    <h4>Main Database (40 nuclides)</h4>
     <ul>
-      <li><strong>Published comparison</strong>: Cornejo et al. (2015) for 32 nuclides (ΓKair matches the published table)</li>
-      <li><strong>Without a published comparison</strong>: Ga-68, Zr-89, Cu-67, Tb-161, Ho-166, Ra-223 and Ac-225 (ICRP 107 / ICRP 74 A.21; the alpha chains assume all progeny retained and in equilibrium), and Y-90 (predominantly a β⁻ emitter; no applicable photon dose-rate constants in Properties, and direct beta dose is not calculated)</li>
-      <li><strong>Half-lives</strong>: each one names its source — ICRP 107 (2008) or the DDEP recommended value (LNHB/CEA)</li>
-      <li><strong>Note</strong>: Operational Γ H*(10) / H'(0.07) values use ICRP 107 nuclear data; material differences from published Cornejo values are reported with the affected nuclide and in calculation reports</li>
-      <li><strong>Use case</strong>: Radiation protection estimation; verify against primary sources for regulatory submissions</li>
-      <li><strong>Conversion coefficients and photon filter</strong>: h*(10) and h'(0.07,0°) per unit fluence from ICRP 74 (1996) Table A.21 — the 25 printed energies, log-log interpolated, no 1.25 MeV node; the printed 6.90 pSv·cm² at 1.5 MeV is kept although the table's own columns give 7.04. Photon lines with E ≥ 20 keV and yield ≥ 0.01 % are used; lines with a yield exactly equal to 0.01 % are kept, whereas Cornejo et al. (2015) state yields above 0.01 %. Of the 32 Γ<sup>H*(10)</sup> values published by Cornejo et al. (2015), 23 are reproduced within ±2 %</li>
-    </ul>
-    <h4>Extended Database (1,252 nuclides from ICRP 107)</h4>
-    <ul>
-      <li><strong>Source</strong>: ICRP Publication 107 (2008) — official decay data compilation</li>
-      <li><strong>Calculation</strong>: Γ constants derived from photon spectrum using ICRP 74 Table A.21 conversion coefficients</li>
-      <li><strong>Check</strong>: the same method, applied to the 32 nuclides with a value published by Cornejo et al. (2015), agrees within ±2 % for 23 of them; 6 differ by more than 5 % (largest 11.2 %). These differences are reported, not reconciled. The extended entries themselves have no published comparison recorded in the app</li>
-      <li><strong>Use case</strong>: Reference and estimation only — NOT validated for clinical use</li>
-      <li><strong>Limitations</strong>:
-        <ul>
-          <li>Includes positron annihilation only when present in ICRP 107 as <code>AQ</code></li>
-          <li>Excludes continuous beta spectrum contribution</li>
-          <li>Derived constants not peer-reviewed</li>
-        </ul>
-      </li>
-    </ul>
-    <h4>Dose Calculations</h4>
-    <ul>
-      <li><strong>Ambient dose equivalent H*(10)</strong> assumes:
-        <ul>
-          <li>Photon field (gamma and X-rays)</li>
-          <li>Point source at specified distance</li>
-          <li>Scatter build-up included via infinite-medium point-isotropic factors (ANSI/ANS-6.4.3) applied to finite barriers — the deviation is not universally conservative (the finite-barrier and interface corrections of NUREG/CR-5740 are not applied); not a substitute for structural shielding design calculations</li>
-        </ul>
-      </li>
-      <li><strong>Directional dose equivalent H'(0.07)</strong>:
-        <ul>
-          <li>0.07 mm depth (70 μm); area-monitoring quantity, an indicator for skin and extremities, not a personal dose</li>
-          <li>Photons only: direct beta/electron dose is not calculated</li>
-          <li>ICRP 74 (1996) Table A.21 conversion coefficients</li>
-        </ul>
-      </li>
+      <li><strong>Curated database (40 nuclides)</strong>: 32 with published comparison values in Cornejo et al. (2015), whose Γ<sup>K-air</sup> is the value shown; Γ<sup>H*(10)</sup> and Γ<sup>H'(0.07)</sup> are recalculated from ICRP 107 (2008) photon data and ICRP 74 (1996) Table A.21 (23 of the 32 within ±2 % of the published values; differences are reported, not reconciled). Ga-68, Zr-89, Cu-67, Tb-161, Ho-166, Ra-223 and Ac-225 have no published comparison (the alpha chains assume all progeny retained and in equilibrium); Y-90 has no photon constants.</li>
+      <li><strong>Half-lives</strong>: each one names its source — ICRP 107 (2008) or the DDEP recommended value (LNHB/CEA).</li>
+      <li><strong>Conversion coefficients and photon filter</strong>: ICRP 74 Table A.21, 25 printed energies, log-log interpolated (the printed 6.90 pSv·cm² at 1.5 MeV is kept although the table's own columns give 7.04); photon lines with E ≥ 20 keV and yield ≥ 0.01 % (a yield exactly 0.01 % is kept).</li>
+      <li><strong>Extended database (1,252 nuclides, ICRP 107)</strong>: constants computed with the same method, not manually validated; continuous beta spectra and bremsstrahlung are not included. Reference and estimation only — not validated for clinical use.</li>
+      <li><strong>Shielding</strong>: infinite-medium point-isotropic build-up factors (ANSI/ANS-6.4.3) applied to finite barriers — the deviation is not universally conservative; not a substitute for structural shielding design.</li>
+      <li><strong>H'(0.07)</strong>: area-monitoring indicator for skin and extremities, photons only; direct beta/electron dose is not calculated.</li>
+      <li><strong>Use</strong>: radiation protection estimation; verify against primary sources for regulatory submissions.</li>
     </ul>
 
     <hr>
     <h3 id="guide-troubleshooting">Troubleshooting</h3>
-    <p><strong>Q: Search returns no results</strong></p>
-    <ul>
-      <li>A: Check spelling (e.g., "Tc-99m" not "Tc99m")</li>
-      <li>A: The extended ICRP 107 database is searched automatically when the main database has no match</li>
-      <li>A: Try searching by element name (English or Spanish, e.g. "technetium", "tecnecio") or by clinical use</li>
-    </ul>
-    <p><strong>Q: ICRP 107 data doesn't load</strong></p>
-    <ul>
-      <li>A: The ICRP 107 database is bundled locally; an internet connection is not required</li>
-      <li>A: Check the browser console (F12) for a missing or blocked <code>data/icrp107-data.js</code> file</li>
-      <li>A: For an installed PWA, clear this app's site data or unregister its service worker, then reload while online once; a normal browser-cache clear may leave the installed service worker active</li>
-      <li>A: For <code>file://</code>, keep the complete folder structure together and reopen <code>index.html</code></li>
-    </ul>
-    <p><strong>Q: Calculated dose seems too high/low</strong></p>
-    <ul>
-      <li>A: Verify activity units (MBq vs GBq)</li>
-      <li>A: Check that the entered distance matches the selected unit (m or cm)</li>
-      <li>A: For ICRP 107 extended nuclides, verify the constants are computed, not manually validated</li>
-    </ul>
-    <p><strong>Q: Can I use ICRP 107 for regulatory submissions?</strong></p>
-    <ul>
-      <li>A: No. ICRP 107 calculated constants are informational only.</li>
-      <li>A: Use published peer-reviewed values (like Cornejo et al. when available)</li>
-      <li>A: If no published value exists, verify ICRP 107 calculation independently before regulatory use</li>
-    </ul>
+    <p><strong>Search returns no results</strong> — check the spelling ("Tc-99m"), or search by element name (English or Spanish) or application; the ICRP 107 database is searched automatically.</p>
+    <p><strong>ICRP 107 data doesn't load</strong> — the database is bundled locally and needs no connection. Check the browser console (F12) for a missing <code>data/icrp107-data.js</code>. For an installed PWA, clear this app's site data or unregister its service worker and reload once online. For <code>file://</code>, keep the complete folder together.</p>
+    <p><strong>Calculated dose seems too high or low</strong> — verify the activity unit (MBq vs GBq), check that the entered distance matches the selected unit (m or cm), and remember that extended ICRP 107 constants are computed, not validated.</p>
+    <p><strong>Can I use ICRP 107 values for regulatory submissions?</strong> — Not without independent verification; prefer published, peer-reviewed values where they exist.</p>
 
     <hr>
     <h3 id="guide-references">References</h3>
     <ul>
       <li><strong>Cornejo Díaz N., Brosed Serreta A., Ruiz Manzano P.</strong> (2015). "Constantes de tasa de kerma en aire y de tasa de equivalente de dosis ambiental de algunos radionucleidos utilizados en aplicaciones médicas." <em>Radioprotección</em> (SEPR), Nº 83, 39–42.</li>
-      <li><strong>ICRP Publication 74</strong> (1996). "Conversion Coefficients for Use in Radiological Protection against External Radiation." International Commission on Radiological Protection.</li>
+      <li><strong>ICRP Publication 74</strong> (1996). "Conversion Coefficients for Use in Radiological Protection against External Radiation."</li>
       <li><strong>ICRP Publication 107</strong> (2008). "Nuclear Decay Data for Dosimetric Calculations." Endo &amp; Eckerman.</li>
-      <li><strong>ICRP Publication 119</strong> (2012). "Compendium of Dose Coefficients based on ICRP Publication 60." Used as the numerical transcription of RD 783/2001 Annex III tables a) and b).</li>
-      <li><strong>Real Decreto 783/2001</strong>, Anexo III, tablas a) y b) (public dose coefficients). RD 783/2001 was repealed by RD 1029/2022, whose third transitional provision — and the CSN Resolution of 3 April 2024 — keep these coefficients in force for members of the public.</li>
-      <li><strong>ICRP Publication 116</strong> (2010). "Conversion Coefficients for Radiological Protection Quantities for External Radiation Exposures." With the corrigenda in ICRP Publication 129 (2015).</li>
-      <li><strong>IAEA Safety Reports Series No. 19</strong> (2001). "Generic Models for Use in Assessing the Impact of Discharges of Radioactive Substances to the Environment." §4.9 and §6.6.</li>
-      <li><strong>Kennedy W.E. Jr., Parkhurst M.A., Aaberg R.L., Rhoads K.C., Hill R.L., Martin J.B.</strong> (1992). <em>Evaluation of Exposure Pathways to Man From Disposal of Radioactive Materials Into Sanitary Sewer Systems</em>. NUREG/CR-5814 / PNL-7892, U.S. NRC. §5.2.1, §5.2.2, Tables A.16, A.20, A.21, B.7.</li>
-      <li><strong>Instrucción IS-28</strong> (CSN, 22 September 2010). "Especificaciones técnicas de funcionamiento que deben cumplir las instalaciones radiactivas de segunda y tercera categoría." BOE nº 246, 11 October 2010 (BOE-A-2010-15594).</li>
-      <li><strong><a href="https://www.boe.es/buscar/act.php?id=BOE-A-2022-21682" target="_blank" rel="noopener">Real Decreto 1029/2022</a></strong>, de 20 de diciembre, por el que se aprueba el Reglamento sobre protección de la salud contra los riesgos derivados de la exposición a las radiaciones ionizantes. BOE-A-2022-21682.</li>
-      <li><strong><a href="https://www.boe.es/buscar/act.php?id=BOE-A-2024-25205" target="_blank" rel="noopener">Real Decreto 1217/2024</a></strong>, de 3 de diciembre, por el que se aprueba el Reglamento sobre instalaciones nucleares y radiactivas, y otras actividades relacionadas con la exposición a las radiaciones ionizantes. BOE-A-2024-25205.</li>
-      <li><strong>Zanzonico P.B. et al.</strong> (1999). "Bremsstrahlung radiation exposure from pure beta-ray emitters." <em>J Nucl Med</em> 40(6):1024–1028. Methodological background only; the application's container constants are not tabulated in the article.</li>
-      <li><strong>NIST XCOM / XAAMDI</strong>. Photon mass attenuation coefficients for lead, elemental iron and ordinary concrete.</li>
-      <li><strong>Trubey D.K.</strong> (1991). <em>New Gamma-Ray Buildup Factor Data for Point Kernel Calculations: ANS-6.4.3 Standard Reference Data</em>. NUREG/CR-5740 / ORNL/RSIC-49/R1, Table 3 (exposure buildup factors for lead, iron and concrete).</li>
       <li><strong>DDEP — Decay Data Evaluation Project</strong>. LNHB/CEA <em>Table de Radionucléides</em>, recommended half-lives (consulted 14 October 2026); Mougeot X. et al., <em>Metrologia</em> 62 (2025) 029001/029002 and 63 (2026) 019001 for the recent evaluations.</li>
+      <li><strong>ICRP Publication 116</strong> (2010). "Conversion Coefficients for Radiological Protection Quantities for External Radiation Exposures." With the corrigenda in ICRP Publication 129 (2015).</li>
+      <li><strong>ICRP Publication 119</strong> (2012). "Compendium of Dose Coefficients based on ICRP Publication 60." Numerical transcription of RD 783/2001 Annex III tables a) and b).</li>
+      <li><strong>Real Decreto 783/2001</strong>, Anexo III, tablas a) y b) (public dose coefficients). Repealed by RD 1029/2022, whose third transitional provision — and the CSN Resolution of 3 April 2024 — keep these coefficients in force for members of the public.</li>
+      <li><strong><a href="https://www.boe.es/buscar/act.php?id=BOE-A-2022-21682" target="_blank" rel="noopener">Real Decreto 1029/2022</a></strong>, de 20 de diciembre, Reglamento sobre protección de la salud contra los riesgos derivados de la exposición a las radiaciones ionizantes. BOE-A-2022-21682.</li>
+      <li><strong><a href="https://www.boe.es/buscar/act.php?id=BOE-A-2024-25205" target="_blank" rel="noopener">Real Decreto 1217/2024</a></strong>, de 3 de diciembre, Reglamento sobre instalaciones nucleares y radiactivas, y otras actividades relacionadas con la exposición a las radiaciones ionizantes. BOE-A-2024-25205.</li>
+      <li><strong>Instrucción IS-28</strong> (CSN, 22 September 2010). BOE nº 246, 11 October 2010 (BOE-A-2010-15594).</li>
+      <li><strong>NIST XCOM / XAAMDI</strong>. Photon mass attenuation coefficients for lead, elemental iron and ordinary concrete.</li>
+      <li><strong>Trubey D.K.</strong> (1991). <em>New Gamma-Ray Buildup Factor Data for Point Kernel Calculations: ANS-6.4.3 Standard Reference Data</em>. NUREG/CR-5740 / ORNL/RSIC-49/R1, Table 3.</li>
+      <li><strong>Oumano M. et al.</strong> (2025). "Shielding resources for four common radiopharmaceuticals utilized for imaging and therapy: Tc-99m, F-18, I-131, and Lu-177." <em>J Appl Clin Med Phys</em> 26(5):e70084. DOI 10.1002/acm2.70084 (CC BY 4.0).</li>
+      <li><strong>Zanzonico P.B. et al.</strong> (1999). "Bremsstrahlung radiation exposure from pure beta-ray emitters." <em>J Nucl Med</em> 40(6):1024–1028. Methodological background only; the container constants are not tabulated in the article.</li>
+      <li><strong>Kennedy W.E. Jr. et al.</strong> (1992). <em>Evaluation of Exposure Pathways to Man From Disposal of Radioactive Materials Into Sanitary Sewer Systems</em>. NUREG/CR-5814 / PNL-7892, U.S. NRC.</li>
+      <li><strong>IAEA Safety Reports Series No. 19</strong> (2001). "Generic Models for Use in Assessing the Impact of Discharges of Radioactive Substances to the Environment."</li>
       <li><strong>Monserrat Fuertes et al.</strong> (2023). "Individualisation of radiation protection recommendations for patients treated with [177Lu]Lu-DOTA-TATE." <em>EJNMMI Physics</em> 10:50. DOI 10.1186/s40658-023-00570-7 (CC BY 4.0).</li>
       <li><strong>Gayol Vilorio et al.</strong> (2025). "Periodo de restricciones tras el alta en terapia con 177Lu-DOTATATE y 177Lu-PSMA-617." <em>Rev. Fís. Méd.</em> 26(2):27–36.</li>
       <li><strong>Kurth J. et al.</strong> (2018). "External radiation exposure, excretion and effective half-life in 177Lu-PSMA-targeted therapies." <em>EJNMMI Research</em> 8:32 (CC BY 4.0).</li>
@@ -434,15 +202,14 @@
       <li><strong>European Commission, Radiation Protection 97</strong> (1998). <em>Radiation protection following iodine-131 therapy (exposures due to out-patients or discharged in-patients)</em>.</li>
       <li><strong>ICRP Publication 94</strong> (2004). "Release of patients after therapy with unsealed radionuclides." <strong>ICRP Publication 103</strong> (2007), para. 351.</li>
       <li><strong>IAEA SSG-46</strong> (2018), para. 2.49, and <strong>IAEA Safety Reports Series No. 63</strong> (2009), "Release of patients after radionuclide therapy."</li>
-      <li><strong>Oumano M. et al.</strong> (2025). "Shielding resources for four common radiopharmaceuticals utilized for imaging and therapy: Tc-99m, F-18, I-131, and Lu-177." <em>J Appl Clin Med Phys</em> 26(5):e70084. DOI 10.1002/acm2.70084 (CC BY 4.0).</li>
     </ul>
 
     <hr>
     <h3 id="guide-support-and-feedback">Support &amp; Feedback</h3>
-    <p>For issues, questions, or feature requests, contact the person or organisation that supplied your copy of the application.</p>
+    <p>For issues, questions or feature requests, contact the person or organisation that supplied your copy of the application.</p>
     <h3 id="guide-development-tooling">Development tooling</h3>
     <p>This application was developed with the assistance of AI coding tools — Anthropic <strong>Claude Code</strong> and OpenAI <strong>Codex</strong> — operated, reviewed and directed by the author, who remains the sole author and licensor of the original code. These tools hold no authorship, copyright or licence interest in the application; this statement is a voluntary transparency notice, not a licence obligation.</p>
-    <p>Correctness does not rest on how the code was written: numerical data are taken from the cited sources (ICRP, NIST, NUREG/ANS, DDEP, BOE and the cited articles) — transcribed where the source tabulates them, computed or reconstructed from them where indicated (e.g. the operational Γ constants, the dose-weighted shielding spectra, the explicitly experimental Y-90 container estimates), with the status labelled per value — the calculation paths are checked by the automated test suites against external anchors, and adoption for professional use requires the independent human validation described in the acceptance sheet.</p>
+    <p>Correctness does not rest on how the code was written: numerical data are taken from the cited sources (ICRP, NIST, NUREG/ANS, DDEP, BOE and the cited articles) — transcribed where the source tabulates them, computed from them where indicated (e.g. the operational Γ constants, the dose-weighted shielding spectra, the explicitly experimental Y-90 container estimates), with the status labelled per value — the calculation paths are checked by the automated test suites against external anchors, and adoption for professional use requires the independent human validation described in the acceptance sheet.</p>
 
     <hr>
     <h3 id="guide-license">License</h3>
