@@ -431,6 +431,9 @@
   const inputErr = UI.inputErrors('calcError');
 
   function render() {
+    // Fields written by the page (Defaults, facility preset) fire no input
+    // event: refresh the "Read as …" notes here (decimal review 2026-10-15, D-01)
+    UI.refreshNumberHints();
     let input, out;
     try {
       input = readInputs();

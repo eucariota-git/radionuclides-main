@@ -4,6 +4,12 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
+### v1.15.1 — review of the decimal change (D-01…D-03)
+- **CSV with a point in every case** (D-02): the Dose range warnings («99.9 % of the dose weight…», «1.0×10⁴ mfp», «30.0 keV») were stored already formatted with the display separator, so the `Shielding_validity` column of a CSV exported in comma mode carried commas. They are now also built inside `UTILS.withPoint`, and the CSV uses that version; screen and report keep the user's separator.
+- **«Read as …» note** (D-01): it stayed after a value written by the page (Effluent and Caregiver «Defaults», kinetics presets, adopted restriction) and kept the old separator after a switch. It is now refreshed on every render of those pages and after a switch (`UI.refreshNumberHints`).
+- **Selectors** (D-03): the Caregiver category list («Co-worker — 0.3 mSv») is rebuilt on a separator switch, keeping the selection; the Dose material densities (ρ = 11.35, 7.874, 2.30, 1.60 g/cm³) follow the separator (`option[data-num-label]`).
+- Found by an independent review of v1.15.0, which found no change in any computed value; its own scripts now give identical CSVs in point and comma mode. Test 22 and browser-smoke cases for each finding.
+
 ### v1.15.0 — decimal point or comma
 - **Input**: every numeric field accepts a decimal point or a decimal comma, the same in every browser (`UTILS.parseNumber`). The fields were `type="number"`, which left the interpretation to the browser: with the browser set to English, «0,3» was read as **3** without any error, and «1.000,5» as 1.0005 in any language. Now a value with two separators or a thousands group is rejected with the inline error, and a single separator followed by exactly three digits («1.500») is accepted as a decimal with a note under the field saying how it was read. The fields are text with a decimal keyboard on phones (full keyboard where the default is in exponent notation, e.g. 1e-7); they no longer have spinner arrows.
 - **Display**: the interface stays in English for every user; the decimal separator of results, tables, charts (ticks, legends, tooltips) and reports follows a header button **1.5 / 1,5** — by default the browser's number locale, the choice stored. Switching redraws the page without losing the inputs. Quantity names (H'(0.07)), identifiers and references (ANS-6.4.3, §5.2.1, versions) and explanatory text keep the point.

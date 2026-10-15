@@ -249,7 +249,7 @@ async function main() {
   check('properties distinguishes dose-rate provenance from regulatory sources',
     />&#915; source<\/th>/.test(indexHtml) && /clearance_a1_source/.test(indexHtml));
   check('dose exposes elemental iron with an explicit density',
-    /<option value="Fe">Iron \(Fe\).*7\.874 g\/cm/.test(doseHtml));
+    /<option value="Fe" data-num-label>Iron \(Fe\).*7\.874 g\/cm/.test(doseHtml));
   check('curve legends use line segments and event markers use circles',
     /pointStyle: 'line'/.test(decayHtml) && /pointStyle: 'circle'/.test(decayHtml) &&
     /usePointStyle: true/.test(decayHtml) && /pointStyle: 'line'/.test(doseHtml) &&
@@ -320,7 +320,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v55');
+    swVersion === 'nm-planner-v56');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -1156,6 +1156,19 @@ async function main() {
       /return typeof UTILS !== 'undefined' \? UTILS\.dec\(s\) : s;/.test(uiJs) && /function numberHint\(el\)/.test(uiJs) &&
       /Read as \$\{UTILS\.num\(v\)\} \(decimal separator\)/.test(uiJs));
   }
+
+  console.log();
+  console.log('Test 22: decimal review of v1.15.0 (D-01..D-03, material selector)');
+  check('D-01: "Read as" notes refreshed after fields written by the page and after a separator switch',
+    /function refreshNumberHints\(\)/.test(uiJs) && /o\.textContent = UTILS\.dec\(o\.dataset\.numLabel\);\s*\}\);\s*refreshNumberHints\(\);/.test(uiJs) &&
+    [effluentHtml, caregiverHtml].every(h => /function render\(\) \{[\s\S]{0,300}UI\.refreshNumberHints\(\);/.test(h)));
+  check('D-02: Dose range warnings also built with the point (withPoint) and the CSV validity uses that version',
+    /shieldWarningsPoint = UTILS\.withPoint\(buildMsgs\)/.test(doseHtml) && /shieldWarningsPoint: shieldWarningsPoint\.slice\(\)/.test(doseHtml) &&
+    /const validity = shieldingValidity\(\{ \.\.\.lastCalcResult, shieldWarnings: lastCalcResult\.shieldWarningsPoint/.test(doseHtml));
+  check('D-03: Caregiver category options rebuilt on a separator switch, keeping the selection',
+    /const buildCategoryOptions = \(\) => \{/.test(caregiverHtml) && /nm-decimal-change', \(\) => \{\s*buildCategoryOptions\(\);/.test(caregiverHtml));
+  check('Dose material densities follow the separator (option[data-num-label]); the HTML text keeps the point as source',
+    (doseHtml.match(/<option value="(Pb|Fe|concrete_NW|concrete_LW)" data-num-label>/g) || []).length === 4);
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);
   process.exitCode = failed === 0 ? 0 : 1;

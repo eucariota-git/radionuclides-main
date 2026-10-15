@@ -103,10 +103,10 @@
         <label class="form-label" for="shieldMaterial">Material</label>
         <select class="form-select" id="shieldMaterial" title="Shield material">
           <option value="none">None</option>
-          <option value="Pb">Lead (Pb) — &#961; = 11.35 g/cm&#179;</option>
-          <option value="Fe">Iron (Fe) — &#961; = 7.874 g/cm&#179;</option>
-          <option value="concrete_NW">Concrete, normal-weight — &#961; = 2.30 g/cm&#179;</option>
-          <option value="concrete_LW">Concrete, light-weight — &#961; = 1.60 g/cm&#179;</option>
+          <option value="Pb" data-num-label>Lead (Pb) — &#961; = 11.35 g/cm&#179;</option>
+          <option value="Fe" data-num-label>Iron (Fe) — &#961; = 7.874 g/cm&#179;</option>
+          <option value="concrete_NW" data-num-label>Concrete, normal-weight — &#961; = 2.30 g/cm&#179;</option>
+          <option value="concrete_LW" data-num-label>Concrete, light-weight — &#961; = 1.60 g/cm&#179;</option>
         </select>
       </div>
       <div class="form-group">
@@ -796,7 +796,8 @@
   document.getElementById('btnExportDoseCsv').onclick = () => UTILS.withPoint(() => {
     if (!lastCalcResult) return;   // the button is hidden with the results
     const { useH007, gammaExt, gammaWB, nAdmin, H_WB_cum, H_Ext_cum, Hdot_WB, Hdot_WB_t, Hdot_Ext, Hdot_Ext_t, Hdot_WB_1m, Hdot_WB_t_1m, Hdot_Ext_1m, Hdot_Ext_t_1m, n, A0raw, A0unit, A0_GBq, d_m, distRaw, distUnit, t_h, mat, thick, withDecay, patientTx, containerName, isY90, method } = lastCalcResult;
-    const validity = lastCalcResult.validity || shieldingValidity(lastCalcResult);
+    // Validity text rebuilt from the point version of the range warnings (D-02)
+    const validity = shieldingValidity({ ...lastCalcResult, shieldWarnings: lastCalcResult.shieldWarningsPoint || lastCalcResult.shieldWarnings || [] });
     // Rectangular, self-describing CSV (audit 2026-10-03, H-09): identity,
     // versions, inputs and validity repeated on every row, as the Decay export.
     const meta = (typeof DB !== 'undefined' && DB.getMeta) ? DB.getMeta() : {};
@@ -869,6 +870,7 @@
     const d_m      = distUnit === 'cm' ? distRaw / 100 : distRaw;
     // Shielding-range warnings of this calculation, exported with the result (H-07)
     let shieldWarnings = [];
+    let shieldWarningsPoint = [];   // the same warnings with a decimal point, for the CSV
 
     const mat          = document.getElementById('shieldMaterial').value;
     const parsedThick  = UTILS.parseNumber(document.getElementById('shieldThickness').value);
@@ -1348,6 +1350,7 @@
       const warnEl = document.getElementById('shieldRangeWarn');
       warnEl.innerHTML = '';
       shieldWarnings = [];
+      shieldWarningsPoint = [];
       if (method === 'archer') {
         warnEl.innerHTML = '<div class="alert alert-info mt-1">Published fit; applicability range not checked by the app.</div>';
       } else {
@@ -1362,6 +1365,10 @@
           if (E   < range.buildup_E_min_MeV) wUnderE  += w;
           if (E   > range.atten_E_max_MeV)   wOverE   += w;
         }
+        // Built with the user's separator for the screen and the report, and
+        // again inside UTILS.withPoint for the CSV: a stored string cannot be
+        // re-formatted later (decimal review 2026-10-15, D-02).
+        const buildMsgs = () => {
         const pct  = (w) => UTILS.fmt(w * 100);
         const msgs = [];
         if (wOverE > 0)
@@ -1370,10 +1377,14 @@
           msgs.push(`${pct(wOverMfp)}% of the dose weight exceeds ${range.buildup_mfp_max} mean free paths (deepest line: ${UTILS.fmt(mfpMax)} mfp); the build-up factor is clamped and <strong>underestimates</strong> the transmitted dose`);
         if (wUnderE > 0)
           msgs.push(`${pct(wUnderE)}% of the dose weight lies below ${UTILS.fmt(range.buildup_E_min_MeV * 1000)} keV, where the ${matLabel(mat)} build-up table starts; B is held at its lowest tabulated energy`);
+        return msgs;
+        };
+        const msgs = buildMsgs();
         if (msgs.length) {
           warnEl.innerHTML = `<div class="alert alert-warning alert-lg mt-1">&#9888; Out of validated range: ${msgs.join('; ')}. Treat the shielding result as an extrapolation.</div>`;
           // Persist the same warnings in the exportable result (audit 2026-10-03, H-07)
           shieldWarnings = msgs.map(m => m.replace(/<[^>]+>/g, ''));
+          shieldWarningsPoint = UTILS.withPoint(buildMsgs).map(m => m.replace(/<[^>]+>/g, ''));
         }
       }
     } else {
@@ -1516,7 +1527,7 @@
     `;
 
     lastCalcResult = { useH007, gammaExt, gammaWB, nAdmin, H_WB_cum, H_Ext_cum, Hdot_WB, Hdot_WB_t, Hdot_Ext, Hdot_Ext_t, Hdot_WB_1m, Hdot_WB_t_1m, Hdot_Ext_1m, Hdot_Ext_t_1m, n, A0raw, A0unit, A0_GBq, d_m, t_h,
-      distRaw, distUnit, shieldWarnings: shieldWarnings.slice(),
+      distRaw, distUnit, shieldWarnings: shieldWarnings.slice(), shieldWarningsPoint: shieldWarningsPoint.slice(),
       mat, thick, patientTx, withDecay,
       method: mat === 'none' || thick <= 0 ? 'unshielded' : ap ? 'archer' : sp ? 'narrow_beam_spectrum' : 'narrow_beam',
       spectrumLines: sp ? sp.length : 0 };

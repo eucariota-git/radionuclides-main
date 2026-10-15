@@ -366,8 +366,14 @@
   }
 
   $('radiopharmaceutical').innerHTML = data.radiopharmaceuticals.map(r => `<option value="${UTILS.safeAttr(r)}">${esc(r)}</option>`).join('');
-  $('category').innerHTML = data.categories.map(c =>
-    `<option value="${c.key}">${esc(c.label)}${c.criterion_mSv !== null ? ` — ${UTILS.num(c.criterion_mSv)} mSv` : ''}</option>`).join('');
+  // Rebuilt on a separator switch, keeping the selection (decimal review 2026-10-15, D-03)
+  const buildCategoryOptions = () => {
+    const cur = $('category').value;
+    $('category').innerHTML = data.categories.map(c =>
+      `<option value="${c.key}">${esc(c.label)}${c.criterion_mSv !== null ? ` — ${UTILS.num(c.criterion_mSv)} mSv` : ''}</option>`).join('');
+    if (cur) $('category').value = cur;
+  };
+  buildCategoryOptions();
   $('profile').innerHTML = Object.entries(data.profiles).map(([k, p]) => `<option value="${k}">${esc(p.label)}</option>`).join('');
   $('assumptionList').innerHTML = data.assumptions.map(a => `<li>${esc(a)}</li>`).join('');
   const buildProfileTables = () => {
@@ -568,6 +574,9 @@
   // Error message in the page box and the offending field marked (presentation review 2026-10-15)
   const inputErr = UI.inputErrors('calcError');
   function render() {
+    // Fields written by the page (Defaults, presets, adopted restriction) fire
+    // no input event: refresh the "Read as …" notes here (decimal review 2026-10-15, D-01)
+    UI.refreshNumberHints();
     let input, out, cv, sc;
     try {
       input = readInputs();
@@ -670,6 +679,7 @@
   // Decimal separator switched in the header: rebuild the data tables, the
   // distance lists and the results with the new one
   document.addEventListener('nm-decimal-change', () => {
+    buildCategoryOptions();
     buildProfileTables();
     try { fillDistanceSelects(readInputs()); } catch (e) { /* render reports it */ }
     render();

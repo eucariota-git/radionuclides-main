@@ -107,12 +107,27 @@ const UI = (() => {
 
   // Rewrite the separator of the plain numbers already in the fields (defaults
   // written in the HTML with a point, or values typed before a switch).
+  // Static <option data-num-label> texts with a value (Dose material densities)
+  // follow the separator too; the HTML text, written with a point, is the source.
   function localizeInputs() {
     const sep = UTILS.getDecimalMode() === 'comma' ? ',' : '.';
     document.querySelectorAll('input.num-input').forEach(el => {
       const t = el.value.trim();
       if (/^[+-]?\d*[.,]\d+([eE][+-]?\d+)?$/.test(t)) el.value = t.replace(/[.,]/, sep);
     });
+    document.querySelectorAll('option[data-num-label]').forEach(o => {
+      if (!o.dataset.numLabel) o.dataset.numLabel = o.textContent;
+      o.textContent = UTILS.dec(o.dataset.numLabel);
+    });
+    refreshNumberHints();
+  }
+
+  // Re-evaluate the "Read as …" note of every numeric field: a value written by
+  // the page (Defaults, presets, adopted restriction) or a separator switch fires
+  // no input event, and the note stayed on the old value (decimal review
+  // 2026-10-15, D-01). Pages call it after writing fields.
+  function refreshNumberHints() {
+    document.querySelectorAll('input.num-input').forEach(numberHint);
   }
 
   // "1.500" or "2,250": one separator followed by exactly three digits reads as
@@ -373,6 +388,7 @@ const UI = (() => {
   return {
     initDarkMode,
     initDecimal,
+    refreshNumberHints,
     initPrint,
     initKeyboard,
     showFatalError,

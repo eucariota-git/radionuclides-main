@@ -481,6 +481,47 @@ async function main() {
       }
       await send('Emulation.setLocaleOverride', {});
     });
+    await guard('Decimal review of v1.15.0 (D-01..D-03, material selector)', async () => {
+      const typeInto = async (id, t) => {
+        await ev(`(() => { const e = document.getElementById('${id}'); e.focus(); e.select(); })()`);
+        await send('Input.insertText', { text: t });
+        await sleep(300);
+      };
+      const hintOf = id => ev(`(document.getElementById('${id}-numhint') || {}).textContent || ''`);
+      // D-01: Defaults restores 7.4 and the note about "1.500" disappears
+      await open('effluent.html', 1280);
+      await typeInto('st_0_activity_per_cycle_GBq', '1.500');
+      const before = await hintOf('st_0_activity_per_cycle_GBq');
+      await ev(`document.getElementById('btnReset').click()`); await sleep(300);
+      const after = { value: await ev(`document.getElementById('st_0_activity_per_cycle_GBq').value`), hint: await hintOf('st_0_activity_per_cycle_GBq') };
+      check('D-01: Effluent "1.500" note shown, then gone after Defaults (field back to 7.4)', /Read as 1\.5/.test(before) && after.value === '7.4' && after.hint === '', JSON.stringify({ before, after }));
+      // D-01: a separator switch rewrites the note with the new separator
+      await open('decay.html?id=Tc-99m', 1280);
+      await typeInto('A0', '1.500');
+      await ev(`document.getElementById('decimalToggle').click()`); await sleep(300);
+      const sw = { value: await ev(`document.getElementById('A0').value`), hint: await hintOf('A0') };
+      check('D-01: after the switch to comma the field reads "1,500" and the note "Read as 1,5"', sw.value === '1,500' && /^Read as 1,5 /.test(sw.hint), JSON.stringify(sw));
+      // D-02: the CSV of a case with range warnings keeps the point in comma mode
+      await open('dose.html?id=Pd-103', 1280);
+      await ev(`(() => { const s = (i, v) => { document.getElementById(i).value = v; }; s('distance', '0.35'); s('shieldMaterial', 'Pb'); s('shieldThickness', '10.5');
+        document.getElementById('shieldMaterial').dispatchEvent(new Event('change', { bubbles: true })); })()`);
+      await sleep(400);
+      await ev(`document.getElementById('decimalToggle').click()`); await sleep(400);
+      const warnScreen = await text('#shieldRangeWarn');
+      await ev(`window.__csvBlob = null; document.getElementById('btnExportDoseCsv').click()`); await sleep(100);
+      const csv = await ev(`window.__csvBlob ? window.__csvBlob.text() : ''`);
+      check('D-02: range warning with comma on screen (99,9 %), with point in the CSV (99.9 %, no "d,d")',
+        /99,9%/.test(warnScreen) && /OUT OF VALIDATED RANGE — 99\.9%/.test(csv) && !/\d,\d/.test(csv), (warnScreen.slice(0, 80) + ' | ' + (csv.match(/OUT OF[^"]{0,80}/) || [''])[0]));
+      // D-03 and material densities: no option keeps the other separator
+      for (const pg of ['decay.html?id=Lu-177', 'dose.html?id=Lu-177', 'effluent.html', 'caregiver.html']) {
+        await open(pg, 1280);
+        await ev(`document.getElementById('decimalToggle').click()`); await sleep(300);
+        const commaOpts = await ev(`[...document.querySelectorAll('main option')].map(o => o.text).filter(t => /\\d\\.\\d/.test(t))`);
+        await ev(`document.getElementById('decimalToggle').click()`); await sleep(300);
+        const pointOpts = await ev(`[...document.querySelectorAll('main option')].map(o => o.text).filter(t => /\\d,\\d/.test(t))`);
+        check(`${pg}: selector options follow the separator both ways`, commaOpts.length === 0 && pointOpts.length === 0, JSON.stringify({ commaOpts, pointOpts }));
+      }
+    });
     await guard('Theme follows the system preference without a stored choice', async () => {
       await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'dark' }] });
       await open('decay.html?id=Tc-99m', 1280);
