@@ -334,7 +334,7 @@ async function main() {
     manifest.icons.every(icon => icon.src.startsWith('assets/icons/')) &&
     iconPaths.every(rel => swJs.includes(`./${rel}`)));
   check('development docs describe absolute tolerance and warned results',
-    /absolute tolerance of 0\.1/.test(developmentMd) && /3 warned/.test(developmentMd) && !/< 5% deviation/.test(developmentMd));
+    /absolute tolerance of 0\.1/.test(developmentMd) && /0 warned/.test(developmentMd) && !/< 5% deviation/.test(developmentMd));
   check('README no longer advertises removed custom uploads and lists current modules',
     !/user-uploaded nuclides/.test(readmeMd) && /about\.html/.test(readmeMd) &&
     /js\/report\.js/.test(readmeMd) && /js\/utils\.js/.test(readmeMd) && /test\//.test(readmeMd));

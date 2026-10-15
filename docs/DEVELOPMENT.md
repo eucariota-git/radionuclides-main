@@ -45,12 +45,21 @@ Each module (PHYSICS, CALC, DB, ICRP107, UI) is an IIFE returning public API. No
 - `getById(id)`, `getAll()`, `search(query)`, `filter(...)` — curated 40 nuclides
 
 ### `ICRP107` (`js/icrp107-loader.js`)
-- `search(query)`, `get(id)` — 1252 extended nuclides
-- `calcConstants(id)` — calculate Γ + max photon energy
-- Lazy-loads on first use
+- `search(query)`, `get(id)` — 1252 extended nuclides (embedded `ICRP107_DATA`; the JSON twin is fetched only if the embedded copy is missing)
+- `calcConstants(id, { progeny })` — Γ, contributions, photon list and max photon energy; `progeny: true` adds the short-lived progeny in equilibrium
+- `progeny(id)` — descendants with T½ ≤ 1/10 of the CHAIN PARENT's and ≤ 30 d (app criterion, not regulatory), at the asymptotic Bateman ratio Π bᵢ·λᵢ/(λᵢ − λ₁) (Mo-99 → Tc-99m 0.965); a descendant failing the rule ends its branch. `photonsWithProgeny(id)` — parent lines + progeny lines scaled by that ratio, each tagged `from`
+- `identity()` — "ICRP 107 extended index (generated …, NDX SHA-256 …)", printed in CSVs for extended nuclides
+- Dose includes the progeny by default (selector «Short-lived progeny»: include / parent only) and states it in the result line, the report row «Progeny in the constants» and the CSV column `Progeny`; Properties shows both Γ and marks the table value with «+»
 
 ### `UI` (`js/ui.js`)
-- Dark mode, print, keyboard shortcuts
+- Dark mode, print, keyboard shortcuts, `watchStaleResults(cardId)` (notice when inputs change after a calculation)
+- `getChartTheme()` — colours from CSS tokens, re-read on `nm-theme-change`: `green`, `danger`, `orange`, `text`, `grid`, `surface` and `spectrum.{G,X,AQ}` (validated categorical hues, light and dark). New charts take their colours from here and re-colour on `nm-theme-change`
+- Sets `Chart.defaults.locale = 'en-US'` and removes the thousands separator from default linear/log tick labels (a Spanish reader takes "1,000" for a decimal comma)
+
+### `UTILS` (`js/utils.js`)
+- `APP_VERSION`, `APP_BUILD` (= `CACHE_VERSION` of `sw.js`, printed in every report and CSV)
+- `fmt(v)` — results (1 decimal ≥ 1); `fmtRatio(v, threshold)` — values read against a limit (never shown on the wrong side of it); `fmtSig(v, sig)` — reference data at their significant figures (3880, 69400, ×10ⁿ outside 1e-3…1e6); `toSci(v, d)`
+- `csvSafe(str)` — CSV formula-injection guard used by the five exports: prefixes `'` to text starting with = + - @ TAB CR, never to a plain number (negatives stay numeric)
 
 ### `REPORT` (`js/report.js`)
 - `print(spec)` — builds a print-only calculation report (timestamp, DB version, inputs, results, method, sources, disclaimer, sign-off) and opens the print dialog
@@ -64,7 +73,9 @@ Each module (PHYSICS, CALC, DB, ICRP107, UI) is an IIFE returning public API. No
 
 ### `CAREGIVER` (`js/caregiver.js`)
 - `load()` — `data/caregiver.json` by fetch, falling back to the embedded `CAREGIVER_DATA` (same coherence rule as `DB.load()`); `setData(d)` for Node tests
-- `evaluate(input)` — port of sheet *Dosis* of `Dosis_acompanantes_simple_v2.1.xlsx` (cells cited in the code): validations, two consecutive exponentials integrated to infinity in SI, dose per row/cycle/treatment, status, warnings and inverse calculations (maximum rate, floor, minimum and adopted restriction)
+- `evaluate(input)` — port of sheet *Dosis* of `Dosis_acompanantes_simple_v2.1.xlsx` (cells cited in the code): validations, two consecutive exponentials integrated to infinity in SI, dose per row/cycle/treatment, status, warnings and inverse calculations (maximum rate, dose with an indefinite restriction, minimum and adopted restriction)
+- Inverse regimes, with fr/fn the weighted contact during/after the restriction: fr < fn — `floor_mSv` is a floor (`indefiniteKind: 'floor'`) and the minimum restriction is solved analytically; fr = fn — `not_dependent`/`unattainable`; fr > fn — `indefiniteKind: 'ceiling'` (upper asymptote), minimum 0 d if the 0-day dose meets the criterion, else `restriction_increases`, plus a warning (deliberate deviation from the workbook, which answered «does not reduce the dose»). Verified against an independent Simpson/bisection model and the 324 cells of Gayol Vilorio et al. (2025) Tables 3–6
+- Chart: curve green, criterion red dashed, indefinite restriction blue dotted (drawn above the curve), adopted restriction neutral, the table case as a marker on the curve (a horizontal line when the two rows have different restrictions)
 - `curve(input)` — sheet *Curva*; `selfCheck(input)` — sheet *Comprobación* (independent µSv/h formulation + the workbook v6 reference cases stored in `caregiver.json`)
 - No DOM access
 
@@ -75,6 +86,8 @@ Each module (PHYSICS, CALC, DB, ICRP107, UI) is an IIFE returning public API. No
 
 ### PWA (`manifest.json`, `sw.js`, `assets/icons/`)
 - Cache-first service worker; registered on HTTP(S) only (`file://` unaffected)
+- Install fetches every asset with `cache: 'reload'`: without it an update could fill the new cache with old files from the browser's HTTP cache (seen v1.13.0 → v1.13.1). The precache includes the small JSON sources (`nuclides`, `regulatory`, `caregiver`, `effluent-scenarios`), which the loaders always fetch first; only `icrp107-index.json` (~8 MB, never fetched) is left out
+- After an update, the first load installs the new worker and the second serves the new version
 - Activation deletes only this app's own old caches (prefix `nm-planner-`), and lookups use only the current version's cache — other applications on the same origin are left alone (audit 2026-10-03, H-10)
 - **Bump `CACHE_VERSION` in `sw.js`** whenever data files or app logic change
 
@@ -82,7 +95,7 @@ Each module (PHYSICS, CALC, DB, ICRP107, UI) is an IIFE returning public API. No
 
 ## Data Files
 
-**`data/nuclides.json`** — source of truth (40 curated nuclides, version field shown in reports)
+**`data/nuclides.json`** — source of truth (40 curated nuclides, version field shown in reports). **One version = one content**: `notes.content_sha256` is the SHA-256 of `JSON.stringify(nuclides)` and `test/validate-data.js` pins each version to its hash. After any content change: bump `version`, write the new hash in `notes.content_sha256`, add the pair to `DB_CONTENT_SHA256` in the test and note it in the CHANGELOG. Entries with `chain_members` (Ra-223, Ac-225, Pd-103 + Rh-103m) include their progeny in Γ and in the shielding spectra
 - Includes metadata: generation timestamp, SHA256 hash of source ICRP files
 - Stores Cornejo published values in `cornejo_validation` for traceability
 
@@ -109,13 +122,16 @@ Each module (PHYSICS, CALC, DB, ICRP107, UI) is an IIFE returning public API. No
 # Wrap nuclides.json and effluent-scenarios.json as JS
 node tools/generate-data.js
 
-# Parse ICRP 107 (generates icrp107-index.json + icrp107-data.js). The beta
+# Parse ICRP 107 (generates icrp107-index.json + icrp107-data.js). Metastable
+# daughters (Tc-99m, Ba-137m, In-113m) are kept in decay_modes (the daughter
+# regex once dropped them, so Mo-99 listed only Tc-99). The beta
 # endpoint e_max_beta_MeV is the LAST energy of each BET block (the row with
 # N = 0); beta_yield_per_decay is the integral of the block.
 node tools/parse-icrp107.js
 
 # Record / check the source of every curated half-life (ICRP 107 or DDEP;
-# dry run by default). A value matching neither within 0.015 % is replaced.
+# dry run by default). A value within 0.015 % of a source is set EXACTLY to it;
+# one matching neither is replaced (DDEP if available, else ICRP 107).
 node tools/set-half-life-sources.js
 node tools/set-half-life-sources.js --write
 
@@ -132,7 +148,9 @@ node tools/recalc-gamma.js --write
 # Never edit the <article id="user-guide"> of about.html by hand.
 node tools/build-about-guide.js
 
-# Regenerate dose-weighted shielding spectra (after photon-data changes)
+# Regenerate dose-weighted shielding spectra (after photon-data changes). Chain
+# entries use their chain_members ratios, the same as Γ; then the overrides
+# (Mo-99+Tc-99m, Cs-137), then the generic walker.
 node tools/add-shielding-spectra.js && node tools/generate-data.js
 ```
 
@@ -176,8 +194,10 @@ D = ∫₀ᵗ Γ · A(τ) / r² dτ, where A(τ) = A₀ · e^(−λτ)
 `node test/validate-constants.js` cross-checks the ICRP 107 dose constants against
 the published Cornejo (2015) reference values:
 - Z extraction, half-life parsing, photon filtering, dose constant calculation
-- Current result: 1279 passed, 0 failed and 3 warned. The warnings are known
-  ICRP-107 vs Cornejo differences and are not counted as passes.
+- Current result: 1282 passed, 0 failed, 0 warned. The three unsourced Γ
+  references that produced warnings (I-123, Co-60, In-111: old app values) were
+  removed on 2026-10-15; their published Cornejo values are checked in
+  `validate-data.js`.
 - The gamma-constant comparison uses an absolute tolerance of 0.1 in the stored
   units, not a blanket relative tolerance of 5%.
 
@@ -211,8 +231,33 @@ warning is only silenced when the code is right and the rule does not apply.
 □ Y-90 container selector + Pb warning
 □ Crystal lens: 50 mSv/y max annual + 100 mSv/5-year cycle
 □ Dark mode, print, offline file://
-□ Data integrity: JSON valid, hashes match
+□ node tools/browser-smoke.js — after any UI, chart or data change (headless Chrome/Edge)
+□ Data integrity: JSON valid, hashes match, nuclides.json version ↔ content hash
 ```
+
+### Release routine (each change that reaches users)
+
+1. Change code/data; regenerate the twins (`tools/generate-data.js`) and, if
+   the guide changed, `tools/build-about-guide.js`.
+2. Bump `APP_VERSION` and `APP_BUILD` (`js/utils.js`), `CACHE_VERSION`
+   (`sw.js`, same value as `APP_BUILD`) and the expected build in
+   `test/validate-app.js`; if `nuclides.json` content changed, its version and
+   pinned hash (see Data Files).
+3. Add the entry to `docs/CHANGELOG.md`; add a regression check to
+   `test/validate-app.js` (one numbered «Test N» block per review) and, for
+   rendered behaviour, a case to `tools/browser-smoke.js`.
+4. Run the four suites and `tools/browser-smoke.js`; commit on `main`.
+5. `node tools/build-package.js` (needs a clean tree; it re-runs the suites from
+   the staged copy) and push. Checks that read `tools/` or `.gitignore` must be
+   skipped when those files are absent, or the suites fail inside the package.
+
+### Browser checks with headless Chrome (Windows)
+
+Use a SHORT `--user-data-dir` (e.g. under `os.tmpdir()`): with a long profile
+path Cache Storage fails with «Unexpected internal error», the service worker
+becomes `redundant` and offline tests fail for reasons unrelated to the app.
+Override `alert`, `confirm` and `print` before load (extended nuclides open a
+`confirm`). Kill only the Chrome process you started.
 
 ---
 
@@ -314,7 +359,7 @@ violated; step 5 remains manual.
 
 See also `docs/ACCEPTANCE_TEST.md` (independent validation sheet).
 
-**Document version:** 2.6 — this guide only; the application and database are
+**Document version:** 2.7 — this guide only; the application and database are
 versioned separately (`nuclides.json` v1.4 — bump its `version` whenever its content changes, since reports print it; `test/validate-data.js` maps each version to the SHA-256 of its `nuclides` array and fails otherwise —, `UTILS.APP_VERSION` in
 `js/utils.js`, `CACHE_VERSION` in `sw.js`)  
 **Last updated:** 2026-10-15

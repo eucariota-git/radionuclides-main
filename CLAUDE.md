@@ -17,11 +17,12 @@ A static web application for medical physicists and radiation protection special
 ## Project Structure
 
 ```
-index.html        Radionuclide properties database
+index.html        Radionuclide properties database (curated table, ICRP 107 extended search, detail panel with photon-spectrum chart)
 decay.html        Decay calculator
 dose.html         External dose estimator
 effluent.html     Liquid effluent screening — NUREG/CR-5814 Scenarios 1 (sewer inspector) and 2 (STP sludge operator)
 caregiver.html    Caregiver dose after discharge — port of references/Dosis_acompanantes_simple_v2.1.xlsx
+about.html        About, user guide (generated from docs/USER_GUIDE.md by tools/build-about-guide.js), licences and third-party notices
 
 css/style.css     Shared styles (CSS variables, responsive grid)
 
@@ -32,6 +33,11 @@ js/report.js      REPORT module — printable calculation reports with traceabil
 js/effluent.js    EFFLUENT module — Scenario 1/2 data loading, unit conversion, cross-checks (no DOM)
 js/regulatory.js  REGULATORY module — RD 1217/2024 A1/B, RD 783/2001 e(g), IS-28 levels (no DOM)
 js/caregiver.js   CAREGIVER module — two-phase kinetics, cohabitation dose, inverse calcs, self-check (no DOM)
+js/icrp107-loader.js  ICRP107 module — extended index search, Γ, progeny in equilibrium, index identity
+js/utils.js       UTILS — APP_VERSION/APP_BUILD, fmt/fmtRatio/fmtSig/toSci, csvSafe, escapeHtml
+js/ui.js          UI — dark mode, print, keyboard, stale-result notice, chart theme (also sets Chart.js locale)
+js/nuclide-id.js  NUCLIDE_ID — shared name normalization (177Lu, Lu177 → Lu-177)
+js/chart.umd.min.js  Chart.js 4.4.0, bundled locally (MIT)
 
 data/nuclides.json        Main radionuclide database (40 entries — source of truth)
 data/nuclides-data.js     Auto-generated from nuclides.json for file:// compatibility
@@ -39,9 +45,17 @@ data/effluent-scenarios.json / -data.js  Effluent Scenario 1 and 2 parameters an
 data/regulatory.json / -data.js  RD 1217/2024 Annex IV A1/B + adult public e(g) (built by tools/build-regulatory-data.js)
 data/caregiver.json / -data.js   Caregiver profiles, criteria per category, references, workbook v6 reference cases
 
+data/icrp107-index.json / -data.js     ICRP 107 extended index (1252 nuclides; built by tools/parse-icrp107.js from data/sources/, local only)
+
 manifest.json / sw.js                 PWA manifest and cache-first service worker
 assets/icons/                         Favicon, Apple Touch and install icons
                   (bump CACHE_VERSION in sw.js when data or app logic changes)
+
+test/             Four Node suites (validate-math, -data, -constants, -app); see test/README.md
+tools/            Data regeneration, packaging and browser-smoke.js (development only, not shipped)
+docs/             USER_GUIDE (source of the About guide), CHANGELOG, DEVELOPMENT (maintenance and release routine),
+                  ACCEPTANCE_TEST (clean template; ACCEPTANCE_TEST.local.md and AUDIT_*.md are local, gitignored)
+references/       Source documents (most gitignored: copyrighted); dist/ — built packages (gitignored)
 ```
 
 ## Running Locally
@@ -72,6 +86,10 @@ Or open directly via `file://` — the app handles both protocols.
 - Half-lives stored in seconds internally; display format handled separately. Every curated half-life carries `half_life_source` (ICRP 107 (2008) or DDEP/LNHB, set by `tools/set-half-life-sources.js`); a new or edited value must name its source and match it — never an unsourced number
 - Beta endpoint `e_max_beta_MeV` = LAST energy of each ICRP 107 BET block (the row with N = 0 — never drop it; the old `N > 0` filter kept the previous grid node, Lu-177 0.45 instead of 0.4978 MeV). `beta_yield_per_decay` = integral of the block; it flags negligible branches (Tc-99m 3.7e-5). Curated values are copied from the index with `tools/sync-beta-emax.js` (Ra-223/Ac-225: chain maximum, `e_max_beta_chain`)
 - After any UI, chart or data change run `node tools/browser-smoke.js` as well as the four suites (it renders the pages; the suites do not).
+- **Extended ICRP 107 nuclides include their short-lived progeny in equilibrium by default** (`ICRP107.progeny`: descendants with T½ ≤ 1/10 of the chain parent's and ≤ 30 d — an app criterion, not regulatory — at the Bateman ratio). Dose has an include / parent-only selector and must state the choice in the result line, report and CSV. Curated chains (`chain_members`: Ra-223, Ac-225, Pd-103 + Rh-103m) include their progeny in Γ AND in the shielding spectra (same ratios). The ICRP 107 parser must keep metastable daughters (`[mn]?` in the daughter regex)
+- `nuclides.json`: one version = one content. Any content change → bump `version`, update `notes.content_sha256` and the pinned pair in `test/validate-data.js` (`DB_CONTENT_SHA256`). Curated half-lives equal their declared source exactly (`tools/set-half-life-sources.js`)
+- Formatting: reference data with `UTILS.fmtSig` (no false decimals, ×10ⁿ), results with `UTILS.fmt`, values read against a limit with `UTILS.fmtRatio`. CSV cells through `UTILS.csvSafe` (never turns a negative number into text). Chart.js tick labels: en-US, no thousands separator (set in `js/ui.js`)
+- Chart colours only from `UI.getChartTheme()` (CSS tokens, light and dark) and re-coloured on `nm-theme-change`; validate new categorical palettes with the dataviz script (red vs orange and blue vs purple failed). Caregiver chart: curve green, criterion red dashed, indefinite restriction blue dotted, adopted restriction neutral, table case as a marker
 - Charts: use `type: 'linear'` axes with `{x, y}` points. On a category axis Chart.js reads `min`/`max` as INDICES (the Decay curve showed 7 of 33 d until 2026-10-14) and markers snap to grid nodes
 - Dose quantities: H*(10) and H'(0.07) are AREA-monitoring operational quantities and are always shown side by side — never reintroduce the old automatic "d < 25 cm → extremities/H'(0.07)" rule (no normative basis; removed 2026-07 per audit finding 2). Personal dosimetry quantities are Hp(10)/Hp(0.07)/Hp(3); the limit comparison in dose.html is labeled indicative screening only. H*(10) is NOT always ≥ H'(0.07) (e.g. Pd-103 −40%)
 
@@ -89,6 +107,8 @@ IS-28 Anexo II II.A.4 (liquid discharges to public sewer) has THREE numeric cond
 
 Effluent page (`effluent.html`): Scenarios 1 (sewer inspector) and 2 (STP sludge operator) are DIFFERENT receptors — never add their doses. Source term: A_adm = patients × cycles × administered activity (all excreted); the in-hospital fraction leaves through the facility (for nuclides in decay tanks only their proportional share of the annual tank discharge, default 1 GBq/y for the sum, no decay credit); the rest is excreted at home. Scenario 1 gets only what leaves the hospital, diluted in the facility's annual water volume; Scenario 2 gets that plus the home part × catchment fraction; its PHITS k (600 × 200 × 50 cm water slab, receptor at 1 m) is photon-only, bremsstrahlung not bounded. A nuclide without a Scenario 2 external coefficient (F-18) keeps its inhalation; its external pathway is null (never zero) and the scenario total is flagged as a PARTIAL sum (`complete: false`, `missing`) everywhere. Solids fraction, 5090 t/y and the 1 GBq/y tank default are site hypotheses / boundary values, not regulatory values. Scenario 2: screening model, all discharged activity retained in one year of sludge (C = Q/S, SRS-19 §4.9 b), decay only during transit to the press. External coefficients k are own PHITS effective-dose-rate values (ICRP 116 ROT) for 10 × 10 × 3 m and 45 × 45 × 3 m sludge masses, receptor at 2 m — never replace them with point-source Γ, and never claim they cover the infinite slab NUREG prescribes (Lu-177 L45 captures 73–75 % of it). Inhalation uses ICRP 119 G.1 adult PUBLIC coefficients (Lu-177/Lu-177m/Tc-99m/F-18 type M, I-131 type F). The dose criterion is user-defined; do not attribute a regulatory basis to it. The workbook's I-131 shortcut (NUREG B.7 factor rescaled by dry mass only) is replaced by the explicit model and kept only as an indicative cross-check.
 
+Caregiver inverse: with more weighted contact during the restriction than after it (fr > fn) restricting INCREASES the dose — the answer is 0 d if the 0-day dose meets the criterion, else «restriction increases», and the indefinite-restriction value is an upper asymptote, not a floor (deliberate deviation from the workbook; the usual case fr < fn still reproduces the workbook and the 324 cells of Gayol Vilorio et al. 2025, whose 6 h tables round to the nearest day although the text says «por defecto»).
+
 Caregiver page (`caregiver.html`): faithful port of the workbook v2.1 (sheets Dosis, Curva, Comprobación) — keep it numerically identical to the workbook (test reproduces its preloaded case and curve to 1e-9). Two CONSECUTIVE exponentials (the slow phase starts from the rate reached at the end of the fast phase; never a simultaneous sum of components), each cycle integrated to infinity. The measured operational quantity is used as an estimator of external exposure, not as effective or fetal dose. Distances come only from the profile list (no interpolation); contact 0.1 m takes the 0.4 m factor (1/0.4)² in the approximate profiles. The criteria per category (3/5/1/0.3 mSv) are department evaluation criteria, not regulatory values for this treatment (RD 601/2019 requires carer constraints but sets no number): 3 mSv ≤ 60 y and 0.3 mSv third persons from EC RP 97 / Foro 2011; 5 mSv > 60 y from ICRP 103 para. 351 / ICRP 94 / IAEA SSG-46 para. 2.49 (international 5 mSv per episode), applied to the whole treatment. Do not add the 15 mSv of RP 97 just because it is published. The criterion never changes the calculated dose.
 
 ## UI / Styling Guidelines
@@ -99,6 +119,23 @@ Dark mode is supported. When adding or modifying UI elements (tables, tooltips, 
 
 - Edit `data/nuclides.json` to add/modify nuclides, then regenerate `data/nuclides-data.js` to keep offline support in sync
 - Nuclide ID format: `"C-11"`, `"Tc-99m"`, `"I-131"`, etc.
+
+## Workflow and release
+
+- Commits go directly on `main` (no branches). Push and package only when the user asks.
+- Release routine (details in `docs/DEVELOPMENT.md` § Release routine): bump `APP_VERSION`/`APP_BUILD` (`js/utils.js`) and `CACHE_VERSION` (`sw.js`, same value) and the expected build in `test/validate-app.js`; CHANGELOG entry; a numbered «Test N» block in `test/validate-app.js` per review and, for rendered behaviour, a case in `tools/browser-smoke.js`; four suites + browser-smoke; commit; `node tools/build-package.js` (clean tree required; re-runs the suites from the staged copy — checks that read `tools/` or `.gitignore` must be skipped when absent).
+- The service worker installs with `cache: 'reload'` (an update otherwise kept the old files) and precaches the small JSON sources; after an update the second load serves the new version.
+- Headless Chrome checks on Windows: SHORT `--user-data-dir` (long paths break Cache Storage), override `alert`/`confirm`/`print`, kill only your own Chrome. Never close the user's browser.
+- Audit reports are local only (`docs/AUDIT_*.md`, gitignored). When the user asks for an audit without file changes, deliver it in the chat.
+- Bash heredocs with backslashes or nested quotes break: write helper scripts to the scratchpad and run them, or use the Edit tool.
+
+## Status and pending (as of 2026-10-15, v1.13.3)
+
+- Last package built: `dist/nm-radionuclide-planner-v1.13.2.zip`; v1.13.3 (DDEP reuse terms) committed locally, not yet packaged or pushed.
+- **External distribution blocked by data rights**: permission requested from ICRP (permissions@icrp.org, 2026-10-15, personal capacity) for ICRP 74 Table A.21 (50 values), ICRP 119 Table G.1 (5 inhalation coefficients) and the Table F.1 chemical-form labels. When the reply arrives, update «Status / permissions» in `THIRD_PARTY_NOTICES.md` and its copy in `about.html`. DDEP/LNHB: no restriction, citation requested (done). Cornejo et al. 2015 (SEPR): courtesy request deferred until ICRP answers.
+- Professional use: the acceptance sheet (`docs/ACCEPTANCE_TEST.md`) has not been completed for the current version (the local copy is v1.2); PHITS coefficients of Effluent need an external technical review.
+- Open by the user's decision: T06 (I-131 0.8 GBq «at discharge» in Effluent), T13 (clinical uses without reference), Cs-137/Sm-153/Tm-170/Ac-225 half-lives kept on ICRP 107. Demir et al. 2016: local copy is a proof — compare Table 1 with the published version when available.
+- Not implemented: IS-28 mixture sum and annual limits, RD 1217 mixture clearance, Effluent scenario 4 (A11/A12, PRTR). IS-28 rev. 1 is in CSN public consultation — check before relying on the II.A.4 level.
 
 ## Licensing
 
