@@ -59,6 +59,20 @@ const esShield = s => s
     (m, p, e, mat) => `${p} % del peso de dosis está por debajo de ${e} keV, donde empieza la tabla de acumulación de ${(ES_MATERIALS[mat] || mat).replace(/^./, c => c.toLowerCase())}; B se mantiene en su energía tabulada más baja`)
   .replace('Treat the shielding result as an extrapolation', 'Trate el resultado del blindaje como una extrapolación');
 
+// Effluent: "/y" in units, and the report rows of each scenario
+const esUnit = u => u.replace(/\/y$/, '/a');
+const esEffRow = s => esPerYear(s)
+  .split(' GBq/y').join(' GBq/a')
+  .replace('external: not available (no Scenario 2 coefficient — not a zero dose)', 'externa: no disponible (sin coeficiente del escenario 2; no es una dosis nula)')
+  .replace(' (external ', ' (externa ').replace(', inhalation ', ', inhalación ').replace('; inhalation ', '; inhalación ')
+  .replace(' (inhalation only)', ' (solo inhalación)').replace('; C wastewater ', '; C agua residual ').replace('; C wet sludge ', '; C lodo húmedo ')
+  .replace(' Bq/m³ per GBq', ' Bq/m³ por GBq');
+// Report identifiers with English words around them (Effluent coefficients)
+const esReport = s => s
+  .replace(/\(coefficient ([AB])\)/, '(coeficiente $1)')
+  .replace(/^Tc-99m Scenario 2 report /, 'informe del escenario 2 del Tc-99m ')
+  .replace('(air domain accepted with DEV-05)', '(dominio de aire aceptado con DEV-05)');
+
 // Provenance labels built from fixed pieces (Γ source column and notes)
 const esSource = s => [
   ['(photon data, incl. progeny in secular equilibrium)', '(datos de fotones, incl. progenie en equilibrio secular)'],
@@ -100,6 +114,28 @@ const I18N_ES = {
     '#patientTx': { 'none': 'ninguna' },
     '#y90ShieldNote': { 'only': 'solo' },
     '#shieldRangeWarn': { 'underestimates': 'subestima' },
+    // Effluent: subscripts and fragments of the method formulas and the cross-check
+    '#methodDetails': {
+      'transit': 'tránsito', 'water': 'agua', 'air': 'aire', 'dry': 'seco', 'wet': 'húmedo', 'solids': 'sólidos', 'sludge': 'lodo',
+      'not': 'no son', 'and k': 'y k',
+    },
+    '#crossCheckBody': { 'sludge': 'lodo', 'and f': 'y f' },
+    '#radiopharmaceutical': { 'Other': 'Otro' },
+    // Caregiver method formulas (fragments around <sub>/<sup>)
+    '#methodDetails .text-sm': {
+      'With Ḣ': 'Con Ḣ', 'the rate at 1 m at discharge, t': 'la tasa a 1 m en el alta, t', 'fast end': 'fin fase rápida', 'discharge': 'alta',
+      ') the remaining duration of the fast phase, λ = ln 2 / T': ') la duración restante de la fase rápida, λ = ln 2 / T', 'eff': 'ef', 'when t': 'cuando t',
+      '= 0), and two': '= 0), y dos exponenciales', 'consecutive': 'consecutivas',
+      'exponentials (the slow phase starts from the rate reached at the end of the fast phase):': '(la fase lenta parte de la tasa alcanzada al final de la fase rápida):',
+      'tail': 'cola', 'For a restriction of C days: I': 'Para una restricción de C días: I', 'before': 'antes', 'Ḣ dt and I': 'Ḣ dt e I', 'after': 'después',
+      'Dose per cycle and row = I': 'Dosis por ciclo y fila = I', 'during': 'durante',
+      ', with f the spatial factor of the profile relative to 1 m; treatment dose = cycles × Σ rows': ', con f el factor espacial del perfil respecto a 1 m; dosis del tratamiento = ciclos × Σ filas',
+      '/ 24; dose with an indefinite restriction = cycles · f': '/ 24; dosis con restricción indefinida = ciclos · f',
+      '(a floor if f': '(un suelo si f', ', an upper asymptote if f': ', una asíntota superior si f', 'Maximum rate = Ḣ': 'Tasa máxima = Ḣ',
+      '· criterion / treatment dose (the dose is proportional to the rate). Minimum restriction: the C that solves cycles · [f':
+        '· criterio / dosis del tratamiento (la dosis es proporcional a la tasa). Restricción mínima: el C que resuelve ciclos · [f',
+      '(C)] = criterion, analytically in either phase': '(C)] = criterio, analíticamente en cualquiera de las fases',
+    },
   },
 
   exact: {
@@ -660,6 +696,594 @@ const I18N_ES = {
     'ICRP 107 (calculated)': 'ICRP 107 (calculado)',
     'ICRP 107 (no photon emission above the 20 keV / 0.01% filter)': 'ICRP 107 (sin emisión de fotones por encima del filtro de 20 keV / 0,01 %)',
 
+    // ================= Effluent (effluent.html) =================
+    'NM Radionuclide Planner — Effluent: Sewer and STP Workers': 'NM Radionuclide Planner — Efluentes: trabajadores de alcantarillado y de depuradora',
+    'Liquid Effluent — Sewer and STP Workers': 'Efluentes líquidos — trabajadores de alcantarillado y de depuradora',
+    'Annual effective dose from activity excreted by nuclear-medicine patients, adapted from NUREG/CR-5814 (1992), for two receptors:':
+      'Dosis efectiva anual debida a la actividad excretada por pacientes de medicina nuclear, adaptada de NUREG/CR-5814 (1992), para dos receptores:',
+    'Scenario 1': 'Escenario 1',
+    'Scenario 2': 'Escenario 2',
+    ', sewer system inspector (wastewater + aerosol inhalation), and': ', trabajador de la red de alcantarillado (agua residual + inhalación de aerosol), y el',
+    ', sewage-treatment-plant (STP / EDAR) sludge operator (dewatered sludge + resuspended dust). Model and sources under':
+      ', trabajador de planta depuradora que manipula lodos (lodo deshidratado + polvo resuspendido). Modelo y fuentes en',
+    'Screening estimate, not a complete discharge assessment.': 'Estimación de cribado, no una evaluación completa del vertido.',
+    'Within each scenario, doses are computed per nuclide and summed linearly. The two scenarios concern':
+      'Dentro de cada escenario, las dosis se calculan por nucleido y se suman linealmente. Los dos escenarios corresponden a',
+    'different receptors and are never added together': 'receptores distintos y nunca se suman',
+    '. The IS-28 Annex II II.A.4 sewer conditions (per-nuclide concentration level, sum of fractions, annual activity limits) and mixture clearance are evaluated separately. Inhalation uses dose coefficients for adult':
+      '. Las condiciones de la IS-28, anexo II, II.A.4, para el alcantarillado (nivel de concentración por nucleido, suma de las fracciones, límites anuales de actividad) y la desclasificación de mezclas se evalúan aparte. La inhalación usa coeficientes de dosis de adultos',
+    'members of the public': 'miembros del público',
+    '(neither worker is an exposed worker of the licensee).': '(ninguno de los dos es trabajador expuesto del titular).',
+    'A. Source term': 'A. Término fuente',
+    'Include': 'Incluir',
+    'Patients / y': 'Pacientes / a',
+    'Cycles / patient': 'Ciclos / paciente',
+    'A admin. / cycle (GBq)': 'A admin. / ciclo (GBq)',
+    'Fraction of the administered activity excreted in hospital': 'Fracción de la actividad administrada excretada en el hospital',
+    'In-hospital fraction': 'Fracción en el hospital',
+    'Controlled in hospital decay tanks': 'Controlado en depósitos de decaimiento del hospital',
+    'Tanks': 'Depósitos',
+    'Activity leaving the hospital — Scenario 1': 'Actividad que sale del hospital — escenario 1',
+    'Activity reaching the STP — Scenario 2': 'Actividad que llega a la depuradora — escenario 2',
+    'excluded': 'excluido',
+    '= patients × cycles × administered activity per cycle; all of it is assumed to be excreted. The fraction excreted':
+      '= pacientes × ciclos × actividad administrada por ciclo; se supone que se excreta toda. La fracción excretada',
+    'in hospital': 'en el hospital',
+    "leaves through the facility's sewer connection — or, for a nuclide controlled in": 'sale por la acometida de alcantarillado de la instalación o, para un nucleido controlado en',
+    'decay tanks': 'depósitos de decaimiento',
+    ', only its share of the annual tank discharge (shared among the controlled nuclides in proportion to the activity excreted into the tanks; no decay credit when their sum is below it). The rest is excreted at home.':
+      ', solo su parte del vertido anual de los depósitos (repartido entre los nucleidos controlados en proporción a la actividad excretada a los depósitos; sin crédito por decaimiento cuando su suma es inferior). El resto se excreta en el domicilio.',
+    'receives only the activity leaving the hospital.': 'recibe solo la actividad que sale del hospital.',
+    'receives the activity leaving the hospital plus the activity excreted at home by the patients living in the STP catchment.':
+      'recibe la actividad que sale del hospital más la excretada en el domicilio por los pacientes que viven en la zona servida por la depuradora.',
+    'No included nuclide is controlled in decay tanks.': 'Ningún nucleido incluido se controla en depósitos de decaimiento.',
+    'Sources and assumptions of the default source term': 'Fuentes e hipótesis del término fuente por defecto',
+    'B. Scenario 1 — sewer system inspector': 'B. Escenario 1 — trabajador de la red de alcantarillado',
+    'Facility type': 'Tipo de instalación',
+    'Custom (licensee data)': 'Personalizado (datos del titular)',
+    "Generic annual water volumes; use the licensee's figure when available.": 'Volúmenes anuales genéricos de agua; use el dato del titular cuando lo haya.',
+    'C. Scenario 2 — STP sludge process operator': 'C. Escenario 2 — trabajador de planta depuradora (manipulación de lodos)',
+    'Wet sludge production is plant-specific: PRTR-España (': 'La producción de lodo húmedo es propia de cada planta: PRTR-España (',
+    '), waste code LER 19 08 05.': '), código de residuo LER 19 08 05.',
+    'External coefficient geometry': 'Geometría del coeficiente externo',
+    'Sludge mass lateral extent': 'Extensión lateral de la masa de lodo',
+    'D. Common parameters': 'D. Parámetros comunes',
+    'Sources and assumptions of the parameters': 'Fuentes e hipótesis de los parámetros',
+    'Facility presets': 'Valores predefinidos de instalación',
+    'Scenario 1 — sewer system inspector': 'Escenario 1 — trabajador de la red de alcantarillado',
+    'Scenario 2 — STP sludge process operator': 'Escenario 2 — trabajador de planta depuradora (manipulación de lodos)',
+    'DF (transit decay)': 'DF (decaimiento en tránsito)',
+    'C wastewater (Bq/m³ per GBq)': 'C agua residual (Bq/m³ por GBq)',
+    'C air (Bq/m³ per GBq)': 'C aire (Bq/m³ por GBq)',
+    'Dose per unit activity discharged in one year, under the parameters entered': 'Dosis por unidad de actividad vertida en un año, con los parámetros introducidos',
+    'Activity leaving the hospital in one year': 'Actividad que sale del hospital en un año',
+    'C dry sludge (Bq/kg per GBq)': 'C lodo seco (Bq/kg por GBq)',
+    'C wet sludge (Bq/m³ per GBq)': 'C lodo húmedo (Bq/m³ por GBq)',
+    'Dose per unit activity reaching the plant in one year, under the parameters entered': 'Dosis por unidad de actividad que llega a la planta en un año, con los parámetros introducidos',
+    'Hospital discharge plus the activity excreted at home in the catchment': 'Vertido del hospital más la actividad excretada en el domicilio en la zona servida',
+    'Scenario 1 — total E (included nuclides)': 'Escenario 1 — E total (nucleidos incluidos)',
+    'Scenario 2 — total E (included nuclides)': 'Escenario 2 — E total (nucleidos incluidos)',
+    'No nuclide included.': 'Ningún nucleido incluido.',
+    'No external coefficient for Scenario 2': 'Sin coeficiente externo para el escenario 2',
+    '(partial)': '(parcial)',
+    'n/a — no coefficient (not zero)': 'n/d — sin coeficiente (no es cero)',
+    'mSv/y — no comparison (criterion ≤ 0)': 'mSv/a — sin comparación (criterio ≤ 0)',
+    'No positive criterion entered: totals are not compared.': 'No se ha introducido un criterio positivo: los totales no se comparan.',
+    'E (mSv/y)': 'E (mSv/a)',
+    'Leaving hospital (GBq/y)': 'Sale del hospital (GBq/a)',
+    'External (mSv/y)': 'Externa (mSv/a)',
+    'Inhalation (mSv/y)': 'Inhalación (mSv/a)',
+    'Activity reaching STP (GBq/y)': 'Actividad que llega a la depuradora (GBq/a)',
+    'ICRP Publication 107 (2008), 160.4 d (not in the curated database).': 'ICRP Publication 107 (2008), 160,4 d (no está en la base revisada).',
+    'Coefficients used': 'Coeficientes usados',
+    'Relative Monte Carlo standard uncertainty (coverage factor 1) / envelope': 'Incertidumbre típica relativa Monte Carlo (factor de cobertura 1) / envolvente',
+    'Lung absorption type — F: fast; M: moderate absorption': 'Tipo de absorción pulmonar — F: rápida; M: moderada',
+    'Type (F/M)': 'Tipo (F/M)',
+    'Cross-check against published generic factors (indicative)': 'Contraste con factores genéricos publicados (orientativo)',
+    'µSv per GBq': 'µSv por GBq',
+    'Basis': 'Base',
+    'nuclide not included': 'nucleido no incluido',
+    'PHITS k, ICRP 116 effective dose': 'k de PHITS, dosis efectiva ICRP 116',
+    'NUREG/CR-5814 Table B.7, rescaled': 'NUREG/CR-5814, tabla B.7, reescalada',
+    'IAEA SRS-19 Table I–IV': 'IAEA SRS-19, tabla I–IV',
+    'Rescaled value: × 400 t / dry sludge mass of this plant. SRS-19 treats the sludge activity as a surface deposit (1 m × 1000 kg/m³) with the ground-surface coefficient, i.e. without self-absorption, which explains most of the difference.':
+      'Valor reescalado: × 400 t / masa de lodo seco de esta planta. SRS-19 trata la actividad del lodo como un depósito superficial (1 m × 1000 kg/m³) con el coeficiente de superficie del suelo, es decir, sin autoabsorción, lo que explica la mayor parte de la diferencia.',
+    'PHITS coefficients vs NUREG/CR-5814 Table A.21 (GENII-1990)': 'Coeficientes PHITS frente a NUREG/CR-5814, tabla A.21 (GENII-1990)',
+    'ratio': 'cociente',
+    'No published factor available.': 'No hay ningún factor publicado disponible.',
+    'Restore the default values': 'Restaurar los valores por defecto',
+    'Defaults': 'Valores por defecto',
+    'Method — formulas, sources and adaptations': 'Método — fórmulas, fuentes y adaptaciones',
+    'For each nuclide, with A the activity reaching the sewer in one year and DF = exp(−λ·t': 'Para cada nucleido, con A la actividad que llega al alcantarillado en un año y DF = exp(−λ·t',
+    "(NUREG/CR-5814 §5.2.1, transit ≈ 0.2 h, dilution in the facility's annual water volume V):": '(NUREG/CR-5814 §5.2.1, tránsito ≈ 0,2 h, dilución en el volumen anual de agua de la instalación V):',
+    ') · aerosol loading · f': ') · carga de aerosol · f',
+    "(NUREG/CR-5814 §5.2.2, transit ≈ 3 d, the year's discharge retained in the year's sludge):": '(NUREG/CR-5814 §5.2.2, tránsito ≈ 3 d, el vertido del año retenido en el lodo del año):',
+    '· dust loading · f': '· carga de polvo · f',
+    'No decay during the exposure year is applied. The concentration is the annual discharge divided by the annual water volume (Scenario 1) or by the annual sludge production (Scenario 2), with transit decay only; this is a screening assumption — a continuous discharge does not by itself demonstrate mixing or steady state. f':
+      'No se aplica decaimiento durante el año de exposición. La concentración es el vertido anual dividido por el volumen anual de agua (escenario 1) o por la producción anual de lodo (escenario 2), solo con decaimiento en tránsito; es una hipótesis de cribado: un vertido continuo no demuestra por sí solo la mezcla ni el estado estacionario. f',
+    'is the retained fraction as entered (default: 100%). k': 'es la fracción retenida introducida (por defecto: 100 %). k',
+    'are effective-dose-rate coefficients (ICRP Publication 116 (2010), ROT) calculated with PHITS for the geometry of each scenario — they are':
+      'son coeficientes de tasa de dosis efectiva (ICRP Publication 116 (2010), ROT) calculados con PHITS para la geometría de cada escenario;',
+    'point-source Γ constants and only apply to that geometry.': 'constantes Γ de fuente puntual y solo se aplican a esa geometría.',
+    'Algorithms and defaults are adapted from the reference workbooks': 'Los algoritmos y los valores por defecto se adaptan de los libros de referencia',
+    '(Scenario 2) and': '(escenario 2) y',
+    '(Scenario 1).': '(escenario 1).',
+    'Inhalation coefficients are those for adult members of the public (RD 783/2001 Annex III table b), kept by the CSN Resolution of 3 April 2024; transcription: ICRP Publication 119 (2012), Table G.1), lung absorption type F (fast) or M (moderate). Half-lives are taken from the app database (Lu-177m, not a curated entry, from ICRP 107).':
+      'Los coeficientes de inhalación son los de adultos miembros del público (RD 783/2001, anexo III, tabla b), mantenidos por la Resolución del CSN de 3 de abril de 2024; transcripción: ICRP Publication 119 (2012), tabla G.1), con absorción pulmonar de tipo F (rápida) o M (moderada). Los periodos de semidesintegración se toman de la base de datos de la app (el Lu-177m, que no es una entrada revisada, de ICRP 107).',
+    'The entered values are outside the representable range': 'Los valores introducidos están fuera del intervalo representable',
+    'Annual discharge from decay tanks must be a finite number ≥ 0': 'El vertido anual de los depósitos de decaimiento debe ser un número finito ≥ 0',
+    'Catchment fraction must be between 0 and 100 %': 'La fracción de la zona servida debe estar entre 0 y 100 %',
+    // Effluent report
+    'Liquid Effluent — Sewer and STP Workers (NUREG/CR-5814 Scenarios 1 and 2)': 'Efluentes líquidos — trabajadores de alcantarillado y de depuradora (escenarios 1 y 2 de NUREG/CR-5814)',
+    'Nuclides': 'Nucleidos',
+    'Source term': 'Término fuente',
+    'Decay tanks': 'Depósitos de decaimiento',
+    'Controlled nuclides': 'Nucleidos controlados',
+    'Excreted into the tanks': 'Excretado a los depósitos',
+    'Annual tank discharge (shared)': 'Vertido anual de los depósitos (repartido)',
+    'Scenario 1 parameters': 'Parámetros del escenario 1',
+    'Scenario 2 parameters': 'Parámetros del escenario 2',
+    'Common parameters': 'Parámetros comunes',
+    'Coefficients': 'Coeficientes',
+    'no coefficient': 'sin coeficiente',
+    'Total (linear sum over included nuclides)': 'Total (suma lineal de los nucleidos incluidos)',
+    'The two scenarios concern different receptors; their totals are not added together.': 'Los dos escenarios corresponden a receptores distintos; sus totales no se suman.',
+    "All administered activity is assumed to be excreted. Scenario 1 receives the activity leaving the hospital (excreted in hospital, or the share of the decay-tank discharge for controlled nuclides), diluted in the facility's annual water volume. Scenario 2 receives that activity plus the activity excreted at home by the patients living in the STP catchment.":
+      'Se supone que se excreta toda la actividad administrada. El escenario 1 recibe la actividad que sale del hospital (excretada en el hospital o, para los nucleidos controlados, la parte del vertido de los depósitos de decaimiento), diluida en el volumen anual de agua de la instalación. El escenario 2 recibe esa actividad más la excretada en el domicilio por los pacientes que viven en la zona servida por la depuradora.',
+    'Scenario 2 screening model: retained fraction as entered (default: 100%) of the activity reaching the plant, in one year of sludge (IAEA SRS-19 (2001) §4.9 case b; NUREG/CR-5814 (1992) §5.1). Annual discharge / annual sludge production, with transit decay only; no decay during the exposure year.':
+      'Modelo de cribado del escenario 2: fracción retenida introducida (por defecto: 100 %) de la actividad que llega a la planta, en un año de lodo (IAEA SRS-19 (2001) §4.9, caso b; NUREG/CR-5814 (1992) §5.1). Vertido anual / producción anual de lodo, solo con decaimiento en tránsito; sin decaimiento durante el año de exposición.',
+    'Not a complete discharge assessment: IS-28 Annex II II.A.4 conditions and mixture clearance are evaluated separately.':
+      'No es una evaluación completa del vertido: las condiciones de la IS-28, anexo II, II.A.4, y la desclasificación de mezclas se evalúan aparte.',
+    'Inhalation dose coefficients for adult members of the public: RD 783/2001 Annex III table b), kept by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1). Absorption type F: fast; M: moderate.':
+      'Coeficientes de dosis por inhalación de adultos miembros del público: RD 783/2001, anexo III, tabla b), mantenidos por la Resolución del CSN de 3 de abril de 2024 (transcripción numérica: ICRP Publication 119 (2012), tabla G.1). Tipo de absorción F: rápida; M: moderada.',
+    'The criterion is user-defined; the app attributes no regulatory basis to it.': 'El criterio lo define el usuario; la app no le atribuye base reglamentaria.',
+    'Generic screening estimate of the doses to a sewer system inspector and to a sewage-treatment-plant sludge operator, for radiation protection planning. The external coefficients apply only to the declared geometries. Results must be reviewed by a qualified radiation protection expert before regulatory use. Generated by NM Radionuclide Planner, an open-source reference tool provided without warranty of any kind.':
+      'Estimación genérica de cribado de las dosis a un trabajador de la red de alcantarillado y a un trabajador de planta depuradora que manipula lodos, para la planificación de la protección radiológica. Los coeficientes externos solo se aplican a las geometrías declaradas. Los resultados deben ser revisados por un experto cualificado en protección radiológica antes de cualquier uso reglamentario. Generado por NM Radionuclide Planner, herramienta de referencia de código abierto proporcionada sin garantía de ningún tipo.',
+    // Effluent data texts (data/effluent-scenarios.json)
+    "Breathing rate (light work)":
+      "Tasa de respiración (trabajo ligero)",
+    "Air breathed per hour of exposure (light work).":
+      "Aire respirado por hora de exposición (trabajo ligero).",
+    "Dose criterion for comparison":
+      "Criterio de dosis para la comparación",
+    "Your own comparison value. The app attributes no regulatory basis to it; a value ≤ 0 means no comparison.":
+      "Valor de comparación propio. La app no le atribuye base reglamentaria; un valor ≤ 0 significa que no se compara.",
+    "Annual discharge from decay tanks (sum of controlled nuclides)":
+      "Vertido anual de los depósitos de decaimiento (suma de los nucleidos controlados)",
+    "Total annual release from the decay tanks, shared among the nuclides marked “Tanks”; no decay credit.":
+      "Vertido anual total de los depósitos de decaimiento, repartido entre los nucleidos marcados como «Depósitos»; sin crédito por decaimiento.",
+    "Water discharged by the facility":
+      "Agua vertida por la instalación",
+    "Annual water discharged by the facility; the activity leaving the hospital is diluted in it. Site-specific.":
+      "Agua vertida al año por la instalación; en ella se diluye la actividad que sale del hospital. Propio del emplazamiento.",
+    "Water density":
+      "Densidad del agua",
+    "Converts the wastewater concentration to a mass basis for the aerosol model.":
+      "Convierte la concentración en el agua residual a base másica para el modelo de aerosol.",
+    "Aerosol loading in air":
+      "Carga de aerosol en el aire",
+    "Mass of wastewater aerosol per m³ of air breathed by the inspector.":
+      "Masa de aerosol de agua residual por m³ de aire respirado por el trabajador.",
+    "Respirable fraction":
+      "Fracción respirable",
+    "Fraction of the aerosol that is respirable (0–1).":
+      "Fracción del aerosol que es respirable (0–1).",
+    "External exposure time":
+      "Tiempo de exposición externa",
+    "Hours per year the inspector spends above the wastewater.":
+      "Horas al año que el trabajador pasa sobre el agua residual.",
+    "Inhalation exposure time":
+      "Tiempo de exposición por inhalación",
+    "Hours per year without respiratory protection.":
+      "Horas al año sin protección respiratoria.",
+    "Geometry factor on external dose":
+      "Factor de geometría de la dosis externa",
+    "Multiplier on the external dose; 1 = model geometry (water slab, receptor 1 m above its surface).":
+      "Multiplicador de la dosis externa; 1 = geometría del modelo (lámina de agua, receptor a 1 m sobre su superficie).",
+    "Decay time from discharge to the inspector":
+      "Tiempo de decaimiento desde el vertido hasta el trabajador",
+    "Decay between discharge and the inspector’s position.":
+      "Decaimiento entre el vertido y la posición del trabajador.",
+    "Patients living in the STP catchment":
+      "Pacientes que viven en la zona servida por la depuradora",
+    "Share of patients whose home discharges to this treatment plant. Applies only to the activity excreted at home.":
+      "Proporción de pacientes cuyo domicilio vierte a esta depuradora. Solo se aplica a la actividad excretada en el domicilio.",
+    "Wet (dewatered) sludge production":
+      "Producción de lodo húmedo (deshidratado)",
+    "Annual mass of dewatered sludge produced by the plant. Site-specific; the default has not been verified.":
+      "Masa anual de lodo deshidratado que produce la planta. Propio de la planta; el valor por defecto no se ha verificado.",
+    "Solids fraction of wet sludge":
+      "Fracción de sólidos del lodo húmedo",
+    "Dry-matter fraction of the dewatered sludge (0–1). Site hypothesis; affects only inhalation.":
+      "Fracción de materia seca del lodo deshidratado (0–1). Hipótesis del emplazamiento; solo afecta a la inhalación.",
+    "Wet sludge density":
+      "Densidad del lodo húmedo",
+    "Density of the dewatered sludge; converts Bq/kg to Bq/m³ for the external pathway.":
+      "Densidad del lodo deshidratado; convierte Bq/kg en Bq/m³ para la vía externa.",
+    "Dust loading in air":
+      "Carga de polvo en el aire",
+    "Mass of resuspended dry sludge per m³ of air breathed by the operator.":
+      "Masa de lodo seco resuspendido por m³ de aire respirado por el trabajador.",
+    "Fraction of the dust that is respirable (0–1).":
+      "Fracción del polvo que es respirable (0–1).",
+    "Fraction of discharged activity retained in sludge":
+      "Fracción de la actividad vertida retenida en el lodo",
+    "Fraction of the activity reaching the plant that stays in the sludge (0–1). Default 1 = 100 %, a screening assumption.":
+      "Fracción de la actividad que llega a la planta y queda en el lodo (0–1). Por defecto 1 = 100 %, hipótesis de cribado.",
+    "Hours per year the operator spends near the sludge.":
+      "Horas al año que el trabajador pasa cerca del lodo.",
+    "Hours per year exposed to resuspended dust.":
+      "Horas al año de exposición al polvo resuspendido.",
+    "Geometry / shielding factor on external dose":
+      "Factor de geometría / blindaje de la dosis externa",
+    "Multiplier on the external dose; 1 = no credit for structures or distance.":
+      "Multiplicador de la dosis externa; 1 = sin crédito por estructuras ni distancia.",
+    "Decay time from discharge to sludge press":
+      "Tiempo de decaimiento desde el vertido hasta la prensa de lodos",
+    "Decay between discharge and the sludge press. No further decay is applied.":
+      "Decaimiento entre el vertido y la prensa de lodos. No se aplica ningún otro decaimiento.",
+    "ICRP light-work breathing rate (workbook cell D38).":
+      "Tasa de respiración de ICRP para trabajo ligero (celda D38 del libro).",
+    "User-defined. Workbook default (cell D60). No regulatory basis is attributed by the app.":
+      "Definido por el usuario. Valor por defecto del libro (celda D60). La app no le atribuye base reglamentaria.",
+    "IS-28 Annex II II.A.4: annual discharge strictly below 1 GBq for the sum of nuclides other than H-3 and C-14 (the facility's authorisation prevails). The 1 GBq/y default is that boundary — a boundary scenario, not a demonstration of compliance.":
+      "IS-28, anexo II, II.A.4: vertido anual estrictamente inferior a 1 GBq para la suma de los nucleidos distintos del H-3 y del C-14 (prevalece la autorización de la instalación). El valor por defecto de 1 GBq/a es ese límite: un escenario de frontera, no una demostración de cumplimiento.",
+    "Site-specific: obtain from the licensee (consumption ≈ discharge in a hospital). Workbook generic values (cell D20): hospital 20 000 m³/y, clinic 3650 m³/y.":
+      "Propio del emplazamiento: obténgalo del titular (en un hospital, consumo ≈ vertido). Valores genéricos del libro (celda D20): hospital 20 000 m³/a, clínica 3650 m³/a.",
+    "Mass basis for the aerosol resuspension model (workbook cell D21).":
+      "Base másica del modelo de resuspensión de aerosol (celda D21 del libro).",
+    "NUREG/CR-5814 §5.2.1 (20 h/y; respirator worn most of the time).":
+      "NUREG/CR-5814 §5.2.1 (20 h/a; se lleva protección respiratoria la mayor parte del tiempo).",
+    "Workbook cell D37 (water slab at 1 m, no correction).":
+      "Celda D37 del libro (lámina de agua a 1 m, sin corrección).",
+    "NUREG/CR-5814 §5.2.1 (≈ 0.2 h). Workbook cell D42: 0.008333 d.":
+      "NUREG/CR-5814 §5.2.1 (≈ 0,2 h). Celda D42 del libro: 0,008333 d.",
+    "Site-specific; applies only to the activity excreted at home (the hospital discharges to this STP). Workbook default (cell D10).":
+      "Propio del emplazamiento; solo se aplica a la actividad excretada en el domicilio (el hospital vierte a esta depuradora). Valor por defecto del libro (celda D10).",
+    "Site-specific: PRTR-España (prtr-es.miteco.gob.es), waste code LER 19 08 05. Default 5090 t/y = value of the reference workbook for STP PRTR code 7504; it has NOT been verified against the PRTR declaration (year, waste and mass basis).":
+      "Propio del emplazamiento: PRTR-España (prtr-es.miteco.gob.es), código de residuo LER 19 08 05. Por defecto 5090 t/a = valor del libro de referencia para la depuradora con código PRTR 7504; NO se ha verificado con la declaración PRTR (año, residuo y base másica).",
+    "Site hypothesis: value of the reference workbook, which cites PEMAR 2025-2035; no 20–25 % solids range has been found in the PEMAR. NUREG/CR-5814 uses 0.30. Only the inhalation pathway depends on it (the external pathway uses the wet-sludge concentration).":
+      "Hipótesis del emplazamiento: valor del libro de referencia, que cita el PEMAR 2025-2035; en el PEMAR no se ha encontrado un intervalo de sólidos del 20–25 %. NUREG/CR-5814 usa 0,30. Solo depende de él la vía de inhalación (la vía externa usa la concentración en lodo húmedo).",
+    "NUREG/CR-5814 (1992), Table A.16.":
+      "NUREG/CR-5814 (1992), tabla A.16.",
+    "NUREG/CR-5814 §5.2.2 (1.0E-4 g/m³); range 5E-8 – 5E-6 kg/m³. Same value in IAEA SRS-19 §6.6.2.":
+      "NUREG/CR-5814 §5.2.2 (1,0E-4 g/m³); intervalo 5E-8 – 5E-6 kg/m³. Mismo valor en IAEA SRS-19 §6.6.2.",
+    "NUREG/CR-5814 §5.1 and IAEA SRS-19 §4.9 case (b): all activity to sludge (conservative screening assumption).":
+      "NUREG/CR-5814 §5.1 e IAEA SRS-19 §4.9, caso (b): toda la actividad pasa al lodo (hipótesis de cribado conservadora).",
+    "NUREG/CR-5814 §5.2.2 (1500 h/y; range 500–1750 h/y). ISCORS 2004 §4.7.3: 1000 h/y.":
+      "NUREG/CR-5814 §5.2.2 (1500 h/a; intervalo 500–1750 h/a). ISCORS 2004 §4.7.3: 1000 h/a.",
+    "NUREG/CR-5814 §5.2.2 (300 h/y; range 100–350 h/y).":
+      "NUREG/CR-5814 §5.2.2 (300 h/a; intervalo 100–350 h/a).",
+    "Workbook cell D41 (no credit for structures).":
+      "Celda D41 del libro (sin crédito por estructuras).",
+    "NUREG/CR-5814 §5.2.2 (~3 d; range 3 – 50+ d).":
+      "NUREG/CR-5814 §5.2.2 (~3 d; intervalo 3 – 50+ d).",
+    "Workbook 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx', sheet Escenario-1, cell D20. Generic values; use the licensee's figure when available.":
+      "Libro 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx', hoja Escenario-1, celda D20. Valores genéricos; use el dato del titular cuando lo haya.",
+    "Model geometry: 10 × 10 × 3 m sludge mass; receptor 2 m above centre":
+      "Geometría del modelo: masa de lodo de 10 × 10 × 3 m; receptor a 2 m sobre el centro",
+    "Model geometry: 45 × 45 × 3 m sludge mass (2025 m²); receptor 2 m above centre":
+      "Geometría del modelo: masa de lodo de 45 × 45 × 3 m (2025 m²); receptor a 2 m sobre el centro",
+    "Comparable in size to a sludge press / hopper (3–6 m, NUREG/CR-5814 §5.2.2), a 100 m² biosolids pile (ISCORS 2004-03 §4.7.3) and drying beds 3.0–3.7 m wide (NUREG/CR-6289). The coefficient belongs to this model geometry; its use for a specific plant must be justified.":
+      "De tamaño comparable a una prensa de lodos / tolva (3–6 m, NUREG/CR-5814 §5.2.2), a una pila de biosólidos de 100 m² (ISCORS 2004-03 §4.7.3) y a eras de secado de 3,0–3,7 m de anchura (NUREG/CR-6289). El coeficiente corresponde a esta geometría del modelo; su uso para una planta concreta debe justificarse.",
+    "Default. The largest sludge element found in the Spanish plants reviewed is 616 m² (EDAR Sur de Madrid). The coefficient belongs to this model geometry; its use for a specific plant must be justified.":
+      "Por defecto. El mayor elemento de lodo encontrado en las plantas españolas revisadas mide 616 m² (EDAR Sur de Madrid). El coeficiente corresponde a esta geometría del modelo; su uso para una planta concreta debe justificarse.",
+    "NUREG/CR-5814 prescribes an infinite slab; no released coefficient covers it. For Lu-177 the PHITS study measured that the 45 × 45 m coefficient captures 73–75 % of the infinite slab (10 × 10 m: ≈ 51 %). No equivalent measurement exists for I-131.":
+      "NUREG/CR-5814 prescribe una lámina infinita; ningún coeficiente publicado la cubre. Para el Lu-177, el estudio PHITS midió que el coeficiente de 45 × 45 m recoge el 73–75 % de la lámina infinita (10 × 10 m: ≈ 51 %). No existe una medida equivalente para el I-131.",
+    "Water slab 600 × 200 × 50 cm (6 m³), receptor 1 m above the centre of its surface":
+      "Lámina de agua de 600 × 200 × 50 cm (6 m³), receptor a 1 m sobre el centro de su superficie",
+    "NUREG/CR-5814 §5.2.1 and Table A.20. The coefficients are photon-only: bremsstrahlung from beta and positron emission is not included and has not been bounded for this geometry (the CSDA range in air of a 0.5 MeV electron exceeds the 1 m distance). The limitation is more severe for F-18 and I-131 than for Lu-177, and least for Tc-99m.":
+      "NUREG/CR-5814 §5.2.1 y tabla A.20. Los coeficientes son solo de fotones: no incluyen la radiación de frenado de la emisión beta y de positrones, que no se ha acotado para esta geometría (el alcance CSDA en aire de un electrón de 0,5 MeV supera la distancia de 1 m). La limitación es mayor para el F-18 y el I-131 que para el Lu-177, y menor para el Tc-99m.",
+    "Administered activity per cycle":
+      "Actividad administrada por ciclo",
+    "Activity per treatment taken from the workbook (= activity at hospital discharge, NOT the administered activity)":
+      "Actividad por tratamiento tomada del libro (= actividad en el alta hospitalaria, NO la actividad administrada)",
+    "Lu-177m impurity per cycle":
+      "Impureza de Lu-177m por ciclo",
+    "Administered activity per study":
+      "Actividad administrada por estudio",
+    "Workbook defaults (cells D9, D11, D12); fraction excreted in hospital = 1 − 0.55 (workbook f_san, cell D14). Site-specific.":
+      "Valores por defecto del libro (celdas D9, D11, D12); fracción excretada en el hospital = 1 − 0,55 (f_san del libro, celda D14). Propio del emplazamiento.",
+    "Workbook I-131 estimate (cells G6, G56): 0.8 GBq per patient, half of it excreted at home; the fraction excreted in hospital is 1 − 0.5. One treatment per patient is an assumption of this scenario, not a clinical rule. Site-specific.":
+      "Estimación del libro para el I-131 (celdas G6, G56): 0,8 GBq por paciente, la mitad excretada en el domicilio; la fracción excretada en el hospital es 1 − 0,5. Un tratamiento por paciente es una hipótesis de este escenario, no una regla clínica. Propio del emplazamiento.",
+    "The 0.8 GBq default is the activity with which patients leave hospital in the reference workbook (cells G6, G56), entered here in the administered-activity field: the in-hospital excretion of the administered activity is therefore not represented by this default. Replace it with the administered activity and an in-hospital fraction justified for the facility.":
+      "El valor por defecto de 0,8 GBq es la actividad con la que los pacientes salen del hospital en el libro de referencia (celdas G6, G56), introducida aquí en el campo de actividad administrada: por tanto, este valor no representa la excreción en el hospital de la actividad administrada. Sustitúyalo por la actividad administrada y una fracción en el hospital justificada para la instalación.",
+    "NUREG/CR-5814 Table B.7: I-131, 3 d decay, 3.9E-2 rem/y for 1 Ci/y (≈ 10.5 µSv/GBq), external dose from the GENII-1990 'STP WKR' factor (effective dose equivalent, ICRP 26/30 era) for a 1 m deep infinite slab at 2 m. Rescaled to the user plant by dry sludge mass and solids fraction.":
+      "NUREG/CR-5814, tabla B.7: I-131, 3 d de decaimiento, 3,9E-2 rem/a por 1 Ci/a (≈ 10,5 µSv/GBq), dosis externa con el factor 'STP WKR' de GENII-1990 (equivalente de dosis efectiva, época de ICRP 26/30) para una lámina infinita de 1 m de espesor a 2 m. Reescalada a la planta del usuario por la masa de lodo seco y la fracción de sólidos.",
+    "IAEA SRS-19 (2001) Table I–IV: 400 t/y dry sludge, no transit decay, 2000 h/y. Annex I uses an occupancy of 0.288 where 2000/8760 = 0.228, so the factor may be 26 % high. Indicative only.":
+      "IAEA SRS-19 (2001), tabla I–IV: 400 t/a de lodo seco, sin decaimiento en tránsito, 2000 h/a. El anexo I usa una ocupación de 0,288 cuando 2000/8760 = 0,228, por lo que el factor puede estar un 26 % alto. Solo orientativo.",
+    "Impurity of carrier-added Lu-177: 0.01 % of 7.4 GBq per cycle (Workbook 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx', sheet Escenario-2, cell D11). Fraction excreted in hospital = 1 − 0.55. Site-specific.":
+      "Impureza del Lu-177 con portador: 0,01 % de 7,4 GBq por ciclo (libro 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx', hoja Escenario-2, celda D11). Fracción excretada en el hospital = 1 − 0,55. Propio del emplazamiento.",
+    "No default in the workbooks: enter the facility's data. Fraction excreted in hospital 0.45 = 1 − the workbook's generic 0.55.":
+      "Sin valor por defecto en los libros: introduzca los datos de la instalación. Fracción excretada en el hospital 0,45 = 1 − el 0,55 genérico del libro.",
+    "Workbook 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx', sheet Escenario-1 (cells D9–D13). Fraction excreted in hospital = 1 − 0.55. Site-specific.":
+      "Libro 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx', hoja Escenario-1 (celdas D9–D13). Fracción excretada en el hospital = 1 − 0,55. Propio del emplazamiento.",
+    "No Scenario 2 coefficient has been calculated (the workbook's 0 means 'not calculated'); after 3 d of transit the F-18 decay factor is about 1E-12.":
+      "No se ha calculado coeficiente del escenario 2 (el 0 del libro significa 'no calculado'); tras 3 d de tránsito, el factor de decaimiento del F-18 es del orden de 1E-12.",
+    "NUREG/CR-5814 Table A.21 (pp. A.54–A.56), 'Modified external dose factors for GENII, Sv/yr per Bq/m3 (8-Aug-90)': column 'SEWER MAINT 1.0 m' (Scenario 1) and 'STP WKR 0.15 m' (Scenario 2). Converted with 1 y = 8766 h, the convention that reproduces Table B.7. GENII-1990 effective dose equivalent (ICRP 26/30 era) and NUREG geometries (Table A.20); Lu-177 and Lu-177m are not tabulated. Indicative comparison only; the differences have not been investigated.":
+      "NUREG/CR-5814, tabla A.21 (pp. A.54–A.56), 'Modified external dose factors for GENII, Sv/yr per Bq/m3 (8-Aug-90)': columna 'SEWER MAINT 1.0 m' (escenario 1) y 'STP WKR 0.15 m' (escenario 2). Convertidos con 1 a = 8766 h, la convención que reproduce la tabla B.7. Equivalente de dosis efectiva de GENII-1990 (época de ICRP 26/30) y geometrías del NUREG (tabla A.20); el Lu-177 y el Lu-177m no están tabulados. Comparación solo orientativa; las diferencias no se han investigado.",
+    "Adaptations of NUREG/CR-5814, not reproductions: Scenario 1 dilutes the annual facility discharge in its annual water volume (NUREG used 10 % of the 10 CFR 20 concentrations); Scenario 2 uses finite 3 m deep PHITS geometries instead of the 1 m infinite slab, and site source terms instead of 1 Ci/y.":
+      "Adaptaciones de NUREG/CR-5814, no reproducciones: el escenario 1 diluye el vertido anual de la instalación en su volumen anual de agua (el NUREG usaba el 10 % de las concentraciones de 10 CFR 20); el escenario 2 usa geometrías PHITS finitas de 3 m de espesor en lugar de la lámina infinita de 1 m, y términos fuente del emplazamiento en lugar de 1 Ci/a.",
+
+    // ================= Caregiver (caregiver.html, js/caregiver.js) =================
+    'NM Radionuclide Planner — Caregiver Dose after Discharge': 'NM Radionuclide Planner — Dosis a acompañantes tras el alta',
+    'Caregiver Dose — External Exposure after Discharge': 'Dosis a acompañantes — exposición externa tras el alta',
+    'External dose to one caregiver, relative or third party from a Lu-177 or I-131 therapy patient after discharge, with the maximum discharge rate and the minimum restriction period that meet the selected criterion.':
+      'Dosis externa a una persona cuidadora, familiar o tercera persona debida a un paciente tratado con Lu-177 o I-131 tras el alta, con la tasa máxima en el alta y el periodo mínimo de restricción que cumplen el criterio seleccionado.',
+    'Screening estimate for one person and equal cycles.': 'Estimación de cribado para una persona y ciclos iguales.',
+    'The integral of the measured operational quantity is used as an estimator of external exposure; it is not automatically the individual effective dose nor the fetal dose. Internal contamination, the dose before discharge and other sources are not included. The criteria per category are':
+      'La integral de la magnitud operacional medida se usa como estimador de la exposición externa; no es automáticamente la dosis efectiva individual ni la dosis fetal. No se incluyen la contaminación interna, la dosis antes del alta ni otras fuentes. Los criterios por categoría son',
+    'evaluation criteria adopted by the department': 'criterios de evaluación adoptados por el servicio',
+    ', not values fixed by regulation for this treatment.': ', no valores fijados por la normativa para este tratamiento.',
+    'A. Case data': 'A. Datos del caso',
+    'Kinetics preset': 'Cinética predefinida',
+    'Custom (values entered)': 'Personalizada (valores introducidos)',
+    'Fills radiopharmaceutical, fast phase, half-lives, cycles and profile. See the sources below.': 'Rellena el radiofármaco, la fase rápida, los periodos, los ciclos y el perfil. Véanse las fuentes más abajo.',
+    'Radiopharmaceutical': 'Radiofármaco',
+    'Used only to warn when the proximity profile does not match it.': 'Solo se usa para avisar cuando el perfil de proximidad no corresponde.',
+    'Dose rate measured at 1 m at discharge (µSv/h)': 'Tasa de dosis medida a 1 m en el alta (µSv/h)',
+    'Dose rate at 1 m at discharge': 'Tasa de dosis a 1 m en el alta',
+    'Discharge time after administration (h)': 'Momento del alta tras la administración (h)',
+    'Discharge time after administration': 'Momento del alta tras la administración',
+    'End of the fast phase after administration (h)': 'Final de la fase rápida tras la administración (h)',
+    'End of the fast phase after administration': 'Final de la fase rápida tras la administración',
+    '24 h in Kurth et al. (2018) and Demir et al. (2016); 0 = no fast phase.': '24 h en Kurth et al. (2018) y Demir et al. (2016); 0 = sin fase rápida.',
+    'Fast effective half-life (h)': 'Periodo efectivo rápido (h)',
+    'Fast effective half-life': 'Periodo efectivo rápido',
+    'Required: discharge precedes the end of the fast phase.': 'Necesario: el alta es anterior al final de la fase rápida.',
+    'Not used: discharge is at or after the end of the fast phase.': 'No se usa: el alta coincide con el final de la fase rápida o es posterior.',
+    'Slow effective half-life (h)': 'Periodo efectivo lento (h)',
+    'Slow effective half-life': 'Periodo efectivo lento',
+    'Number of equal cycles': 'Número de ciclos iguales',
+    'Category of the exposed person': 'Categoría de la persona expuesta',
+    'Method › Criteria per category': 'Método › Criterios por categoría',
+    'Manual criterion (mSv per treatment)': 'Criterio manual (mSv por tratamiento)',
+    'Manual criterion': 'Criterio manual',
+    'Not used (only for «Other criterion»).': 'No se usa (solo para «Otro criterio»).',
+    'Required for «Other criterion».': 'Necesario para «Otro criterio».',
+    'Minimum restriction of the product information (d, optional)': 'Restricción mínima de la ficha técnica (d, opcional)',
+    'Minimum restriction of the product information': 'Restricción mínima de la ficha técnica',
+    'Lower bound for the adopted restriction.': 'Límite inferior de la restricción adoptada.',
+    'Proximity profile': 'Perfil de proximidad',
+    'Kinetics presets and their sources': 'Cinéticas predefinidas y sus fuentes',
+    'Values entered by hand. Choose a preset to fill the kinetics from the literature.': 'Valores introducidos a mano. Elija una cinética predefinida para rellenarla con datos de la literatura.',
+    'Rate (µSv/h)': 'Tasa (µSv/h)',
+    'Factor relative to 1 m': 'Factor respecto a 1 m',
+    '1 (fixed)': '1 (fijo)',
+    'B. Cohabitation': 'B. Convivencia',
+    'Contact': 'Contacto',
+    'Restriction days counted from discharge': 'Días de restricción contados desde el alta',
+    'Restriction (d from discharge)': 'Restricción (d desde el alta)',
+    'During (h/d)': 'Durante (h/d)',
+    'During (m)': 'Durante (m)',
+    'After (h/d)': 'Después (h/d)',
+    'After (m)': 'Después (m)',
+    'Dose / cycle (mSv)': 'Dosis / ciclo (mSv)',
+    'Day-time cohabitation': 'Convivencia diurna',
+    'Sleeping in the same room': 'Dormir en la misma habitación',
+    'Hours per day during the restriction': 'Horas al día durante la restricción',
+    'Distance during the restriction (m)': 'Distancia durante la restricción (m)',
+    'Hours per day after the restriction': 'Horas al día después de la restricción',
+    'Distance after the restriction (m)': 'Distancia después de la restricción (m)',
+    'Hours are mutually exclusive: sleeping is not counted as day-time cohabitation. «Sleeping in the same room» during the restriction is usually 0 h (sleeping apart). Zero hours = no contact; the distance may then be left empty. The distance is chosen from the profile list; 0.1 m = contact. Days are counted from discharge and each cycle is integrated to infinity. The criterion covers only the administrations entered; it does not by itself demonstrate annual compliance.':
+      'Las horas son excluyentes: dormir no cuenta como convivencia diurna. «Dormir en la misma habitación» durante la restricción suele ser 0 h (dormir aparte). Cero horas = sin contacto; la distancia puede quedar vacía. La distancia se elige de la lista del perfil; 0,1 m = contacto. Los días se cuentan desde el alta y cada ciclo se integra hasta el infinito. El criterio solo cubre las administraciones introducidas; no demuestra por sí solo el cumplimiento anual.',
+    'Dose per administration': 'Dosis por administración',
+    'Dose of the treatment': 'Dosis del tratamiento',
+    'Applied criterion': 'Criterio aplicado',
+    'Margin to the criterion': 'Margen respecto al criterio',
+    'Inverse calculations (same restriction in both rows)': 'Cálculos inversos (misma restricción en las dos filas)',
+    'Maximum rate at 1 m at discharge with the restrictions entered': 'Tasa máxima a 1 m en el alta con las restricciones introducidas',
+    'Treatment dose with an indefinite restriction (floor)': 'Dosis del tratamiento con restricción indefinida (suelo)',
+    'Treatment dose with an indefinite restriction (upper asymptote — restricting increases the dose)': 'Dosis del tratamiento con restricción indefinida (asíntota superior: restringir aumenta la dosis)',
+    'Treatment dose with an indefinite restriction (same as without restriction)': 'Dosis del tratamiento con restricción indefinida (igual que sin restricción)',
+    'Treatment dose with an indefinite restriction': 'Dosis del tratamiento con restricción indefinida',
+    'Minimum restriction': 'Restricción mínima',
+    'Adopted restriction (rounded up, ≥ product information)': 'Restricción adoptada (redondeada al alza, ≥ ficha técnica)',
+    'Treatment dose with the adopted restriction': 'Dosis del tratamiento con la restricción adoptada',
+    'Write the adopted restriction in the days column of both cohabitation rows': 'Escribir la restricción adoptada en la columna de días de las dos filas de convivencia',
+    'Use the adopted restriction in the table': 'Usar la restricción adoptada en la tabla',
+    'Treatment dose vs restriction': 'Dosis del tratamiento frente a la restricción',
+    'Same restriction in both cohabitation rows, with the hours and distances of the table. The curve tends to the dose with an indefinite restriction. With less contact during the restriction than after it, that value is a floor: below it the dose can only be lowered by reducing contact during the restriction. With more contact during it, the curve rises towards it (upper asymptote) and restricting only increases the dose.':
+      'Misma restricción en las dos filas de convivencia, con las horas y distancias de la tabla. La curva tiende a la dosis con restricción indefinida. Con menos contacto durante la restricción que después, ese valor es un suelo: por debajo de él la dosis solo puede reducirse disminuyendo el contacto durante la restricción. Con más contacto durante ella, la curva sube hacia ese valor (asíntota superior) y restringir solo aumenta la dosis.',
+    'Treatment dose versus restriction days': 'Dosis del tratamiento frente a los días de restricción',
+    'No curve: the inputs are rejected (see the status above).': 'Sin curva: las entradas se rechazan (véase la situación arriba).',
+    'No curve: with the same restriction in both rows the hours during the restriction would exceed 24 h/day.': 'Sin curva: con la misma restricción en las dos filas, las horas durante la restricción superarían 24 h/día.',
+    'Self-check:': 'Autocomprobación:',
+    'A: the result is recomputed with an independent formulation in µSv and h for the current inputs. B: that formulation reproduces the reference cases of the source workbook v6 (restriction 3 d from discharge, 6 cycles, fast phase ending at 24 h). «REVIEW» means a formula has been altered.':
+      'A: el resultado se recalcula con una formulación independiente en µSv y h para las entradas actuales. B: esa formulación reproduce los casos de referencia del libro de origen v6 (restricción de 3 d desde el alta, 6 ciclos, fase rápida que termina a las 24 h). «REVISAR» significa que se ha alterado una fórmula.',
+    'Check': 'Comprobación',
+    'Value': 'Valor',
+    'Status': 'Estado',
+    'REVIEW': 'REVISAR',
+    'reference cases OK — current case not checked (inputs rejected)': 'casos de referencia OK — caso actual no comprobado (entradas rechazadas)',
+    'reference cases OK; current case not checked (inputs rejected)': 'casos de referencia OK; caso actual no comprobado (entradas rechazadas)',
+    'Method — formulas, assumptions, profiles, criteria and references': 'Método — fórmulas, hipótesis, perfiles, criterios y referencias',
+    'Integration in SI (Sv/s, s, Sv); the interface uses µSv/h, h, d and mSv.': 'Integración en SI (Sv/s, s, Sv); la interfaz usa µSv/h, h, d y mSv.',
+    'Assumptions': 'Hipótesis',
+    'Proximity profiles and provenance': 'Perfiles de proximidad y procedencia',
+    'Profile': 'Perfil',
+    'Source': 'Fuente',
+    'Nature': 'Naturaleza',
+    'entered': 'introducido',
+    'rate / rate at 1 m': 'tasa / tasa a 1 m',
+    'Criteria per category': 'Criterios por categoría',
+    'Category': 'Categoría',
+    'Criterion (mSv / treatment)': 'Criterio (mSv / tratamiento)',
+    'References': 'Referencias',
+    'Treatment dose vs restriction (mSv)': 'Dosis del tratamiento frente a la restricción (mSv)',
+    'Treatment dose (mSv)': 'Dosis del tratamiento (mSv)',
+    // js/caregiver.js
+    'Missing data: discharge rate, discharge time, end of the fast phase, slow half-life or number of cycles': 'Faltan datos: tasa en el alta, momento del alta, final de la fase rápida, periodo lento o número de ciclos',
+    'Invalid rate, times, half-life or number of cycles': 'Tasa, tiempos, periodo o número de ciclos no válidos',
+    'Invalid minimum restriction of the product information: leave it empty or enter a number ≥ 0': 'Restricción mínima de la ficha técnica no válida: déjela vacía o introduzca un número ≥ 0',
+    'Select a proximity profile': 'Seleccione un perfil de proximidad',
+    'Missing fast half-life: discharge precedes the end of the fast phase': 'Falta el periodo rápido: el alta es anterior al final de la fase rápida',
+    'Check the fast phase: 0 < T fast ≤ T slow': 'Revise la fase rápida: 0 < T rápida ≤ T lenta',
+    'A restriction is shorter than the minimum of the product information (SmPC).': 'Una restricción es más corta que el mínimo de la ficha técnica.',
+    'Contact during the restriction is greater than after it (spatial factor × hours): restricting increases the dose. Check the cohabitation table.':
+      'El contacto durante la restricción es mayor que después (factor espacial × horas): restringir aumenta la dosis. Revise la tabla de convivencia.',
+    'Discharge after the end of the fast phase: the discharge rate must already be measured in the slow phase.': 'Alta posterior al final de la fase rápida: la tasa en el alta debe medirse ya en la fase lenta.',
+    'Cohabitation exceeds 24 hours/day in some period': 'La convivencia supera 24 horas/día en algún periodo',
+    'Dose calculated; a positive dose criterion is missing': 'Dosis calculada; falta un criterio de dosis positivo',
+    'Within the applied criterion': 'Dentro del criterio aplicado',
+    'Exceeds the applied criterion': 'Supera el criterio aplicado',
+    'The cohabitation table uses fewer days than the adopted restriction': 'La tabla de convivencia usa menos días que la restricción adoptada',
+    'The cohabitation table covers the adopted restriction': 'La tabla de convivencia cubre la restricción adoptada',
+    'Does not depend on the restriction: criterion met': 'No depende de la restricción: criterio cumplido',
+    'Unattainable: reduce contact': 'Inalcanzable: reduzca el contacto',
+    'Unattainable: with more contact during the restriction than after it, any restriction increases the dose — reduce contact':
+      'Inalcanzable: con más contacto durante la restricción que después, cualquier restricción aumenta la dosis; reduzca el contacto',
+    'Unattainable: reduce contact during the restriction': 'Inalcanzable: reduzca el contacto durante la restricción',
+    'Not applicable: with the same restriction in both rows the hours during the restriction exceed 24 h/day': 'No aplicable: con la misma restricción en las dos filas, las horas durante la restricción superan 24 h/día',
+    'Direct calculation (dose per cycle)': 'Cálculo directo (dosis por ciclo)',
+    'Inverse calculation: minimum restriction': 'Cálculo inverso: restricción mínima',
+    'Inverse calculation: maximum rate': 'Cálculo inverso: tasa máxima',
+    // Caregiver report
+    'Caregiver Dose after Discharge': 'Dosis a acompañantes tras el alta',
+    'Kinetics': 'Cinética',
+    'Entered by hand (no preset)': 'Introducida a mano (sin cinética predefinida)',
+    'Case data': 'Datos del caso',
+    'Category / criterion': 'Categoría / criterio',
+    'not entered': 'no introducida',
+    'not used': 'no se usa',
+    'Cohabitation': 'Convivencia',
+    'Warnings': 'Avisos',
+    'Maximum rate at 1 m at discharge': 'Tasa máxima a 1 m en el alta',
+    'Adopted restriction': 'Restricción adoptada',
+    'Self-check': 'Autocomprobación',
+    'Overall': 'Global',
+    'Screening estimate of the external dose to one person from a discharged radionuclide-therapy patient, for radiation protection planning. The criteria per category are evaluation criteria adopted by the department, not values fixed by regulation for this treatment. Literature factors are not an individual validation of the patient. Results must be reviewed by a qualified radiation protection expert before use. Generated by NM Radionuclide Planner, an open-source reference tool provided without warranty of any kind.':
+      'Estimación de cribado de la dosis externa a una persona debida a un paciente dado de alta tras una terapia con radionucleidos, para la planificación de la protección radiológica. Los criterios por categoría son criterios de evaluación adoptados por el servicio, no valores fijados por la normativa para este tratamiento. Los factores de la literatura no son una validación individual del paciente. Los resultados deben ser revisados por un experto cualificado en protección radiológica antes de su uso. Generado por NM Radionuclide Planner, herramienta de referencia de código abierto proporcionada sin garantía de ningún tipo.',
+    // Caregiver data texts (data/caregiver.json)
+    "Port of the author's workbook Dosis_acompanantes_simple_v2.1.xlsx (sheets Dosis, Curva and Comprobación).":
+      "Adaptación del libro del autor Dosis_acompanantes_simple_v2.1.xlsx (hojas Dosis, Curva y Comprobación).",
+    "A preset fills the radiopharmaceutical, the end of the fast phase, the effective half-lives, the number of cycles and the proximity profile. It never changes the measured discharge rate, the discharge time, the category or the cohabitation table. Literature values describe a cohort, not the patient.":
+      "Una cinética predefinida rellena el radiofármaco, el final de la fase rápida, los periodos efectivos, el número de ciclos y el perfil de proximidad. Nunca cambia la tasa en el alta medida, el momento del alta, la categoría ni la tabla de convivencia. Los valores de la literatura describen una cohorte, no al paciente.",
+    "Evaluation criteria adopted by the department, not values fixed by regulation for this treatment. Scope: one person, the whole treatment (all cycles together) — the ICRP «episode» (the duration of a given release after therapy) is applied to the complete treatment, which is the more restrictive reading. Carers are people who, outside their occupation, knowingly and voluntarily help in the care of the patient (RD 601/2019, art. 7.1); children and pregnant women are assessed with the public category. The criterion only changes the comparison and the inverse calculations, never the calculated dose.":
+      "Criterios de evaluación adoptados por el servicio, no valores fijados por la normativa para este tratamiento. Alcance: una persona, el tratamiento completo (todos los ciclos juntos); el «episodio» de ICRP (la duración de una liberación concreta tras la terapia) se aplica al tratamiento completo, que es la lectura más restrictiva. Las personas cuidadoras son las que, fuera de su ocupación, ayudan consciente y voluntariamente en la atención del paciente (RD 601/2019, art. 7.1); los niños y las embarazadas se evalúan con la categoría de público. El criterio solo cambia la comparación y los cálculos inversos, nunca la dosis calculada.",
+    "Maximum rate: the discharge rate that exactly exhausts the criterion with the restrictions of the table (the dose is proportional to the rate). Minimum restriction: days that exhaust the criterion applying the same duration to both rows; \"Unattainable\" = not met however long it lasts: contact during the restriction must be reduced. To apply it, enter the adopted restriction in the days column of the cohabitation table.":
+      "Tasa máxima: la tasa en el alta que agota exactamente el criterio con las restricciones de la tabla (la dosis es proporcional a la tasa). Restricción mínima: días que agotan el criterio aplicando la misma duración a las dos filas; «Inalcanzable» = no se cumple por larga que sea: hay que reducir el contacto durante la restricción. Para aplicarla, introduzca la restricción adoptada en la columna de días de la tabla de convivencia.",
+    "Own-measurement protocol to record: radiopharmaceutical, distance reference, posture, orientation and time of measurement.":
+      "Protocolo de medida propia que debe registrarse: radiofármaco, referencia de distancia, postura, orientación y momento de la medida.",
+    "The intermediate distances of the approximate profiles [2], [3] are model evaluations, not measurements, and 6.25 is not a measured ratio: the spatial ratios measured by Demir [4] vary with time. The d^-1.5 approximation of IAEA SRS-63 [10] is not adopted as a universal profile.":
+      "Las distancias intermedias de los perfiles aproximados [2], [3] son evaluaciones del modelo, no medidas, y 6,25 no es un cociente medido: los cocientes espaciales medidos por Demir [4] varían con el tiempo. La aproximación d^-1,5 de IAEA SRS-63 [10] no se adopta como perfil universal.",
+    "Reference cases of workbook v6 (Comprobación sheet B): restriction 3 d from discharge, 6 cycles, fast phase ending at 24 h. Carer: 6 h/d at 1 m during the restriction; afterwards 6 h/d at 1 m and 8 h/d in contact (factor 6.25) → fr = 0.25, fn = 2.3333. Non-carer adult: 6 h/d at 1 m with no shared rest → fr = fn = 0.25. Expected values rounded to 2 decimals.":
+      "Casos de referencia del libro v6 (hoja Comprobación B): restricción de 3 d desde el alta, 6 ciclos, fase rápida que termina a las 24 h. Persona cuidadora: 6 h/d a 1 m durante la restricción; después, 6 h/d a 1 m y 8 h/d en contacto (factor 6,25) → fr = 0,25, fn = 2,3333. Adulto no cuidador: 6 h/d a 1 m sin descanso compartido → fr = fn = 0,25. Valores esperados redondeados a 2 decimales.",
+    "I-131 (NaI) — thyroid remnant ablation, Foro (2011)":
+      "I-131 (NaI) — ablación de restos tiroideos, Foro (2011)",
+    "I-131 (NaI) — thyroid cancer metastases, Foro (2011)":
+      "I-131 (NaI) — metástasis de cáncer de tiroides, Foro (2011)",
+    "I-131 (NaI) — hyperthyroidism, Foro (2011)":
+      "I-131 (NaI) — hipertiroidismo, Foro (2011)",
+    "Source-workbook default. T fast 16.4 h is consistent with the mean dose rates at 1 m of Demir et al. (2016) Table 1, 15 µSv/h at 6 h and 7 µSv/h at 24 h: 18 h · ln 2 / ln(15/7) = 16.37 h. T slow 40.5 h: mean effective half-life after 48 h, Kurth et al. (2018) (cohort range 21.7–85.7 h). 6 cycles as in Gayol Vilorio et al. (2025).":
+      "Valor por defecto del libro de origen. T rápida 16,4 h es coherente con las tasas de dosis medias a 1 m de Demir et al. (2016), tabla 1, 15 µSv/h a las 6 h y 7 µSv/h a las 24 h: 18 h · ln 2 / ln(15/7) = 16,37 h. T lenta 40,5 h: periodo efectivo medio después de 48 h, Kurth et al. (2018) (intervalo de la cohorte 21,7–85,7 h). 6 ciclos, como en Gayol Vilorio et al. (2025).",
+    "Gayol Vilorio et al. (2025), Tables 4 and 6: Tef,1 = 22 h (median of the early mono-exponential fits, 12–24 h post-infusion, Table 2), Tef,2 = 42 h (median of the late values), 6 cycles; fast phase until 24 h post-infusion.":
+      "Gayol Vilorio et al. (2025), tablas 4 y 6: Tef,1 = 22 h (mediana de los ajustes monoexponenciales tempranos, 12–24 h tras la infusión, tabla 2), Tef,2 = 42 h (mediana de los valores tardíos), 6 ciclos; fase rápida hasta 24 h tras la infusión.",
+    "Gayol Vilorio et al. (2025), Tables 3 and 5: Tef,1 = 25 h (median of the early mono-exponential fits, Table 2), Tef,2 = 55 h (median of the late values), 4 cycles; fast phase until 24 h post-infusion.":
+      "Gayol Vilorio et al. (2025), tablas 3 y 5: Tef,1 = 25 h (mediana de los ajustes monoexponenciales tempranos, tabla 2), Tef,2 = 55 h (mediana de los valores tardíos), 4 ciclos; fase rápida hasta 24 h tras la infusión.",
+    "Monserrat Fuertes et al. (2023), Table 2, 20 patients: median Teff from the 6 h and 24 h values 25 h (range 12–92 h); median Teff from the 24, 48 and 168 h values 58 h (range 35–119 h); 4 cycles of 7.4 GBq. In that cohort patients were discharged at 24 h with a median rate at 1 m of 5.4 µSv/h.":
+      "Monserrat Fuertes et al. (2023), tabla 2, 20 pacientes: mediana del Tef de los valores a 6 h y 24 h, 25 h (intervalo 12–92 h); mediana del Tef de los valores a 24, 48 y 168 h, 58 h (intervalo 35–119 h); 4 ciclos de 7,4 GBq. En esa cohorte los pacientes recibían el alta a las 24 h con una tasa mediana a 1 m de 5,4 µSv/h.",
+    "Foro CSN-SEPR-SEFM (2011), Annex 3.B, Table 3.B 3: «Tef (vida media efectiva) = 3 días», single exponential. In the Forum's equations Tef = 1/λ (mean life), so the effective half-life is 3 d · ln 2 = 49.9 h; with this reading the app reproduces Tables 3.B 3 and 3.B 4 (partner < 60 years, 2 mSv), with the half-life reading it does not. In-patients for 48–72 h.":
+      "Foro CSN-SEPR-SEFM (2011), anexo 3.B, tabla 3.B 3: «Tef (vida media efectiva) = 3 días», una sola exponencial. En las ecuaciones del Foro Tef = 1/λ (vida media), por lo que el periodo efectivo es 3 d · ln 2 = 49,9 h; con esta lectura la app reproduce las tablas 3.B 3 y 3.B 4 (pareja < 60 años, 2 mSv), y con la lectura como periodo no. Ingreso de 48–72 h.",
+    "Foro CSN-SEPR-SEFM (2011), Annex 3.B, Table 3.B 4: «T.ef. (vida media efectiva) = 5 días» = 1/λ, i.e. effective half-life 5 d · ln 2 = 83.2 h. Single exponential.":
+      "Foro CSN-SEPR-SEFM (2011), anexo 3.B, tabla 3.B 4: «T.ef. (vida media efectiva) = 5 días» = 1/λ, es decir, periodo efectivo 5 d · ln 2 = 83,2 h. Una sola exponencial.",
+    "Foro CSN-SEPR-SEFM (2011), Annex 3.C, Table 3.C 2: «T.ef. (vida media efectiva) = 7,2 días», computed with the equation of Annex 3.B, where Tef = 1/λ: effective half-life 7.2 d · ln 2 = 119.8 h. Single exponential from discharge; the thyroid uptake peaks at 24–48 h, so early urinary excretion of an out-patient is not modelled. Usually out-patient; the Forum gives this table by administered activity (185–800 MBq), the app needs the rate measured at 1 m.":
+      "Foro CSN-SEPR-SEFM (2011), anexo 3.C, tabla 3.C 2: «T.ef. (vida media efectiva) = 7,2 días», calculado con la ecuación del anexo 3.B, en la que Tef = 1/λ: periodo efectivo 7,2 d · ln 2 = 119,8 h. Una sola exponencial desde el alta; la captación tiroidea alcanza su máximo a las 24–48 h, por lo que no se modela la excreción urinaria temprana de un paciente ambulatorio. Habitualmente ambulatorio; el Foro da esta tabla por actividad administrada (185–800 MBq), la app necesita la tasa medida a 1 m.",
+    "Carer ≤ 60 years":
+      "Persona cuidadora ≤ 60 años",
+    "Carer > 60 years":
+      "Persona cuidadora > 60 años",
+    "Public (adult, child or pregnant woman)":
+      "Público (adulto, niño o embarazada)",
+    "Co-worker":
+      "Compañero de trabajo",
+    "Other criterion":
+      "Otro criterio",
+    "EC RP 97 (1998), table 1, and Foro CSN-SEPR-SEFM (2011), table 2: 3 mSv for adults up to 60 years — more restrictive than the international 5 mSv per episode (ICRP 103 [7], para. 351). RD 601/2019, arts. 6.2, 7 and 8, requires carer constraints but sets no value":
+      "EC RP 97 (1998), tabla 1, y Foro CSN-SEPR-SEFM (2011), tabla 2: 3 mSv para adultos de hasta 60 años, más restrictivo que los 5 mSv internacionales por episodio (ICRP 103 [7], párr. 351). El RD 601/2019, arts. 6.2, 7 y 8, exige restricciones para las personas cuidadoras pero no fija ningún valor",
+    "ICRP 103 (2007), para. 351, and ICRP 94 (2004): 5 mSv per episode for carers; IAEA SSG-46 (2018), para. 2.49: usually 5 mSv per episode for adult carers, less severe constraints allowed for elderly people. Adopted by Gayol Vilorio et al. (2025) instead of the 15 mSv of EC RP 97 and the Forum":
+      "ICRP 103 (2007), párr. 351, e ICRP 94 (2004): 5 mSv por episodio para personas cuidadoras; IAEA SSG-46 (2018), párr. 2.49: normalmente 5 mSv por episodio para personas cuidadoras adultas, con restricciones menos severas permitidas para personas mayores. Adoptado por Gayol Vilorio et al. (2025) en lugar de los 15 mSv de EC RP 97 y del Foro",
+    "RD 1029/2022, art. 15: public annual limit, applied to the whole treatment; ICRP 94 (2004) and ICRP 103, para. 351: the public limit applies to infants, children and casual visitors":
+      "RD 1029/2022, art. 15: límite anual del público, aplicado al tratamiento completo; ICRP 94 (2004) e ICRP 103, párr. 351: el límite del público se aplica a lactantes, niños y visitantes ocasionales",
+    "EC RP 97 (1998) and Foro CSN-SEPR-SEFM (2011), table 2 (p. 13): 0.3 mSv for third persons":
+      "EC RP 97 (1998) y Foro CSN-SEPR-SEFM (2011), tabla 2 (p. 13): 0,3 mSv para terceras personas",
+    "Value entered as manual criterion":
+      "Valor introducido como criterio manual",
+    "EC RP 97 [9] and Foro [2]":
+      "EC RP 97 [9] y Foro [2]",
+    "value entered":
+      "valor introducido",
+    "Time model: two consecutive, continuous exponentials. At the end of the fast phase the rate reached is kept. It is not a simultaneous sum of components.":
+      "Modelo temporal: dos exponenciales consecutivas y continuas. Al final de la fase rápida se conserva la tasa alcanzada. No es una suma simultánea de componentes.",
+    "Occupancy h/24 is a daily average, not an exact timetable. Single trips and contacts concentrated during the fast phase require a specific time-resolved assessment.":
+      "La ocupación h/24 es una media diaria, no un horario exacto. Los viajes puntuales y los contactos concentrados durante la fase rápida requieren una evaluación específica con resolución temporal.",
+    "Spatial factors are taken as constant in both phases. Body redistribution can change them: justify their use for the time of discharge and the case.":
+      "Los factores espaciales se consideran constantes en las dos fases. La redistribución corporal puede cambiarlos: justifique su uso para el momento del alta y el caso.",
+    "Equal cycles: same discharge rate, kinetics and cohabitation. Multiplying by the number of cycles assumes the pattern repeats with no relevant change from overlapping cycles.":
+      "Ciclos iguales: misma tasa en el alta, cinética y convivencia. Multiplicar por el número de ciclos supone que el patrón se repite sin cambios relevantes por solapamiento de ciclos.",
+    "Distances: keep the same origin, posture and orientation as the profile or measurement protocol. Do not confuse the separation between surfaces with the distance to a geometric centre.":
+      "Distancias: mantenga el mismo origen, postura y orientación que el perfil o el protocolo de medida. No confunda la separación entre superficies con la distancia a un centro geométrico.",
+    "Approximate profiles: published conventions, not universal measured factors. No automatic interpolation or extrapolation: the distance is chosen from the profile list.":
+      "Perfiles aproximados: convenciones publicadas, no factores medidos universales. Sin interpolación ni extrapolación automáticas: la distancia se elige de la lista del perfil.",
+    "Own measurements: enter distances and the rates at those distances, measured at the same time as the 1 m reading. Record the protocol. Do not repeat distances.":
+      "Medidas propias: introduzca las distancias y las tasas a esas distancias, medidas al mismo tiempo que la lectura a 1 m. Registre el protocolo. No repita distancias.",
+    "Discharge time and end of the fast phase are counted from administration. With the Kurth and Demir model the fast phase ends at 24 h. If discharge is later (or the end is 0) only the slow half-life is used, and the discharge rate must already belong to the slow phase.":
+      "El momento del alta y el final de la fase rápida se cuentan desde la administración. Con el modelo de Kurth y Demir la fase rápida termina a las 24 h. Si el alta es posterior (o el final es 0) solo se usa el periodo lento, y la tasa en el alta debe pertenecer ya a la fase lenta.",
+    "Each cycle is integrated to infinity: with several weeks between cycles, practically the whole dose of a cycle is received before the next one.":
+      "Cada ciclo se integra hasta el infinito: con varias semanas entre ciclos, prácticamente toda la dosis de un ciclo se recibe antes del siguiente.",
+    "DOTATATE measured":
+      "DOTATATE medido",
+    "I-131 approximate":
+      "I-131 aproximado",
+    "Lu-177 approximate":
+      "Lu-177 aproximado",
+    "Own measurements":
+      "Medidas propias",
+    "own protocol":
+      "protocolo propio",
+    "Empirical":
+      "Empírico",
+    "Approximation":
+      "Aproximación",
+    "Measured":
+      "Medido",
+    "Measured DOTATATE profile applied to another radiopharmaceutical.":
+      "Perfil medido con DOTATATE aplicado a otro radiofármaco.",
+    "I-131 profile applied to Lu-177.":
+      "Perfil de I-131 aplicado a Lu-177.",
+    "Lu-177 profile applied to I-131.":
+      "Perfil de Lu-177 aplicado a I-131.",
+    "Distances: 0.1, 0.5, 1 m (measured with DOTATATE).":
+      "Distancias: 0,1, 0,5, 1 m (medidas con DOTATATE).",
+    "Distances: 0.1 (contact, factor of 0.4 m), 0.5, 1, 1.5, 2, 3 m.":
+      "Distancias: 0,1 (contacto, factor de 0,4 m), 0,5, 1, 1,5, 2, 3 m.",
+    "Complete the own-measurement table (1 m row fixed by the discharge rate).":
+      "Complete la tabla de medidas propias (la fila de 1 m la fija la tasa en el alta).",
+    "DOTATATE cohort":
+      "cohorte DOTATATE",
+    "Contact (0.1 m): the factor of 0.4 m is assigned (Forum convention), (1/0.4)²":
+      "Contacto (0,1 m): se asigna el factor de 0,4 m (convención del Foro), (1/0,4)²",
+    "Inverse square":
+      "Inverso del cuadrado de la distancia",
+    "Carer ≤ 60, central, discharge at 6 h":
+      "Persona cuidadora ≤ 60, central, alta a las 6 h",
+    "Carer ≤ 60, central, discharge at 24 h":
+      "Persona cuidadora ≤ 60, central, alta a las 24 h",
+    "Carer ≤ 60, high, discharge at 6 h":
+      "Persona cuidadora ≤ 60, alto, alta a las 6 h",
+    "Carer ≤ 60, high, discharge at 24 h":
+      "Persona cuidadora ≤ 60, alto, alta a las 24 h",
+    "Non-carer adult, central, discharge at 6 h":
+      "Adulto no cuidador, central, alta a las 6 h",
+    "Non-carer adult, central, discharge at 24 h":
+      "Adulto no cuidador, central, alta a las 24 h",
+    "v6 exercise, case 1: 10.65 d (14 µSv/h, high, discharge at 6 h) must exceed 3 mSv":
+      "Ejercicio v6, caso 1: 10,65 d (14 µSv/h, alto, alta a las 6 h) debe superar 3 mSv",
+    "Same with 10.75 d: must be below 3 mSv (minimum restriction 10.7 d)":
+      "Igual con 10,75 d: debe quedar por debajo de 3 mSv (restricción mínima 10,7 d)",
+    "Maximum discharge rate, carer ≤ 60, high, discharge at 6 h (µSv/h)":
+      "Tasa máxima en el alta, persona cuidadora ≤ 60, alto, alta a las 6 h (µSv/h)",
+
     // Example applications (data/nuclides.json, clinical_use)
     'PET: [¹¹C]-choline, [¹¹C]-methionine, neurological tracers': 'PET: [¹¹C]-colina, [¹¹C]-metionina, trazadores neurológicos',
     'PET: [¹³N]-ammonia cardiac perfusion': 'PET: [¹³N]-amoniaco, perfusión cardiaca',
@@ -886,5 +1510,99 @@ const I18N_ES = {
     [/^Patient attenuation applied: transmission (.+)%\.$/, 'Atenuación del paciente aplicada: transmisión $1 %.'],
     [/^Spectrum-weighted narrow-beam transmission over (\d+) ICRP 107 photon lines with point-isotropic exposure build-up \(ANSI\/ANS-6\.4\.3 reference data\); accounts for beam hardening and scatter build-up\. Infinite-medium build-up applied to a finite barrier: the deviation is not universally conservative — treat results as estimates, not shielding-design values\.$/,
       'Transmisión de haz estrecho ponderada por el espectro sobre $1 líneas de fotones de ICRP 107 con acumulación de exposición para fuente puntual isótropa (datos de referencia ANSI/ANS-6.4.3); tiene en cuenta el endurecimiento del haz y la acumulación por dispersión. Acumulación de medio infinito aplicada a una barrera finita: la desviación no es conservadora en todos los casos; trate los resultados como estimaciones, no como valores de diseño de blindajes.'],
+
+    // ---- Effluent ----
+    [/^(.+?) \((m³\/h|mSv\/y|GBq\/y|m³\/y|kg\/m³|–|h\/y|h|%|t\/y|d)\)$/, (m, label, u) => {
+      const t = esText(label);
+      return t === label ? m : `${t} (${esUnit(u)})`;
+    }],
+    [/^(Hospital|Clinic) — (.+) m³\/y$/, (m, f, v) => `${f === 'Clinic' ? 'Clínica' : 'Hospital'} — ${v} m³/a`],
+    [/^Sc\. ([12]) \((.+)\)$/, (m, n, u) => `Esc. ${n} (${esUnit(u)})`],
+    [/^Include (\S+)$/, 'Incluir $1'],
+    [/^(\S+) (patients per y|cycles per patient|activity per cycle GBq|fraction in hospital|controlled in decay tanks)$/, (m, id, w) => `${id}: ${({
+      'patients per y': 'pacientes por año', 'cycles per patient': 'ciclos por paciente', 'activity per cycle GBq': 'actividad por ciclo, GBq',
+      'fraction in hospital': 'fracción en el hospital', 'controlled in decay tanks': 'controlado en depósitos de decaimiento' })[w]}`],
+    [/^⚠ ([\s\S]+)$/, (m, rest) => { const t = esText(rest); return t === rest ? m : '⚠ ' + t; }],
+    [/^: ([\s\S]+)$/, (m, rest) => { const t = esText(rest); return t === rest ? m : ': ' + t; }],
+    [/^(Common|Scenario 1|Scenario 2) — (.+)$/, (m, sc, label) => {
+      const t = esText(label);
+      return t === label ? m : `${sc === 'Common' ? 'Común' : esText(sc)} — ${t}`;
+    }],
+    [/^\(default (.+?)\): ([\s\S]+)$/, (m, v, src) => `(por defecto ${esPerYear(v).replace(/ h\/y$/, ' h/a').replace(/ t\/y$/, ' t/a').replace(/ m³\/y$/, ' m³/a').replace(/^(\d+)\.(\d+)/, '$1,$2')}): ${esText(src)}`],
+    [/^(Water slab [^.]+? surface)\. ([\s\S]+)$/, (m, a, b) => `${esText(a)}. ${esText(b)}`],
+    [/^Decay tanks: (.+) GBq\/y excreted into the tanks by the controlled nuclides; (.+) GBq\/y discharged, shared in proportion \(factor (.+)\)\.$/,
+      'Depósitos de decaimiento: $1 GBq/a excretados a los depósitos por los nucleidos controlados; $2 GBq/a vertidos, repartidos en proporción (factor $3).'],
+    [/^Decay tanks: (.+) GBq\/y excreted into the tanks, below the (.+) GBq\/y discharge — all of it is assumed discharged \(no decay credit\)\.$/,
+      'Depósitos de decaimiento: $1 GBq/a excretados a los depósitos, por debajo del vertido de $2 GBq/a; se supone que se vierte todo (sin crédito por decaimiento).'],
+    [/^mSv\/y — (at least )?(.+) % of the criterion((?: — EXCEEDS IT)?)((?: — PARTIAL SUM, missing: .+)?)$/, (m, al, p, ex, part) =>
+      `mSv/a — ${al ? 'al menos el ' : ''}${p} % del criterio${ex ? ' — LO SUPERA' : ''}${part ? part.replace(' — PARTIAL SUM, missing: ', ' — SUMA PARCIAL, falta: ').replace(/ external$/, ' externa') : ''}`],
+    [/^Criterion: (.+) mSv\/y, user-defined — the app attributes no regulatory basis to it\.$/, 'Criterio: $1 mSv/a, definido por el usuario; la app no le atribuye base reglamentaria.'],
+    [/^Sc\. 1: ([\s\S]+)$/, m => m.replace(/Sc\. /g, 'Esc. ').replace('Sc. 2: no coefficient', 'Esc. 2: sin coeficiente').replace('Esc. 2: no coefficient', 'Esc. 2: sin coeficiente').replace('one-sided model envelope', 'envolvente unilateral del modelo')],
+    [/^(P20P21-G9-FINAL-1\.0\.0[\s\S]*|Tc-99m Scenario 2 report [\s\S]*|INF-I131-S2-RESULTADOS-1\.1\.0, §X\.5 \(air domain accepted with DEV-05\))$/, m => esReport(m)],
+    [/^This model \((L10|L45)\)$/, 'Este modelo ($1)'],
+    [/^([\d.,]+) µSv\/GBq at the NUREG reference plant, scaled by dry sludge mass, solids fraction, density, transit decay, t$/,
+      '$1 µSv/GBq en la planta de referencia del NUREG, escalado por la masa de lodo seco, la fracción de sólidos, la densidad, el decaimiento en tránsito, t'],
+    [/^\. (NUREG\/CR-5814 Table B\.7: [\s\S]+)$/, (m, rest) => '. ' + esText(rest)],
+    [/^(\S+) \(rescaled: (\S+)\)$/, '$1 (reescalado: $2)'],
+    [/^(IAEA SRS-19 \(2001\) Table I–IV: [\s\S]+? Indicative only\.) (Rescaled value: [\s\S]+)$/, (m, a, b) => `${esText(a)} ${esText(b)}`],
+    [/^\(nSv\/h\)\/\(Bq\/m³\)\. ([\s\S]+)$/, (m, rest) => '(nSv/h)/(Bq/m³). ' + esText(rest)],
+    [/^"(.+)" must be (a number|greater than 0)$/, (m, f, w) => `«${esText(f)}» ${w === 'a number' ? 'debe ser un número' : 'debe ser mayor que 0'}`],
+    [/^(\S+): fraction excreted in hospital must be ≤ 1$/, '$1: la fracción excretada en el hospital debe ser ≤ 1'],
+    // Effluent report
+    [/^effluent-scenarios\.json (v\S+) \((.+)\)\. External coefficients from own PHITS calculations, not from a published table\.$/,
+      'effluent-scenarios.json $1 ($2). Coeficientes externos de cálculos PHITS propios, no de una tabla publicada.'],
+    [/^A_adm = ([\s\S]+)$/, m => m.replace(' patients/y × ', ' pacientes/a × ').replace(' cycles × ', ' ciclos × ').split(' GBq/y').join(' GBq/a')
+      .replace('; excreted in hospital ', '; excretado en el hospital ').replace(' into decay tanks', ' a depósitos de decaimiento')
+      .replace('; leaves hospital ', '; sale del hospital ').replace(' (Scenario 1)', ' (escenario 1)').replace('; at home ', '; en el domicilio ')
+      .replace(' % catchment; to STP ', ' % de zona servida; a la depuradora ').replace(' (Scenario 2)', ' (escenario 2)')],
+    [/^(.+) GBq\/y; sharing factor (.+)$/, '$1 GBq/a; factor de reparto $2'],
+    [/^(\S+) half-life$/, 'Periodo de semidesintegración del $1'],
+    [/^(\S+) k Scenario ([12])((?: \((?:L10|L45)\))?)$/, 'k del $1, escenario $2$3'],
+    [/^(\S+) e\(inh\)$/, 'e(inh) del $1'],
+    [/^([\d.,]+ d) — ([\s\S]+)$/, (m, v, src) => `${v} — ${esText(src)}`],
+    [/^(.+) \(nSv\/h\)\/\(Bq\/m³\), u = (.+) % — ([\s\S]+)$/, (m, v, u, rep) => `${v} (nSv/h)/(Bq/m³), u = ${u} % — ${esReport(rep)}`],
+    [/^(.+) \(nSv\/h\)\/\(Bq\/m³\), u = (.+) %$/, '$1 (nSv/h)/(Bq/m³), u = $2 %'],
+    [/^(.+) Sv\/Bq, type ([FMS])$/, '$1 Sv/Bq, tipo $2'],
+    [/^(\S+ GBq\/y; DF [\s\S]+)$/, m => esEffRow(m)],
+    [/^(\S+) \(PARTIAL\)$/, '$1 (PARCIAL)'],
+    [/^PARTIAL SUM \(pathways missing: (.+)\)$/, (m, l) => `SUMA PARCIAL (vías que faltan: ${l.replace(/ external/g, ' externa')})`],
+    [/^(≥ )?(.+) mSv\/y = (at least )?(.+) % of the user-defined criterion of (.+) mSv\/y$/, (m, ge, v, al, p, c) =>
+      `${ge || ''}${v} mSv/a = ${al ? 'al menos el ' : ''}${p} % del criterio definido por el usuario de ${c} mSv/a`],
+    [/^(.+) mSv\/y — no comparison \(criterion ≤ 0\)$/, '$1 mSv/a — sin comparación (criterio ≤ 0)'],
+
+    // ---- Caregiver ----
+    [/^(.+) — ((?:[\d.,]+) mSv)$/, (m, label, v) => { const t = esText(label); return t === label ? m : `${t} — ${v}`; }],
+    [/^Basis: (.+) — see$/, (m, b) => `Base: ${esText(b)} — véase`],
+    [/^— (fast phase until (.+?) h, T fast (.+?) h|single exponential), T slow (.+?) h, (\d+) cycle\(s\), profile (.+?)\. ([\s\S]+)$/, (m, ph, end, tf, ts, n, prof, src) =>
+      `— ${ph.startsWith('single') ? 'una sola exponencial' : `fase rápida hasta ${end} h, T rápida ${tf} h`}, T lenta ${ts} h, ${n} ciclo(s), perfil ${esText(prof)}. ${esText(src)}`],
+    [/^Own measurement (\d+) (distance \(m\)|rate \(µSv\/h\))$/, (m, n, w) => `Medida propia ${n}: ${w.startsWith('distance') ? 'distancia (m)' : 'tasa (µSv/h)'}`],
+    [/^(Day-time cohabitation|Sleeping in the same room) (restriction days|hours per day during|distance during|hours per day after|distance after)$/, (m, row, w) =>
+      `${esText(row)}: ${({ 'restriction days': 'días de restricción', 'hours per day during': 'horas al día durante', 'distance during': 'distancia durante',
+        'hours per day after': 'horas al día después', 'distance after': 'distancia después' })[w]}`],
+    [/^(Day-time|Sleeping): (missing days or hours|invalid days or hours|distance without a valid factor in the profile)$/, (m, row, w) =>
+      `${row === 'Sleeping' ? 'Dormir' : 'Diurna'}: ${({ 'missing days or hours': 'faltan días u horas', 'invalid days or hours': 'días u horas no válidos',
+        'distance without a valid factor in the profile': 'distancia sin factor válido en el perfil' })[w]}`],
+    [/^mSv — (\d+) cycle\(s\)$/, 'mSv — $1 ciclo(s)'],
+    [/^mSv — (.+)$/, (m, label) => { const t = esText(label); return t === label ? m : `mSv — ${t}`; }],
+    [/^([\s\S]+) — with this restriction the treatment dose EXCEEDS the criterion$/, (m, a) => `${esText(a)} — con esta restricción la dosis del tratamiento SUPERA el criterio`],
+    [/^Criterion — (.+)$/, 'Criterio — $1'],
+    [/^(Floor|Upper asymptote) — indefinite restriction — (.+)$/, (m, k, v) => `${k === 'Floor' ? 'Suelo' : 'Asíntota superior'} — restricción indefinida — ${v}`],
+    [/^Indefinite restriction — (.+)$/, 'Restricción indefinida — $1'],
+    [/^Adopted restriction — (.+)$/, 'Restricción adoptada — $1'],
+    [/^This table — (.+)$/, 'Esta tabla — $1'],
+    [/^This table \(restrictions (.+)\) — (.+)$/, 'Esta tabla (restricciones $1) — $2'],
+    [/^Treatment dose vs restriction \(mSv\): (.+) at (.+) d$/, 'Dosis del tratamiento frente a la restricción (mSv): $1 a $2 d'],
+    // Caregiver report
+    [/^Preset «(.+)»\. ([\s\S]+)$/, (m, label, src) => `Cinética predefinida «${esText(label)}». ${esText(src)}`],
+    [/^caregiver\.json (v\S+) \((.+)\)\. ([\s\S]+)$/, (m, v, d, o) => `caregiver.json ${v} (${d}). ${esText(o)}`],
+    [/^(.+?): (.+) mSv per treatment \(([\s\S]+)\)$/, (m, label, v, basis) => `${esText(label)}: ${v} mSv por tratamiento (${esText(basis)})`],
+    [/^(DOTATATE measured|I-131 approximate|Lu-177 approximate|Own measurements) (\S+(?: protocol)?) — (Empirical|Approximation|Measured)$/, (m, l, r, n) =>
+      `${esText(l)} ${esText(r)} — ${esText(n)}`],
+    [/^Own measurement (.+) m$/, 'Medida propia a $1 m'],
+    [/^(.+) µSv\/h → factor (.+)$/, '$1 µSv/h → factor $2'],
+    [/^(.+) d restriction; during ([\s\S]+)$/, (m, d, rest) => `${d} d de restricción; durante ${rest
+      .replace(/ h\/d at /g, ' h/d a ').replace('; after ', '; después ').replace(/\(factor none\)/g, '(sin factor)').replace('; dose/cycle ', '; dosis/ciclo ')}`],
+    [/^(.+) d — ([\s\S]+)$/, (m, d, note) => { const t = esText(note.replace(/ — with this restriction the treatment dose EXCEEDS the criterion$/, ''));
+      return note.endsWith('EXCEEDS the criterion') ? `${d} d — ${t} — con esta restricción la dosis del tratamiento SUPERA el criterio` : (t === note ? m : `${d} d — ${t}`); }],
   ],
 };

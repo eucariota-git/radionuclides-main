@@ -60,7 +60,12 @@ const I18N = (() => {
     if (t === undefined) { t = exact.get(core); if (t !== undefined) hits.add(core); }
     if (t === undefined) {
       for (const [re, rep] of patterns) {
-        if (re.test(core)) { t = core.replace(re, rep); hits.add(re.source); break; }
+        // A pattern whose function finds nothing to translate returns the text
+        // unchanged: try the next one
+        if (re.test(core)) {
+          const r = core.replace(re, rep);
+          if (r !== core) { t = r; hits.add(re.source); break; }
+        }
       }
     }
     return t === undefined ? null : m[1] + t + m[3];
