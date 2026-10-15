@@ -100,6 +100,8 @@ const UI = (() => {
       danger: token('--danger'),
       // photon-spectrum hues by photon type (Properties detail panel)
       spectrum: { G: token('--spectrum-g'), X: token('--spectrum-x'), AQ: token('--spectrum-aq') },
+      // chart surface, for the ring around markers
+      surface: token('--white'),
     };
   }
 

@@ -221,6 +221,14 @@ a:hover { text-decoration: underline; }
   gap: .5rem;
 }
 
+/* Properties: the "Γ source" column got squeezed to one word per line between
+   ~700 and ~1100 px wide, making every row ~160 px tall; a minimum width keeps
+   it at two or three lines and the table scrolls sideways instead. */
+#nuclideTable th:last-child,
+#nuclideTable td:last-child {
+  min-width: 16rem;
+}
+
 /* Collapsible card (Properties notes, Effluent/Caregiver Method). display:flex
    hides the browser's disclosure marker, so the title looked like plain text:
    draw a ▸ that turns when open. Closed, the title loses its bottom rule. */

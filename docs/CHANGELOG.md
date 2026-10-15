@@ -4,6 +4,10 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
+### v1.13.2 — presentation of Properties and of the Caregiver chart
+- Properties: the «Γ source» column keeps a minimum width, so between ~700 and ~1100 px the rows no longer grow to ~160 px (one word per line); β E<sub>max</sub> note starts with its unit (MeV), like the other cards; the reference notes separate clearance (Table A1, not tabulated → RP 122 Part 1) from the exemption of moderate quantities (Table B: column 3 for sources, column 2 for materials, separate criteria; not tabulated → Annex II A.3.a, CSN values).
+- Caregiver chart: the case of the cohabitation table is marked on the curve (restriction → treatment dose; a horizontal line when the two rows have different restrictions); colours validated for colour-vision deficiency in light and dark — curve green, criterion red dashed, indefinite restriction (floor or upper asymptote) blue dotted and drawn on top of the curve, adopted restriction a neutral vertical line — with the values in the legend.
+
 ### v1.13.1 — second-opinion review of v1.13.0
 - **Caregiver inverse with more contact during the restriction than after it** (fr > fn): the app answered "The restriction does not reduce the dose" even when no restriction already met the criterion, and called the dose with an indefinite restriction a "floor" although the curve rises towards it. Now: minimum and adopted restriction 0 d when the 0-day dose meets the criterion, otherwise "Unattainable: … any restriction increases the dose"; the value is named an upper asymptote in the table, chart, report and CSV; a warning flags the table; and a product-information minimum that pushes the dose above the criterion is stated in the adopted-restriction note. Unchanged for the usual case fr < fn (workbook parity and the 324 cells of Gayol Vilorio et al. 2025 still reproduced).
 - **CSV of Dose and Decay**: for an extended nuclide `Database_version` names the ICRP 107 index (generation date, NDX SHA-256) instead of the curated nuclides.json.

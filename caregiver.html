@@ -471,31 +471,54 @@
   };
   const INDEF_CHART = { floor: 'Floor — indefinite restriction', ceiling: 'Upper asymptote — indefinite restriction', equal: 'Indefinite restriction' };
   const indefText = inv => INDEF_TEXT[inv.indefiniteKind] || 'Treatment dose with an indefinite restriction';
-  function datasetsFor(cv, out) {
+  // Hues validated with the dataviz palette script, light and dark (2026-10-15):
+  // curve green, criterion red, indefinite restriction blue — the former red
+  // vs orange pair was indistinguishable — plus neutral reference lines, each
+  // with its own line style and a value in the legend.
+  function datasetsFor(cv, out, input) {
     const theme = UI.getChartTheme();
     const pts = cv.points.map(p => ({ x: p.days, y: p.dose_mSv }));
-    const xMax = pts.length ? pts[pts.length - 1].x : 60;
-    const ds = [{ label: 'Treatment dose (mSv)', data: pts, _themeRole: 'dose', borderColor: theme.green, backgroundColor: theme.green,
-      borderWidth: 2, pointRadius: 2, showLine: true, pointStyle: 'line' }];
+    const dDay = input.rows.day.days, dSleep = input.rows.sleep.days;
+    // horizontal lines reach the table marker when its restriction is beyond the curve's last day
+    const xMax = Math.max(pts.length ? pts[pts.length - 1].x : 60, Number.isFinite(dDay) && dDay === dSleep ? dDay : 0);
+    // order: lower values are drawn on top
+    const ds = [{ label: 'Treatment dose vs restriction (mSv)', data: pts, _themeRole: 'dose', borderColor: theme.spectrum.G, backgroundColor: theme.spectrum.G,
+      borderWidth: 2, pointRadius: 2, showLine: true, pointStyle: 'line', order: 10 }];
     const crit = out.criterion.value;
     if (Number.isFinite(crit) && crit > 0) {
-      ds.push({ label: 'Criterion (mSv)', data: [{ x: 0, y: crit }, { x: xMax, y: crit }], _themeRole: 'danger', borderColor: theme.danger,
-        backgroundColor: theme.danger, borderDash: [6, 4], borderWidth: 1.5, pointRadius: 0, showLine: true, pointStyle: 'line' });
+      ds.push({ label: `Criterion — ${crit} mSv`, data: [{ x: 0, y: crit }, { x: xMax, y: crit }], _themeRole: 'danger', borderColor: theme.danger,
+        backgroundColor: theme.danger, borderDash: [8, 4], borderWidth: 2, pointRadius: 0, showLine: true, pointStyle: 'line', order: 3 });
     }
     if (Number.isFinite(out.inverse.floor_mSv)) {
-      ds.push({ label: `${INDEF_CHART[out.inverse.indefiniteKind] || 'Indefinite restriction'} (mSv)`, data: [{ x: 0, y: out.inverse.floor_mSv }, { x: xMax, y: out.inverse.floor_mSv }],
-        _themeRole: 'warning', borderColor: theme.orange, backgroundColor: theme.orange, borderDash: [2, 3], borderWidth: 1.5, pointRadius: 0, showLine: true, pointStyle: 'line' });
+      ds.push({ label: `${INDEF_CHART[out.inverse.indefiniteKind] || 'Indefinite restriction'} — ${f3(out.inverse.floor_mSv)} mSv`,
+        data: [{ x: 0, y: out.inverse.floor_mSv }, { x: xMax, y: out.inverse.floor_mSv }],
+        _themeRole: 'indef', borderColor: theme.spectrum.X, backgroundColor: theme.spectrum.X, borderDash: [2, 3], borderWidth: 2.5, pointRadius: 0, showLine: true, pointStyle: 'line', order: 2 });
     }
+    const yTop = pts.length ? Math.max(...pts.map(p => p.y)) : 0;
     if (Number.isFinite(out.inverse.adopted_d) && pts.length) {
-      const yMax = Math.max(...pts.map(p => p.y));
-      ds.push({ label: 'Adopted restriction', data: [{ x: out.inverse.adopted_d, y: 0 }, { x: out.inverse.adopted_d, y: yMax }],
-        _themeRole: 'text', borderColor: theme.text, backgroundColor: theme.text, borderWidth: 1, pointRadius: 0, showLine: true, pointStyle: 'line' });
+      ds.push({ label: `Adopted restriction — ${out.inverse.adopted_d} d`, data: [{ x: out.inverse.adopted_d, y: 0 }, { x: out.inverse.adopted_d, y: yTop }],
+        _themeRole: 'text', borderColor: theme.text, backgroundColor: theme.text, borderWidth: 2, pointRadius: 0, showLine: true, pointStyle: 'line', order: 4 });
+    }
+    // The case of the cohabitation table (user request 2026-10-15). On the curve
+    // only when both rows have the same restriction; otherwise its dose is drawn
+    // as a horizontal line, because the curve assumes one common restriction.
+    if (Number.isFinite(out.treatment_mSv)) {
+      if (Number.isFinite(dDay) && dDay === dSleep) {
+        ds.push({ label: `This table — ${dDay} d → ${f3(out.treatment_mSv)} mSv`, data: [{ x: dDay, y: 0 }, { x: dDay, y: out.treatment_mSv }],
+          _themeRole: 'table', borderColor: theme.spectrum.G, backgroundColor: theme.spectrum.G, borderDash: [4, 3], borderWidth: 1.5,
+          pointRadius: [0, 7], pointHoverRadius: [0, 9], pointBackgroundColor: theme.spectrum.G, pointBorderColor: theme.surface, pointBorderWidth: 2,
+          showLine: true, pointStyle: 'circle', order: 1 });
+      } else {
+        ds.push({ label: `This table (restrictions ${dDay} / ${dSleep} d) — ${f3(out.treatment_mSv)} mSv`, data: [{ x: 0, y: out.treatment_mSv }, { x: xMax, y: out.treatment_mSv }],
+          _themeRole: 'tableLine', borderColor: theme.spectrum.G, backgroundColor: theme.spectrum.G, borderDash: [10, 3, 2, 3], borderWidth: 1.5, pointRadius: 0,
+          showLine: true, pointStyle: 'line', order: 1 });
+      }
     }
     return ds;
   }
-  function drawChart(cv, out) {
+  function drawChart(cv, out, input) {
     const theme = UI.getChartTheme();
-    const datasets = datasetsFor(cv, out);
+    const datasets = datasetsFor(cv, out, input);
     if (chart) chart.destroy();
     chart = new Chart($('curveChart').getContext('2d'), {
       type: 'scatter',
@@ -503,7 +526,8 @@
       options: {
         color: theme.text, responsive: true, maintainAspectRatio: false, animation: false,
         plugins: {
-          legend: { position: 'top', labels: { font: { size: 11 }, usePointStyle: true, pointStyleWidth: 24 } },
+          // dataset order, not drawing order (`order` puts the markers on top)
+          legend: { position: 'top', labels: { font: { size: 11 }, usePointStyle: true, pointStyleWidth: 24, sort: (a, b) => a.datasetIndex - b.datasetIndex } },
           tooltip: { callbacks: { label: c => `${c.dataset.label}: ${f3(c.parsed.y)} at ${c.parsed.x} d` } },
         },
         scales: {
@@ -518,8 +542,11 @@
   function applyCurveChartTheme() {
     if (!chart) return;
     const theme = UI.getChartTheme();
-    const colour = { dose: theme.green, danger: theme.danger, warning: theme.orange, text: theme.text };
-    for (const d of chart.data.datasets) d.borderColor = d.backgroundColor = colour[d._themeRole];
+    const colour = { dose: theme.spectrum.G, danger: theme.danger, indef: theme.spectrum.X, text: theme.text, table: theme.spectrum.G, tableLine: theme.spectrum.G };
+    for (const d of chart.data.datasets) {
+      d.borderColor = d.backgroundColor = colour[d._themeRole];
+      if (d._themeRole === 'table') { d.pointBackgroundColor = theme.spectrum.G; d.pointBorderColor = theme.surface; }
+    }
     chart.options.color = theme.text;
     for (const scale of Object.values(chart.options.scales)) {
       scale.ticks.color = theme.text;
@@ -610,7 +637,7 @@
     if (cv.points.length) {
       $('curveNote').textContent = '';
       $('curveChart').parentElement.classList.remove('hidden');
-      drawChart(cv, out);
+      drawChart(cv, out, input);
     } else {
       if (chart) { chart.destroy(); chart = null; }
       $('curveChart').parentElement.classList.add('hidden');

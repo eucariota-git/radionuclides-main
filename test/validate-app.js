@@ -318,7 +318,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v51');
+    swVersion === 'nm-planner-v52');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -863,7 +863,7 @@ async function main() {
     ['Ra-223', 'Ac-225'].every(id => { const n = curated.find(x => x.id === id); return n.e_max_beta_chain === true && Math.abs(n.beta_yield_per_decay - 2) < 0.01; }) &&
     curated.find(n => n.id === 'Y-90').e_max_beta_MeV === 2.2801);
   check('N-02: Properties labels the value as the highest endpoint and flags minor branches and chain progeny',
-    /function betaEnergyItem\(n\)/.test(indexHtml) && /Highest endpoint over all β branches/.test(indexHtml) &&
+    /function betaEnergyItem\(n\)/.test(indexHtml) && /MeV — highest endpoint over all β branches/.test(indexHtml) &&
     /minor β branch/.test(indexHtml) && /from progeny in the decay chain/.test(indexHtml) &&
     !/Endpoint energy \(MeV\)/.test(indexHtml));
 
@@ -1056,6 +1056,16 @@ async function main() {
       /\$\('floorLabel'\)\.textContent = indefText\(inv\)/.test(caregiverHtml) && /Upper asymptote — indefinite restriction/.test(caregiverHtml) &&
       /\[indefText\(inv\), `\$\{f3\(inv\.floor_mSv\)\} mSv`\]/.test(caregiverHtml) && /add\('inverse', indefText\(inv\)/.test(caregiverHtml));
   }
+
+  console.log();
+  console.log('Test 19: presentation review 2026-10-15 (Properties table and notes, Caregiver chart)');
+  check('Properties: «Γ source» column min-width; β Emax note starts with MeV; clearance and Table B notes separated with their not-tabulated routes',
+    /#nuclideTable td:last-child \{\s*min-width: 16rem;/.test(styleCss) && /'MeV — highest endpoint over all β branches, ICRP 107'/.test(indexHtml) &&
+    /<strong>Clearance — Table A1<\/strong>[\s\S]*Annex III\.1\.b[\s\S]*<strong>Exemption of moderate quantities — Table B<\/strong>[\s\S]*Annex II A\.3\.a/.test(indexHtml));
+  check('Caregiver chart: table case marked (point on the curve or horizontal line), validated hues, indefinite line above the curve, legend in dataset order',
+    /This table — \$\{dDay\} d → /.test(caregiverHtml) && /This table \(restrictions/.test(caregiverHtml) &&
+    /_themeRole: 'indef', borderColor: theme\.spectrum\.X/.test(caregiverHtml) && /order: 2 \}\);/.test(caregiverHtml) &&
+    /sort: \(a, b\) => a\.datasetIndex - b\.datasetIndex/.test(caregiverHtml) && /surface: token\('--white'\)/.test(uiJs));
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);
   process.exitCode = failed === 0 ? 0 : 1;
