@@ -4,6 +4,13 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
+### v1.16.0 — optional Spanish screens: engine (phase 1)
+- **EN / ES button** in the header. English stays the default; the choice is stored. «ES» applies a display overlay (`js/i18n.js`) that rewrites only the text already rendered — text nodes, `title`/`placeholder`/`aria-label`/`data-tooltip`/`data-label`, option texts and chart labels — from a catalog (`js/i18n-es.js`). It never writes a field or option value, and no calculation module, data file, report builder or CSV builder refers to it.
+- **Exact-match catalog**: an entry applies only to the exact English text it was written for, so a corrected English sentence shows in English (never a stale translation) until its entry is updated; a test fails on any orphaned entry. Context-dependent entries (CSS selector) and anchored patterns for texts with values (captures copied unchanged).
+- Phase 1 translates only the header and the menu; the screens are translated in later phases after the terminology glossary is reviewed.
+- Checked: for the same case in EN and ES the field and option values, chart data and CSV are identical on every page; switching back restores the initial text exactly; live recalculation in ES (20 changes ≈ 0.5 s).
+- On phones the menu wraps to a second row instead of scrolling (the Spanish names are longer). About now loads `utils.js`: its decimal button did nothing in v1.15.
+
 ### v1.15.1 — review of the decimal change (D-01…D-03)
 - **CSV with a point in every case** (D-02): the Dose range warnings («99.9 % of the dose weight…», «1.0×10⁴ mfp», «30.0 keV») were stored already formatted with the display separator, so the `Shielding_validity` column of a CSV exported in comma mode carried commas. They are now also built inside `UTILS.withPoint`, and the CSV uses that version; screen and report keep the user's separator.
 - **«Read as …» note** (D-01): it stayed after a value written by the page (Effluent and Caregiver «Defaults», kinetics presets, adopted restriction) and kept the old separator after a switch. It is now refreshed on every render of those pages and after a switch (`UI.refreshNumberHints`).

@@ -320,7 +320,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v56');
+    swVersion === 'nm-planner-v57');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -1169,6 +1169,45 @@ async function main() {
     /const buildCategoryOptions = \(\) => \{/.test(caregiverHtml) && /nm-decimal-change', \(\) => \{\s*buildCategoryOptions\(\);/.test(caregiverHtml));
   check('Dose material densities follow the separator (option[data-num-label]); the HTML text keeps the point as source',
     (doseHtml.match(/<option value="(Pb|Fe|concrete_NW|concrete_LW)" data-num-label>/g) || []).length === 4);
+
+  console.log();
+  console.log('Test 23: Spanish display overlay (js/i18n.js + js/i18n-es.js)');
+  {
+    const i18nCtx = vm.createContext({});
+    vm.runInContext(read('js/i18n-es.js') + ';this.__ES = I18N_ES;', i18nCtx);
+    const ES = i18nCtx.__ES;
+    const i18nJs = read('js/i18n.js');
+    const pages = { index: indexHtml, decay: decayHtml, dose: doseHtml, effluent: effluentHtml, caregiver: caregiverHtml, about: aboutHtml };
+    check('catalog loads: exact, scoped and anchored patterns',
+      ES && typeof ES.exact === 'object' && typeof ES.scoped === 'object' && Array.isArray(ES.patterns) &&
+      ES.patterns.every(([re, rep]) => re instanceof i18nCtx.RegExp && re.source.startsWith('^') && re.source.endsWith('$') && typeof rep === 'string'));
+    // Every key must exist verbatim in the sources (entities decoded, white space
+    // collapsed): a changed English text leaves its Spanish entry orphaned and
+    // this check fails until the catalog is updated.
+    const decode = s => s
+      .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(+d)).replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)))
+      .replace(/&nbsp;/g, ' ').replace(/&mdash;/g, '—').replace(/&ndash;/g, '–').replace(/&middot;/g, '·').replace(/&hellip;/g, '…')
+      .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&rsquo;/g, '’').replace(/&ldquo;/g, '“').replace(/&rdquo;/g, '”').replace(/&amp;/g, '&')
+      .replace(/\\'/g, "'").replace(/\s+/g, ' ');
+    const srcFiles = [...Object.keys(pages).map(k => `${k}.html`),
+      ...fs.readdirSync(path.join(ROOT, 'js')).filter(f => f.endsWith('.js') && !['i18n-es.js', 'chart.umd.min.js'].includes(f)).map(f => `js/${f}`),
+      ...fs.readdirSync(path.join(ROOT, 'data')).filter(f => f.endsWith('.json')).map(f => `data/${f}`)];
+    const corpus = srcFiles.map(f => decode(read(f))).join('\n');
+    const keys = [...Object.keys(ES.exact), ...Object.values(ES.scoped).flatMap(m => Object.keys(m))];
+    const orphans = keys.filter(k => !corpus.includes(k.replace(/\s+/g, ' ')));
+    check(`every catalog key (${keys.length}) exists verbatim in the English sources — no orphaned translation`, orphans.length === 0, orphans.slice(0, 5).join(' | '));
+    const calcFiles = ['js/physics.js', 'js/data.js', 'js/effluent.js', 'js/caregiver.js', 'js/regulatory.js', 'js/db.js', 'js/icrp107-loader.js', 'js/report.js', 'js/utils.js',
+      ...fs.readdirSync(path.join(ROOT, 'data')).filter(f => /\.(json|js)$/.test(f)).map(f => `data/${f}`)];
+    check('no calculation module, report builder or data file refers to the overlay',
+      calcFiles.every(f => !/\bI18N/.test(read(f))));
+    check('the overlay never writes a field or option value, nor reads text back for logic',
+      !/\.value\s*=/.test(i18nJs) && !/\.valueAsNumber/.test(i18nJs) && /never touches field or option\s+\* VALUES/.test(i18nJs));
+    check('every page: EN/ES button, catalog loaded before the engine and before ui.js, UI.initLanguage(); English by default',
+      Object.values(pages).every(h => /id="langToggle"[^>]*>EN<\/button>/.test(h) &&
+        /<script src="js\/i18n-es\.js"><\/script>\s*<script src="js\/i18n\.js"><\/script>\s*<script src="js\/ui\.js"><\/script>/.test(h) && /UI\.initLanguage\(\);/.test(h)) &&
+      /if \(stored === 'es'\) setLang\('es'\);/.test(i18nJs) && /'\.\/js\/i18n\.js',\s*'\.\/js\/i18n-es\.js'/.test(read('sw.js')));
+    check('About loads utils.js (its decimal button did nothing without it)', /<script src="js\/utils\.js"><\/script>/.test(aboutHtml));
+  }
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);
   process.exitCode = failed === 0 ? 0 : 1;

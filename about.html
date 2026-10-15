@@ -26,6 +26,7 @@
       <a href="about.html" class="active">Guide</a>
     </nav>
     <div class="header-tools">
+      <button id="langToggle" type="button" class="btn-icon btn-decimal" aria-label="Language: Spanish" aria-pressed="false" title="Language of the screens: English or Spanish (calculations and CSV files do not change)">EN</button>
       <button id="decimalToggle" type="button" class="btn-icon btn-decimal" aria-label="Decimal comma" aria-pressed="false" title="Decimal separator of the displayed numbers: point or comma (input accepts both)">1.5</button>
       <button id="darkToggle" type="button" class="btn-icon" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
         <span id="darkIcon" class="ico ico-moon" aria-hidden="true"></span>
@@ -62,6 +63,7 @@
       <li><strong>Install as app (PWA)</strong>: served through <code>localhost</code> or HTTPS, a compatible browser offers "Install" / "Add to Home screen"; the app then runs standalone and fully offline.</li>
       <li><strong>Reports and CSV</strong>: Decay, Dose, Effluent and Caregiver have a <strong>Report / PDF</strong> button (inputs, results, method, sources, disclaimer and sign-off line; use the browser's "Save as PDF") and a CSV export in which every row repeats the application version, build, data version, export time (UTC) and the inputs needed to reproduce the result.</li>
       <li><strong>Decimal point or comma</strong>: every numeric field accepts either (<code>0.3</code> or <code>0,3</code>; also <code>1e-7</code>). A number with two separators or a thousands group (<code>1.000,5</code>, <code>1 000</code>) is rejected; a single separator followed by exactly three digits (<code>1.500</code>) is read as a decimal, and a note under the field says how it was read. The <strong>1.5 / 1,5</strong> button in the header chooses the separator of the displayed results, charts and reports — by default the one of your browser's language. CSV files always use the decimal point. Quantity names and references keep their usual form (H'(0.07), ANS-6.4.3).</li>
+      <li><strong>EN / ES</strong> in the header shows the screens in Spanish (English by default). It changes only the displayed text: values, calculations, CSV files and the decimal setting do not change.</li>
       <li><strong>Results update as you type</strong> on the four calculators. An invalid entry is named in a red box under the form, the field is outlined, and the results are hidden until it is corrected — the report and the CSV always describe the inputs on screen.</li>
       <li>Each page explains its method, sources and limits in its own <em>Method</em> and notes blocks (collapsed: click the title marked ▸ to open them); this guide — <strong>Guide</strong> in the menu — gives the purpose, the use and the key limits.</li>
     </ul>
@@ -702,10 +704,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   About, guide &amp; licences
 </footer>
 
+<script src="js/i18n-es.js"></script>
+<script src="js/i18n.js"></script>
 <script src="js/ui.js"></script>
+<script src="js/utils.js"></script>
 <script>
 UI.initDarkMode();
 UI.initDecimal();
+UI.initLanguage();
 UI.initPrint();
 UI.initKeyboard();
 

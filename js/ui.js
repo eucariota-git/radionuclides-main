@@ -190,6 +190,35 @@ const UI = (() => {
     });
   }
 
+  /* --- Language of the screens (2026-10-15) ---
+   * English by default; «ES» applies the Spanish display overlay (js/i18n.js),
+   * which rewrites rendered text only — never values, data, calculations or
+   * CSV files. The choice is stored (nm_lang). */
+  function initLanguage() {
+    if (typeof I18N === 'undefined') return;
+    I18N.init();
+    const btn = document.getElementById('langToggle');
+    const sync = () => {
+      if (!btn) return;
+      const es = I18N.getLang() === 'es';
+      btn.textContent = es ? 'ES' : 'EN';
+      btn.setAttribute('aria-pressed', es ? 'true' : 'false');
+    };
+    sync();
+    if (btn) {
+      btn.addEventListener('click', () => {
+        const to = I18N.getLang() === 'es' ? 'en' : 'es';
+        try {
+          localStorage.setItem('nm_lang', to);
+        } catch (e) {
+          // localStorage may be unavailable
+        }
+        I18N.setLang(to);
+        sync();
+      });
+    }
+  }
+
   function colorWithAlpha(color, alpha) {
     const hex = color.match(/^#([0-9a-f]{6})$/i);
     if (hex) {
@@ -388,6 +417,7 @@ const UI = (() => {
   return {
     initDarkMode,
     initDecimal,
+    initLanguage,
     refreshNumberHints,
     initPrint,
     initKeyboard,

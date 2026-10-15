@@ -13,7 +13,7 @@
 'use strict';
 
 const CACHE_PREFIX = 'nm-planner-';
-const CACHE_VERSION = 'nm-planner-v56';
+const CACHE_VERSION = 'nm-planner-v57';
 
 const ASSETS = [
   './',
@@ -36,6 +36,8 @@ const ASSETS = [
   './js/nuclide-id.js',
   './js/db.js',
   './js/icrp107-loader.js',
+  './js/i18n.js',
+  './js/i18n-es.js',
   './js/physics.js',
   './js/report.js',
   './js/regulatory.js',

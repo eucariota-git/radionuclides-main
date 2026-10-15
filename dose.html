@@ -27,6 +27,7 @@
       <a href="about.html">Guide</a>
     </nav>
     <div class="header-tools">
+      <button id="langToggle" type="button" class="btn-icon btn-decimal" aria-label="Language: Spanish" aria-pressed="false" title="Language of the screens: English or Spanish (calculations and CSV files do not change)">EN</button>
       <button id="decimalToggle" type="button" class="btn-icon btn-decimal" aria-label="Decimal comma" aria-pressed="false" title="Decimal separator of the displayed numbers: point or comma (input accepts both)">1.5</button>
       <button id="darkToggle" type="button" class="btn-icon" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
         <span id="darkIcon" class="ico ico-moon" aria-hidden="true"></span>
@@ -249,6 +250,8 @@
 <script src="js/physics.js"></script>
 <script src="js/nuclide-id.js"></script>
 <script src="js/db.js"></script>
+<script src="js/i18n-es.js"></script>
+<script src="js/i18n.js"></script>
 <script src="js/ui.js"></script>
 <script src="data/icrp107-data.js"></script>
 <script src="js/icrp107-loader.js"></script>
@@ -259,6 +262,7 @@
   // ---- UI initialization ----
   UI.initDarkMode();
   UI.initDecimal();
+  UI.initLanguage();
   UI.initPrint();
   UI.initKeyboard();
   try {

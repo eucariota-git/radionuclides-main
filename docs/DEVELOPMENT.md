@@ -59,6 +59,10 @@ Each module (PHYSICS, CALC, DB, ICRP107, UI) is an IIFE returning public API. No
 - `getChartTheme()` — colours from CSS tokens, re-read on `nm-theme-change`: `green`, `danger`, `orange`, `text`, `grid`, `surface` and `spectrum.{G,X,AQ}` (validated categorical hues, light and dark). New charts take their colours from here and re-colour on `nm-theme-change`
 - Sets `Chart.defaults.locale = 'en-US'` and removes the thousands separator from default linear/log tick labels (a Spanish reader takes "1,000" for a decimal comma)
 
+### `I18N` (`js/i18n.js`) and `I18N_ES` (`js/i18n-es.js`)
+- Display overlay for the optional Spanish screens (English default, `localStorage.nm_lang`, button `#langToggle`, `UI.initLanguage()`). Rewrites rendered text nodes, the attributes `title`, `placeholder`, `aria-label`, `data-tooltip`, `data-label`, option texts and Chart.js legend/axis/tooltip texts; a `MutationObserver` follows the live recalculation; `beforeprint` translates `#printReport`. Never writes values; nothing in the calculation path refers to it.
+- Catalog: `scoped` (CSS selector → entries, checked first), `exact` (trimmed English text, white space collapsed → Spanish) and `patterns` (anchored RegExp; captures copied unchanged). Elements with `translate="no"` (references, identifiers) are skipped. Every key must exist verbatim in the sources (Test 23): when an English text changes, update its Spanish entry.
+
 ### `UTILS` (`js/utils.js`)
 - `APP_VERSION`, `APP_BUILD` (= `CACHE_VERSION` of `sw.js`, printed in every report and CSV)
 - `fmt(v)` — results (1 decimal ≥ 1); `fmtRatio(v, threshold)` — values read against a limit (never shown on the wrong side of it); `fmtSig(v, sig)` — reference data at their significant figures (3880, 69400, ×10ⁿ outside 1e-3…1e6); `toSci(v, d)`

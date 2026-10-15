@@ -142,7 +142,7 @@ async function main() {
     await send('Page.addScriptToEvaluateOnNewDocument', { source:
       'window.alert=()=>{};window.confirm=()=>true;window.print=()=>{window.__printed=true};' +
       'document.addEventListener("DOMContentLoaded",()=>{if(window.Chart)Chart.defaults.animation=false;});' +
-      'try{localStorage.removeItem("nm_dark_mode")}catch(e){}' +
+      'try{localStorage.removeItem("nm_dark_mode");localStorage.removeItem("nm_lang")}catch(e){}' +
       // The expected values below are written with a decimal point: pin it,
       // except on URLs marked #auto-decimal (browser-language default test).
       'try{if(location.hash==="#auto-decimal")localStorage.removeItem("nm_decimal");else localStorage.setItem("nm_decimal","point")}catch(e){}' +
@@ -521,6 +521,47 @@ async function main() {
         const pointOpts = await ev(`[...document.querySelectorAll('main option')].map(o => o.text).filter(t => /\\d,\\d/.test(t))`);
         check(`${pg}: selector options follow the separator both ways`, commaOpts.length === 0 && pointOpts.length === 0, JSON.stringify({ commaOpts, pointOpts }));
       }
+    });
+    await guard('Spanish display overlay: nothing but the displayed text changes', async () => {
+      // Values, chart data and CSV of the same case in EN and ES must be identical;
+      // switching back to EN restores the exact initial text.
+      const SNAP = `(async () => {
+        const vals = [...document.querySelectorAll('main input, main select')].map(e => e.id + '=' + e.value + (e.checked ? '*' : ''));
+        const opts = [...document.querySelectorAll('main option')].map(o => o.value);
+        const charts = [...document.querySelectorAll('canvas')].map(c => Chart.getChart(c)).filter(Boolean).map(c => c.data.datasets.map(d => d.data));
+        const btn = document.getElementById('btnExportDoseCsv') || document.getElementById('btnCsv') || document.getElementById('btnExportCsv');
+        window.__csvBlob = null; if (btn) btn.click();
+        const csv = window.__csvBlob ? (await window.__csvBlob.text()).replace(/\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d{3}Z/g, 'T') : '';
+        return JSON.stringify({ vals, opts, charts, csv });
+      })()`;
+      for (const pg of ['index.html?id=Lu-177', 'decay.html?id=Lu-177', 'dose.html?id=Pd-103', 'effluent.html', 'caregiver.html', 'about.html']) {
+        await open(pg, 1280);
+        const textEn = await ev('document.body.innerText');
+        const en = pg === 'about.html' ? '' : await ev(SNAP);
+        await ev(`document.getElementById('langToggle').click()`); await sleep(400);
+        const es = pg === 'about.html' ? '' : await ev(SNAP);
+        const state = await ev(`({ lang: document.documentElement.lang, nav: document.querySelector('.site-nav').innerText, btn: document.getElementById('langToggle').textContent, stored: localStorage.getItem('nm_lang') })`);
+        check(`${pg}: ES — html lang "es", menu in Spanish, button "ES", choice stored`,
+          state.lang === 'es' && /Propiedades/.test(state.nav) && /Acompañantes/.test(state.nav) && state.btn === 'ES' && state.stored === 'es', JSON.stringify(state));
+        check(`${pg}: ES — field and option values, chart data and CSV identical to EN`, en === es, en === es ? '' : 'snapshots differ');
+        await ev(`document.getElementById('langToggle').click()`); await sleep(400);
+        check(`${pg}: back to EN — page text identical to the initial load`, (await ev('document.body.innerText')) === textEn);
+        await pageChecks(`${pg} EN/ES`);
+      }
+      // Live recalculation in ES: results follow the inputs, the menu stays in Spanish
+      await open('dose.html?id=Lu-177', 1280);
+      await ev(`document.getElementById('langToggle').click()`); await sleep(300);
+      const t0 = Date.now();
+      for (let i = 0; i < 20; i++) {
+        await ev(`(() => { const d = document.getElementById('distance'); d.value = '${(0.3 + i * 0.01).toFixed(2)}'; d.dispatchEvent(new Event('change', { bubbles: true })); })()`);
+      }
+      await sleep(300);
+      const ms = Date.now() - t0;
+      const live = await ev(`({ body: document.getElementById('resultsBody').innerText, nav: document.querySelector('.site-nav').innerText })`);
+      check(`ES live recalculation: 20 changes in ${ms} ms, results updated (d = 0.49 m), menu still in Spanish`,
+        /at 0\.49 m|0\.49/.test(await text('#doseRate0Header')) && /Propiedades/.test(live.nav) && ms < 8000, `${ms} ms`);
+      await pageChecks('dose ES live');
+      await ev(`document.getElementById('langToggle').click()`);
     });
     await guard('Theme follows the system preference without a stored choice', async () => {
       await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'dark' }] });

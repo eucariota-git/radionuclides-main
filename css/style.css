@@ -1570,10 +1570,11 @@ kbd {
   .header-tools { order: 2; }
   .site-nav { order: 3; flex: 1 1 100%; }
 
+  /* Wraps to a second row when the names do not fit (the Spanish ones are
+     longer): a scrolling row hid «Guía» with no visible cue */
   .site-nav {
     gap: .15rem;
-    overflow-x: auto;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
   }
 
   .site-nav a {
