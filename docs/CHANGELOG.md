@@ -4,11 +4,15 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
-### v1.16.0 — optional Spanish screens: engine (phase 1)
+### v1.16.0 — optional Spanish screens
 - **EN / ES button** in the header. English stays the default; the choice is stored. «ES» applies a display overlay (`js/i18n.js`) that rewrites only the text already rendered — text nodes, `title`/`placeholder`/`aria-label`/`data-tooltip`/`data-label`, option texts and chart labels — from a catalog (`js/i18n-es.js`). It never writes a field or option value, and no calculation module, data file, report builder or CSV builder refers to it.
 - **Exact-match catalog**: an entry applies only to the exact English text it was written for, so a corrected English sentence shows in English (never a stale translation) until its entry is updated; a test fails on any orphaned entry. Context-dependent entries (CSS selector) and anchored patterns for texts with values (captures copied unchanged).
-- Phase 1 translates only the header and the menu; the screens are translated in later phases after the terminology glossary is reviewed.
-- Checked: for the same case in EN and ES the field and option values, chart data and CSV are identical on every page; switching back restores the initial text exactly; live recalculation in ES (20 changes ≈ 0.5 s).
+- **Terminology**: `docs/I18N_GLOSSARY_ES.md`, each term with its source (RD 1029/2022, RD 1217/2024, IS-28, CSN/SEPR/SEFM documents) or marked as a decision of the author (e.g. «haz amplio», «solo cribado orientativo»); quantity names with a decimal comma in Spanish (H'(0,07), Hp(0,07)), «a» as the year symbol (mSv/a).
+- **Translated**: the five pages, their messages and errors, chart legends and axes, the printed reports, and the notes of the data files (regulatory, effluent and caregiver data, example applications). References, citations, source identifiers, coefficient sources and CSV files stay as published (`translate="no"`). Reports print in the language of the screen.
+- **Spanish guide**: `docs/USER_GUIDE.es.md`, a parallel of the English guide (which prevails), generated into About and shown when the screens are in Spanish; the page index follows it. Licence texts and third-party notices stay in English, with a link to the official Spanish text of the EUPL.
+- The About guide showed the tags of `E<sub>max</sub>` as text: the guide generator now accepts `<sub>`/`<sup>`.
+- Tools: `tools/i18n-coverage.js` lists, page by page and state by state, the texts left in English and the entries never used.
+- Checked: for the same case in EN and ES the field and option values, chart data and CSV are identical on every page; switching back restores the initial text exactly; live recalculation in ES (20 changes ≈ 0.5 s); Spanish pages without horizontal overflow at 1280 and 390 px. Test 23 fails on a catalog entry whose English text no longer exists and on Spanish and English guides with different outlines.
 - On phones the menu wraps to a second row instead of scrolling (the Spanish names are longer). About now loads `utils.js`: its decimal button did nothing in v1.15.
 
 ### v1.15.1 — review of the decimal change (D-01…D-03)

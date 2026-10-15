@@ -54,6 +54,7 @@ Commit fuente completo: ________________________________________ · SHA-256 del 
 | B10 | Búsqueda en español (Properties) | "tecnecio", "lutecio", "radio" encuentran Tc-99m, Lu-177, Ra-223 | |
 | B11 | Hierro elemental en Dose | El selector ofrece “Iron (Fe) — ρ=7.874”; el cálculo usa el modelo espectral + build-up y no lo presenta como acero ni como modelo Archer | |
 | B12 | Gráficas de Decay y Dose | La curva de Decay llega al final del intervalo (Lu-177, 1000 MBq: ≈ 33 d) y el marcador de tiempo transcurrido está en el tiempo exacto; en Dose el marcador «d = X m» está en esa distancia exacta (probar 0,33 m y 7 m) | |
+| B15 | Pantallas en español | a) Botón «EN» de la cabecera → «ES»: menú, formularios, resultados, gráficas e informe en español; las referencias quedan como se publicaron. b) Dose, Lu-177, 1 GBq, 0,3 m: el mismo resultado (69,8 μSv/h) y el mismo CSV, en inglés, en EN y en ES. c) «Acerca de» muestra la guía en español; las licencias siguen en inglés. d) «ES» → «EN» devuelve el texto inglés | |
 | B14 | Separador decimal | a) Dose, Lu-177, 1 GBq: distancia «0,3» y «0.3» dan 69,8 μSv/h, también con el navegador en inglés; «1.000,5» se rechaza. b) Botón «1,5» de la cabecera: resultados, ejes, leyendas e informe con coma; el CSV conserva el punto. c) «1.500» en A₀ muestra «Read as 1,5…» | |
 | B13 | β E<sub>max</sub> en Properties | Lu-177 0,4978 MeV; Y-90 2,28 MeV; Tc-99m indica «minor β branch: 0.0037 % of decays»; Ra-223 indica «from progeny in the decay chain» | |
 
