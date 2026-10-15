@@ -5,8 +5,8 @@ const UTILS = (() => {
   // two different code versions never produce indistinguishable reports
   // (audit 2026-07-16, H-07). APP_BUILD must equal CACHE_VERSION in sw.js —
   // update both together; validate-app.js enforces the match.
-  const APP_VERSION = '1.14.0';
-  const APP_BUILD = 'nm-planner-v54';
+  const APP_VERSION = '1.15.0';
+  const APP_BUILD = 'nm-planner-v55';
 
   function escapeHtml(text) {
     const div = document.createElement('div');
@@ -14,15 +14,61 @@ const UTILS = (() => {
     return div.innerHTML;
   }
 
+  /* --- Decimal separator (2026-10-15) ---
+   * The interface is in English for every user, but the DECIMAL SEPARATOR of
+   * what the app displays follows the user: point or comma, chosen in the header
+   * (UI.initDecimal: stored choice, else the browser language). Input accepts
+   * both (parseNumber). CSV exports always use the point (withPoint), so files
+   * stay machine-readable and reproducible.
+   *
+   * Only VALUE strings are localized — never identifiers that contain digits
+   * and points (ANS-6.4.3, §5.2.1, v1.14.0, para. 2.49): dec() must be applied
+   * to a number or a "value unit" string, not to prose. */
+  let decimalMode = 'point';
+  let forcedPoint = 0;
+  const comma = () => decimalMode === 'comma' && forcedPoint === 0;
+  function setDecimalMode(mode) { decimalMode = mode === 'comma' ? 'comma' : 'point'; }
+  function getDecimalMode() { return decimalMode; }
+  /** "6.64 d" → "6,64 d" in comma mode (points between digits only). */
+  function dec(str) {
+    if (str === null || str === undefined) return str;
+    const t = String(str);
+    return comma() ? t.replace(/(\d)\.(\d)/g, '$1,$2') : t;
+  }
+  /** A number as written in the data (no rounding), with the user's separator. */
+  const num = v => dec(String(v));
+  /** Run fn with the point forced (CSV builders). */
+  function withPoint(fn) {
+    forcedPoint++;
+    try { return fn(); } finally { forcedPoint--; }
+  }
+  /**
+   * Read a number typed with a decimal point OR a decimal comma.
+   * '' → null (empty field); anything not a plain number → NaN. Accepted:
+   * 0.3, 0,3, .5, ,5, 12, -1, 1e-7, 1,2e3. Rejected: more than one separator
+   * (1.000,5 — 1,000.5), grouping spaces (1 000), trailing text (3 m). A field
+   * of type="number" read "0,3" as 3 in a browser set to English and
+   * "1.000,5" as 1.0005, silently.
+   */
+  function parseNumber(text) {
+    const t = String(text ?? '').trim();
+    if (t === '') return null;
+    if (!/^[+-]?(\d+([.,]\d*)?|[.,]\d+)([eE][+-]?\d+)?$/.test(t)) return NaN;
+    const v = Number(t.replace(',', '.'));
+    return Number.isFinite(v) ? v : NaN;
+  }
+  /** Value for an input field, with the user's separator ('' for null). */
+  const inputValue = v => (v === null || v === undefined || v === '' ? '' : num(v));
+
   function safeFilename(name) {
     return name.trim().replace(/[^A-Za-z0-9\-_.]/g, '_').replace(/_+/g, '_').slice(0, 64);
   }
 
   // Convert to superscript scientific notation (e.g., 1.5×10⁴)
-  const toSci = (v, decimals = 1) => v.toExponential(decimals).replace(/e([+-])(\d+)/, (_, sign, digits) => {
+  const toSci = (v, decimals = 1) => dec(v.toExponential(decimals).replace(/e([+-])(\d+)/, (_, sign, digits) => {
     const sup = {'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};
     return '×10' + (sign === '-' ? '⁻' : '') + [...digits].map(c => sup[c] ?? c).join('');
-  });
+  }));
 
   function fmt(val) {
     // Unified numeric formatting convention (Octava ronda)
@@ -48,7 +94,7 @@ const UTILS = (() => {
 
     // Case 3: Integer part ≠ 0 (absVal ≥ 1) → 1 decimal place
     // Example: 6.0067 → "6.0", 165.5 → "165.5"
-    if (Math.floor(absVal) >= 1) return val.toFixed(1);
+    if (Math.floor(absVal) >= 1) return dec(val.toFixed(1));
 
     // Case 4: Pure decimal (absVal < 1) → "first non-zero decimal + one more"
     // Example: 0.123 → "0.12", 0.003 → "0.003", 0.5 → "0.5"
@@ -57,7 +103,7 @@ const UTILS = (() => {
     const decStr = absVal.toFixed(20).split('.')[1] || '';
     let firstNZ = 0;
     while (firstNZ < decStr.length && decStr[firstNZ] === '0') firstNZ++;
-    return parseFloat(val.toFixed(firstNZ + 2)).toString();
+    return dec(parseFloat(val.toFixed(firstNZ + 2)).toString());
   }
 
   /**
@@ -96,9 +142,9 @@ const UTILS = (() => {
 
     for (let d = baseDecimals; d <= 12; d++) {
       const text = val.toFixed(d);
-      if (side(parseFloat(text)) === trueSide) return text;
+      if (side(parseFloat(text)) === trueSide) return dec(text);
     }
-    return val.toFixed(12);
+    return dec(val.toFixed(12));
   }
 
   /**
@@ -118,9 +164,9 @@ const UTILS = (() => {
     const mag = Math.floor(Math.log10(a));
     if (mag >= sig - 1) {
       const step = 10 ** (mag - sig + 1);
-      return String(Math.round(val / step) * step);
+      return dec(String(Math.round(val / step) * step));
     }
-    return val.toPrecision(sig);
+    return dec(val.toPrecision(sig));
   }
 
   /**
@@ -153,6 +199,13 @@ const UTILS = (() => {
     APP_BUILD,
     escapeHtml,
     safeFilename,
+    setDecimalMode,
+    getDecimalMode,
+    dec,
+    num,
+    withPoint,
+    parseNumber,
+    inputValue,
     fmt,
     fmtRatio,
     fmtSig,

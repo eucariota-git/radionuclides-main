@@ -93,7 +93,7 @@ async function main() {
   // selector duplicated it): empty = no patient attenuation, no default value.
   check('patient transmission is one optional field with no default value',
     /id="patientTx"[^>]+value=""/.test(doseHtml) && !/id="patientAtten"/.test(doseHtml) &&
-    /txInput\.value\.trim\(\) !== '' \|\| txInput\.validity\.badInput/.test(doseHtml));
+    /const parsed = UTILS\.parseNumber\(txInput\.value\);\s*const patientAttenEnabled = parsed !== null;/.test(doseHtml));
   check('patient transmission is exactly 1 when attenuation is No',
     /const patientTx = patientAttenEnabled \? parsed \/ 100 : 1/.test(doseHtml));
   check('shield thickness no longer coerces NaN to zero',
@@ -320,7 +320,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v54');
+    swVersion === 'nm-planner-v55');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -425,7 +425,7 @@ async function main() {
     /shieldWarnings = msgs\.map/.test(doseHtml) && /shieldWarnings: shieldWarnings\.slice\(\)/.test(doseHtml) &&
     /'Model validity'/.test(doseHtml) && /'Shielding_validity'/.test(doseHtml));
   check('dose: the exported distance keeps the entered value and unit, never toFixed(2) metres (H-08)',
-    !/d_m\.toFixed\(2\)/.test(doseHtml) && /\$\{r\.distRaw\} \$\{r\.distUnit\}/.test(doseHtml) &&
+    !/d_m\.toFixed\(2\)/.test(doseHtml) && /\$\{UTILS\.num\(r\.distRaw\)\} \$\{r\.distUnit\}/.test(doseHtml) &&
     /'Distance_input', 'Distance_unit', 'Distance_m'/.test(doseHtml));
   check('dose CSV is rectangular and self-describing: versions, nuclide and activity on every row (H-09)',
     /'App_version', 'App_build', 'Database_version', 'Exported_UTC', 'Nuclide',/.test(doseHtml) &&
@@ -510,7 +510,7 @@ async function main() {
       !/Always one treatment/.test(JSON.stringify(eff)));
     check('effluent: STP activity is not called "to sewer", a small DF is never 0.0000, k is not also a coverage factor (T29)',
       !/To sewer/.test(effluentHtml) && /Activity reaching STP/.test(effluentHtml) && !/DF\.toFixed\(4\)/.test(effluentHtml) &&
-      /const fmtDF = v => \(v >= 0\.001 \? v\.toFixed\(4\) : v\.toExponential\(2\)\)/.test(effluentHtml) &&
+      /const fmtDF = v => UTILS\.dec\(v >= 0\.001 \? v\.toFixed\(4\) : v\.toExponential\(2\)\)/.test(effluentHtml) &&
       !/k = 1/.test(effluentHtml + JSON.stringify(eff)) && /coverage factor 1/.test(effluentHtml));
   }
   {
@@ -556,8 +556,8 @@ async function main() {
     // Audit 2026-10-04, A01/A07
     const iRender = decayHtml.indexOf("card.classList.remove('hidden')");
     const iTarget = decayHtml.indexOf('Target activity must be a non-negative number');
-    check('decay validates the target activity before any result is rendered and reads badInput (A01)',
-      iTarget > 0 && iTarget < iRender && /AtgtInput\.validity\.badInput/.test(decayHtml) &&
+    check('decay validates the target activity before any result is rendered; non-numeric text is rejected (A01)',
+      iTarget > 0 && iTarget < iRender && /const AtgtRaw   = AtgtEmpty \? NaN : UTILS\.parseNumber\(AtgtText\);/.test(decayHtml) &&
       !/parseFloat\(document\.getElementById\('Atarget'\)/.test(decayHtml));
     check('a zero target is a state shared by the screen and the report, never hidden (A01)',
       /if \(Atgt_MBq === 0\) return 'zero'/.test(decayHtml) &&
@@ -660,7 +660,7 @@ async function main() {
     !/fraction_to_sewer/.test(effluentHtml + effluentJs) &&
     /tank_limit_GBq_y/.test(effluentJs));
   check('facility selector fills the Scenario 1 water volume and a manual edit switches it to Custom',
-    /volInput\.value = presets\[facSel\.value\]\.water_volume_m3_y/.test(effluentHtml) &&
+    /volInput\.value = UTILS\.inputValue\(presets\[facSel\.value\]\.water_volume_m3_y\)/.test(effluentHtml) &&
     /facSel\.value = match \|\| 'custom'/.test(effluentHtml));
   check('the two scenarios are reported separately and never added together',
     /never added together/.test(effluentHtml) && /not added together/.test(effluentHtml) &&
@@ -903,7 +903,7 @@ async function main() {
   check('N-06: Properties modality tags use the filter labels (Therapy, Other…)',
     /label = \{ PET:'PET', SPECT:'SPECT', therapy:'Therapy', brachytherapy:'Brachytherapy', other:'Other' \}/.test(indexHtml));
   check('N-06: caregiver shows 3 significant figures; the CSV keeps 6',
-    /v\.toPrecision\(3\)\) : '—'\);/.test(caregiverHtml) && /toPrecision\(6\)/.test(caregiverHtml));
+    /v\.toPrecision\(3\)\)\) : '—'\);/.test(caregiverHtml) && /toPrecision\(6\)/.test(caregiverHtml));
   check('N-06: effluent tables put E (mSv/y) right after the nuclide',
     (effluentHtml.match(/<th>Nuclide<\/th>\s*<th class="text-right">E \(mSv\/y\)<\/th>/g) || []).length === 2);
   check('N-06: decay concentration chart uses a logarithmic y axis',
@@ -981,7 +981,7 @@ async function main() {
     ['Se-75', 'Cs-137'].every(id => Math.abs(byId(id).half_life_s / I.get(id).half_life_s - 1) < 1e-9));
   check('R-06: significant-figure formatter, Chart.js locale fixed, no raw Γ floats or 17-digit distances',
     /function fmtSig\(val, sig = 3\)/.test(read('js/utils.js')) && /Chart\.defaults\.locale = 'en-US'/.test(uiJs) &&
-    /gamma_H10: sig4\(constants\.gammaH10\)/.test(doseHtml) && /d = \$\{Number\(d_m\.toPrecision\(4\)\)\} m/.test(doseHtml) &&
+    /gamma_H10: sig4\(constants\.gammaH10\)/.test(doseHtml) && /d = \$\{UTILS\.num\(Number\(d_m\.toPrecision\(4\)\)\)\} m/.test(doseHtml) &&
     !/v\.toExponential\(2\)/.test(read('decay.html')));
   check('R-07: curated decay modes use β-/β+/α/EC notation, not ICRP codes',
     nuc.every(n => (n.decay_modes || []).every(m => !['B-', 'B+', 'A', 'ECB+'].includes(m.mode))));
@@ -1069,7 +1069,7 @@ async function main() {
     /#nuclideTable td:last-child \{\s*min-width: 16rem;/.test(styleCss) && /'MeV — highest endpoint over all β branches, ICRP 107'/.test(indexHtml) &&
     /<strong>Clearance — Table A1<\/strong>[\s\S]*Annex III\.1\.b[\s\S]*<strong>Exemption of moderate quantities — Table B<\/strong>[\s\S]*Annex II A\.3\.a/.test(indexHtml));
   check('Caregiver chart: table case marked (point on the curve or horizontal line), validated hues, indefinite line above the curve, legend in dataset order',
-    /This table — \$\{dDay\} d → /.test(caregiverHtml) && /This table \(restrictions/.test(caregiverHtml) &&
+    /This table — \$\{UTILS\.num\(dDay\)\} d → /.test(caregiverHtml) && /This table \(restrictions/.test(caregiverHtml) &&
     /_themeRole: 'indef', borderColor: theme\.spectrum\.X/.test(caregiverHtml) && /order: 2 \}\);/.test(caregiverHtml) &&
     /sort: \(a, b\) => a\.datasetIndex - b\.datasetIndex/.test(caregiverHtml) && /surface: token\('--white'\)/.test(uiJs));
 
@@ -1082,7 +1082,7 @@ async function main() {
     check('Dose report contains the indicative limit screening it announces (none for Y-90) and prints the distance once in metres',
       /\.\.\.\(r\.isY90 \? \[\] : \[limitScreeningSection\(r\)\]\)/.test(doseHtml) &&
       /function limitScreeningSection\(r\)[\s\S]{0,900}of 20 mSv\/y \(exposed workers\)[\s\S]{0,900}of 500 mSv\/y/.test(doseHtml) &&
-      /r\.distUnit === 'm' \? `\$\{r\.distRaw\} m`/.test(doseHtml));
+      /r\.distUnit === 'm' \? `\$\{UTILS\.num\(r\.distRaw\)\} m`/.test(doseHtml));
     check('no modal dialogs in the calculators: errors go to the page box with the field marked',
       ['decay', 'dose', 'effluent', 'caregiver'].every(k => !/\balert\(|\bconfirm\(/.test(noComments(pages[k])) && /id="calcError"/.test(pages[k])) &&
       /inputErr\.show\(err\.message, err\.field\)/.test(effluentHtml) && /inputErr\.show\(err\.message, err\.field\)/.test(caregiverHtml) &&
@@ -1110,6 +1110,51 @@ async function main() {
       /@media \(max-width: 700px\) \{\s*\.site-header \{ position: static; \}/.test(styleCss) &&
       /\.site-logo \{ order: 1; flex: 1 1 auto; \}/.test(styleCss) &&
       /class="data-table stack-on-mobile stack-inline" id="resultsTable"/.test(doseHtml) && /\.stack-on-mobile\.stack-inline td \{ display: block;/.test(styleCss));
+  }
+
+  console.log();
+  console.log('Test 21: decimal point or comma (2026-10-15)');
+  {
+    const U = utilsCtx.__UTILS;
+    const P = U.parseNumber;
+    // A type="number" field read "0,3" as 3 in a browser set to English and
+    // "1.000,5" as 1.0005, silently: input is now text read by parseNumber.
+    check('parseNumber reads a point or a comma; empty → null',
+      P('0.3') === 0.3 && P('0,3') === 0.3 && P(' 12 ') === 12 && P('.5') === 0.5 && P(',5') === 0.5 &&
+      P('-1') === -1 && P('1e-7') === 1e-7 && P('1,2e3') === 1200 && P('1.') === 1 && P('') === null && P('   ') === null);
+    check('parseNumber rejects grouping and trailing text (NaN), never guesses',
+      ['1.000,5', '1,000.5', '1 000', '3 m', 'e3', '0x10', '1..2', '1,,2', '--1', 'Infinity'].every(t => Number.isNaN(P(t))));
+    U.setDecimalMode('comma');
+    const commaOut = [U.fmt(6.0067), U.fmt(0.123), U.fmt(15000), U.fmtSig(6, 3), U.fmtRatio(1.04), U.toSci(1.5e-7, 2), U.num(0.3), U.dec('6.64 d'), U.inputValue(0.45)];
+    const pointInCsv = U.withPoint(() => [U.fmt(6.0067), U.fmtSig(6, 3), U.num(0.3), U.dec('6.64 d')]);
+    const afterCsv = U.fmt(6.0067);
+    U.setDecimalMode('point');
+    check('comma mode: every formatter uses the comma (6,0 · 0,12 · 1,5×10⁴ · 6,00 · 1,04 · 1,50×10⁻⁷ · 0,3 · 6,64 d · 0,45)',
+      JSON.stringify(commaOut) === JSON.stringify(['6,0', '0,12', '1,5×10⁴', '6,00', '1,04', '1,50×10⁻⁷', '0,3', '6,64 d', '0,45']), JSON.stringify(commaOut));
+    check('withPoint forces the point (CSV) and restores the comma afterwards',
+      JSON.stringify(pointInCsv) === JSON.stringify(['6.0', '6.00', '0.3', '6.64 d']) && afterCsv === '6,0');
+    check('point mode unchanged (Node default)', U.fmt(6.0067) === '6.0' && U.fmtSig(6, 3) === '6.00');
+    const calcPages = { decay: decayHtml, dose: doseHtml, effluent: effluentHtml, caregiver: caregiverHtml };
+    check('no type="number" field left: numeric fields are text with a decimal keyboard (.num-input)',
+      Object.values(calcPages).every(h => !/type="number"/.test(h) && /class="form-input num-input"/.test(h) && /inputmode="decimal"/.test(h)));
+    check('no parseFloat/Number() on a form field: every numeric field goes through UTILS.parseNumber',
+      // distOf reads <select> values, written by the app itself with a point
+      Object.values(calcPages).map(h => h.replace(/const distOf = [^\n]*/, '')).every(h => !/parseFloat\((?:document\.getElementById\([^)]*\)|el|txInput|volInput)\.value\)/.test(h) && !/(?<!parse)Number\((?:vialWeightText|AtgtText)\)/.test(h)) &&
+      /const readNum = el => UTILS\.parseNumber\(el\.value\);/.test(caregiverHtml) && /const v = UTILS\.parseNumber\(el\.value\);/.test(effluentHtml));
+    check('every CSV export runs inside UTILS.withPoint (machine-readable point)',
+      /getElementById\('btnExportCsv'\)\.addEventListener\('click', \(\) => UTILS\.withPoint\(/.test(indexHtml) &&
+      /getElementById\('btnExportCsv'\)\.onclick = \(\) => UTILS\.withPoint\(/.test(decayHtml) &&
+      /getElementById\('btnExportDoseCsv'\)\.onclick = \(\) => UTILS\.withPoint\(/.test(doseHtml) &&
+      /getElementById\('btnCsv'\)\.addEventListener\('click', \(\) => UTILS\.withPoint\(/.test(effluentHtml) &&
+      /\$\('btnCsv'\)\.addEventListener\('click', \(\) => UTILS\.withPoint\(/.test(caregiverHtml));
+    const allPages = [indexHtml, decayHtml, doseHtml, effluentHtml, caregiverHtml, aboutHtml];
+    check('header separator button on every page; default = stored choice, else the browser language; pages redraw on nm-decimal-change',
+      allPages.every(h => /id="decimalToggle"/.test(h) && /UI\.initDecimal\(\);/.test(h)) &&
+      /localStorage\.getItem\('nm_decimal'\)/.test(uiJs) && /new Intl\.NumberFormat\(\)\.format\(1\.5\)\.includes\(','\)/.test(uiJs) &&
+      [indexHtml, decayHtml, doseHtml, effluentHtml, caregiverHtml].every(h => /addEventListener\('nm-decimal-change'/.test(h)));
+    check('Chart.js default ticks follow the separator; "1.500" gets a note saying how it was read',
+      /return typeof UTILS !== 'undefined' \? UTILS\.dec\(s\) : s;/.test(uiJs) && /function numberHint\(el\)/.test(uiJs) &&
+      /Read as \$\{UTILS\.num\(v\)\} \(decimal separator\)/.test(uiJs));
   }
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);

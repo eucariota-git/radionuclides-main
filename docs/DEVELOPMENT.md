@@ -53,6 +53,7 @@ Each module (PHYSICS, CALC, DB, ICRP107, UI) is an IIFE returning public API. No
 
 ### `UI` (`js/ui.js`)
 - Dark mode (a stored choice wins; otherwise `prefers-color-scheme`, followed live), print, keyboard shortcuts
+- `initDecimal()` — separator mode from `localStorage.nm_decimal`, else the browser's number locale (`Intl.NumberFormat().format(1.5)`); header button `#decimalToggle`; rewrites the separator of the `.num-input` fields and dispatches `nm-decimal-change` (each page redraws on it); note under a field for `1.500`-like entries. Chart.js default ticks pass through `UTILS.dec`
 - `onInputs(fn, {delay, exclude})` — live recalculation: calls `fn` (debounced while typing) on input/change of any control in `<main>` outside `exclude`. Decay and Dose use it; Effluent and Caregiver wire their own `render()`
 - `inputErrors(boxId)` → `{show(message, fieldId), clear()}` — the page's error box plus `aria-invalid` and `.is-invalid` on the offending field (no `alert()`). On an invalid input the calculators hide the results and drop the snapshot, so the report and the CSV cannot describe another case
 - `getChartTheme()` — colours from CSS tokens, re-read on `nm-theme-change`: `green`, `danger`, `orange`, `text`, `grid`, `surface` and `spectrum.{G,X,AQ}` (validated categorical hues, light and dark). New charts take their colours from here and re-colour on `nm-theme-change`
@@ -61,6 +62,7 @@ Each module (PHYSICS, CALC, DB, ICRP107, UI) is an IIFE returning public API. No
 ### `UTILS` (`js/utils.js`)
 - `APP_VERSION`, `APP_BUILD` (= `CACHE_VERSION` of `sw.js`, printed in every report and CSV)
 - `fmt(v)` — results (1 decimal ≥ 1); `fmtRatio(v, threshold)` — values read against a limit (never shown on the wrong side of it); `fmtSig(v, sig)` — reference data at their significant figures (3880, 69400, ×10ⁿ outside 1e-3…1e6); `toSci(v, d)`
+- Decimal separator: `parseNumber(text)` reads any numeric field (point or comma, exponent; `''` → null, anything else → NaN — never `parseFloat` on a field); `setDecimalMode`/`getDecimalMode`; `dec(str)` localizes a VALUE string (points between digits — never apply it to prose or identifiers such as ANS-6.4.3, §5.2.1, v1.14.0); `num(v)` = `dec(String(v))`; `inputValue(v)` for writing a field; `withPoint(fn)` forces the point (every CSV export runs inside it). `fmt`, `fmtRatio`, `fmtSig` and `toSci` already return the user's separator
 - `csvSafe(str)` — CSV formula-injection guard used by the five exports: prefixes `'` to text starting with = + - @ TAB CR, never to a plain number (negatives stay numeric)
 
 ### `REPORT` (`js/report.js`)

@@ -25,9 +25,12 @@
       <a href="caregiver.html">Caregiver</a>
       <a href="about.html">Guide</a>
     </nav>
-    <button id="darkToggle" type="button" class="btn-icon" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
-      <span id="darkIcon" class="ico ico-moon" aria-hidden="true"></span>
-    </button>
+    <div class="header-tools">
+      <button id="decimalToggle" type="button" class="btn-icon btn-decimal" aria-label="Decimal comma" aria-pressed="false" title="Decimal separator of the displayed numbers: point or comma (input accepts both)">1.5</button>
+      <button id="darkToggle" type="button" class="btn-icon" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
+        <span id="darkIcon" class="ico ico-moon" aria-hidden="true"></span>
+      </button>
+    </div>
   </div>
 </header>
 
@@ -278,6 +281,7 @@
 <script>
 (async () => {
   UI.initDarkMode();
+  UI.initDecimal();
   UI.initPrint();
   UI.initKeyboard();
 
@@ -307,10 +311,11 @@
   // ---- Build inputs from the data file ----
   for (const s of SCEN) {
     document.getElementById(GRID[s]).innerHTML = Object.entries(PG[s]).map(([key, p]) => {
-      const attrs = [`min="${p.min ?? 0}"`, p.max !== undefined ? `max="${p.max}"` : ''].join(' ');
+      // Values entered in scientific notation (1e-7) need a keyboard with "e"
+      const mode = p.value !== 0 && Math.abs(p.value) < 1e-3 ? 'text' : 'decimal';
       return `<div class="form-group">
         <label class="form-label" for="${s}_${key}">${esc(p.label)} (${esc(p.unit)})</label>
-        <input type="number" class="form-input" id="${s}_${key}" value="${p.value}" ${attrs} step="any" title="${UTILS.safeAttr(p.label)}">
+        <input type="text" inputmode="${mode}" autocomplete="off" spellcheck="false" class="form-input num-input" id="${s}_${key}" value="${UTILS.inputValue(p.value)}" title="${UTILS.safeAttr(p.label)}">
         <div class="form-hint">${esc(p.hint || p.source)}</div>
       </div>`;
     }).join('');
@@ -331,13 +336,13 @@
     '<option value="custom">Custom (licensee data)</option>';
   const volInput = document.getElementById('s1_water_volume_m3_y');
   const syncFacility = () => {
-    const match = presetKeys.find(k => presets[k].water_volume_m3_y === parseFloat(volInput.value));
+    const match = presetKeys.find(k => presets[k].water_volume_m3_y === UTILS.parseNumber(volInput.value));
     facSel.value = match || 'custom';
   };
   syncFacility();
   document.getElementById('facilityHint').textContent = 'Generic annual water volumes; use the licensee\'s figure when available.';
   facSel.addEventListener('change', () => {
-    if (facSel.value !== 'custom') volInput.value = presets[facSel.value].water_volume_m3_y;
+    if (facSel.value !== 'custom') volInput.value = UTILS.inputValue(presets[facSel.value].water_volume_m3_y);
     render();
   });
   volInput.addEventListener('input', syncFacility);
@@ -347,7 +352,7 @@
   document.getElementById('sourceBody').innerHTML = nuclides.map(({ nd }, i) => {
     const st = nd.source_term;
     const cell = (field, val, extra = '') =>
-      `<input type="number" class="form-input" id="st_${i}_${field}" value="${val}" min="0" step="any" ${extra}
+      `<input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="st_${i}_${field}" value="${UTILS.inputValue(val)}" ${extra}
         aria-label="${UTILS.safeAttr(nd.id + ' ' + field.replace(/_/g, ' '))}" title="${UTILS.safeAttr(nd.id)}">`;
     return `<tr>
       <td><input type="checkbox" id="st_${i}_include" ${nd.include_default ? 'checked' : ''} aria-label="Include ${UTILS.safeAttr(nd.id)}"></td>
@@ -355,7 +360,7 @@
       <td>${cell('patients_per_y', st.patients_per_y)}</td>
       <td>${cell('cycles_per_patient', st.cycles_per_patient, st.cycles_locked ? 'disabled' : '')}</td>
       <td>${cell('activity_per_cycle_GBq', st.activity_per_cycle_GBq)}<div class="form-hint">${esc(st.activity_label)}</div></td>
-      <td>${cell('fraction_in_hospital', st.fraction_in_hospital, 'max="1"')}</td>
+      <td>${cell('fraction_in_hospital', st.fraction_in_hospital)}</td>
       <td><input type="checkbox" id="st_${i}_controlled" ${st.controlled_default ? 'checked' : ''} aria-label="${UTILS.safeAttr(nd.id)} controlled in decay tanks"></td>
       <td class="num" id="st_${i}_A1">—</td>
       <td class="num" id="st_${i}_A2">—</td>
@@ -372,8 +377,9 @@
     `<option value="${g}" ${g === data.geometries.default ? 'selected' : ''}>${esc(data.geometries[g].label)}</option>`).join('');
   document.getElementById('slabWarning').textContent = data.geometries.infinite_slab_warning;
 
+  // A decimal point or comma (UTILS.parseNumber); empty or not a number → error
   function readNumber(el) {
-    const v = parseFloat(el.value);
+    const v = UTILS.parseNumber(el.value);
     if (!Number.isFinite(v)) throw Object.assign(new RangeError(`"${el.title || el.id}" must be a number`), { field: el.id });
     return v;
   }
@@ -408,14 +414,16 @@
   // inhalation terms do not render as long strings of zeros.
   // DF in fixed notation while it is readable; scientific when small, so that a
   // tiny non-zero factor (F-18 after 3 d) is never printed as 0.0000 (T29)
-  const fmtDF = v => (v >= 0.001 ? v.toFixed(4) : v.toExponential(2));
+  // Display values follow the user's decimal separator (UTILS.dec/num); the
+  // CSV builder runs inside UTILS.withPoint, so the same helpers give a point there.
+  const fmtDF = v => UTILS.dec(v >= 0.001 ? v.toFixed(4) : v.toExponential(2));
   const sci = v => {
     if (!Number.isFinite(v)) return '—';
     if (v === 0) return '0';
     const a = Math.abs(v);
     // 4 significant figures, ×10ⁿ like the rest of the app, no padding zeros
     // ("20.00" GBq/y, "4.996e+4" — audit 2026-10-14 v1.11, R-06)
-    return (a < 1e-3 || a >= 1e5) ? UTILS.toSci(Number(v.toPrecision(4)), 3) : String(Number(v.toPrecision(4)));
+    return (a < 1e-3 || a >= 1e5) ? UTILS.toSci(Number(v.toPrecision(4)), 3) : UTILS.num(Number(v.toPrecision(4)));
   };
   const pct = f => Number.isFinite(f) ? UTILS.fmtRatio(f * 100, 100) : '—';
   let last = null;
@@ -454,8 +462,8 @@
     document.getElementById('tankStatus').textContent = src.sumControlled_GBq_y > 0
       ? (src.tankFactor < 1
           ? `Decay tanks: ${sci(src.sumControlled_GBq_y)} GBq/y excreted into the tanks by the controlled nuclides; ` +
-            `${src.tankLimit_GBq_y} GBq/y discharged, shared in proportion (factor ${sci(src.tankFactor)}).`
-          : `Decay tanks: ${sci(src.sumControlled_GBq_y)} GBq/y excreted into the tanks, below the ${src.tankLimit_GBq_y} GBq/y ` +
+            `${UTILS.num(src.tankLimit_GBq_y)} GBq/y discharged, shared in proportion (factor ${sci(src.tankFactor)}).`
+          : `Decay tanks: ${sci(src.sumControlled_GBq_y)} GBq/y excreted into the tanks, below the ${UTILS.num(src.tankLimit_GBq_y)} GBq/y ` +
             'discharge — all of it is assumed discharged (no decay credit).')
       : 'No included nuclide is controlled in decay tanks.';
 
@@ -504,18 +512,18 @@
       (out.s2.complete ? '' : ` — PARTIAL SUM, missing: ${out.s2.missing.join(', ')}`);
     document.getElementById('criterionNote').textContent = out.comparison === 'none'
       ? 'No positive criterion entered: totals are not compared.'
-      : `Criterion: ${out.criterion_mSv_y} mSv/y, user-defined — the app attributes no regulatory basis to it.`;
+      : `Criterion: ${UTILS.num(out.criterion_mSv_y)} mSv/y, user-defined — the app attributes no regulatory basis to it.`;
 
     document.getElementById('coeffBody').innerHTML = nuclides.map(({ nd, T }) => {
       const k1 = nd.k_ext.s1, k2 = nd.k_ext.s2 ? nd.k_ext.s2[geo] : null;
-      const env = k2 && k2.envelope_pos !== null ? `; Sc. 2 one-sided model envelope [0, +${(k2.envelope_pos * 100).toFixed(2)} %]` : '';
+      const env = k2 && k2.envelope_pos !== null ? `; Sc. 2 one-sided model envelope [0, +${UTILS.dec((k2.envelope_pos * 100).toFixed(2))} %]` : '';
       return `<tr>
         <td class="sym">${esc(nd.id)}</td>
-        <td class="num">${(T / 86400).toFixed(3)}</td>
-        <td class="num">${k1.value.toExponential(4)}</td>
-        <td class="num">${k2 ? k2.value.toExponential(4) : '—'}</td>
-        <td class="text-sm">Sc. 1: ${(k1.u_rel * 100).toFixed(2)} %${k2 ? `; Sc. 2 (${esc(geo)}): ${(k2.u_rel * 100).toFixed(2)} %` : '; Sc. 2: no coefficient'}${esc(env)}${k2 ? '<br>' + esc(k2.report_id) : ''}</td>
-        <td class="num">${nd.e_inh.value.toExponential(1)}</td>
+        <td class="num">${UTILS.dec((T / 86400).toFixed(3))}</td>
+        <td class="num">${UTILS.dec(k1.value.toExponential(4))}</td>
+        <td class="num">${k2 ? UTILS.dec(k2.value.toExponential(4)) : '—'}</td>
+        <td class="text-sm">Sc. 1: ${UTILS.dec((k1.u_rel * 100).toFixed(2))} %${k2 ? `; Sc. 2 (${esc(geo)}): ${UTILS.dec((k2.u_rel * 100).toFixed(2))} %` : '; Sc. 2: no coefficient'}${esc(env)}${k2 ? '<br>' + esc(k2.report_id) : ''}</td>
+        <td class="num">${UTILS.dec(nd.e_inh.value.toExponential(1))}</td>
         <td>${esc(nd.e_inh.type)}</td>
       </tr>`;
     }).join('');
@@ -549,13 +557,16 @@
         <th>Nuclide</th><th class="text-right">Sc. 1 PHITS</th><th class="text-right">Sc. 1 NUREG</th><th class="text-right">ratio</th>
         <th class="text-right">Sc. 2 PHITS (${esc(geo)})</th><th class="text-right">Sc. 2 NUREG</th><th class="text-right">ratio</th></tr></thead><tbody>
         ${cmp.map(({ nd, c }) => `<tr><td class="sym">${esc(nd.id)}</td>
-          <td class="num">${sci(c.k1_phits)}</td><td class="num">${sci(c.k1_nureg)}</td><td class="num">${c.ratio1.toFixed(2)}</td>
+          <td class="num">${sci(c.k1_phits)}</td><td class="num">${sci(c.k1_nureg)}</td><td class="num">${UTILS.dec(c.ratio1.toFixed(2))}</td>
           <td class="num">${c.k2_phits === null ? '—' : sci(c.k2_phits)}</td><td class="num">${sci(c.k2_nureg)}</td>
-          <td class="num">${c.ratio2 === null ? '—' : c.ratio2.toFixed(2)}</td></tr>`).join('')}
+          <td class="num">${c.ratio2 === null ? '—' : UTILS.dec(c.ratio2.toFixed(2))}</td></tr>`).join('')}
       </tbody></table></div>
       <p class="text-sm">(nSv/h)/(Bq/m³). ${esc(data.nureg_table_A21_note)}</p>` : '';
     document.getElementById('crossCheckBody').innerHTML = (ccHtml + cmpHtml) || '<p>No published factor available.</p>';
   }
+
+  // Decimal separator switched in the header: redraw with the new one
+  document.addEventListener('nm-decimal-change', render);
 
   document.querySelectorAll('input, select').forEach(el => {
     if (el.id === 'facility') return;   // handled above (fills the volume first)
@@ -564,13 +575,13 @@
   });
 
   document.getElementById('btnReset').addEventListener('click', () => {
-    for (const s of SCEN) for (const key of Object.keys(PG[s])) document.getElementById(`${s}_${key}`).value = PG[s][key].value;
+    for (const s of SCEN) for (const key of Object.keys(PG[s])) document.getElementById(`${s}_${key}`).value = UTILS.inputValue(PG[s][key].value);
     nuclides.forEach(({ nd }, i) => {
       const st = nd.source_term;
       document.getElementById(`st_${i}_include`).checked = nd.include_default;
       document.getElementById(`st_${i}_controlled`).checked = st.controlled_default;
       for (const f of ['patients_per_y', 'cycles_per_patient', 'activity_per_cycle_GBq', 'fraction_in_hospital']) {
-        document.getElementById(`st_${i}_${f}`).value = st[f];
+        document.getElementById(`st_${i}_${f}`).value = UTILS.inputValue(st[f]);
       }
     });
     geoSel.value = data.geometries.default;
@@ -578,7 +589,7 @@
     render();
   });
 
-  const paramRows = (input, s) => Object.keys(PG[s]).map(key => [`${PG[s][key].label} (${PG[s][key].unit})`, String(input[s][key])]);
+  const paramRows = (input, s) => Object.keys(PG[s]).map(key => [`${PG[s][key].label} (${PG[s][key].unit})`, UTILS.num(input[s][key])]);
 
   document.getElementById('btnPrint').addEventListener('click', () => {
     if (!last) return;   // the button is hidden with the results
@@ -590,7 +601,7 @@
       .concat([[res.complete ? 'Total (linear sum over included nuclides)' : 'PARTIAL SUM (pathways missing: ' + res.missing.join(', ') + ')',
         `${res.complete ? '' : '≥ '}${sci(res.total_mSv_y)} mSv/y` + (out.comparison === 'none'
           ? ' — no comparison (criterion ≤ 0)'
-          : ` = ${res.complete ? '' : 'at least '}${pct(res.fraction_of_criterion)} % of the user-defined criterion of ${out.criterion_mSv_y} mSv/y`)]]);
+          : ` = ${res.complete ? '' : 'at least '}${pct(res.fraction_of_criterion)} % of the user-defined criterion of ${UTILS.num(out.criterion_mSv_y)} mSv/y`)]]);
     REPORT.print({
       title: 'Liquid Effluent — Sewer and STP Workers (NUREG/CR-5814 Scenarios 1 and 2)',
       headerRows: [
@@ -600,22 +611,22 @@
       sections: [
         { heading: 'Source term', rows: input.nuclides.map(n => [n.id, n.include
           ? (() => { const t = out.source.byId[n.id];
-              return `A_adm = ${n.patients_per_y} patients/y × ${n.cycles_per_patient} cycles × ${n.activity_per_cycle_GBq} GBq = ${sci(t.A_adm)} GBq/y; ` +
-                `excreted in hospital ${n.fraction_in_hospital} → ${sci(t.e_hosp)} GBq/y${t.controlled ? ' into decay tanks' : ''}; ` +
-                `leaves hospital ${sci(t.A_hosp)} GBq/y (Scenario 1); at home ${sci(t.A_home)} GBq/y × ${input.s2.catchment_pct} % catchment; ` +
+              return `A_adm = ${UTILS.num(n.patients_per_y)} patients/y × ${UTILS.num(n.cycles_per_patient)} cycles × ${UTILS.num(n.activity_per_cycle_GBq)} GBq = ${sci(t.A_adm)} GBq/y; ` +
+                `excreted in hospital ${UTILS.num(n.fraction_in_hospital)} → ${sci(t.e_hosp)} GBq/y${t.controlled ? ' into decay tanks' : ''}; ` +
+                `leaves hospital ${sci(t.A_hosp)} GBq/y (Scenario 1); at home ${sci(t.A_home)} GBq/y × ${UTILS.num(input.s2.catchment_pct)} % catchment; ` +
                 `to STP ${sci(t.A2)} GBq/y (Scenario 2)`; })()
           : 'excluded']) },
         { heading: 'Decay tanks', rows: [['Controlled nuclides', input.nuclides.filter(n => n.include && n.controlled).map(n => n.id).join(', ') || 'none'],
           ['Excreted into the tanks', `${sci(out.source.sumControlled_GBq_y)} GBq/y`],
-          ['Annual tank discharge (shared)', `${out.source.tankLimit_GBq_y} GBq/y; sharing factor ${sci(out.source.tankFactor)}`]] },
+          ['Annual tank discharge (shared)', `${UTILS.num(out.source.tankLimit_GBq_y)} GBq/y; sharing factor ${sci(out.source.tankFactor)}`]] },
         { heading: 'Scenario 1 parameters', rows: paramRows(input, 's1') },
         { heading: 'Scenario 2 parameters', rows: paramRows(input, 's2').concat([['External coefficient geometry', data.geometries[geo].label]]) },
         { heading: 'Common parameters', rows: paramRows(input, 'common') },
         { heading: 'Coefficients', rows: nuclides.flatMap(({ nd, T }) => [
-          [`${nd.id} half-life`, `${(T / 86400).toFixed(3)} d — ${nd.half_life_source || (DB.getById(nd.id) || {}).half_life_source || 'app database'}`],
-          [`${nd.id} k Scenario 1`, `${nd.k_ext.s1.value.toExponential(4)} (nSv/h)/(Bq/m³), u = ${(nd.k_ext.s1.u_rel * 100).toFixed(2)} %`],
-          [`${nd.id} k Scenario 2 (${geo})`, nd.k_ext.s2 ? `${nd.k_ext.s2[geo].value.toExponential(4)} (nSv/h)/(Bq/m³), u = ${(nd.k_ext.s2[geo].u_rel * 100).toFixed(2)} % — ${nd.k_ext.s2[geo].report_id}` : 'no coefficient'],
-          [`${nd.id} e(inh)`, `${nd.e_inh.value.toExponential(1)} Sv/Bq, type ${nd.e_inh.type}`],
+          [`${nd.id} half-life`, `${UTILS.dec((T / 86400).toFixed(3))} d — ${nd.half_life_source || (DB.getById(nd.id) || {}).half_life_source || 'app database'}`],
+          [`${nd.id} k Scenario 1`, `${UTILS.dec(nd.k_ext.s1.value.toExponential(4))} (nSv/h)/(Bq/m³), u = ${UTILS.dec((nd.k_ext.s1.u_rel * 100).toFixed(2))} %`],
+          [`${nd.id} k Scenario 2 (${geo})`, nd.k_ext.s2 ? `${UTILS.dec(nd.k_ext.s2[geo].value.toExponential(4))} (nSv/h)/(Bq/m³), u = ${UTILS.dec((nd.k_ext.s2[geo].u_rel * 100).toFixed(2))} % — ${nd.k_ext.s2[geo].report_id}` : 'no coefficient'],
+          [`${nd.id} e(inh)`, `${UTILS.dec(nd.e_inh.value.toExponential(1))} Sv/Bq, type ${nd.e_inh.type}`],
         ]) },
         { heading: 'Scenario 1 — sewer system inspector', rows: scenarioRows(out.s1, r => `; C wastewater ${sci(r.per_GBq.C_water_Bq_m3)} Bq/m³ per GBq`) },
         { heading: 'Scenario 2 — STP sludge process operator', rows: scenarioRows(out.s2, r => `; C wet sludge ${sci(r.per_GBq.C_wet_Bq_m3)} Bq/m³ per GBq`) },
@@ -637,7 +648,8 @@
     });
   });
 
-  document.getElementById('btnCsv').addEventListener('click', () => {
+  // CSV always with a decimal point (machine-readable), whatever the display setting
+  document.getElementById('btnCsv').addEventListener('click', () => UTILS.withPoint(() => {
     if (!last) return;   // the button is hidden with the results
     const { input, out } = last;
     // Rectangular, self-describing CSV (audit 2026-10-03, H-09): identity,
@@ -682,7 +694,7 @@
     a.download = `effluent_scenarios_${input.geometry}_${exportedUtc.slice(0, 10)}.csv`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 0);
-  });
+  }));
 
   render();
 })();

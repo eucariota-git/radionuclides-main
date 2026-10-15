@@ -26,9 +26,12 @@
       <a href="caregiver.html" class="active">Caregiver</a>
       <a href="about.html">Guide</a>
     </nav>
-    <button id="darkToggle" type="button" class="btn-icon" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
-      <span id="darkIcon" class="ico ico-moon" aria-hidden="true"></span>
-    </button>
+    <div class="header-tools">
+      <button id="decimalToggle" type="button" class="btn-icon btn-decimal" aria-label="Decimal comma" aria-pressed="false" title="Decimal separator of the displayed numbers: point or comma (input accepts both)">1.5</button>
+      <button id="darkToggle" type="button" class="btn-icon" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
+        <span id="darkIcon" class="ico ico-moon" aria-hidden="true"></span>
+      </button>
+    </div>
   </div>
 </header>
 
@@ -63,29 +66,29 @@
       </div>
       <div class="form-group">
         <label class="form-label" for="rate_1m_uSv_h">Dose rate measured at 1 m at discharge (µSv/h)</label>
-        <input type="number" class="form-input" id="rate_1m_uSv_h" min="0" step="any" title="Dose rate at 1 m at discharge">
+        <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="rate_1m_uSv_h" title="Dose rate at 1 m at discharge">
       </div>
       <div class="form-group">
         <label class="form-label" for="discharge_h">Discharge time after administration (h)</label>
-        <input type="number" class="form-input" id="discharge_h" min="0" step="any" title="Discharge time after administration">
+        <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="discharge_h" title="Discharge time after administration">
       </div>
       <div class="form-group">
         <label class="form-label" for="fast_end_h">End of the fast phase after administration (h)</label>
-        <input type="number" class="form-input" id="fast_end_h" min="0" step="any" title="End of the fast phase after administration">
+        <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="fast_end_h" title="End of the fast phase after administration">
         <div class="form-hint">24 h in Kurth et al. (2018) and Demir et al. (2016); 0 = no fast phase.</div>
       </div>
       <div class="form-group">
         <label class="form-label" for="T_fast_h">Fast effective half-life (h)</label>
-        <input type="number" class="form-input" id="T_fast_h" min="0" step="any" title="Fast effective half-life">
+        <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="T_fast_h" title="Fast effective half-life">
         <div class="form-hint" id="T_fast_hint"></div>
       </div>
       <div class="form-group">
         <label class="form-label" for="T_slow_h">Slow effective half-life (h)</label>
-        <input type="number" class="form-input" id="T_slow_h" min="0" step="any" title="Slow effective half-life">
+        <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="T_slow_h" title="Slow effective half-life">
       </div>
       <div class="form-group">
         <label class="form-label" for="cycles">Number of equal cycles</label>
-        <input type="number" class="form-input" id="cycles" min="1" step="1" title="Number of equal cycles">
+        <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="cycles" title="Number of equal cycles">
       </div>
       <div class="form-group">
         <label class="form-label" for="category">Category of the exposed person</label>
@@ -94,12 +97,12 @@
       </div>
       <div class="form-group">
         <label class="form-label" for="manual_criterion_mSv">Manual criterion (mSv per treatment)</label>
-        <input type="number" class="form-input" id="manual_criterion_mSv" min="0" step="any" title="Manual criterion">
+        <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="manual_criterion_mSv" title="Manual criterion">
         <div class="form-hint" id="manualHint"></div>
       </div>
       <div class="form-group">
         <label class="form-label" for="spc_min_restriction_d">Minimum restriction of the product information (d, optional)</label>
-        <input type="number" class="form-input" id="spc_min_restriction_d" min="0" step="any" title="Minimum restriction of the product information">
+        <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="spc_min_restriction_d" title="Minimum restriction of the product information">
         <div class="form-hint">Lower bound for the adopted restriction.</div>
       </div>
       <div class="form-group">
@@ -311,6 +314,7 @@
 <script>
 (async () => {
   UI.initDarkMode();
+  UI.initDecimal();
   UI.initPrint();
   UI.initKeyboard();
 
@@ -349,7 +353,7 @@
   function applyPreset(key) {
     const p = PRESETS.find(q => q.key === key);
     if (!p) return;
-    for (const f of PRESET_FIELDS) $(f).value = p[f] ?? '';
+    for (const f of PRESET_FIELDS) $(f).value = UTILS.inputValue(p[f]);
   }
   // Any manual edit of a preset field switches the selector to the matching preset or to Custom
   function syncPreset() {
@@ -363,14 +367,17 @@
 
   $('radiopharmaceutical').innerHTML = data.radiopharmaceuticals.map(r => `<option value="${UTILS.safeAttr(r)}">${esc(r)}</option>`).join('');
   $('category').innerHTML = data.categories.map(c =>
-    `<option value="${c.key}">${esc(c.label)}${c.criterion_mSv !== null ? ` — ${c.criterion_mSv} mSv` : ''}</option>`).join('');
+    `<option value="${c.key}">${esc(c.label)}${c.criterion_mSv !== null ? ` — ${UTILS.num(c.criterion_mSv)} mSv` : ''}</option>`).join('');
   $('profile').innerHTML = Object.entries(data.profiles).map(([k, p]) => `<option value="${k}">${esc(p.label)}</option>`).join('');
   $('assumptionList').innerHTML = data.assumptions.map(a => `<li>${esc(a)}</li>`).join('');
+  const buildProfileTables = () => {
   $('profileBody').innerHTML = Object.values(data.profiles).flatMap(p => (p.points.length ? p.points : [null]).map(pt => pt
-    ? `<tr><td>${esc(p.label)}</td><td class="num">${pt.distance_m}</td><td class="num">${+pt.factor.toPrecision(6)}</td><td>${esc(p.ref)}</td><td>${esc(p.nature)}</td><td class="text-sm">${esc(pt.note)}</td></tr>`
+    ? `<tr><td>${esc(p.label)}</td><td class="num">${UTILS.num(pt.distance_m)}</td><td class="num">${UTILS.num(+pt.factor.toPrecision(6))}</td><td>${esc(p.ref)}</td><td>${esc(p.nature)}</td><td class="text-sm">${esc(pt.note)}</td></tr>`
     : `<tr><td>${esc(p.label)}</td><td class="num">entered</td><td class="num">rate / rate at 1 m</td><td>${esc(p.ref)}</td><td>${esc(p.nature)}</td><td class="text-sm">${esc(data.own_protocol_note)}</td></tr>`)).join('');
   $('categoryBody').innerHTML = data.categories.map(c =>
-    `<tr><td>${esc(c.label)}</td><td class="num">${c.criterion_mSv === null ? '—' : c.criterion_mSv}</td><td>${esc(c.basis)}</td></tr>`).join('');
+    `<tr><td>${esc(c.label)}</td><td class="num">${c.criterion_mSv === null ? '—' : UTILS.num(c.criterion_mSv)}</td><td>${esc(c.basis)}</td></tr>`).join('');
+  };
+  buildProfileTables();
   $('criteriaNote').textContent = data.criteria_note;
   $('profilesNote').textContent = data.profiles_note;
   $('refList').innerHTML = data.references.map(r => `<li>${esc(r)}</li>`).join('');
@@ -381,8 +388,8 @@
 
   $('ownBody').innerHTML = `<tr><td>1 (fixed)</td><td class="num" id="own_fixed_rate">—</td><td class="num">1</td></tr>` +
     Array.from({ length: OWN_N }, (_, i) => `<tr>
-      <td><input type="number" class="form-input" id="own_${i}_d" min="0" step="any" aria-label="Own measurement ${i + 1} distance (m)" title="Distance (m)"></td>
-      <td><input type="number" class="form-input" id="own_${i}_r" min="0" step="any" aria-label="Own measurement ${i + 1} rate (µSv/h)" title="Rate (µSv/h)"></td>
+      <td><input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="own_${i}_d" aria-label="Own measurement ${i + 1} distance (m)" title="Distance (m)"></td>
+      <td><input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="own_${i}_r" aria-label="Own measurement ${i + 1} rate (µSv/h)" title="Rate (µSv/h)"></td>
       <td class="num" id="own_${i}_f">—</td>
     </tr>`).join('');
 
@@ -390,21 +397,17 @@
   // cell shows its column name (audit 2026-10-15, F-06)
   $('rowsBody').innerHTML = ROWS.map(([k, label]) => `<tr>
     <td class="stack-title">${esc(label)}</td>
-    <td data-label="Restriction (d from discharge)"><input type="number" class="form-input" id="${k}_days" min="0" step="any" aria-label="${UTILS.safeAttr(label)} restriction days" title="Restriction (d from discharge)"></td>
-    <td data-label="During (h/d)"><input type="number" class="form-input" id="${k}_h_during" min="0" max="24" step="any" aria-label="${UTILS.safeAttr(label)} hours per day during" title="Hours per day during the restriction"></td>
+    <td data-label="Restriction (d from discharge)"><input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="${k}_days" aria-label="${UTILS.safeAttr(label)} restriction days" title="Restriction (d from discharge)"></td>
+    <td data-label="During (h/d)"><input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="${k}_h_during" aria-label="${UTILS.safeAttr(label)} hours per day during" title="Hours per day during the restriction"></td>
     <td data-label="During (m)"><select class="form-select" id="${k}_d_during" aria-label="${UTILS.safeAttr(label)} distance during" title="Distance during the restriction (m)"></select></td>
-    <td data-label="After (h/d)"><input type="number" class="form-input" id="${k}_h_after" min="0" max="24" step="any" aria-label="${UTILS.safeAttr(label)} hours per day after" title="Hours per day after the restriction"></td>
+    <td data-label="After (h/d)"><input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="${k}_h_after" aria-label="${UTILS.safeAttr(label)} hours per day after" title="Hours per day after the restriction"></td>
     <td data-label="After (m)"><select class="form-select" id="${k}_d_after" aria-label="${UTILS.safeAttr(label)} distance after" title="Distance after the restriction (m)"></select></td>
     <td class="num" data-label="Dose / cycle (mSv)" id="${k}_dose">—</td>
   </tr>`).join('');
 
   // ---- Reading and writing the form ----
-  const readNum = el => {
-    const s = el.value.trim();
-    if (s === '') return null;
-    const v = parseFloat(s);
-    return Number.isFinite(v) ? v : NaN;
-  };
+  // A decimal point or comma (UTILS.parseNumber): '' → null, not a number → NaN
+  const readNum = el => UTILS.parseNumber(el.value);
   const distOf = el => (el.value === '' ? null : parseFloat(el.value));
 
   function readInputs() {
@@ -438,7 +441,7 @@
       const sel = $(`${k}_${f}`);
       const cur = sel.value;
       sel.innerHTML = '<option value="">—</option>' + options.map(p =>
-        `<option value="${p.distance_m}">${p.distance_m}</option>`).join('');
+        `<option value="${p.distance_m}">${UTILS.num(p.distance_m)}</option>`).join('');
       sel.value = options.some(p => String(p.distance_m) === cur) ? cur : '';
     }
   }
@@ -448,9 +451,9 @@
     $('radiopharmaceutical').value = inp.radiopharmaceutical;
     $('category').value = inp.category;
     $('profile').value = inp.profile;
-    for (const f of NUM_FIELDS) $(f).value = inp[f] ?? '';
-    inp.own_measurements.forEach((m, i) => { $(`own_${i}_d`).value = m.distance_m ?? ''; $(`own_${i}_r`).value = m.rate_uSv_h ?? ''; });
-    for (const [k] of ROWS) for (const f of ['days', 'h_during', 'h_after']) $(`${k}_${f}`).value = inp.rows[k][f] ?? '';
+    for (const f of NUM_FIELDS) $(f).value = UTILS.inputValue(inp[f]);
+    inp.own_measurements.forEach((m, i) => { $(`own_${i}_d`).value = UTILS.inputValue(m.distance_m); $(`own_${i}_r`).value = UTILS.inputValue(m.rate_uSv_h); });
+    for (const [k] of ROWS) for (const f of ['days', 'h_during', 'h_after']) $(`${k}_${f}`).value = UTILS.inputValue(inp.rows[k][f]);
     fillDistanceSelects(inp);
     for (const [k] of ROWS) for (const f of ['d_during', 'd_after']) $(`${k}_${f}`).value = inp.rows[k][f] ?? '';
   }
@@ -458,8 +461,10 @@
   // ---- Formatting ----
   // 3 significant figures on screen and in the report: the 1 m rate is usually
   // measured to 2–3 figures (audit 2026-10-14, N-06); the CSV keeps 6 for traceability.
-  const f3 = v => (Number.isFinite(v) ? (Math.abs(v) >= 1e5 || (v !== 0 && Math.abs(v) < 1e-3) ? v.toExponential(2) : v.toPrecision(3)) : '—');
-  const f2d = v => (Number.isFinite(v) ? v.toFixed(2) : '—');
+  // Display values follow the user's decimal separator (UTILS.dec); the CSV
+  // builder runs inside UTILS.withPoint, so these give a point there.
+  const f3 = v => (Number.isFinite(v) ? UTILS.dec((Math.abs(v) >= 1e5 || (v !== 0 && Math.abs(v) < 1e-3) ? v.toExponential(2) : v.toPrecision(3))) : '—');
+  const f2d = v => (Number.isFinite(v) ? UTILS.dec(v.toFixed(2)) : '—');
 
   // ---- Chart ----
   let chart = null;
@@ -487,7 +492,7 @@
       borderWidth: 2, pointRadius: 2, showLine: true, pointStyle: 'line', order: 10 }];
     const crit = out.criterion.value;
     if (Number.isFinite(crit) && crit > 0) {
-      ds.push({ label: `Criterion — ${crit} mSv`, data: [{ x: 0, y: crit }, { x: xMax, y: crit }], _themeRole: 'danger', borderColor: theme.danger,
+      ds.push({ label: `Criterion — ${UTILS.num(crit)} mSv`, data: [{ x: 0, y: crit }, { x: xMax, y: crit }], _themeRole: 'danger', borderColor: theme.danger,
         backgroundColor: theme.danger, borderDash: [8, 4], borderWidth: 2, pointRadius: 0, showLine: true, pointStyle: 'line', order: 3 });
     }
     if (Number.isFinite(out.inverse.floor_mSv)) {
@@ -497,7 +502,7 @@
     }
     const yTop = pts.length ? Math.max(...pts.map(p => p.y)) : 0;
     if (Number.isFinite(out.inverse.adopted_d) && pts.length) {
-      ds.push({ label: `Adopted restriction — ${out.inverse.adopted_d} d`, data: [{ x: out.inverse.adopted_d, y: 0 }, { x: out.inverse.adopted_d, y: yTop }],
+      ds.push({ label: `Adopted restriction — ${UTILS.num(out.inverse.adopted_d)} d`, data: [{ x: out.inverse.adopted_d, y: 0 }, { x: out.inverse.adopted_d, y: yTop }],
         _themeRole: 'text', borderColor: theme.text, backgroundColor: theme.text, borderWidth: 2, pointRadius: 0, showLine: true, pointStyle: 'line', order: 4 });
     }
     // The case of the cohabitation table (user request 2026-10-15). On the curve
@@ -505,12 +510,12 @@
     // as a horizontal line, because the curve assumes one common restriction.
     if (Number.isFinite(out.treatment_mSv)) {
       if (Number.isFinite(dDay) && dDay === dSleep) {
-        ds.push({ label: `This table — ${dDay} d → ${f3(out.treatment_mSv)} mSv`, data: [{ x: dDay, y: 0 }, { x: dDay, y: out.treatment_mSv }],
+        ds.push({ label: `This table — ${UTILS.num(dDay)} d → ${f3(out.treatment_mSv)} mSv`, data: [{ x: dDay, y: 0 }, { x: dDay, y: out.treatment_mSv }],
           _themeRole: 'table', borderColor: theme.spectrum.G, backgroundColor: theme.spectrum.G, borderDash: [4, 3], borderWidth: 1.5,
           pointRadius: [0, 7], pointHoverRadius: [0, 9], pointBackgroundColor: theme.spectrum.G, pointBorderColor: theme.surface, pointBorderWidth: 2,
           showLine: true, pointStyle: 'circle', order: 1 });
       } else {
-        ds.push({ label: `This table (restrictions ${dDay} / ${dSleep} d) — ${f3(out.treatment_mSv)} mSv`, data: [{ x: 0, y: out.treatment_mSv }, { x: xMax, y: out.treatment_mSv }],
+        ds.push({ label: `This table (restrictions ${UTILS.num(dDay)} / ${UTILS.num(dSleep)} d) — ${f3(out.treatment_mSv)} mSv`, data: [{ x: 0, y: out.treatment_mSv }, { x: xMax, y: out.treatment_mSv }],
           _themeRole: 'tableLine', borderColor: theme.spectrum.G, backgroundColor: theme.spectrum.G, borderDash: [10, 3, 2, 3], borderWidth: 1.5, pointRadius: 0,
           showLine: true, pointStyle: 'line', order: 1 });
       }
@@ -529,7 +534,7 @@
         plugins: {
           // dataset order, not drawing order (`order` puts the markers on top)
           legend: { position: 'top', labels: { font: { size: 11 }, usePointStyle: true, pointStyleWidth: 24, sort: (a, b) => a.datasetIndex - b.datasetIndex } },
-          tooltip: { callbacks: { label: c => `${c.dataset.label}: ${f3(c.parsed.y)} at ${c.parsed.x} d` } },
+          tooltip: { callbacks: { label: c => `${c.dataset.label}: ${f3(c.parsed.y)} at ${UTILS.num(c.parsed.x)} d` } },
         },
         scales: {
           x: { type: 'linear', min: 0, title: { display: true, text: 'Restriction (d from discharge)', color: theme.text },
@@ -595,10 +600,10 @@
       : '';
     $('profileHint').textContent = data.profiles[input.profile] ? data.profiles[input.profile].distances_note : '';
     $('ownBlock').classList.toggle('hidden', input.profile !== 'own');
-    $('own_fixed_rate').textContent = Number.isFinite(input.rate_1m_uSv_h) ? String(input.rate_1m_uSv_h) : '—';
+    $('own_fixed_rate').textContent = Number.isFinite(input.rate_1m_uSv_h) ? UTILS.num(input.rate_1m_uSv_h) : '—';
     input.own_measurements.forEach((m, i) => {
       const p = out.points.slice(1).find(q => q.distance_m === m.distance_m && q.rate_uSv_h === m.rate_uSv_h);
-      $(`own_${i}_f`).textContent = input.profile === 'own' && p && Number.isFinite(p.factor) ? p.factor.toPrecision(4) : '—';
+      $(`own_${i}_f`).textContent = input.profile === 'own' && p && Number.isFinite(p.factor) ? UTILS.dec(p.factor.toPrecision(4)) : '—';
     });
 
     // Status
@@ -609,12 +614,12 @@
     statusBox.textContent = out.status;
     $('warningList').innerHTML = out.warnings.map(w => `<li style="color:var(--warning-text);">&#9888; ${esc(w)}</li>`).join('');
 
-    for (const [k] of ROWS) $(`${k}_dose`).textContent = Number.isFinite(out.rows[k].dose_mSv) ? out.rows[k].dose_mSv.toPrecision(3) : '—';
+    for (const [k] of ROWS) $(`${k}_dose`).textContent = Number.isFinite(out.rows[k].dose_mSv) ? UTILS.dec(out.rows[k].dose_mSv.toPrecision(3)) : '—';
     $('perCycle').textContent = f3(out.perCycle_mSv);
     $('treatment').textContent = f3(out.treatment_mSv);
-    $('treatmentUnit').textContent = `mSv — ${Number.isFinite(input.cycles) ? input.cycles : '?'} cycle(s)`;
+    $('treatmentUnit').textContent = `mSv — ${Number.isFinite(input.cycles) ? UTILS.num(input.cycles) : '?'} cycle(s)`;
     $('treatmentBox').className = `result-box${bad ? ' danger' : ''}`;
-    $('criterion').textContent = Number.isFinite(out.criterion.value) ? String(out.criterion.value) : '—';
+    $('criterion').textContent = Number.isFinite(out.criterion.value) ? UTILS.num(out.criterion.value) : '—';
     $('criterionUnit').textContent = out.criterion.label ? `mSv — ${out.criterion.label}` : 'mSv';
     $('margin').textContent = f3(out.margin_mSv);
 
@@ -624,7 +629,7 @@
     $('floorLabel').textContent = indefText(inv);
     $('minRestriction').textContent = inv.minRestriction_d !== null ? f2d(inv.minRestriction_d)
       : (inv.minRestrictionCode ? CAREGIVER.INVERSE_TEXT[inv.minRestrictionCode] : '—');
-    $('adopted').textContent = inv.adopted_d !== null ? String(inv.adopted_d) : '—';
+    $('adopted').textContent = inv.adopted_d !== null ? UTILS.num(inv.adopted_d) : '—';
     $('doseAdopted').textContent = f3(inv.doseAtAdopted_mSv);
     $('adoptedNote').textContent = inv.adoptedNote;
     $('btnApplyAdopted').disabled = inv.adopted_d === null;
@@ -632,7 +637,7 @@
     $('selfCheckStatus').textContent = sc.ok ? 'OK'
       : (sc.currentOk === null && sc.referencesOk ? 'reference cases OK — current case not checked (inputs rejected)' : 'REVIEW');
     $('selfCheckStatus').className = sc.ok ? 'meets-yes' : '';
-    $('selfCheckBody').innerHTML = sc.items.map(i => `<tr><td>${esc(i.label)}</td><td class="num">${Number.isFinite(i.value) ? i.value.toFixed(i.reference ? 2 : 4) : ''}</td>` +
+    $('selfCheckBody').innerHTML = sc.items.map(i => `<tr><td>${esc(i.label)}</td><td class="num">${Number.isFinite(i.value) ? UTILS.dec(i.value.toFixed(i.reference ? 2 : 4)) : ''}</td>` +
       `<td>${i.ok ? '<span class="meets-yes">OK</span>' : '<strong style="color:var(--danger);">REVIEW</strong>'}</td></tr>`).join('');
 
     if (cv.points.length) {
@@ -662,9 +667,17 @@
     el.addEventListener('change', handler);
   });
 
+  // Decimal separator switched in the header: rebuild the data tables, the
+  // distance lists and the results with the new one
+  document.addEventListener('nm-decimal-change', () => {
+    buildProfileTables();
+    try { fillDistanceSelects(readInputs()); } catch (e) { /* render reports it */ }
+    render();
+  });
+
   $('btnApplyAdopted').addEventListener('click', () => {
     if (!last || last.out.inverse.adopted_d === null) return;
-    for (const [k] of ROWS) $(`${k}_days`).value = last.out.inverse.adopted_d;
+    for (const [k] of ROWS) $(`${k}_days`).value = UTILS.inputValue(last.out.inverse.adopted_d);
     render();
   });
 
@@ -674,11 +687,12 @@
     render();
   });
 
-  const distText = d => (d === null ? '—' : `${d} m`);
+  const distText = d => (d === null ? '—' : `${UTILS.num(d)} m`);
   const rowText = (input, out, k) => {
     const r = input.rows[k], o = out.rows[k];
-    return `${r.days ?? '—'} d restriction; during ${r.h_during ?? '—'} h/d at ${distText(r.d_during)} (factor ${o.fDuring ?? 'none'}); ` +
-      `after ${r.h_after ?? '—'} h/d at ${distText(r.d_after)} (factor ${o.fAfter ?? 'none'}); dose/cycle ${f3(o.dose_mSv)} mSv`;
+    const nv = (v, none) => (v === null || v === undefined ? none : UTILS.num(v));
+    return `${nv(r.days, '—')} d restriction; during ${nv(r.h_during, '—')} h/d at ${distText(r.d_during)} (factor ${nv(o.fDuring, 'none')}); ` +
+      `after ${nv(r.h_after, '—')} h/d at ${distText(r.d_after)} (factor ${nv(o.fAfter, 'none')}); dose/cycle ${f3(o.dose_mSv)} mSv`;
   };
 
   $('btnPrint').addEventListener('click', () => {
@@ -697,16 +711,16 @@
       omitCommonSources: true,
       sections: [
         { heading: 'Case data', rows: [
-          ['Dose rate at 1 m at discharge', `${input.rate_1m_uSv_h} µSv/h`],
-          ['Discharge time after administration', `${input.discharge_h} h`],
-          ['End of the fast phase after administration', `${input.fast_end_h} h`],
-          ['Fast effective half-life', input.fast_end_h > input.discharge_h ? `${input.T_fast_h} h` : 'not used'],
-          ['Slow effective half-life', `${input.T_slow_h} h`],
-          ['Number of equal cycles', String(input.cycles)],
-          ['Category / criterion', `${out.criterion.label}: ${out.criterion.value ?? '—'} mSv per treatment (${out.criterion.basis})`],
-          ['Minimum restriction of the product information', input.spc_min_restriction_d === null ? 'not entered' : `${input.spc_min_restriction_d} d`],
+          ['Dose rate at 1 m at discharge', `${UTILS.num(input.rate_1m_uSv_h)} µSv/h`],
+          ['Discharge time after administration', `${UTILS.num(input.discharge_h)} h`],
+          ['End of the fast phase after administration', `${UTILS.num(input.fast_end_h)} h`],
+          ['Fast effective half-life', input.fast_end_h > input.discharge_h ? `${UTILS.num(input.T_fast_h)} h` : 'not used'],
+          ['Slow effective half-life', `${UTILS.num(input.T_slow_h)} h`],
+          ['Number of equal cycles', UTILS.num(input.cycles)],
+          ['Category / criterion', `${out.criterion.label}: ${out.criterion.value != null ? UTILS.num(out.criterion.value) : '—'} mSv per treatment (${out.criterion.basis})`],
+          ['Minimum restriction of the product information', input.spc_min_restriction_d === null ? 'not entered' : `${UTILS.num(input.spc_min_restriction_d)} d`],
           ['Proximity profile', `${prof.label} ${prof.ref} — ${prof.nature}`],
-        ].concat(input.profile === 'own' ? out.points.map(p => [`Own measurement ${p.distance_m ?? '—'} m`, `${p.rate_uSv_h ?? '—'} µSv/h → factor ${Number.isFinite(p.factor) ? p.factor.toPrecision(4) : 'none'}`]) : []) },
+        ].concat(input.profile === 'own' ? out.points.map(p => [`Own measurement ${p.distance_m != null ? UTILS.num(p.distance_m) : '—'} m`, `${p.rate_uSv_h != null ? UTILS.num(p.rate_uSv_h) : '—'} µSv/h → factor ${Number.isFinite(p.factor) ? UTILS.dec(p.factor.toPrecision(4)) : 'none'}`]) : []) },
         { heading: 'Cohabitation', rows: ROWS.map(([k, label]) => [label, rowText(input, out, k)]) },
         { heading: 'Results', rows: [
           ['Status', out.status],
@@ -719,10 +733,10 @@
           ['Maximum rate at 1 m at discharge', `${f3(inv.maxRate_uSv_h)} µSv/h`],
           [indefText(inv), `${f3(inv.floor_mSv)} mSv`],
           ['Minimum restriction', inv.minRestriction_d !== null ? `${f2d(inv.minRestriction_d)} d` : (CAREGIVER.INVERSE_TEXT[inv.minRestrictionCode] || '—')],
-          ['Adopted restriction', inv.adopted_d !== null ? `${inv.adopted_d} d — ${inv.adoptedNote}` : '—'],
+          ['Adopted restriction', inv.adopted_d !== null ? `${UTILS.num(inv.adopted_d)} d — ${inv.adoptedNote}` : '—'],
           ['Treatment dose with the adopted restriction', `${f3(inv.doseAtAdopted_mSv)} mSv`],
         ] },
-        { heading: 'Treatment dose vs restriction', rows: cv.points.map(p => [`${p.days} d`, `${f3(p.dose_mSv)} mSv`]) },
+        { heading: 'Treatment dose vs restriction', rows: cv.points.map(p => [`${UTILS.num(p.days)} d`, `${f3(p.dose_mSv)} mSv`]) },
         { heading: 'Self-check', rows: [['Overall', sc.ok ? 'OK' : (sc.currentOk === null && sc.referencesOk ? 'reference cases OK; current case not checked (inputs rejected)' : 'REVIEW')]].concat(sc.items.map(i => [i.label, i.ok ? 'OK' : 'REVIEW'])) },
       ],
       notes: [data.inverse_note].concat(data.assumptions),
@@ -734,7 +748,8 @@
     });
   });
 
-  $('btnCsv').addEventListener('click', () => {
+  // CSV always with a decimal point (machine-readable), whatever the display setting
+  $('btnCsv').addEventListener('click', () => UTILS.withPoint(() => {
     if (!last) return;   // the button is hidden with the results
     const { input, out, cv } = last;
     // Rectangular, self-describing CSV (as the Decay and Effluent exports):
@@ -782,7 +797,7 @@
     a.download = `caregiver_dose_${exportedUtc.slice(0, 10)}.csv`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 0);
-  });
+  }));
 
   writeInputs(CAREGIVER.defaultInput(data));
   presetHint();

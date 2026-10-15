@@ -26,9 +26,12 @@
       <a href="caregiver.html">Caregiver</a>
       <a href="about.html">Guide</a>
     </nav>
-    <button id="darkToggle" type="button" class="btn-icon" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
-      <span id="darkIcon" class="ico ico-moon" aria-hidden="true"></span>
-    </button>
+    <div class="header-tools">
+      <button id="decimalToggle" type="button" class="btn-icon btn-decimal" aria-label="Decimal comma" aria-pressed="false" title="Decimal separator of the displayed numbers: point or comma (input accepts both)">1.5</button>
+      <button id="darkToggle" type="button" class="btn-icon" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
+        <span id="darkIcon" class="ico ico-moon" aria-hidden="true"></span>
+      </button>
+    </div>
   </div>
 </header>
 
@@ -61,7 +64,7 @@
       <div class="form-group">
         <label class="form-label" for="A0">Activity A&#8320;</label>
         <div class="d-flex gap-1">
-          <input type="number" class="form-input" id="A0" value="1000" min="0" step="any" title="Activity">
+          <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="A0" value="1000" title="Activity">
           <select class="form-select form-select-narrow" id="A0unit" title="Unit" aria-label="Activity unit">
             <option value="MBq" selected>MBq</option>
             <option value="GBq">GBq</option>
@@ -73,7 +76,7 @@
       <div class="form-group">
         <label class="form-label" for="distance">Distance d</label>
         <div class="d-flex gap-1">
-          <input type="number" class="form-input" id="distance" value="0.30" min="0.01" step="0.01" title="Distance">
+          <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="distance" value="0.30" title="Distance">
           <select class="form-select form-select-medium" id="distUnit" title="Unit" aria-label="Distance unit">
             <option value="m" selected>m</option>
             <option value="cm">cm</option>
@@ -109,7 +112,7 @@
       <div class="form-group">
         <label class="form-label" for="shieldThickness">Thickness</label>
         <div class="d-flex gap-1">
-          <input type="number" class="form-input" id="shieldThickness" value="0" min="0" step="0.1" title="Thickness">
+          <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="shieldThickness" value="0" title="Thickness">
           <select class="form-select form-select-medium" id="shieldUnit" title="Unit" aria-label="Thickness unit">
             <option value="cm" selected>cm</option>
             <option value="mm">mm</option>
@@ -119,7 +122,7 @@
       <div class="form-group">
         <label class="form-label" for="patientTx">Patient transmission <span class="text-muted">(optional)</span></label>
         <div class="d-flex gap-1">
-          <input type="number" class="form-input" id="patientTx" value="" min="0" max="100" step="any" placeholder="none" title="Patient transmission (%)">
+          <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="patientTx" value="" placeholder="none" title="Patient transmission (%)">
           <span class="percent-symbol">%</span>
         </div>
         <div class="form-hint" id="patientTxHint">Empty = no patient attenuation. No value is offered: it depends on photon energy, anatomy and orientation — derive it from measurement or a published study for your geometry.</div>
@@ -140,7 +143,7 @@
       <div class="form-group">
         <label class="form-label" for="expTime">Exposure time per administration</label>
         <div class="d-flex gap-1">
-          <input type="number" class="form-input" id="expTime" value="1" min="0" step="any" title="Exposure time">
+          <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="expTime" value="1" title="Exposure time">
           <select class="form-select form-select-narrow" id="expUnit" title="Unit" aria-label="Exposure time unit">
             <option value="h" selected>h</option>
             <option value="min">min</option>
@@ -150,7 +153,7 @@
       </div>
       <div class="form-group">
         <label class="form-label" for="nAdmin">Number of administrations per year</label>
-        <input type="number" class="form-input" id="nAdmin" value="1" min="1" step="1" title="Number of administrations">
+        <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="nAdmin" value="1" title="Number of administrations">
       </div>
       <div class="form-group">
         <label class="form-label" for="decayMode">Integrate physical decay during exposure?</label>
@@ -255,6 +258,7 @@
 (async () => {
   // ---- UI initialization ----
   UI.initDarkMode();
+  UI.initDecimal();
   UI.initPrint();
   UI.initKeyboard();
   try {
@@ -388,7 +392,7 @@
       `<li class="nuclide-option" role="option" aria-selected="false"
            id="nuclideOpt-${i}" data-id="${UTILS.escapeHtml(n.id)}">
          <span class="nuclide-opt-id">${UTILS.escapeHtml(n.id)}</span>
-         <span class="nuclide-opt-meta">T½ ${UTILS.escapeHtml(n.half_life_display)}${n._icrp107 ? ' · ICRP 107' : ''}</span>
+         <span class="nuclide-opt-meta">T½ ${UTILS.escapeHtml(UTILS.dec(n.half_life_display))}${n._icrp107 ? ' · ICRP 107' : ''}</span>
        </li>`
     ).join('');
     setExpanded(results.length > 0);
@@ -521,7 +525,7 @@
 
   // Distance hint
   function updateDistHint() {
-    const distRaw  = parseFloat(document.getElementById('distance').value) || 0;
+    const distRaw  = UTILS.parseNumber(document.getElementById('distance').value) || 0;
     const distUnit = document.getElementById('distUnit').value;
     const d_m = distUnit === 'cm' ? distRaw / 100 : distRaw;
     const hint = document.getElementById('distHint');
@@ -576,7 +580,7 @@
     const sp          = getSpectrum(n, 'H10');
     const sp007       = getSpectrum(n, 'H007') || sp;
     const { hvl_cm, tvl_cm, mu_cm, method } = CALC.hvlTvl(E, mat, ap, sp);
-    const thickRaw    = parseFloat(document.getElementById('shieldThickness').value);
+    const thickRaw    = UTILS.parseNumber(document.getElementById('shieldThickness').value);
     if (!Number.isFinite(thickRaw) || thickRaw < 0) {
       document.getElementById('hvlInfo').classList.add('hidden');
       return;
@@ -607,7 +611,7 @@
       first half-value layer (HVL, ${hvlBasis}) = <strong>${UTILS.fmt(hvl_cm)} cm</strong> &nbsp;|&nbsp;
       first tenth-value layer (TVL) = <strong>${UTILS.fmt(tvl_cm)} cm</strong>
       ${mu_cm !== null ? `&nbsp;|&nbsp; &mu; = ${UTILS.fmt(mu_cm)} cm&#8315;&#185;` : ''}
-      ${thickRaw > 0 ? `&nbsp;|&nbsp; Transmission = <strong>${UTILS.fmt(T * 100)}%</strong>${splitT ? ` <span class="text-muted">H*(10)</span> / <strong>${UTILS.fmt(T007 * 100)}%</strong> <span class="text-muted">H&#39;(0.07)</span>` : ''} (${thickRaw} ${thickUnit})` : ''}
+      ${thickRaw > 0 ? `&nbsp;|&nbsp; Transmission = <strong>${UTILS.fmt(T * 100)}%</strong>${splitT ? ` <span class="text-muted">H*(10)</span> / <strong>${UTILS.fmt(T007 * 100)}%</strong> <span class="text-muted">H&#39;(0.07)</span>` : ''} (${UTILS.num(thickRaw)} ${thickUnit})` : ''}
     `;
   }
 
@@ -690,11 +694,11 @@
   // 2026-10-15, F-02). '' = nothing to state (curated single-nuclide entry).
   function progenyText(n) {
     if (n.chain_members) return 'included in secular equilibrium (curated chain): ' +
-      n.chain_members.slice(1).map(m => `${m.id} ${m.equilibrium_activity_fraction} Bq/Bq`).join(', ');
+      n.chain_members.slice(1).map(m => `${m.id} ${UTILS.num(m.equilibrium_activity_fraction)} Bq/Bq`).join(', ');
     const p = (n._progeny || []).filter(m => m.fraction >= 1e-3);
     if (!p.length) return n._icrp107 ? 'none (no short-lived progeny under the app criterion)' : '';
     return (n._progenyIncluded ? 'included in equilibrium (app criterion: T½ ≤ 1/10 of the parent and ≤ 30 d): '
-      : 'EXCLUDED — parent only, as selected: ') + p.map(m => `${m.id} ${Number(m.fraction.toPrecision(3))} Bq/Bq`).join(', ');
+      : 'EXCLUDED — parent only, as selected: ') + p.map(m => `${m.id} ${UTILS.num(Number(m.fraction.toPrecision(3)))} Bq/Bq`).join(', ');
   }
   const ARCHER_BASIS = 'Archer transmission from Oumano et al. (2025), based on dose at 1 cm depth in tissue. Applied here as an approximation to both operational quantities';
 
@@ -745,16 +749,16 @@
       nuclide: r.n,
       sections: [
         { heading: 'Input parameters', rows: [
-          ['Activity A₀', `${r.A0raw} ${r.A0unit} (${UTILS.fmt(r.A0_GBq)} GBq)`],
+          ['Activity A₀', `${UTILS.num(r.A0raw)} ${r.A0unit} (${UTILS.fmt(r.A0_GBq)} GBq)`],
           // As entered plus metres to 4 significant figures: toFixed(2) printed
           // 0.004 m as "0.00 m" (audit 2026-10-03, H-08)
-          ['Distance', r.distUnit === 'm' ? `${r.distRaw} m` : `${r.distRaw} ${r.distUnit} (${Number(r.d_m.toPrecision(4))} m)`],
-          ['Shielding', r.isY90 ? `Y-90 bremsstrahlung container: ${r.containerName || '—'}` : r.mat && r.mat !== 'none' ? `${r.mat}, ${r.thick} cm` : 'none'],
+          ['Distance', r.distUnit === 'm' ? `${UTILS.num(r.distRaw)} m` : `${UTILS.num(r.distRaw)} ${r.distUnit} (${UTILS.num(Number(r.d_m.toPrecision(4)))} m)`],
+          ['Shielding', r.isY90 ? `Y-90 bremsstrahlung container: ${r.containerName || '—'}` : r.mat && r.mat !== 'none' ? `${r.mat}, ${UTILS.num(r.thick)} cm` : 'none'],
           ['Model validity', r.validity || shieldingValidity(r)],
           ['Exposure time per administration', `${UTILS.fmt(r.t_h)} h`],
           ['Administrations per year', String(r.nAdmin)],
           ['Decay during exposure', r.withDecay === undefined ? '—' : r.withDecay ? 'integrated A(t)' : 'no (constant activity for the dose integral)'],
-          ['Dose rate constants', `Γ(H*(10)) = ${r.gammaWB}; Γ(${r.useH007 ? "H'(0.07)" : 'H*(10) fallback'}) = ${r.gammaExt} μSv·h⁻¹·GBq⁻¹·m²`],
+          ['Dose rate constants', `Γ(H*(10)) = ${UTILS.num(r.gammaWB)}; Γ(${r.useH007 ? "H'(0.07)" : 'H*(10) fallback'}) = ${UTILS.num(r.gammaExt)} μSv·h⁻¹·GBq⁻¹·m²`],
           ...(progenyText(r.n) ? [['Progeny in the constants', progenyText(r.n)]] : []),
         ]},
         { heading: 'Results', rows: [
@@ -788,7 +792,8 @@
     ]};
   }
 
-  document.getElementById('btnExportDoseCsv').onclick = () => {
+  // CSV always with a decimal point (machine-readable), whatever the display setting
+  document.getElementById('btnExportDoseCsv').onclick = () => UTILS.withPoint(() => {
     if (!lastCalcResult) return;   // the button is hidden with the results
     const { useH007, gammaExt, gammaWB, nAdmin, H_WB_cum, H_Ext_cum, Hdot_WB, Hdot_WB_t, Hdot_Ext, Hdot_Ext_t, Hdot_WB_1m, Hdot_WB_t_1m, Hdot_Ext_1m, Hdot_Ext_t_1m, n, A0raw, A0unit, A0_GBq, d_m, distRaw, distUnit, t_h, mat, thick, withDecay, patientTx, containerName, isY90, method } = lastCalcResult;
     const validity = lastCalcResult.validity || shieldingValidity(lastCalcResult);
@@ -832,7 +837,7 @@
     a.download = `dose_${UTILS.safeFilename(n.id)}_${A0raw}${A0unit}_${distRaw}${distUnit}_${exportedUtc.slice(0, 10)}.csv`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 0);
-  };
+  });
 
   function calculate() {
     const n = selectedNuclide || resolveNuclide(hiddenSelect.value);
@@ -840,7 +845,8 @@
     // Extended ICRP 107 entries: a permanent warning in the results replaces the
     // confirm() dialog, which would interrupt every live recalculation.
 
-    const A0raw   = parseFloat(document.getElementById('A0').value);
+    // Numeric fields accept a decimal point or comma (UTILS.parseNumber)
+    const A0raw   = UTILS.parseNumber(document.getElementById('A0').value);
     if (!Number.isFinite(A0raw) || A0raw <= 0) {
       return fail('Activity must be a positive number.', 'A0');
     }
@@ -852,11 +858,10 @@
       return fail('Activity is outside the representable range.', 'A0');
     }
 
-    const distStr = document.getElementById('distance').value.trim();
-    if (!/^[0-9]*\.?[0-9]+([eE][+-]?[0-9]+)?$/.test(distStr)) {
+    const distRaw  = UTILS.parseNumber(document.getElementById('distance').value);
+    if (Number.isNaN(distRaw) || distRaw === null) {
       return fail('Distance must be a valid number.', 'distance');
     }
-    const distRaw  = parseFloat(distStr);
     if (!Number.isFinite(distRaw) || distRaw <= 0) {
       return fail('Distance must be a positive number.', 'distance');
     }
@@ -866,7 +871,7 @@
     let shieldWarnings = [];
 
     const mat          = document.getElementById('shieldMaterial').value;
-    const parsedThick  = parseFloat(document.getElementById('shieldThickness').value);
+    const parsedThick  = UTILS.parseNumber(document.getElementById('shieldThickness').value);
     if (mat !== 'none' && (!Number.isFinite(parsedThick) || parsedThick < 0)) {
       return fail('Shielding thickness must be a non-negative number.', 'shieldThickness');
     }
@@ -884,18 +889,17 @@
     const sp      = getSpectrum(n, 'H10');    // dose-weighted line spectrum or null
     const sp007   = getSpectrum(n, 'H007') || sp;
 
-    const expStr = document.getElementById('expTime').value.trim();
-    if (!/^[0-9]*\.?[0-9]+([eE][+-]?[0-9]+)?$/.test(expStr)) {
+    const expRaw  = UTILS.parseNumber(document.getElementById('expTime').value);
+    if (Number.isNaN(expRaw) || expRaw === null) {
       return fail('Exposure time per administration must be a valid number.', 'expTime');
     }
-    const expRaw  = parseFloat(expStr);
     if (!Number.isFinite(expRaw) || expRaw <= 0) {
       return fail('Exposure time per administration must be a positive number.', 'expTime');
     }
     const expUnit = document.getElementById('expUnit').value;
     const expMul  = { h: 1, min: 1/60, d: 24 };
     const t_h     = expRaw * (expMul[expUnit] || 1);
-    const nAdminRaw = parseFloat(document.getElementById('nAdmin').value);
+    const nAdminRaw = UTILS.parseNumber(document.getElementById('nAdmin').value);
     if (!Number.isInteger(nAdminRaw) || nAdminRaw < 1) {
       return fail('Number of administrations per year must be a positive whole number.', 'nAdmin');
     }
@@ -905,8 +909,8 @@
     // value — falling back to 100% would silently drop the assumption the user
     // just stated.
     const txInput = document.getElementById('patientTx');
-    const patientAttenEnabled = txInput.value.trim() !== '' || txInput.validity.badInput;
-    const parsed = parseFloat(txInput.value);
+    const parsed = UTILS.parseNumber(txInput.value);
+    const patientAttenEnabled = parsed !== null;
     if (patientAttenEnabled &&
         (!Number.isFinite(parsed) || parsed <= 0 || parsed > 100)) {
       return fail('Patient transmission must be > 0 % and ≤ 100 %, or empty for no patient attenuation. There is no default: derive it from measurement or a published study for your geometry.', 'patientTx');
@@ -952,7 +956,7 @@
       const card = document.getElementById('resultsCard');
       card.classList.remove('hidden');
       document.getElementById('nuclideInfo').innerHTML =
-        `<strong>${UTILS.escapeHtml(n.symbol)} — ${UTILS.escapeHtml(n.name)}</strong> &nbsp;|&nbsp; T&#189; = ${UTILS.escapeHtml(n.half_life_display)}`;
+        `<strong>${UTILS.escapeHtml(n.symbol)} — ${UTILS.escapeHtml(n.name)}</strong> &nbsp;|&nbsp; T&#189; = ${UTILS.escapeHtml(UTILS.dec(n.half_life_display))}`;
 
       // Radiologically honest label for entries with no photon dose component:
       // 50 of the 89 photon-less ICRP 107 entries decay by α, EC or IT, not β−
@@ -972,7 +976,7 @@
       const minorModes = allModes.filter(m => m.branching != null && m.branching < 1e-4);
       const decayModeText = [...new Set(decayModes)].map(m => DECAY_MODE_NAMES[m] || m).join(' + ');
       const minorModeText = minorModes
-        .map(m => `${DECAY_MODE_NAMES[String(m.mode).trim()] || String(m.mode).trim()} ${(m.branching * 100).toExponential(2)}%`)
+        .map(m => `${DECAY_MODE_NAMES[String(m.mode).trim()] || String(m.mode).trim()} ${UTILS.dec((m.branching * 100).toExponential(2))}%`)
         .join(', ');
       const isPureBetaMinus = decayModes.length ? decayModes.every(m => m === 'B-') : !n._noPhotons;
 
@@ -1204,7 +1208,7 @@
     // R-11: the form hint warns while typing, but the result itself did not
     // (1.1 cm gave 179.5 mSv/h with no caveat). Same 0.25 m threshold.
     const distWarning = d_m < 0.25
-      ? `<div class="alert alert-warning mt-1">&#9888; d = ${Number(d_m.toPrecision(3))} m: at short distances the point-source model (1/d²) depends on the real size of the source and shield and can be far off — at contact it is not valid. Use a contact or extremity method for these geometries.</div>`
+      ? `<div class="alert alert-warning mt-1">&#9888; d = ${UTILS.num(Number(d_m.toPrecision(3)))} m: at short distances the point-source model (1/d²) depends on the real size of the source and shield and can be far off — at contact it is not valid. Use a contact or extremity method for these geometries.</div>`
       : '';
     const icrpWarning = n._icrp107
       ? '<div class="alert alert-warning mt-1">&#9888; ICRP 107 extended entry: photon emissions and dose constants are computed automatically and have NOT been manually validated. For clinical or regulatory use, verify them against primary sources (ICRP 107, 2008).</div>'
@@ -1213,13 +1217,13 @@
       ? '<div class="alert alert-warning alert-lg mt-1">&#9888; Representative energy not defined; shielding calculations use narrow-beam approximation.</div>'
       : '';
     document.getElementById('nuclideInfo').innerHTML =
-      `<strong>${UTILS.escapeHtml(n.symbol)} — ${UTILS.escapeHtml(n.name)}</strong> ${sourceTag}${progenyTag} &nbsp;|&nbsp; T&#189; = ${UTILS.escapeHtml(n.half_life_display)} &nbsp;|&nbsp;
-       A&#8320; = ${A0raw} ${A0unit} (${UTILS.fmt(A0_GBq)} GBq) &nbsp;|&nbsp;
-       d = ${Number(d_m.toPrecision(4))} m &nbsp;|&nbsp; t = ${UTILS.fmt(t_h)} h/admin &nbsp;|&nbsp; n = ${nAdmin} admin/y &nbsp;|&nbsp; patient Tx = ${UTILS.fmt(patientTx*100)}% &nbsp;|&nbsp;`
+      `<strong>${UTILS.escapeHtml(n.symbol)} — ${UTILS.escapeHtml(n.name)}</strong> ${sourceTag}${progenyTag} &nbsp;|&nbsp; T&#189; = ${UTILS.escapeHtml(UTILS.dec(n.half_life_display))} &nbsp;|&nbsp;
+       A&#8320; = ${UTILS.num(A0raw)} ${A0unit} (${UTILS.fmt(A0_GBq)} GBq) &nbsp;|&nbsp;
+       d = ${UTILS.num(Number(d_m.toPrecision(4)))} m &nbsp;|&nbsp; t = ${UTILS.fmt(t_h)} h/admin &nbsp;|&nbsp; n = ${nAdmin} admin/y &nbsp;|&nbsp; patient Tx = ${UTILS.fmt(patientTx*100)}% &nbsp;|&nbsp;`
        + (n.representative_energy_keV ? `` : '') + energyWarning +
        `&#915;<sup>H*(10)</sup> = ${UTILS.fmtSig(gammaWB, 3)} &nbsp;|&nbsp; ${useH007
          ? `&#915;<sup>H'(0.07)</sup> = ${UTILS.fmtSig(gammaExt, 3)}`
-         : `&#915;<sup>H'(0.07)</sup> = ${n.gamma_H007 ?? '—'} <span style="color:var(--text-muted)">(no H'(0.07) constant — H*(10) value used in that row)</span>`
+         : `&#915;<sup>H'(0.07)</sup> = ${n.gamma_H007 != null ? UTILS.num(n.gamma_H007) : '—'} <span style="color:var(--text-muted)">(no H'(0.07) constant — H*(10) value used in that row)</span>`
        } &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;` + distWarning + icrpWarning;
 
     // Dose rate at t=0 (at selected distance)
@@ -1252,8 +1256,8 @@
     }
 
     // Update column headers to show distance
-    document.getElementById('doseRate0Header').textContent = `Dose-equivalent rate at t = 0, at ${Number(d_m.toPrecision(3))} m`;
-    document.getElementById('doseRateAtTimeHeader').textContent = `Rate after physical decay over t = ${UTILS.fmt(t_h)} h, at ${Number(d_m.toPrecision(3))} m`;
+    document.getElementById('doseRate0Header').textContent = `Dose-equivalent rate at t = 0, at ${UTILS.num(Number(d_m.toPrecision(3)))} m`;
+    document.getElementById('doseRateAtTimeHeader').textContent = `Rate after physical decay over t = ${UTILS.fmt(t_h)} h, at ${UTILS.num(Number(d_m.toPrecision(3)))} m`;
 
     document.getElementById('resultsBody').innerHTML = `
       <tr>
@@ -1316,7 +1320,7 @@
         <div class="prop-item"><div class="prop-key">Material</div><div class="prop-val">${matLabel(mat)}</div></div>
         <div class="prop-item"><div class="prop-key">Method</div><div class="prop-val">${methodLabel}</div>
           <div class="prop-note">${methodNote}</div></div>
-        <div class="prop-item"><div class="prop-key">Thickness</div><div class="prop-val">${thick} cm</div><div class="prop-note">${UTILS.fmt(thick * 10)} mm</div></div>
+        <div class="prop-item"><div class="prop-key">Thickness</div><div class="prop-val">${UTILS.num(thick)} cm</div><div class="prop-note">${UTILS.fmt(thick * 10)} mm</div></div>
         ${mu_cm !== null ? `<div class="prop-item"><div class="prop-key">&#956; (${UTILS.fmt(E_MeV * 1000)} keV)</div><div class="prop-val">${UTILS.fmt(mu_cm)} cm&#8315;&#185;</div></div>` : ''}
         <div class="prop-item"><div class="prop-key">First HVL for ${method === 'archer' ? 'the Archer fit' : 'H*(10)'}</div><div class="prop-val">${UTILS.fmt(hvl_cm)} cm</div><div class="prop-note">${UTILS.fmt(hvl_cm * 10)} mm — first half-value layer (later layers are thicker as the beam hardens)</div></div>
         <div class="prop-item"><div class="prop-key">First TVL for ${method === 'archer' ? 'the Archer fit' : 'H*(10)'}</div><div class="prop-val">${UTILS.fmt(tvl_cm)} cm</div><div class="prop-note">${UTILS.fmt(tvl_cm * 10)} mm — first tenth-value layer</div></div>
@@ -1379,7 +1383,7 @@
     // ---- Dose vs distance chart ----
     document.getElementById('chartTitle').textContent =
       thick > 0 && mat !== 'none'
-        ? `Dose-equivalent rate vs distance (${matLabel(mat)}, ${thick} cm${ap ? ' — Archer' : sp ? ' — narrow beam, spectrum + build-up' : ' — narrow beam + build-up'})`
+        ? `Dose-equivalent rate vs distance (${matLabel(mat)}, ${UTILS.num(thick)} cm${ap ? ' — Archer' : sp ? ' — narrow beam, spectrum + build-up' : ' — narrow beam + build-up'})`
         : 'Dose-equivalent rate vs distance (unshielded)';
     // Linear distance axis with {x, y} points; the grid reaches past the
     // requested distance when it exceeds 5 m. The mark sits at the EXACT
@@ -1423,7 +1427,7 @@
             borderWidth: 2, pointRadius: 0, pointStyle: 'line', fill: false, tension: 0.1, borderDash: [5,3],
           },
           {
-            label: `d = ${Number(d_m.toPrecision(3))} m`,
+            label: `d = ${UTILS.num(Number(d_m.toPrecision(3)))} m`,
             data: orangeMarkWB,
             borderColor: chartTheme.orange,
             backgroundColor: chartTheme.orange,
@@ -1441,7 +1445,7 @@
         plugins: {
           legend: { position: 'top', labels: { usePointStyle: true, pointStyleWidth: 24 } },
           tooltip: { callbacks: {
-            title: items => items.length ? `d = ${Number(items[0].parsed.x.toPrecision(3))} m` : '',
+            title: items => items.length ? `d = ${UTILS.num(Number(items[0].parsed.x.toPrecision(3)))} m` : '',
             label: ctx => `${ctx.dataset.label}: ${CALC.formatDoseRate(ctx.parsed.y).display}`
           }}
         },
@@ -1458,7 +1462,7 @@
             title: { display: true, text: 'Dose-equivalent rate (μSv/h)', color: chartTheme.text },
             type: 'logarithmic',
             // "100 μSv/h", not "100.0 μSv/h" (R-06)
-            ticks: { callback: v => { const f = CALC.formatDoseRate(v); return `${Number(f.value.toPrecision(3))} ${f.unit}`; }, color: chartTheme.text },
+            ticks: { callback: v => { const f = CALC.formatDoseRate(v); return `${UTILS.num(Number(f.value.toPrecision(3)))} ${f.unit}`; }, color: chartTheme.text },
             grid: { color: chartTheme.grid },
             afterBuildTicks: (axis) => {
               // Keep only decade ticks (powers of 10) for equal visual spacing
@@ -1524,6 +1528,10 @@
   // Live calculation: every input recalculates (the nuclide search box only
   // when a nuclide is chosen; the Y-90 container radios have their own handler).
   UI.onInputs(calculate, { exclude: '#nuclideCombobox, #resultsCard' });
+  // Decimal separator switched in the header: redraw hints and results with it
+  document.addEventListener('nm-decimal-change', () => {
+    if (hiddenSelect.value) selectNuclide(hiddenSelect.value); else calculate();
+  });
   liveReady = true;
   calculate();
 

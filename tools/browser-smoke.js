@@ -142,7 +142,13 @@ async function main() {
     await send('Page.addScriptToEvaluateOnNewDocument', { source:
       'window.alert=()=>{};window.confirm=()=>true;window.print=()=>{window.__printed=true};' +
       'document.addEventListener("DOMContentLoaded",()=>{if(window.Chart)Chart.defaults.animation=false;});' +
-      'try{localStorage.removeItem("nm_dark_mode")}catch(e){}' });
+      'try{localStorage.removeItem("nm_dark_mode")}catch(e){}' +
+      // The expected values below are written with a decimal point: pin it,
+      // except on URLs marked #auto-decimal (browser-language default test).
+      'try{if(location.hash==="#auto-decimal")localStorage.removeItem("nm_decimal");else localStorage.setItem("nm_decimal","point")}catch(e){}' +
+      // CSV downloads: keep the Blob so a case can read the file
+      'URL.createObjectURL=b=>{window.__csvBlob=b;return "blob:smoke";};URL.revokeObjectURL=()=>{};' +
+      'HTMLAnchorElement.prototype.click=function(){window.__downloaded=this.download;};' });
 
     const realErrors = () => errors.filter(e => !EXPECTED_NOISE.test(e));
     async function open(url, width) {
@@ -409,6 +415,71 @@ async function main() {
           stacked: getComputedStyle(document.querySelector('#resultsTable thead')).display === 'none' }; })()`);
       check('390 px: header not sticky, ≤ 100 px, logo and theme button on one row; Dose results stacked', hd.pos === 'static' && hd.h <= 100 && hd.sameRow && hd.stacked, JSON.stringify(hd));
       await pageChecks('dose Lu-177 @390 stacked');
+    });
+    await guard('Decimal point or comma (2026-10-15)', async () => {
+      const typeInto = async (id, text) => {
+        await ev(`(() => { const e = document.getElementById('${id}'); e.focus(); e.select(); })()`);
+        await send('Input.insertText', { text });
+        await sleep(400);
+      };
+      const rate = () => text('#resultsBody');
+      // quantity NAMES keep the point of the English text: H'(0.07), 0.07 mm
+      const quantityNamesOut = t => t.replace(/H'\(0\.07\)|Hp\(0\.07\)|0\.07 mm/g, '');
+      // Input: a comma and a point give the same result, whatever the browser language
+      // (a type="number" field read "0,3" as 3 in an English browser)
+      for (const [locale, typed] of [['en-US', '0,3'], ['en-US', '0.3'], ['es-ES', '0,3'], ['es-ES', '0.3']]) {
+        await send('Emulation.setLocaleOverride', { locale });
+        await open('dose.html?id=Lu-177', 1280);
+        await typeInto('distance', typed);
+        check(`dose: distance typed "${typed}" in a ${locale} browser → 69.8 µSv/h (0.3 m)`, /69\.8/.test(await rate()), (await rate()).slice(0, 80));
+      }
+      await send('Emulation.setLocaleOverride', {});
+      await open('dose.html?id=Lu-177', 1280);
+      await typeInto('distance', '1.000,5');
+      const grp = await ev(`({ err: document.getElementById('calcError').textContent, hidden: document.getElementById('resultsCard').classList.contains('hidden') })`);
+      check('dose: "1.000,5" is rejected with an inline error (never read as 1.0005)', /Distance/.test(grp.err) && grp.hidden, JSON.stringify(grp));
+      // "1.500" is accepted as 1.5 with a note under the field
+      await open('decay.html?id=Tc-99m', 1280);
+      await typeInto('A0', '1.500');
+      check('decay: "1.500" → a note says it was read as 1.5 and how to write 1500',
+        /Read as 1\.5 \(decimal separator\)\. For 1500, type 1500/.test(await text('#A0-numhint')), await text('#A0-numhint'));
+      // Switching to the comma in the header: fields, results, charts and report follow; the CSV keeps the point
+      await open('dose.html?id=Lu-177', 1280);
+      await ev(`document.getElementById('decimalToggle').click()`); await sleep(400);
+      const c = await ev(`(() => { const ch = Chart.getChart('distChart');
+        return { btn: document.getElementById('decimalToggle').textContent, dist: document.getElementById('distance').value,
+          body: document.getElementById('resultsBody').innerText, limits: document.getElementById('limitComparison').innerText,
+          ticks: Object.values(ch.scales).flatMap(s => s.ticks.map(t => String(t.label))).join(' '),
+          legend: ch.data.datasets.map(d => d.label).join(' | '), stored: localStorage.getItem('nm_decimal') }; })()`);
+      check('comma: button "1,5", field "0,30", results "69,8 µSv/h", limits and chart without a decimal point; choice stored',
+        c.btn === '1,5' && c.dist === '0,30' && /69,8 μSv\/h/.test(c.body) && !/\d\.\d/.test(quantityNamesOut(c.body)) &&
+        !/\d\.\d/.test(quantityNamesOut(c.limits)) && !/\d\.\d/.test(c.ticks + quantityNamesOut(c.legend)) && c.stored === 'comma', JSON.stringify(c).slice(0, 300));
+      await ev(`document.getElementById('btnPrintDose').click()`); await sleep(100);
+      const rep = await text('#printReport');
+      check('comma: the report gives 69,8 µSv/h and 0,3 m', /69,8 μSv\/h/.test(rep) && /Distance\s*0,3 m/.test(rep), rep.slice(0, 120));
+      await ev(`window.__csvBlob = null; document.getElementById('btnExportDoseCsv').click()`); await sleep(100);
+      const csv = await ev(`window.__csvBlob ? window.__csvBlob.text() : ''`);
+      check('comma: the CSV keeps the decimal point (machine-readable)', /"69\.\d+"/.test(csv) && !/"\d+,\d+"/.test(csv), csv.slice(0, 160));
+      await pageChecks('dose Lu-177 comma');
+      // Every calculator page in comma mode: result values without a decimal point, no errors
+      const VALUES = `(() => [...document.querySelectorAll('.result-value, td.num, .prop-val, #s1Total, #s2Total')]
+        .filter(e => e.offsetParent !== null).map(e => e.innerText).filter(t => /\\d\\.\\d/.test(t)))()`;
+      // (switched with the button: the smoke pins "point" at every load)
+      for (const pg of ['index.html?id=Lu-177', 'decay.html?id=Lu-177', 'dose.html?id=Pd-103', 'effluent.html', 'caregiver.html']) {
+        await open(pg, 1280);
+        await ev(`document.getElementById('decimalToggle').click()`); await sleep(500);
+        const left = await ev(VALUES);
+        check(`${pg} comma: no displayed value with a decimal point after the switch`, left.length === 0, left.slice(0, 5).join(' | '));
+        await pageChecks(`${pg} comma`);
+      }
+      // Default without a stored choice: the browser language
+      for (const [locale, want] of [['es-ES', '1,5'], ['de-DE', '1,5'], ['en-US', '1.5'], ['en-GB', '1.5']]) {
+        await send('Emulation.setLocaleOverride', { locale });
+        // a distinct query per locale: a hash-only change does not reload the page
+        await open(`decay.html?id=Tc-99m&l=${locale}#auto-decimal`, 1280);
+        check(`no stored choice, browser ${locale} → separator button "${want}"`, (await text('#decimalToggle')) === want, await text('#decimalToggle'));
+      }
+      await send('Emulation.setLocaleOverride', {});
     });
     await guard('Theme follows the system preference without a stored choice', async () => {
       await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'dark' }] });

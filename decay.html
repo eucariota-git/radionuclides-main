@@ -26,9 +26,12 @@
       <a href="caregiver.html">Caregiver</a>
       <a href="about.html">Guide</a>
     </nav>
-    <button id="darkToggle" type="button" class="btn-icon" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
-      <span id="darkIcon" class="ico ico-moon" aria-hidden="true"></span>
-    </button>
+    <div class="header-tools">
+      <button id="decimalToggle" type="button" class="btn-icon btn-decimal" aria-label="Decimal comma" aria-pressed="false" title="Decimal separator of the displayed numbers: point or comma (input accepts both)">1.5</button>
+      <button id="darkToggle" type="button" class="btn-icon" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
+        <span id="darkIcon" class="ico ico-moon" aria-hidden="true"></span>
+      </button>
+    </div>
   </div>
 </header>
 
@@ -58,7 +61,7 @@
       <div class="form-group">
         <label class="form-label" for="A0">Initial Activity A&#8320;</label>
         <div class="d-flex gap-1">
-          <input type="number" class="form-input" id="A0" value="1000" min="0" step="any" title="Initial Activity">
+          <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="A0" value="1000" title="Initial Activity">
           <select class="form-select form-select-narrow" id="A0unit" title="Unit" aria-label="Initial activity unit">
             <option value="MBq" selected>MBq</option>
             <option value="GBq">GBq</option>
@@ -83,7 +86,7 @@
       <div class="form-group">
         <label class="form-label" for="elapsed">— or — Elapsed time</label>
         <div class="d-flex gap-1">
-          <input type="number" class="form-input" id="elapsed" min="0" step="any" placeholder="e.g. 24" title="Elapsed time">
+          <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="elapsed" placeholder="e.g. 24" title="Elapsed time">
           <select class="form-select form-select-narrow" id="elapsedUnit" title="Unit" aria-label="Elapsed time unit">
             <option value="h" selected>h</option>
             <option value="min">min</option>
@@ -96,7 +99,7 @@
       <div class="form-group">
         <label class="form-label" for="Atarget">Target Activity A<sub>target</sub> <span class="text-muted">(optional)</span></label>
         <div class="d-flex gap-1">
-          <input type="number" class="form-input" id="Atarget" min="0" step="any" placeholder="e.g. 100" title="Target Activity">
+          <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="Atarget" placeholder="e.g. 100" title="Target Activity">
           <select class="form-select form-select-narrow" id="AtargetUnit" title="Unit" aria-label="Target activity unit">
             <option value="MBq" selected>MBq</option>
             <option value="GBq">GBq</option>
@@ -109,7 +112,7 @@
       <div class="form-group">
         <label class="form-label" for="vialWeight">Mass of material being assessed <span class="text-muted">(optional)</span></label>
         <div class="d-flex gap-1">
-          <input type="number" class="form-input" id="vialWeight" min="0" step="any" placeholder="e.g. 10" title="Mass of material being assessed">
+          <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="vialWeight" placeholder="e.g. 10" title="Mass of material being assessed">
           <select class="form-select form-select-medium" id="vialWeightUnit" title="Unit" aria-label="Mass unit">
             <option value="g" selected>g</option>
             <option value="kg">kg</option>
@@ -201,6 +204,7 @@
 (async () => {
   // ---- UI initialization ----
   UI.initDarkMode();
+  UI.initDecimal();
   UI.initPrint();
   UI.initKeyboard();
   try {
@@ -299,7 +303,7 @@
       `<li class="nuclide-option" role="option" aria-selected="false"
            id="nuclideOpt-${i}" data-id="${UTILS.escapeHtml(n.id)}">
          <span class="nuclide-opt-id">${UTILS.escapeHtml(n.id)}</span>
-         <span class="nuclide-opt-meta">T½ ${UTILS.escapeHtml(n.half_life_display)}${n._icrp107 ? ' · ICRP 107' : ''}</span>
+         <span class="nuclide-opt-meta">T½ ${UTILS.escapeHtml(UTILS.dec(n.half_life_display))}${n._icrp107 ? ' · ICRP 107' : ''}</span>
        </li>`
     ).join('');
     setExpanded(results.length > 0);
@@ -435,7 +439,8 @@
     // Extended ICRP 107 entries: a permanent warning in the results replaces the
     // confirm() dialog, which would interrupt every live recalculation.
 
-    const A0raw    = parseFloat(document.getElementById('A0').value);
+    // Numeric fields accept a decimal point or comma (UTILS.parseNumber)
+    const A0raw    = UTILS.parseNumber(document.getElementById('A0').value);
     if (!Number.isFinite(A0raw) || A0raw <= 0) {
       return fail('Activity must be a positive number.', 'A0');
     }
@@ -466,16 +471,13 @@
     const refDt    = document.getElementById('refDateTime').value || '';
     const targetDt = document.getElementById('targetDateTime').value || '';
     const elapsedVal  = document.getElementById('elapsed').value.trim();
-    if (document.getElementById('elapsed').validity.badInput) {
-      return fail('Elapsed time must be a valid number (e.g., 1, 1.5, 1e2).', 'elapsed');
-    }
     const elapsedManual = elapsedVal !== '';
     const elapsedUnit = document.getElementById('elapsedUnit').value;
     if (elapsedVal !== '') {
-      if (!/^[0-9]*\.?[0-9]+([eE][+-]?[0-9]+)?$/.test(elapsedVal)) {
-        return fail('Elapsed time must be a valid number (e.g., 1, 1.5, 1e2).', 'elapsed');
+      const elapsedRaw = UTILS.parseNumber(elapsedVal);
+      if (Number.isNaN(elapsedRaw)) {
+        return fail('Elapsed time must be a valid number (e.g. 24, 1.5 or 1,5, 1e2).', 'elapsed');
       }
-      const elapsedRaw = parseFloat(elapsedVal);
       if (!Number.isFinite(elapsedRaw) || elapsedRaw < 0) {
         return fail('Elapsed time must be a non-negative number.', 'elapsed');
       }
@@ -506,8 +508,8 @@
     // table and report snapshot (audit 2026-07-16, H-08).
     const vialWeightInput = document.getElementById('vialWeight');
     const vialWeightText  = vialWeightInput.value.trim();
-    const vialWeightRaw   = vialWeightText === '' ? NaN : Number(vialWeightText);
-    if (vialWeightInput.validity.badInput || (vialWeightText !== '' && (!Number.isFinite(vialWeightRaw) || vialWeightRaw <= 0))) {
+    const vialWeightRaw   = vialWeightText === '' ? NaN : UTILS.parseNumber(vialWeightText);
+    if (vialWeightText !== '' && (!Number.isFinite(vialWeightRaw) || vialWeightRaw <= 0)) {
       return fail('Mass of material must be a positive number.', 'vialWeight');
     }
     const vialWeightUnit  = document.getElementById('vialWeightUnit').value;
@@ -515,12 +517,12 @@
 
     // Target activity: empty = no target; zero is a valid entry with its own
     // state (never reached); negative or non-numeric text is rejected here,
-    // before anything is rendered (audit 2026-10-04, A01). A number input
-    // returns '' for text it cannot parse, hence validity.badInput.
+    // before anything is rendered (audit 2026-10-04, A01). parseNumber gives
+    // NaN for text that is not a number.
     const AtgtInput = document.getElementById('Atarget');
     const AtgtText  = AtgtInput.value.trim();
-    const AtgtEmpty = AtgtText === '' && !AtgtInput.validity.badInput;
-    const AtgtRaw   = AtgtText === '' ? NaN : Number(AtgtText);
+    const AtgtEmpty = AtgtText === '';
+    const AtgtRaw   = AtgtEmpty ? NaN : UTILS.parseNumber(AtgtText);
     const AtgtUnit  = document.getElementById('AtargetUnit').value;
     if (!AtgtEmpty && (!Number.isFinite(AtgtRaw) || AtgtRaw < 0)) {
       return fail('Target activity must be a non-negative number.', 'Atarget');
@@ -551,7 +553,7 @@
       ? '<div class="text-sm" style="margin-top:.35rem;color:var(--warning-text);">&#9888; ICRP 107 extended entry: decay data have NOT been manually validated. For clinical or regulatory use, verify them against primary sources (ICRP 107, 2008).</div>'
       : '';
     document.getElementById('nuclideInfo').innerHTML =
-      `<strong>${UTILS.escapeHtml(n.symbol)} — ${UTILS.escapeHtml(n.name)}</strong> ${sourceTag} &nbsp;|&nbsp; T&#189; = ${UTILS.escapeHtml(n.half_life_display)} &nbsp;|&nbsp;
+      `<strong>${UTILS.escapeHtml(n.symbol)} — ${UTILS.escapeHtml(n.name)}</strong> ${sourceTag} &nbsp;|&nbsp; T&#189; = ${UTILS.escapeHtml(UTILS.dec(n.half_life_display))} &nbsp;|&nbsp;
        &lambda; = ${UTILS.fmt(CALC.lambda(T_half_h))} h&#8315;&#185;${chainNote}${icrpWarning}`;
 
     document.getElementById('resultGrid').innerHTML = !timeGiven ? `
@@ -605,7 +607,7 @@
       } else if (isFinite(tTarget_h)) {
         inv.innerHTML = `
           <div class="alert alert-success">
-            <strong>Time to reach ${AtgtRaw} ${AtgtUnit}:</strong>
+            <strong>Time to reach ${UTILS.num(AtgtRaw)} ${AtgtUnit}:</strong>
             ${UTILS.fmt(tTarget_h)} h = ${UTILS.fmt(tTarget_h / 24)} d
             = ${UTILS.fmt(tTarget_h / T_half_h)} T&#189;</div>`;
         if (refDt) {
@@ -664,11 +666,11 @@
       // Convert to kBq/kg for display
       valueAt = A_MBq => CALC.convertActivity(A_MBq, 'MBq', 'kBq') / weight_kg;
       yAxisLabel = 'Activity concentration (kBq/kg)';
-      tooltipFormat = (val) => `${val.toExponential(4)} kBq/kg`;
+      tooltipFormat = (val) => `${UTILS.dec(val.toExponential(4))} kBq/kg`;
     } else {
       valueAt = A_MBq => A_MBq;
       yAxisLabel = 'Activity (MBq)';
-      tooltipFormat = (val) => `${val.toExponential(4)} MBq`;
+      tooltipFormat = (val) => `${UTILS.dec(val.toExponential(4))} MBq`;
     }
     vals = pts.map((p, i) => ({ x: xs[i], y: valueAt(p.A) }));
 
@@ -691,7 +693,7 @@
     }, {
       _themeRole: 'accent',
       // Vertical line at elapsed time
-      label: `Elapsed time: ${(t_h * unitFactor).toFixed(2)} ${timeUnit}`,
+      label: `Elapsed time: ${UTILS.dec((t_h * unitFactor).toFixed(2))} ${timeUnit}`,
       data: orangeLineData,
       borderColor: chartTheme.orange,
       backgroundColor: chartTheme.orange,
@@ -707,7 +709,7 @@
       if (clearLevel !== null) {
         datasets.push({
           _themeRole: 'danger',
-          label: `RD 1217/2024 clearance level: ${clearLevel} kBq/kg`,
+          label: `RD 1217/2024 clearance level: ${UTILS.num(clearLevel)} kBq/kg`,
           data: [{ x: 0, y: clearLevel }, { x: tMax_h * unitFactor, y: clearLevel }],
           borderColor: chartTheme.danger,
           backgroundColor: 'transparent',
@@ -725,7 +727,7 @@
           if (isFinite(t_cross_h) && t_cross_h > 0 && t_cross_h <= tMax_h) {
             datasets.push({
               _themeRole: 'success',
-              label: `Table A1 level reached: ${(t_cross_h * unitFactor).toFixed(2)} ${timeUnit}`,
+              label: `Table A1 level reached: ${UTILS.dec((t_cross_h * unitFactor).toFixed(2))} ${timeUnit}`,
               data: [{ x: t_cross_h * unitFactor, y: clearLevel }],
               borderColor: chartTheme.green,
               backgroundColor: chartTheme.green,
@@ -752,7 +754,7 @@
         plugins: {
           legend: { position: 'top', labels: { font: { size: 11 }, usePointStyle: true, pointStyleWidth: 24 } },
           tooltip: { callbacks: {
-            title: items => items.length ? `t = ${items[0].parsed.x.toPrecision(4)} ${timeUnit}` : '',
+            title: items => items.length ? `t = ${UTILS.dec(items[0].parsed.x.toPrecision(4))} ${timeUnit}` : '',
             label: ctx => `${ctx.dataset.label}: ${tooltipFormat(ctx.parsed.y)}`
           }}
         },
@@ -830,7 +832,8 @@
     document.getElementById('decayTableBody').innerHTML = tbody;
 
     // ---- Export CSV ----
-    document.getElementById('btnExportCsv').onclick = () => {
+    // CSV always with a decimal point (machine-readable), whatever the display setting
+    document.getElementById('btnExportCsv').onclick = () => UTILS.withPoint(() => {
       // Keep the export self-describing even after it is renamed or imported
       // outside the application (final audit 2026-07-16, M-01). Metadata are
       // repeated on every row so the file remains a conventional rectangular
@@ -899,7 +902,7 @@
       a.download = `decay_${UTILS.safeFilename(n.id)}_${A0raw}${A0unit}.csv`;
       a.click();
       setTimeout(() => URL.revokeObjectURL(url), 0);
-    };
+    });
 
     // ---- Clearance assessment (RD 1217/2024 Annex IV Table A1) ----
     const clearSec       = document.getElementById('clearanceSection');
@@ -926,7 +929,7 @@
         <div class="prop-grid">
           <div class="prop-item">
             <div class="prop-key">Mass of material assessed</div>
-            <div class="prop-val">${vialWeightRaw} ${vialWeightUnit}</div>
+            <div class="prop-val">${UTILS.num(vialWeightRaw)} ${vialWeightUnit}</div>
             <div class="prop-note">${UTILS.fmt(weight_kg)} kg — as entered; state whether it includes the container</div>
           </div>
           <div class="prop-item">
@@ -1111,8 +1114,8 @@
     const lam = CALC.lambda(r.T_half_h);
 
     const inputs = [
-      ['Initial activity A₀', `${r.A0raw} ${r.A0unit} (${UTILS.fmt(r.A0_MBq)} MBq)`],
-      ['Half-life T½', `${r.n.half_life_display} (λ = ${UTILS.fmt(lam)} h⁻¹)`],
+      ['Initial activity A₀', `${UTILS.num(r.A0raw)} ${r.A0unit} (${UTILS.fmt(r.A0_MBq)} MBq)`],
+      ['Half-life T½', `${UTILS.dec(r.n.half_life_display)} (λ = ${UTILS.fmt(lam)} h⁻¹)`],
       ['Elapsed time t', r.timeGiven === false ? 'none entered (no elapsed time or target date): values at t = 0'
         : `${UTILS.fmt(r.t_h)} h = ${UTILS.fmt(r.t_h / 24)} d = ${UTILS.fmt(r.t_h / r.T_half_h)} T½`],
     ];
@@ -1129,7 +1132,7 @@
       const Atgt_MBq = CALC.convertActivity(r.AtgtRaw, r.AtgtUnit, 'MBq');
       const tState = targetState(r.A0_MBq, Atgt_MBq);
       const tT = tState === 'zero' ? Infinity : CALC.timeToActivity(r.A0_MBq, Atgt_MBq, r.T_half_h);
-      results.push([`Time to reach ${r.AtgtRaw} ${r.AtgtUnit}`,
+      results.push([`Time to reach ${UTILS.num(r.AtgtRaw)} ${r.AtgtUnit}`,
         tState !== 'below' ? TARGET_TEXT[tState]
           : isFinite(tT) ? `${UTILS.fmt(tT)} h = ${UTILS.fmt(tT / 24)} d = ${UTILS.fmt(tT / r.T_half_h)} T½` : 'not calculable']);
     }
@@ -1146,7 +1149,7 @@
       const specA0 = CALC.convertActivity(r.A0_MBq, 'MBq', 'kBq') / r.weight_kg;
       const specAt = CALC.convertActivity(r.At_MBq, 'MBq', 'kBq') / r.weight_kg;
       const rows = [
-        ['Mass of material assessed', `${r.vialWeightRaw} ${r.vialWeightUnit} (${UTILS.fmt(r.weight_kg)} kg) — mass basis as entered by the user; the app does not record whether the container is included`],
+        ['Mass of material assessed', `${UTILS.num(r.vialWeightRaw)} ${r.vialWeightUnit} (${UTILS.fmt(r.weight_kg)} kg) — mass basis as entered by the user; the app does not record whether the container is included`],
         ['Specific activity at t = 0', `${UTILS.fmt(specA0)} kBq/kg`],
         [`Specific activity at t = ${UTILS.fmt(r.t_h)} h`, `${UTILS.fmt(specAt)} kBq/kg`],
       ];
@@ -1198,6 +1201,8 @@
   // Live calculation: every input recalculates (the nuclide search box only
   // when a nuclide is chosen).
   UI.onInputs(calculate, { exclude: '#nuclideCombobox, #resultsCard' });
+  // Decimal separator switched in the header: redraw with the new one
+  document.addEventListener('nm-decimal-change', () => calculate());
   liveReady = true;
   calculate();
 

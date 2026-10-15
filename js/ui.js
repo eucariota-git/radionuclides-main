@@ -12,8 +12,10 @@
 // callback are unaffected.
 if (typeof Chart !== 'undefined') {
   Chart.defaults.locale = 'en-US';
+  // Then the user's decimal separator (UTILS.dec, comma mode only).
   const ungrouped = fmt => function (value, index, ticks) {
-    return String(fmt.call(this, value, index, ticks)).replace(/,/g, '');
+    const s = String(fmt.call(this, value, index, ticks)).replace(/,/g, '');
+    return typeof UTILS !== 'undefined' ? UTILS.dec(s) : s;
   };
   Chart.defaults.scales.linear.ticks.callback = ungrouped(Chart.Ticks.formatters.numeric);
   Chart.defaults.scales.logarithmic.ticks.callback = ungrouped(Chart.Ticks.formatters.logarithmic);
@@ -85,6 +87,91 @@ const UI = (() => {
 
       syncIcon();
       announce();
+    });
+  }
+
+  /* --- Decimal separator (2026-10-15) ---
+   * Displayed numbers use a point or a comma; the interface stays in English.
+   * Default: the stored choice, else the browser's number locale (does Intl
+   * print 1.5 as "1,5"?). The header button switches it; pages re-render on
+   * 'nm-decimal-change'. Numeric fields (.num-input, type="text") accept both
+   * separators whatever the setting — UTILS.parseNumber. */
+  function browserDecimal() {
+    try {
+      // the browser's own number locale (its default Intl locale)
+      return new Intl.NumberFormat().format(1.5).includes(',') ? 'comma' : 'point';
+    } catch (e) {
+      return 'point';
+    }
+  }
+
+  // Rewrite the separator of the plain numbers already in the fields (defaults
+  // written in the HTML with a point, or values typed before a switch).
+  function localizeInputs() {
+    const sep = UTILS.getDecimalMode() === 'comma' ? ',' : '.';
+    document.querySelectorAll('input.num-input').forEach(el => {
+      const t = el.value.trim();
+      if (/^[+-]?\d*[.,]\d+([eE][+-]?\d+)?$/.test(t)) el.value = t.replace(/[.,]/, sep);
+    });
+  }
+
+  // "1.500" or "2,250": one separator followed by exactly three digits reads as
+  // a decimal (1.5) but may have been meant as a thousands group (1500). The
+  // value is accepted; a note under the field says how it was read.
+  function numberHint(el) {
+    const id = el.id ? `${el.id}-numhint` : null;
+    let hint = id ? document.getElementById(id) : null;
+    const t = el.value.trim();
+    const m = /^[+-]?([1-9]\d{0,2})[.,](\d{3})$/.exec(t);
+    if (!m) { if (hint) hint.remove(); return; }
+    if (!hint) {
+      hint = document.createElement('div');
+      hint.className = 'form-hint num-hint';
+      if (id) hint.id = id;
+      hint.setAttribute('role', 'status');
+      const anchor = el.parentElement && el.parentElement.classList.contains('d-flex') ? el.parentElement : el;
+      anchor.insertAdjacentElement('afterend', hint);
+    }
+    const v = UTILS.parseNumber(t);
+    const thousands = m[1] + m[2];
+    hint.textContent = `Read as ${UTILS.num(v)} (decimal separator). For ${thousands}, type ${thousands} without a separator.`;
+  }
+
+  function initDecimal() {
+    if (typeof UTILS === 'undefined') return;
+    let stored = null;
+    try {
+      stored = localStorage.getItem('nm_decimal');
+    } catch (e) {
+      // localStorage may be unavailable
+    }
+    UTILS.setDecimalMode(stored === 'comma' || stored === 'point' ? stored : browserDecimal());
+    localizeInputs();
+
+    const btn = document.getElementById('decimalToggle');
+    const sync = () => {
+      if (!btn) return;
+      const isComma = UTILS.getDecimalMode() === 'comma';
+      btn.textContent = isComma ? '1,5' : '1.5';
+      btn.setAttribute('aria-pressed', isComma ? 'true' : 'false');
+    };
+    sync();
+    if (btn) {
+      btn.addEventListener('click', () => {
+        const to = UTILS.getDecimalMode() === 'comma' ? 'point' : 'comma';
+        UTILS.setDecimalMode(to);
+        try {
+          localStorage.setItem('nm_decimal', to);
+        } catch (e) {
+          // localStorage may be unavailable
+        }
+        localizeInputs();
+        sync();
+        document.dispatchEvent(new CustomEvent('nm-decimal-change', { detail: { mode: to } }));
+      });
+    }
+    document.addEventListener('input', e => {
+      if (e.target && e.target.matches && e.target.matches('input.num-input')) numberHint(e.target);
     });
   }
 
@@ -285,6 +372,7 @@ const UI = (() => {
   // Public API
   return {
     initDarkMode,
+    initDecimal,
     initPrint,
     initKeyboard,
     showFatalError,

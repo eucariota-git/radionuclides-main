@@ -76,7 +76,7 @@ const REPORT = (() => {
       const dev = 100 * (n.gamma_H10 - published) / published;
       const sign = dev >= 0 ? '+' : '−';
       const agrees = Math.abs(dev) <= 2;
-      return `Curated entry, cross-checked against ${cv.source || 'Cornejo et al. (2015)'}: published Γ^H*(10) = ${published}, stored ${n.gamma_H10} (${sign}${Math.abs(dev).toFixed(1)}%)`
+      return `Curated entry, cross-checked against ${cv.source || 'Cornejo et al. (2015)'}: published Γ^H*(10) = ${UTILS.num(published)}, stored ${UTILS.num(n.gamma_H10)} (${sign}${UTILS.dec(Math.abs(dev).toFixed(1))}%)`
         + (agrees ? '' : ' — difference not reconciled');
     }
     return 'Curated entry computed from ICRP 107 photon data with ICRP 74 Table A.21 coefficients — no published comparison is recorded in this app';
@@ -109,9 +109,9 @@ const REPORT = (() => {
       // A decay report depends on the half-life only: the status of the Γ
       // constants (and the Y-90 container warning) does not belong in it
       // (copy audit 2026-10-03, T34).
-      ? `<tr><td>Nuclide</td><td><strong>${esc(n.id)}</strong> — ${esc(n.name)} (T&#189; = ${esc(n.half_life_display)})</td></tr>
+      ? `<tr><td>Nuclide</td><td><strong>${esc(n.id)}</strong> — ${esc(n.name)} (T&#189; = ${esc(UTILS.dec(n.half_life_display))})</td></tr>
           <tr><td>Half-life source</td><td>${esc(halfLifeSource(n))}</td></tr>`
-      : `<tr><td>Nuclide</td><td><strong>${esc(n.id)}</strong> — ${esc(n.name)} (T&#189; = ${esc(n.half_life_display)})</td></tr>
+      : `<tr><td>Nuclide</td><td><strong>${esc(n.id)}</strong> — ${esc(n.name)} (T&#189; = ${esc(UTILS.dec(n.half_life_display))})</td></tr>
           <tr><td>Half-life source</td><td>${esc(halfLifeSource(n))}</td></tr>
           <tr><td>Data status</td><td>${esc(validationStatus(n))}</td></tr>
           ${n.source ? `<tr><td>Nuclide source</td><td>${esc(n.source)}</td></tr>` : ''}`;

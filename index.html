@@ -26,9 +26,12 @@
       <a href="caregiver.html">Caregiver</a>
       <a href="about.html">Guide</a>
     </nav>
-    <button id="darkToggle" type="button" class="btn-icon" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
-      <span id="darkIcon" class="ico ico-moon" aria-hidden="true"></span>
-    </button>
+    <div class="header-tools">
+      <button id="decimalToggle" type="button" class="btn-icon btn-decimal" aria-label="Decimal comma" aria-pressed="false" title="Decimal separator of the displayed numbers: point or comma (input accepts both)">1.5</button>
+      <button id="darkToggle" type="button" class="btn-icon" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
+        <span id="darkIcon" class="ico ico-moon" aria-hidden="true"></span>
+      </button>
+    </div>
   </div>
 </header>
 
@@ -212,7 +215,7 @@
     if (withIngestion) {
       const ing = REGULATORY.ingestionAdult(id);
       if (ing.status === 'listed') {
-        const forms = ing.rows.map(r => `${UTILS.fmtSig(r.e_Sv_per_Bq, 2)} Sv/Bq${r.compound ? ' (' + esc(r.compound) + ')' : ''}, f1 ${r.f1}`).join('; ');
+        const forms = ing.rows.map(r => `${UTILS.fmtSig(r.e_Sv_per_Bq, 2)} Sv/Bq${r.compound ? ' (' + esc(r.compound) + ')' : ''}, f1 ${UTILS.num(r.f1)}`).join('; ');
         out.push(`Adult ingestion e(g): RD 783/2001 Annex III table a).${ing.rows.length > 1 ? ' Tabulated forms: ' + forms + '. The most restrictive governs the level shown.' : ''} Discharge level = (1 mSv / e(g)) / 600 L — one IS-28 II.A.4 condition only (see the reference notes).`);
       }
     }
@@ -220,6 +223,7 @@
   }
   // ---- UI initialization ----
   UI.initDarkMode();
+  UI.initDecimal();
   UI.initPrint();
   UI.initKeyboard();
 
@@ -263,7 +267,7 @@
     if (pub == null || n.gamma_H10 == null) return '';
     const dev = (n.gamma_H10 - pub) / pub * 100;
     if (Math.abs(dev) <= 5) return '';
-    return ` <span title="Recalculated using the stated nuclear data and conversion coefficients; difference not reconciled: ${dev > 0 ? '+' : ''}${dev.toFixed(1)}% from the published Cornejo et al. (2015) value (${pub})" style="cursor:help;color:var(--warning-text)">&#9888;</span>`;
+    return ` <span title="Recalculated using the stated nuclear data and conversion coefficients; difference not reconciled: ${dev > 0 ? '+' : ''}${UTILS.dec(dev.toFixed(1))}% from the published Cornejo et al. (2015) value (${UTILS.num(pub)})" style="cursor:help;color:var(--warning-text)">&#9888;</span>`;
   }
 
   /**
@@ -290,7 +294,7 @@
     if (!photons || !photons.length) { host.innerHTML = opts.note || ''; return; }
     // Extended entries with equilibrium progeny list the emitter of each line.
     const showFrom = !!opts.progeny;
-    const rows = photons.map(p => `<tr><td class="mono">${Number(p.energy_keV).toFixed(1)}</td><td class="mono">${UTILS.fmtSig(p.yield_percent, 2)}</td><td class="mono">${UTILS.escapeHtml(p.type)}</td>${showFrom ? `<td class="mono">${UTILS.escapeHtml(p.from || '')}</td>` : ''}</tr>`).join('');
+    const rows = photons.map(p => `<tr><td class="mono">${UTILS.dec(Number(p.energy_keV).toFixed(1))}</td><td class="mono">${UTILS.fmtSig(p.yield_percent, 2)}</td><td class="mono">${UTILS.escapeHtml(p.type)}</td>${showFrom ? `<td class="mono">${UTILS.escapeHtml(p.from || '')}</td>` : ''}</tr>`).join('');
     const title = opts.chain ? 'Parent-only photon spectrum; dose constants include the stated progeny'
       : showFrom ? `Photon spectrum, parent + progeny in equilibrium (${UTILS.escapeHtml(opts.progeny)})` : 'Photon spectrum';
     host.innerHTML = `
@@ -374,7 +378,7 @@
         plugins: {
           legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } },
           tooltip: { callbacks: {
-            title: items => items.length ? `${items[0].raw.x} keV` : '',
+            title: items => items.length ? `${UTILS.num(items[0].raw.x)} keV` : '',
             label: c => `${c.dataset.label}: yield ${UTILS.fmt(c.raw.yieldPct)} % · share of Γ H*(10) ${UTILS.fmt(c.raw.share)} %`,
           } },
         },
@@ -387,7 +391,7 @@
           y: {
             type: 'logarithmic', min: yMin, max: yMax,
             title: { display: true, text: dose ? 'Share of Γ H*(10) (%)' : 'Yield (% per decay)', color: theme.text },
-            ticks: { color: theme.text, callback: v => (Math.abs(Math.log10(v) - Math.round(Math.log10(v))) < 1e-9 ? `${Number(v.toPrecision(1))} %` : '') },
+            ticks: { color: theme.text, callback: v => (Math.abs(Math.log10(v) - Math.round(Math.log10(v))) < 1e-9 ? `${UTILS.num(Number(v.toPrecision(1)))} %` : '') },
             grid: { color: theme.grid },
           },
         },
@@ -400,6 +404,17 @@
 
   document.addEventListener('nm-theme-change', drawSpectrum);
 
+  // Decimal separator switched in the header: redraw the table and the open
+  // detail panel in place (no scroll).
+  let quietRender = false;
+  document.addEventListener('nm-decimal-change', () => {
+    quietRender = true;
+    try {
+      if (selectedId && document.getElementById('detailPanel').classList.contains('visible')) selectNuclide(selectedId);
+      else renderTable();
+    } finally { quietRender = false; }
+  });
+
   function betaEnergyItem(n) {
     if (!n.e_max_beta_MeV) return '';
     const y = n.beta_yield_per_decay;
@@ -407,7 +422,7 @@
     if (n.e_max_beta_chain) notes.push('from progeny in the decay chain');
     if (Number.isFinite(y) && y < 0.01) notes.push(`minor β branch: ${UTILS.fmt(y * 100)} % of decays`);
     else if (Number.isFinite(y)) notes.push(`${UTILS.fmt(y)} β per decay`);
-    return `<div class="prop-item"><div class="prop-key">β E<sub>max</sub></div><div class="prop-val">${Number(n.e_max_beta_MeV.toPrecision(4))}</div>` +
+    return `<div class="prop-item"><div class="prop-key">β E<sub>max</sub></div><div class="prop-val">${UTILS.num(Number(n.e_max_beta_MeV.toPrecision(4)))}</div>` +
       `<div class="prop-note">${UTILS.escapeHtml(notes.join('; '))}</div></div>`;
   }
 
@@ -440,7 +455,7 @@
   function extendedClearanceCell(id) {
     if (typeof REGULATORY === 'undefined') return cellStatus('See details');
     const c = REGULATORY.clearanceA1(id);
-    return c.status === 'listed' ? `<span class="mono">${c.rows[0].kBq_kg}</span>` : cellStatus('Not tabulated');
+    return c.status === 'listed' ? `<span class="mono">${UTILS.num(c.rows[0].kBq_kg)}</span>` : cellStatus('Not tabulated');
   }
   function extendedDischargeCell(id) {
     if (typeof REGULATORY === 'undefined') return cellStatus('See details');
@@ -525,7 +540,7 @@
         const icrpBadge = '<span class="tag tag-icrp107" style="font-size:0.85em;">ICRP 107</span>';
         return `<tr class="${sel}" data-id="${n.id}" style="opacity:0.85;">
           <td class="sym">${UTILS.escapeHtml(n.symbol)}</td>
-          <td>${UTILS.escapeHtml(n.half_life_display)}</td>
+          <td>${UTILS.escapeHtml(UTILS.dec(n.half_life_display))}</td>
           <td class="text-sm">${UTILS.escapeHtml(decayStr)}</td>
           <td>${icrpBadge}</td>
           <td class="num">${cellStatus('Not calculated')}</td>
@@ -543,15 +558,15 @@
         : '';
       return `<tr class="${sel}" data-id="${n.id}">
         <td class="sym">${UTILS.escapeHtml(n.symbol)}</td>
-        <td>${UTILS.escapeHtml(n.half_life_display)}</td>
+        <td>${UTILS.escapeHtml(UTILS.dec(n.half_life_display))}</td>
         <td class="text-sm">${UTILS.escapeHtml(decayStr)}</td>
         <td>${modalityTag(n)}</td>
         <td class="num">${fmtGamma(n.gamma_Kair)}</td>
         <td class="num">${fmtGamma(n.gamma_H10)}${cornejoDeviationNote(n)}</td>
         <td class="num">${fmtGamma(n.gamma_H007)}${h007note}</td>
-        <td class="num">${n.representative_energy_keV ?? cellStatus('No selected photon line')}</td>
+        <td class="num">${n.representative_energy_keV != null ? UTILS.num(n.representative_energy_keV) : cellStatus('No selected photon line')}</td>
         <td class="num">${fmtEffluentLimit(n)}</td>
-        <td class="num">${n.clearance_a1_kBq_per_kg != null ? n.clearance_a1_kBq_per_kg : cellStatus('Not tabulated')}</td>
+        <td class="num">${n.clearance_a1_kBq_per_kg != null ? UTILS.num(n.clearance_a1_kBq_per_kg) : cellStatus('Not tabulated')}</td>
         <td class="text-sm"><div class="src-text">${UTILS.escapeHtml(gammaSourceLabel(n))}</div></td>
       </tr>`;
     }).join('');
@@ -629,7 +644,7 @@
       const icrpBadge = '<span class="tag tag-icrp107" style="font-size:0.85em;">ICRP 107</span>';
       return `<tr class="${sel}" data-id="${UTILS.escapeHtml(n.id)}" style="opacity:0.85;">
         <td class="sym">${UTILS.escapeHtml(n.symbol)}</td>
-        <td>${UTILS.escapeHtml(n.half_life_display)}</td>
+        <td>${UTILS.escapeHtml(UTILS.dec(n.half_life_display))}</td>
         <td class="text-sm">${UTILS.escapeHtml(decayStr)}</td>
         <td>${icrpBadge}</td>
         <td class="num">${cellStatus('Not calculated')}</td>
@@ -668,7 +683,7 @@
     notes.push(...regulatoryNotes(id, { withIngestion: true }));
     noteEl.innerHTML = notes.join('<br>');
     noteEl.classList.remove('hidden');
-    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if (!quietRender) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
   // ---- Detail panel ----
@@ -733,7 +748,7 @@
       document.getElementById('detailProps').innerHTML = `
         <div class="prop-item">
           <div class="prop-key">Half-life</div>
-          <div class="prop-val">${UTILS.escapeHtml(hlParts.slice(0, -1).join(' '))}</div>
+          <div class="prop-val">${UTILS.escapeHtml(UTILS.dec(hlParts.slice(0, -1).join(' ')))}</div>
           <div class="prop-note" title="ICRP Publication 107 (2008)">${UTILS.escapeHtml(hlParts.slice(-1)[0])} — ICRP 107</div>
         </div>
         <div class="prop-item">
@@ -786,7 +801,7 @@
       document.getElementById('detailProps').innerHTML = `
         <div class="prop-item">
           <div class="prop-key">Half-life</div>
-          <div class="prop-val">${UTILS.escapeHtml(hlParts2.slice(0, -1).join(' '))}</div>
+          <div class="prop-val">${UTILS.escapeHtml(UTILS.dec(hlParts2.slice(0, -1).join(' ')))}</div>
           <div class="prop-note" title="${UTILS.safeAttr(n.half_life_source || '')}">${UTILS.escapeHtml(hlParts2.slice(-1)[0])}${n.half_life_source ? ' — ' + UTILS.escapeHtml(n.half_life_source.startsWith('DDEP') ? 'DDEP (LNHB)' : 'ICRP 107') : ''}</div>
         </div>
         <div class="prop-item">
@@ -796,7 +811,7 @@
         ${betaEnergyHtml}
         <div class="prop-item">
           <div class="prop-key">Representative photon energy</div>
-          <div class="prop-val">${n.representative_energy_keV ?? '—'}</div>
+          <div class="prop-val">${n.representative_energy_keV != null ? UTILS.num(n.representative_energy_keV) : '—'}</div>
           <div class="prop-note">keV — nominal, for orientation; the calculations use the full spectrum below</div>
         </div>
         <div class="prop-item">
@@ -852,7 +867,7 @@
     if (pubH10 != null && n.gamma_H10 != null) {
       const dev = (n.gamma_H10 - pubH10) / pubH10 * 100;
       if (Math.abs(dev) > 5) {
-        notes.push(`&#9888; &#915;<sup>H*(10)</sup> recalculated (ICRP 107 (2008) photon data, ICRP 74 (1996) Table A.21) differs ${dev > 0 ? '+' : ''}${dev.toFixed(1)}% from the published Cornejo et al. (2015) value (${pubH10} &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;).`);
+        notes.push(`&#9888; &#915;<sup>H*(10)</sup> recalculated (ICRP 107 (2008) photon data, ICRP 74 (1996) Table A.21) differs ${dev > 0 ? '+' : ''}${UTILS.dec(dev.toFixed(1))}% from the published Cornejo et al. (2015) value (${UTILS.num(pubH10)} &#956;Sv&#183;h&#8315;&#185;&#183;GBq&#8315;&#185;&#183;m&#178;).`);
       }
     }
 
@@ -879,7 +894,7 @@
       noteEl.classList.add('hidden');
     }
 
-    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if (!quietRender) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
   // ---- Event listeners ----
@@ -904,7 +919,8 @@
   });
 
   // CSV export
-  document.getElementById('btnExportCsv').addEventListener('click', () => {
+  // CSV always with a decimal point (machine-readable), whatever the display setting
+  document.getElementById('btnExportCsv').addEventListener('click', () => UTILS.withPoint(() => {
     const headers = ['id', 'symbol', 'name', 'half_life_display', 'decay_modes', 'modality',
                      'gamma_Kair', 'gamma_H10', 'gamma_H007', 'representative_energy_keV',
                      'ingestion_dose_coeff_adult_Sv_per_Bq', 'effluent_liquid_limit_Bq_per_L',
@@ -951,7 +967,7 @@
     a.download = `radionuclide_properties_${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 0);
-  });
+  }));
 
   // Auto-select from URL param
   const urlId = new URLSearchParams(location.search).get('id');

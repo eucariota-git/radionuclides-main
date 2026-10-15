@@ -1244,6 +1244,18 @@ summary.card-title:focus-visible { outline: 2px solid var(--green-700); outline-
   transition: background .15s, border-color .15s;
 }
 
+/* Header buttons: decimal separator and theme */
+.header-tools { margin-left: auto; display: flex; gap: .4rem; flex-shrink: 0; }
+.header-tools .btn-icon { margin-left: 0; }
+.btn-decimal {
+  width: auto;
+  min-width: 34px;
+  padding: 0 .45rem;
+  font-family: var(--font-mono);
+  font-size: .85rem;
+  font-weight: 700;
+}
+
 .btn-icon:hover {
   background: rgba(255,255,255,.1);
   border-color: rgba(255,255,255,.6);
@@ -1555,7 +1567,7 @@ kbd {
     column-gap: .75rem;
   }
   .site-logo { order: 1; flex: 1 1 auto; }
-  .btn-icon { order: 2; }
+  .header-tools { order: 2; }
   .site-nav { order: 3; flex: 1 1 100%; }
 
   .site-nav {
