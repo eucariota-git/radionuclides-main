@@ -4,6 +4,9 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
+### v1.16.1 — linear or logarithmic spectrum axis
+- Properties, photon spectrum: a **Log / Linear** button pair chooses the scale of the y axis, in the yield and in the Γ H*(10) share views. Logarithmic stays the default (yields span about four decades and the weak lines matter behind a shield); the linear scale starts at zero and reads the dose shares directly, and its note says that lines below about 1 % of the tallest are not visible (the table lists them all). The choice is kept while other nuclides are opened. Same data in both scales (browser-smoke case).
+
 ### v1.16.0 — optional Spanish screens
 - **EN / ES button** in the header. English stays the default; the choice is stored. «ES» applies a display overlay (`js/i18n.js`) that rewrites only the text already rendered — text nodes, `title`/`placeholder`/`aria-label`/`data-tooltip`/`data-label`, option texts and chart labels — from a catalog (`js/i18n-es.js`). It never writes a field or option value, and no calculation module, data file, report builder or CSV builder refers to it.
 - **Exact-match catalog**: an entry applies only to the exact English text it was written for, so a corrected English sentence shows in English (never a stale translation) until its entry is updated; a test fails on any orphaned entry. Context-dependent entries (CSS selector) and anchored patterns for texts with values (captures copied unchanged).

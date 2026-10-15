@@ -293,6 +293,26 @@ async function main() {
       check('properties: dose-share view adds up to 100 % and gives Lu-177 208 keV ≈ 62.7 %',
         Math.abs(d.sum - 100) < 1e-6 && Math.abs(d.l208 - 62.70) < 0.01, JSON.stringify(d));
       await pageChecks('properties Lu-177 dose share');
+      // Linear y on request: same data, axis from zero, every bar inside;
+      // kept for the next nuclide, back to log on a reload
+      const before = await ev(`JSON.stringify(Chart.getChart('spectrumChart').data.datasets.map(d => d.data))`);
+      await ev(`document.querySelector('[data-spectrum-scale="linear"]').click()`); await sleep(200);
+      const lin = await ev(`(() => { const c = Chart.getChart('spectrumChart'); const pts = c.data.datasets.flatMap(d => d.data);
+        return { type: c.scales.y.type, min: c.scales.y.min, max: c.scales.y.max, top: Math.max(...pts.map(p => p.y)),
+          data: JSON.stringify(c.data.datasets.map(d => d.data)) }; })()`);
+      check('properties: linear y scale — same data, axis from 0, tallest bar inside, share axis ≤ 100 %',
+        lin.type === 'linear' && lin.min === 0 && lin.max >= lin.top && lin.max <= 100 && lin.data === before,
+        JSON.stringify({ type: lin.type, min: lin.min, max: lin.max, top: lin.top }));
+      await pageChecks('properties Lu-177 linear y');
+      await ev(`document.querySelector('[data-spectrum-view="yield"]').click()`); await sleep(200);
+      const linY = await ev(`({ type: Chart.getChart('spectrumChart').scales.y.type, hint: document.getElementById('spectrumHint').textContent })`);
+      check('properties: linear yield view warns that weak lines are not visible', linY.type === 'linear' && /linear scale/.test(linY.hint), JSON.stringify(linY));
+      await ev(`document.querySelector('#nuclideTable tr[data-id="I-131"]').click()`); await sleep(300);
+      check('properties: the linear scale is kept when another nuclide is opened',
+        await ev(`Chart.getChart('spectrumChart').scales.y.type === 'linear' && document.querySelector('[data-spectrum-scale="linear"]').getAttribute('aria-pressed') === 'true'`));
+      await open('index.html?id=I-131', 1280);
+      check('properties: a reload starts again on the logarithmic scale',
+        await ev(`Chart.getChart('spectrumChart').scales.y.type === 'logarithmic'`));
       await open('index.html?id=Y-90', 1280);
       check('properties Y-90: no spectrum chart and no errors', realErrors().length === 0 &&
         await ev(`!document.getElementById('spectrumChart')`));

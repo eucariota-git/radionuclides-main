@@ -131,7 +131,7 @@ Calculators recalculate live (Decay/Dose through `UI.onInputs`, Effluent/Caregiv
 - Audit reports are local only (`docs/AUDIT_*.md`, gitignored). When the user asks for an audit without file changes, deliver it in the chat.
 - Bash heredocs with backslashes or nested quotes break: write helper scripts to the scratchpad and run them, or use the Edit tool.
 
-## Status and pending (as of 2026-10-15, v1.16.0)
+## Status and pending (as of 2026-10-15, v1.16.1)
 
 - Last package built and pushed: `dist/nm-radionuclide-planner-v1.13.3.zip` (SHA-256 f3f55e2a…, commit c21796f).
 - v1.14.0 (usability and presentation review), v1.15.0 (decimal point or comma) and v1.15.1 (fixes D-01…D-03 of an independent review) pushed (03cc8d0), not packaged. v1.16.0 (optional Spanish screens: engine, glossary, catalogs of the five pages, reports, data notes and Spanish guide) pushed (7009fb8), not packaged; pending the author's review of the Spanish texts (`docs/I18N_GLOSSARY_ES.md` items marked D or P) and acceptance row B15. English stays the default. Pending decision: saving and reopening a case (`UI.saveHistory`/`loadHistory` exist but are unused); a results summary near the top of Effluent.

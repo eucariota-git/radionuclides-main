@@ -283,12 +283,14 @@
    */
   // ---- Photon spectrum: chart + table, one implementation for curated and
   // extended entries. Linear energy axis with {x, y} bars (never a category
-  // axis); logarithmic y because yields span ~4 decades and the weak lines are
-  // the ones that dominate behind a shield. Two views: yield per 100 decays, and
-  // each line's share of Γ^H*(10) — n·h*(10)(E) from PHYSICS.calcGammaConstants,
-  // the same calculation that gives Γ.
+  // axis); logarithmic y by default because yields span ~4 decades and the weak
+  // lines are the ones that dominate behind a shield; a linear y is offered (it
+  // reads the dose shares best, but hides the weak lines). Two views: yield per
+  // 100 decays, and each line's share of Γ^H*(10) — n·h*(10)(E) from
+  // PHYSICS.calcGammaConstants, the same calculation that gives Γ.
   let spectrumChart = null;
   let spectrumState = null;   // { photons, chain, id, view }
+  let spectrumScale = 'log';  // y scale, kept when another nuclide is opened
   const SPECTRUM_TYPES = [['G', 'Gamma'], ['X', 'X-ray'], ['AQ', 'Annihilation']];
 
   function renderSpectrum(photons, opts = {}) {
@@ -307,6 +309,10 @@
         <div class="filter-bar" role="group" aria-label="Spectrum view" style="margin-bottom:0;">
           <button type="button" class="filter-btn active" data-spectrum-view="yield" aria-pressed="true">Yield</button>
           <button type="button" class="filter-btn" data-spectrum-view="dose" aria-pressed="false">Share of &#915;<sup>H*(10)</sup></button>
+        </div>
+        <div class="filter-bar" role="group" aria-label="Y-axis scale" style="margin-bottom:0;">
+          <button type="button" class="filter-btn${spectrumScale === 'log' ? ' active' : ''}" data-spectrum-scale="log" aria-pressed="${spectrumScale === 'log'}">Log</button>
+          <button type="button" class="filter-btn${spectrumScale === 'linear' ? ' active' : ''}" data-spectrum-scale="linear" aria-pressed="${spectrumScale === 'linear'}">Linear</button>
         </div>
       </div>
       <div class="chart-wrap" style="height:240px;">
@@ -340,6 +346,15 @@
       spectrumState.view = btn.dataset.spectrumView;
       drawSpectrum();
     }));
+    host.querySelectorAll('[data-spectrum-scale]').forEach(btn => btn.addEventListener('click', () => {
+      host.querySelectorAll('[data-spectrum-scale]').forEach(b => {
+        const on = b === btn;
+        b.classList.toggle('active', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+      spectrumScale = btn.dataset.spectrumScale;
+      drawSpectrum();
+    }));
     drawSpectrum();
   }
 
@@ -350,6 +365,7 @@
     const calc = PHYSICS.calcGammaConstants(photons);
     if (!calc.contributions.length || !(calc.gammaH10 > 0)) return;
     const dose = view === 'dose';
+    const log = spectrumScale !== 'linear';
     const pts = calc.contributions.map(c => ({
       x: c.energy_keV,
       y: dose ? 100 * c.contrib_H10 / calc.gammaH10 : c.yield_percent,
@@ -362,7 +378,8 @@
     const yMin = Math.pow(10, Math.floor(Math.log10(Math.min(...pts.map(p => p.y)) / 2)));
     // a factor 2 above the tallest bar (not the next decade: a 100 % line put the
     // top at 1000 %); the log axis labels decades only. A share never exceeds 100 %.
-    const yMax = Math.min(dose ? 100 : Infinity, 2 * Math.max(...pts.map(p => p.y)));
+    const yTop = Math.max(...pts.map(p => p.y));
+    const yMax = Math.min(dose ? 100 : Infinity, 2 * yTop);
     const datasets = SPECTRUM_TYPES.map(([type, label]) => ({
       _type: type,
       label,
@@ -392,10 +409,17 @@
             title: { display: true, text: 'Photon energy (keV)', color: theme.text },
             ticks: { color: theme.text, maxTicksLimit: 10 }, grid: { color: theme.grid },
           },
-          y: {
+          y: log ? {
             type: 'logarithmic', min: yMin, max: yMax,
             title: { display: true, text: dose ? 'Share of Γ H*(10) (%)' : 'Yield (% per decay)', color: theme.text },
             ticks: { color: theme.text, callback: v => (Math.abs(Math.log10(v) - Math.round(Math.log10(v))) < 1e-9 ? `${UTILS.num(Number(v.toPrecision(1)))} %` : '') },
+            grid: { color: theme.grid },
+          } : {
+            // linear: from zero, rounded maximum chosen by Chart.js; a share
+            // axis stops at 100 %
+            type: 'linear', min: 0, grace: '5%', ...(dose && yTop > 90 ? { max: 100 } : {}),
+            title: { display: true, text: dose ? 'Share of Γ H*(10) (%)' : 'Yield (% per decay)', color: theme.text },
+            ticks: { color: theme.text, maxTicksLimit: 8, callback: v => `${UTILS.num(v)} %` },
             grid: { color: theme.grid },
           },
         },
@@ -403,7 +427,8 @@
     });
     document.getElementById('spectrumHint').textContent = dose
       ? `Each line's share of Γ H*(10), n·h*(10)(E) with ICRP 74 Table A.21; the bars add up to 100 %.${chain ? " Share of the parent's lines only; the stored Γ includes the progeny." : ''}`
-      : 'Photons per 100 decays, logarithmic scale.';
+      : log ? 'Photons per 100 decays, logarithmic scale.'
+        : 'Photons per 100 decays, linear scale: lines below about 1 % of the tallest are not visible (the table lists them all).';
   }
 
   document.addEventListener('nm-theme-change', drawSpectrum);

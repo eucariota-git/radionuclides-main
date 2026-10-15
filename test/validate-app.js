@@ -320,7 +320,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v58');
+    swVersion === 'nm-planner-v59');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -925,8 +925,9 @@ async function main() {
     !/Photon spectrum \(filtered\)/.test(indexHtml15) &&
     /renderSpectrum\(n\.photons, \{ id: n\.id \}\)/.test(indexHtml15) &&
     /renderSpectrum\(icrpNuclide\.photons, \{ id: n\.id, chain: !!n\.chain_members \}\)/.test(indexHtml15));
-  check('spectrum chart: linear energy axis, logarithmic y axis, bars as {x, y} points',
+  check('spectrum chart: linear energy axis, logarithmic y axis by default (linear on request), bars as {x, y} points',
     /type: 'linear', min: 0, grace: '3%'/.test(indexHtml15) && /type: 'logarithmic', min: yMin, max: yMax/.test(indexHtml15) &&
+    /let spectrumScale = 'log';/.test(indexHtml15) && /data-spectrum-scale="linear"/.test(indexHtml15) &&
     /type: 'bar'/.test(indexHtml15) && /x: c\.energy_keV,/.test(indexHtml15));
   check('dose-share view uses the Γ calculation itself (PHYSICS.calcGammaConstants) and states the chain caveat',
     /const calc = PHYSICS\.calcGammaConstants\(photons\)/.test(indexHtml15) &&

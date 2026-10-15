@@ -302,6 +302,10 @@ const I18N_ES = {
     'Yield': 'Rendimiento',
     'Share of Γ': 'Fracción de Γ',
     'Photons per 100 decays, logarithmic scale.': 'Fotones por 100 desintegraciones, escala logarítmica.',
+    'Photons per 100 decays, linear scale: lines below about 1 % of the tallest are not visible (the table lists them all).':
+      'Fotones por 100 desintegraciones, escala lineal: las líneas por debajo de aproximadamente un 1 % de la más alta no se ven (la tabla las recoge todas).',
+    'Y-axis scale': 'Escala del eje Y',
+    'Linear': 'Lineal',
     'Yield [%]': 'Rendimiento [%]',
     'Type': 'Tipo',
     'Emitter': 'Emisor',
