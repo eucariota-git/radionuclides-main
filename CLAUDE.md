@@ -131,7 +131,7 @@ Dark mode is supported. When adding or modifying UI elements (tables, tooltips, 
 
 ## Status and pending (as of 2026-10-15, v1.13.3)
 
-- Last package built: `dist/nm-radionuclide-planner-v1.13.2.zip`; v1.13.3 (DDEP reuse terms) committed locally, not yet packaged or pushed.
+- Last package built and pushed: `dist/nm-radionuclide-planner-v1.13.3.zip` (SHA-256 f3f55e2a…, commit c21796f).
 - **External distribution blocked by data rights**: permission requested from ICRP (permissions@icrp.org, 2026-10-15, personal capacity) for ICRP 74 Table A.21 (50 values), ICRP 119 Table G.1 (5 inhalation coefficients) and the Table F.1 chemical-form labels. When the reply arrives, update «Status / permissions» in `THIRD_PARTY_NOTICES.md` and its copy in `about.html`. DDEP/LNHB: no restriction, citation requested (done). Cornejo et al. 2015 (SEPR): courtesy request deferred until ICRP answers.
 - Professional use: the acceptance sheet (`docs/ACCEPTANCE_TEST.md`) has not been completed for the current version (the local copy is v1.2); PHITS coefficients of Effluent need an external technical review.
 - Open by the user's decision: T06 (I-131 0.8 GBq «at discharge» in Effluent), T13 (clinical uses without reference), Cs-137/Sm-153/Tm-170/Ac-225 half-lives kept on ICRP 107. Demir et al. 2016: local copy is a proof — compare Table 1 with the published version when available.
