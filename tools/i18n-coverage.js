@@ -10,7 +10,8 @@
  *     titles and tooltips, and the printed report;
  *   - the catalog entries never used in any state (candidates for removal, or
  *     states missing from this list).
- * Elements with translate="no" (references, identifiers) are ignored.
+ * Elements with translate="no" (references, identifiers) and the blocks of the
+ * other language (data-lang-only, hidden) are ignored.
  *
  * Development only (tools/ is not shipped). Requires Node ≥ 22 and Chrome/Edge.
  *
@@ -87,7 +88,7 @@ const COLLECT = `(() => {
   const ATTRS = ['title', 'placeholder', 'aria-label', 'data-tooltip', 'data-label'];
   const out = new Set();
   const norm = s => String(s || '').replace(/\\s+/g, ' ').trim();
-  const skip = e => { for (; e && e.nodeType === 1; e = e.parentElement) if (['SCRIPT','STYLE','CODE','NOSCRIPT'].includes(e.tagName) || e.getAttribute('translate') === 'no') return true; return false; };
+  const skip = e => { for (; e && e.nodeType === 1; e = e.parentElement) if (['SCRIPT','STYLE','CODE','NOSCRIPT'].includes(e.tagName) || e.getAttribute('translate') === 'no' || (e.hidden && e.hasAttribute('data-lang-only'))) return true; return false; };
   const w = document.createTreeWalker(document.body, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT);
   let n;
   while ((n = w.nextNode())) {

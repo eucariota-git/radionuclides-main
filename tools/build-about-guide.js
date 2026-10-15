@@ -9,13 +9,18 @@
  * converts the Markdown and replaces the article body, so both copies always
  * say the same thing.
  *
+ * The Spanish guide (docs/USER_GUIDE.es.md, maintained by hand in parallel) is
+ * generated the same way into <article id="user-guide-es" lang="es" hidden>;
+ * the language overlay (js/i18n.js) shows one article or the other. Its
+ * headings take the prefix "guia-" so that the two sets of anchors differ.
+ *
  * Usage:
  *   node tools/build-about-guide.js          write about.html
  *   node tools/build-about-guide.js --check  exit 1 if about.html is out of date
  *
  * Supported Markdown (the subset the guide uses): #–#### headings, paragraphs,
  * nested ordered/unordered lists, pipe tables, ---, **bold**, *italic*,
- * `code`, [text](url), \* escapes and the inline tags <em> and <br>.
+ * `code`, [text](url), \* escapes and the inline tags <em>, <br>, <sub> and <sup>.
  */
 
 'use strict';
@@ -24,17 +29,21 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
-const MD = path.join(ROOT, 'docs', 'USER_GUIDE.md');
 const HTML = path.join(ROOT, 'about.html');
-const OPEN = '<article class="card about-content" id="user-guide">';
 const CLOSE = '</article>';
+const GUIDES = [
+  { md: path.join(ROOT, 'docs', 'USER_GUIDE.md'), prefix: 'guide-',
+    open: '<article class="card about-content" id="user-guide" data-lang-only="en">' },
+  { md: path.join(ROOT, 'docs', 'USER_GUIDE.es.md'), prefix: 'guia-',
+    open: '<article class="card about-content" id="user-guide-es" data-lang-only="es" lang="es" translate="no" hidden>' },
+];
 
 function inline(text) {
   const keep = [];
   const stash = html => { keep.push(html); return `\u0000${keep.length - 1}\u0000`; };
   let t = text;
   t = t.replace(/`([^`]+)`/g, (_, c) => stash(`<code>${esc(c)}</code>`));
-  t = t.replace(/<(\/?)(em|br)>/g, (_, slash, tag) => stash(`<${slash}${tag}>`));
+  t = t.replace(/<(\/?)(em|br|sub|sup)>/g, (_, slash, tag) => stash(`<${slash}${tag}>`));
   t = t.replace(/\\\*/g, () => stash('*'));
   t = esc(t);
   t = t.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_, label, url) =>
@@ -43,7 +52,7 @@ function inline(text) {
   t = t.replace(/(^|[^*\w])\*([^*\s][^*]*?)\*(?=[^*\w]|$)/g, '$1<em>$2</em>');
   return t.replace(/\u0000(\d+)\u0000/g, (_, i) => keep[Number(i)])
     // the guide writes superscripted constants as Γ^H*(10), Γ^H'(0.07), Γ^K-air
-    .replace(/Γ\^(K-air|H\*\(10\)|H'\(0\.07\))/g, 'Γ<sup>$1</sup>');
+    .replace(/Γ\^(K-air|H\*\(10\)|H'\(0[.,]07\))/g, 'Γ<sup>$1</sup>');
 }
 
 function esc(s) {
@@ -51,10 +60,10 @@ function esc(s) {
 }
 
 function slug(text) {
-  return text.toLowerCase().replace(/`/g, '').replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  return text.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/`/g, '').replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
-function convert(md) {
+function convert(md, prefix = 'guide-') {
   const lines = md.replace(/\r\n/g, '\n').split('\n');
   const out = [];
   const pad = n => '    ' + '  '.repeat(n);
@@ -105,7 +114,7 @@ function convert(md) {
     const h = line.match(/^(#{1,4})\s+(.*)$/);
     if (h) {
       const level = h[1].length + 1;            // # → h2 … #### → h5
-      const id = level === 3 ? ` id="guide-${slug(h[2])}"` : '';
+      const id = level === 3 ? ` id="${prefix}${slug(h[2])}"` : '';
       out.push(`${pad(0)}<h${level}${id}>${inline(h[2])}</h${level}>`);
       i++; continue;
     }
@@ -136,13 +145,16 @@ function convert(md) {
 }
 
 function build() {
-  const html = fs.readFileSync(HTML, 'utf8');
+  let html = fs.readFileSync(HTML, 'utf8');
   const nl = html.includes('\r\n') ? '\r\n' : '\n';
-  const a = html.indexOf(OPEN);
-  const b = html.indexOf(CLOSE, a);
-  if (a < 0 || b < 0) throw new Error('about.html: <article id="user-guide"> not found');
-  const body = convert(fs.readFileSync(MD, 'utf8')).replace(/\n/g, nl);
-  return html.slice(0, a + OPEN.length) + nl + body + nl + '  ' + html.slice(b);
+  for (const g of GUIDES) {
+    const a = html.indexOf(g.open);
+    const b = html.indexOf(CLOSE, a);
+    if (a < 0 || b < 0) throw new Error(`about.html: ${g.open} not found`);
+    const body = convert(fs.readFileSync(g.md, 'utf8'), g.prefix).replace(/\n/g, nl);
+    html = html.slice(0, a + g.open.length) + nl + body + nl + '  ' + html.slice(b);
+  }
+  return html;
 }
 
 if (require.main === module) {
@@ -150,10 +162,10 @@ if (require.main === module) {
   const current = fs.readFileSync(HTML, 'utf8');
   if (process.argv.includes('--check')) {
     if (next !== current) { console.error('about.html guide is out of date: run node tools/build-about-guide.js'); process.exit(1); }
-    console.log('✓ about.html guide matches docs/USER_GUIDE.md');
+    console.log('✓ about.html guides match docs/USER_GUIDE.md and docs/USER_GUIDE.es.md');
   } else {
     fs.writeFileSync(HTML, next);
-    console.log(next === current ? '✓ about.html guide already up to date' : '✓ about.html guide regenerated from docs/USER_GUIDE.md');
+    console.log(next === current ? '✓ about.html guide already up to date' : '✓ about.html guides regenerated from docs/USER_GUIDE.md and docs/USER_GUIDE.es.md');
   }
 }
 

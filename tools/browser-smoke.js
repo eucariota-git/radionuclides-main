@@ -549,7 +549,18 @@ async function main() {
         check(`${pg}: back to EN — page text identical to the initial load`, (await ev('document.body.innerText')) === textEn);
         await pageChecks(`${pg} EN/ES`);
       }
-      for (const [pg, w] of [['index.html', 1240], ['index.html?id=Ra-223', 390], ['decay.html?id=Lu-177', 390], ['dose.html?id=Pd-103', 390], ['effluent.html', 390], ['caregiver.html', 390]]) {
+      // About: the Spanish guide is its own article; the page index follows it
+      await open('about.html', 1280);
+      await ev(`document.getElementById('langToggle').click()`); await sleep(300);
+      const ab = await ev(`({ en: document.getElementById('user-guide').hidden, es: document.getElementById('user-guide-es').hidden,
+        h: document.querySelector('#user-guide-es h2').innerText,
+        toc: [...document.querySelectorAll('.about-toc a')].map(a => !!document.getElementById(a.getAttribute('href').slice(1)) && a.getAttribute('href')) })`);
+      check('about.html: ES shows the Spanish guide (English one hidden) and every index link reaches its anchor',
+        ab.en === true && ab.es === false && /Guía de uso/.test(ab.h) && ab.toc.every(Boolean) && ab.toc[0] === '#user-guide-es', JSON.stringify(ab));
+      await ev(`document.getElementById('langToggle').click()`); await sleep(300);
+      const ab2 = await ev(`({ en: document.getElementById('user-guide').hidden, es: document.getElementById('user-guide-es').hidden, first: document.querySelector('.about-toc a').getAttribute('href') })`);
+      check('about.html: back to EN shows the English guide and its anchors', ab2.en === false && ab2.es === true && ab2.first === '#user-guide', JSON.stringify(ab2));
+      for (const [pg, w] of [['index.html', 1240], ['index.html?id=Ra-223', 390], ['decay.html?id=Lu-177', 390], ['dose.html?id=Pd-103', 390], ['effluent.html', 390], ['caregiver.html', 390], ['about.html', 390]]) {
         await open(pg, w);
         await ev(`document.getElementById('langToggle').click()`); await sleep(400);
         await pageChecks(`${pg} in ES @${w}`);

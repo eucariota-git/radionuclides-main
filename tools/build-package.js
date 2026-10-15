@@ -52,7 +52,7 @@ const ALLOWLIST = [
   'assets/icons/',
   'manifest.json', 'sw.js',
   'README.md',
-  'docs/USER_GUIDE.md', 'docs/DEVELOPMENT.md', 'docs/ACCEPTANCE_TEST.md',
+  'docs/USER_GUIDE.md', 'docs/USER_GUIDE.es.md', 'docs/I18N_GLOSSARY_ES.md', 'docs/DEVELOPMENT.md', 'docs/ACCEPTANCE_TEST.md',
   'docs/CHANGELOG.md',
   'test/',
   'LICENSE', 'LICENSE.TXT', 'LICENSING.md', 'THIRD_PARTY_NOTICES.md',

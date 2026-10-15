@@ -209,6 +209,8 @@ references/             Open-license sources only (BOE legal texts, CC BY Oumano
 test/                   Mathematical, data, constants and application-integration validation
 docs/DEVELOPMENT.md     Developer and maintainer guide
 docs/USER_GUIDE.md      Canonical source for the in-app guide
+docs/USER_GUIDE.es.md   Spanish guide (parallel, shown in About when the screens are in Spanish)
+docs/I18N_GLOSSARY_ES.md Spanish terminology of the optional Spanish screens, with sources
 docs/CHANGELOG.md       Version history (older entries describe replaced methods)
 docs/                   Acceptance and audit/remediation material
 ```

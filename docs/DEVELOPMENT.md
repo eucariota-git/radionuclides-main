@@ -152,8 +152,10 @@ node tools/sync-beta-emax.js && node tools/generate-data.js
 node tools/recalc-gamma.js
 node tools/recalc-gamma.js --write
 
-# Regenerate the in-app copy of the user guide (about.html) from docs/USER_GUIDE.md.
-# Never edit the <article id="user-guide"> of about.html by hand.
+# Regenerate the in-app copies of the user guide (about.html) from docs/USER_GUIDE.md
+# and its Spanish parallel docs/USER_GUIDE.es.md (same section outline: a test
+# compares them; update both together). Never edit the <article id="user-guide">
+# or <article id="user-guide-es"> of about.html by hand.
 node tools/build-about-guide.js
 
 # Regenerate dose-weighted shielding spectra (after photon-data changes). Chain
@@ -323,7 +325,7 @@ script — keep both in sync) is:
 - `data/icrp107-index.json`, `data/icrp107-data.js`
 - `assets/icons/`
 - `manifest.json`, `sw.js`
-- `README.md`, `docs/USER_GUIDE.md`, `docs/CHANGELOG.md`
+- `README.md`, `docs/USER_GUIDE.md`, `docs/USER_GUIDE.es.md`, `docs/I18N_GLOSSARY_ES.md`, `docs/CHANGELOG.md`
 - `docs/ACCEPTANCE_TEST.md` — a clean template, never a partially filled
   working copy
 - `test/` and `docs/DEVELOPMENT.md` — the acceptance sheet (case B1) requires

@@ -196,9 +196,20 @@ const I18N = (() => {
     });
   }
 
+  // Blocks written separately for each language (the Spanish guide in About)
+  // are shown or hidden; in-page links to them follow (data-href-es)
+  function langBlocks() {
+    document.querySelectorAll('[data-lang-only]').forEach(el => { el.hidden = el.dataset.langOnly !== lang; });
+    document.querySelectorAll('a[data-href-es]').forEach(a => {
+      if (!a.dataset.hrefEn) a.dataset.hrefEn = a.getAttribute('href');
+      a.setAttribute('href', lang === 'es' ? a.dataset.hrefEs : a.dataset.hrefEn);
+    });
+  }
+
   function setLang(next) {
     lang = next === 'es' ? 'es' : 'en';
     document.documentElement.lang = lang;
+    langBlocks();
     translateAll();
     observe(lang === 'es');
     document.dispatchEvent(new CustomEvent('nm-lang-change', { detail: { lang } }));

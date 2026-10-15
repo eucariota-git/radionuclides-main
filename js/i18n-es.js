@@ -95,6 +95,13 @@ const I18N_ES = {
       'Caregiver': 'Acompañantes',
       'Guide': 'Guía',
     },
+    '.about-toc': {
+      'Guide': 'Guía',
+      'Methods & limitations': 'Métodos y limitaciones',
+      'References': 'Referencias',
+      'Licences': 'Licencias',
+      'Third-party notices': 'Avisos de terceros',
+    },
     // Fragments of the Properties reference notes
     '#refList': {
       'not': 'no',
@@ -161,6 +168,17 @@ const I18N_ES = {
     'Original application and code: © 2026 Ramon Sendon · EUPL-1.2 · Third-party data: separate terms —':
       'Aplicación y código originales: © 2026 Ramon Sendon · EUPL-1.2 · Datos de terceros: condiciones propias —',
     'About, guide & licences': 'Acerca de, guía y licencias',
+
+    // ================= About (about.html) =================
+    // The guide is a separate Spanish article (docs/USER_GUIDE.es.md); the
+    // licence texts and third-party notices stay in English (translate="no")
+    'NM Radionuclide Planner — About, Guide & Licences': 'NM Radionuclide Planner — Acerca de, guía y licencias',
+    'About, Guide & Licences': 'Acerca de, guía y licencias',
+    'User guidance, licence terms and third-party attributions available directly in the app.':
+      'Guía de uso, condiciones de licencia y atribuciones de terceros, disponibles directamente en la aplicación.',
+    'On this page': 'En esta página',
+    'Original application and code: © 2026 Ramon Sendon · EUPL-1.2 · Third-party data: separate terms — About, guide & licences':
+      'Aplicación y código originales: © 2026 Ramon Sendon · EUPL-1.2 · Datos de terceros: condiciones propias — Acerca de, guía y licencias',
 
     // Quantity names (decimal comma in Spanish, RD 1029/2022 Annex I)
     "H'(0.07)": "H'(0,07)",

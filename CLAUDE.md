@@ -22,7 +22,7 @@ decay.html        Decay calculator
 dose.html         External dose estimator
 effluent.html     Liquid effluent screening — NUREG/CR-5814 Scenarios 1 (sewer inspector) and 2 (STP sludge operator)
 caregiver.html    Caregiver dose after discharge — port of references/Dosis_acompanantes_simple_v2.1.xlsx
-about.html        About, user guide (generated from docs/USER_GUIDE.md by tools/build-about-guide.js), licences and third-party notices
+about.html        About, user guide (generated from docs/USER_GUIDE.md and docs/USER_GUIDE.es.md by tools/build-about-guide.js), licences and third-party notices
 
 css/style.css     Shared styles (CSS variables, responsive grid)
 
@@ -144,7 +144,7 @@ Calculators recalculate live (Decay/Dose through `UI.onInputs`, Effluent/Caregiv
 
 - Original project code and documentation are licensed under EUPL-1.2 only; `LICENSING.md` defines the precise scope.
 - Do not describe the whole repository as EUPL or MIT. Chart.js and @kurkle/color retain their upstream MIT licences, while ICRP and other third-party data retain the terms in `LICENSE.TXT` and `THIRD_PARTY_NOTICES.md`.
-- Keep the licence text and scope summary embedded in `about.html` synchronized with `LICENSE`, `LICENSING.md`, `LICENSE.TXT` and `THIRD_PARTY_NOTICES.md`. `docs/USER_GUIDE.md`, not `README.md`, remains the canonical source for the in-app guide: the `<article id="user-guide">` of `about.html` is generated with `node tools/build-about-guide.js` (never edit it by hand; a test checks it is up to date).
+- Keep the licence text and scope summary embedded in `about.html` synchronized with `LICENSE`, `LICENSING.md`, `LICENSE.TXT` and `THIRD_PARTY_NOTICES.md`. `docs/USER_GUIDE.md`, not `README.md`, remains the canonical source for the in-app guide: the `<article id="user-guide">` of `about.html` is generated with `node tools/build-about-guide.js` (never edit it by hand; a test checks it is up to date). The Spanish guide `docs/USER_GUIDE.es.md` is a parallel kept by hand (same section outline, tested) and generated into `<article id="user-guide-es" hidden>`; the English guide prevails. Licence texts and third-party notices stay in English (`translate="no"`).
 
 ## Key References
 

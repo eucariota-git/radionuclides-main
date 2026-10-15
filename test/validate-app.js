@@ -1210,6 +1210,18 @@ async function main() {
         /<script src="js\/i18n-es\.js"><\/script>\s*<script src="js\/i18n\.js"><\/script>\s*<script src="js\/ui\.js"><\/script>/.test(h) && /UI\.initLanguage\(\);/.test(h)) &&
       /if \(stored === 'es'\) setLang\('es'\);/.test(i18nJs) && /'\.\/js\/i18n\.js',\s*'\.\/js\/i18n-es\.js'/.test(read('sw.js')));
     check('About loads utils.js (its decimal button did nothing without it)', /<script src="js\/utils\.js"><\/script>/.test(aboutHtml));
+    // Spanish guide: a hand-maintained parallel of docs/USER_GUIDE.md, generated
+    // into its own hidden article; licences stay in English (translate="no")
+    const outline = md => (md.match(/^#{1,3} .*$/gm) || []).map(h => h.match(/^#+/)[0].length + (/^### \d\./.test(h) ? h.match(/\d\./)[0] : ''));
+    const guideEs = fs.existsSync(path.join(ROOT, 'docs/USER_GUIDE.es.md')) ? read('docs/USER_GUIDE.es.md') : '';
+    check('Spanish guide has the same section outline as docs/USER_GUIDE.md (update both together)',
+      guideEs !== '' && JSON.stringify(outline(guideEs)) === JSON.stringify(outline(read('docs/USER_GUIDE.md'))));
+    check('About: Spanish guide article hidden by default, English one shown; licences and notices not translated',
+      /<article class="card about-content" id="user-guide-es" data-lang-only="es" lang="es" translate="no" hidden>/.test(aboutHtml) &&
+      /<article class="card about-content" id="user-guide" data-lang-only="en">/.test(aboutHtml) &&
+      /id="licences" translate="no"/.test(aboutHtml) && /id="third-party-notices" translate="no"/.test(aboutHtml) &&
+      /data-href-es="#guia-calidad-de-los-datos-y-limitaciones"/.test(aboutHtml) && aboutHtml.includes('id="guia-calidad-de-los-datos-y-limitaciones"') &&
+      /data-href-es="#guia-referencias"/.test(aboutHtml) && aboutHtml.includes('id="guia-referencias"'));
   }
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);
