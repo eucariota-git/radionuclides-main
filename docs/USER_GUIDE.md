@@ -15,8 +15,9 @@ No installation or authentication is needed:
 - **Browsers**: current Firefox, Chrome, Safari or Edge, on desktop or mobile.
 - **Offline**: Calculators work offline with the complete local copy (opened from `file://`, or from the local cache of a copy first loaded over HTTP(S)); external references need a connection.
 - **Install as app (PWA)**: served through `localhost` or HTTPS, a compatible browser offers "Install" / "Add to Home screen"; the app then runs standalone and fully offline.
-- **Reports and CSV**: Decay, Dose, Effluent and Caregiver have a **📄 Report / PDF** button (inputs, results, method, sources, disclaimer and sign-off line; use the browser's "Save as PDF") and a CSV export in which every row repeats the application version, build, data version, export time (UTC) and the inputs needed to reproduce the result.
-- Each page explains its method, sources and limits in its own *Method* and notes blocks (collapsed: click the title marked ▸ to open them); this guide gives the purpose, the use and the key limits.
+- **Reports and CSV**: Decay, Dose, Effluent and Caregiver have a **Report / PDF** button (inputs, results, method, sources, disclaimer and sign-off line; use the browser's "Save as PDF") and a CSV export in which every row repeats the application version, build, data version, export time (UTC) and the inputs needed to reproduce the result.
+- **Results update as you type** on the four calculators. An invalid entry is named in a red box under the form, the field is outlined, and the results are hidden until it is corrected — the report and the CSV always describe the inputs on screen.
+- Each page explains its method, sources and limits in its own *Method* and notes blocks (collapsed: click the title marked ▸ to open them); this guide — **Guide** in the menu — gives the purpose, the use and the key limits.
 
 ---
 
@@ -47,7 +48,7 @@ No installation or authentication is needed:
 2. Give the time either as **reference and target date/time** (local time of the device) or as an **elapsed time**, which takes precedence when filled.
 3. Optional **target activity**: the time to reach it (a target ≥ A₀ is reported as already reached or unreachable; zero as never reached in finite time).
 4. Optional **mass of material being assessed**, the mass that contains the activity (state whether the container is included). It enables the Table A1 clearance check and the Table B exemption criteria, which Annex II A.1 sets *separately*: a) total activity of a source vs column 3; b) moderate quantity (≤ 1000 kg) vs column 2.
-5. Press **Calculate**: A(t), fraction remaining, the decay curve and a table of values. If an input changes afterwards, a notice asks to recalculate; the report and CSV describe the last calculation.
+5. **Results** (updated as you type): A(t), fraction remaining, the decay curve and a table of values. With no elapsed time and no target date the values are those at t = 0, and a note says so.
 
 **Key limits**: one nuclide; mixtures and sums over sources are not evaluated; reaching the Table A1 level is not by itself a clearance (Annex III applies).
 
@@ -62,10 +63,10 @@ No installation or authentication is needed:
 **How to use**:
 1. Select the nuclide and **activity** (A₀ is the activity at the start of each exposure). For an extended ICRP 107 nuclide with short-lived progeny (Ge-68 → Ga-68, Sn-113 → In-113m, Mo-99 → Tc-99m…), **Short-lived progeny** chooses between the progeny in equilibrium (default, as for the curated chains) and the parent alone (freshly separated source).
 2. **Distance** in m or cm (below 0.25 m the result carries a warning: the point-source model depends on the real source size there).
-3. Optional **shielding** — lead, elemental iron (ρ = 7.874 g/cm³, not a generic steel) or normal / light-weight concrete — and optional **patient transmission** (no default: it depends on energy, anatomy and geometry). *Shielding details* names the method used: the Archer broad-beam fit of Oumano et al. (2025) for Tc-99m, F-18, I-131 and Lu-177 behind lead or concrete, otherwise spectrum-weighted narrow-beam attenuation with build-up; it gives the first HVL/TVL and warns when part of the spectrum falls outside the tabulated range.
+3. Optional **shielding** — lead, elemental iron (ρ = 7.874 g/cm³, not a generic steel) or normal / light-weight concrete — and optional **patient transmission** in % (empty = no patient attenuation; no default value: it depends on energy, anatomy and geometry). *Shielding details* names the method used: the Archer broad-beam fit of Oumano et al. (2025) for Tc-99m, F-18, I-131 and Lu-177 behind lead or concrete, otherwise spectrum-weighted narrow-beam attenuation with build-up; it gives the first HVL/TVL and warns when part of the spectrum falls outside the tabulated range.
 4. **Exposure** time per administration and administrations per year; choose whether physical decay is integrated during each exposure.
-5. Press **Calculate Dose**: rate at t = 0 and after decay, reference rate at 1 m, annual integrated dose for **H\*(10)** (estimator of effective dose) and **H'(0.07)** (skin/extremity indicator), and the rate against distance.
-6. **Annual limit screening** (indicative): percentages of the limits of the Spanish Royal Decree 1029/2022 — 20 mSv/y effective (workers), 1 mSv/y (public), 500 mSv/y skin and extremities, lens of the eye 100 mSv in 5 consecutive years with at most 50 mSv in one year. No "safe" verdict is issued.
+5. **Results** (updated as you type): rate at t = 0 and after decay, reference rate at 1 m, annual integrated dose for **H\*(10)** (estimator of effective dose) and **H'(0.07)** (skin/extremity indicator), and the rate against distance.
+6. **Annual limit screening** (indicative): percentages of the limits of the Spanish Royal Decree 1029/2022 — 20 mSv/y effective (workers), 1 mSv/y (public), 500 mSv/y skin and extremities, lens of the eye 100 mSv in 5 consecutive years with at most 50 mSv in one year. No "safe" verdict is issued. The report includes the same screening.
 
 **Key limits**: point source; room scatter and source distribution are not modelled. H\*(10) and H'(0.07) are area-monitoring quantities: these estimates do not establish compliance (personal quantities are Hp(10), Hp(0.07), Hp(3); RD 1029/2022 art. 34 allows estimating category B doses from workplace monitoring). Decay between administrations is not modelled. **Y-90** has no photon line: Dose offers only an experimental container-dependent bremsstrahlung scenario, with direct beta dose excluded and no regulatory verdict. For other nuclides without photon lines no estimate is made — which is not evidence that there is no external hazard.
 
@@ -115,7 +116,7 @@ No installation or authentication is needed:
 
 ## Dark Mode
 
-The **moon icon** (🌙) in the top-right corner toggles dark mode; the choice is saved in the browser.
+Without a saved choice the app follows the light or dark setting of the device. The **moon / sun button** in the top-right corner switches it; that choice is saved in the browser and then takes precedence.
 
 ## Keyboard Shortcuts
 

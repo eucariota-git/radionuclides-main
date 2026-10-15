@@ -52,7 +52,9 @@ Each module (PHYSICS, CALC, DB, ICRP107, UI) is an IIFE returning public API. No
 - Dose includes the progeny by default (selector «Short-lived progeny»: include / parent only) and states it in the result line, the report row «Progeny in the constants» and the CSV column `Progeny`; Properties shows both Γ and marks the table value with «+»
 
 ### `UI` (`js/ui.js`)
-- Dark mode, print, keyboard shortcuts, `watchStaleResults(cardId)` (notice when inputs change after a calculation)
+- Dark mode (a stored choice wins; otherwise `prefers-color-scheme`, followed live), print, keyboard shortcuts
+- `onInputs(fn, {delay, exclude})` — live recalculation: calls `fn` (debounced while typing) on input/change of any control in `<main>` outside `exclude`. Decay and Dose use it; Effluent and Caregiver wire their own `render()`
+- `inputErrors(boxId)` → `{show(message, fieldId), clear()}` — the page's error box plus `aria-invalid` and `.is-invalid` on the offending field (no `alert()`). On an invalid input the calculators hide the results and drop the snapshot, so the report and the CSV cannot describe another case
 - `getChartTheme()` — colours from CSS tokens, re-read on `nm-theme-change`: `green`, `danger`, `orange`, `text`, `grid`, `surface` and `spectrum.{G,X,AQ}` (validated categorical hues, light and dark). New charts take their colours from here and re-colour on `nm-theme-change`
 - Sets `Chart.defaults.locale = 'en-US'` and removes the thousands separator from default linear/log tick labels (a Spanish reader takes "1,000" for a decimal comma)
 
@@ -256,8 +258,8 @@ warning is only silenced when the code is right and the rule does not apply.
 Use a SHORT `--user-data-dir` (e.g. under `os.tmpdir()`): with a long profile
 path Cache Storage fails with «Unexpected internal error», the service worker
 becomes `redundant` and offline tests fail for reasons unrelated to the app.
-Override `alert`, `confirm` and `print` before load (extended nuclides open a
-`confirm`). Kill only the Chrome process you started.
+Override `alert`, `confirm` and `print` before load (the calculators no longer
+open dialogs, but `print` does). Kill only the Chrome process you started.
 
 ---
 

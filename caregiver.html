@@ -24,9 +24,10 @@
       <a href="dose.html">Dose</a>
       <a href="effluent.html">Effluent</a>
       <a href="caregiver.html" class="active">Caregiver</a>
+      <a href="about.html">Guide</a>
     </nav>
     <button id="darkToggle" type="button" class="btn-icon" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
-      <span id="darkIcon">🌙</span>
+      <span id="darkIcon" class="ico ico-moon" aria-hidden="true"></span>
     </button>
   </div>
 </header>
@@ -48,7 +49,7 @@
 
   <!-- A. Case data -->
   <div class="card">
-    <h2 class="card-title">&#128138; A. Case data</h2>
+    <h2 class="card-title"><span class="ico ico-user" aria-hidden="true"></span> A. Case data</h2>
     <div class="form-grid">
       <div class="form-group">
         <label class="form-label" for="preset">Kinetics preset</label>
@@ -134,7 +135,7 @@
 
   <!-- B. Cohabitation -->
   <div class="card mt-2">
-    <h2 class="card-title">&#127968; B. Cohabitation</h2>
+    <h2 class="card-title"><span class="ico ico-home" aria-hidden="true"></span> B. Cohabitation</h2>
     <div class="overflow-x-auto">
       <table class="data-table stack-on-mobile" id="rowsTable">
         <thead>
@@ -162,7 +163,7 @@
 
   <!-- Results -->
   <div class="card mt-2" id="resultsCard">
-    <h2 class="card-title">&#128202; Results</h2>
+    <h2 class="card-title"><span class="ico ico-chart" aria-hidden="true"></span> Results</h2>
     <div id="calcError" class="alert alert-danger hidden" role="alert"></div>
     <div id="resultBlock">
       <div class="alert mb-1" id="statusBox" role="status"></div>
@@ -234,16 +235,16 @@
       </details>
 
       <div class="d-flex gap-2 mt-2 mb-1" data-no-print>
-        <button class="btn btn-secondary btn-sm" id="btnPrint" type="button" title="Generate a printable calculation report with traceability (sources, method, disclaimer)">📄 Report / PDF</button>
-        <button class="btn btn-secondary btn-sm" id="btnCsv" type="button" title="Export results as CSV">⬇ Export CSV</button>
-        <button class="btn btn-secondary btn-sm" id="btnReset" type="button" title="Restore the default values">↺ Defaults</button>
+        <button class="btn btn-secondary btn-sm" id="btnPrint" type="button" title="Generate a printable calculation report with traceability (sources, method, disclaimer)"><span class="ico ico-file" aria-hidden="true"></span> Report / PDF</button>
+        <button class="btn btn-secondary btn-sm" id="btnCsv" type="button" title="Export results as CSV"><span class="ico ico-download" aria-hidden="true"></span> Export CSV</button>
+        <button class="btn btn-secondary btn-sm" id="btnReset" type="button" title="Restore the default values"><span class="ico ico-reset" aria-hidden="true"></span> Defaults</button>
       </div>
     </div>
   </div>
 
   <div class="card mt-2">
     <details id="methodDetails">
-    <summary class="card-title">&#128214; Method — formulas, assumptions, profiles, criteria and references</summary>
+    <summary class="card-title"><span class="ico ico-book" aria-hidden="true"></span> Method — formulas, assumptions, profiles, criteria and references</summary>
     <div class="text-sm">
       <p>With Ḣ<sub>0</sub> the rate at 1 m at discharge, t<sub>r</sub> = max(0, t<sub>fast end</sub> − t<sub>discharge</sub>) the
         remaining duration of the fast phase, λ = ln 2 / T<sub>eff</sub> (λ<sub>f</sub> = λ<sub>s</sub> when t<sub>r</sub> = 0), and
@@ -410,7 +411,7 @@
     const input = { preset: $('preset').value, radiopharmaceutical: $('radiopharmaceutical').value, category: $('category').value, profile: $('profile').value };
     for (const f of NUM_FIELDS) {
       const v = readNum($(f));
-      if (Number.isNaN(v)) throw new RangeError(`"${$(f).title}" must be a number`);
+      if (Number.isNaN(v)) throw Object.assign(new RangeError(`"${$(f).title}" must be a number`), { field: f });
       input[f] = v;
     }
     input.rows = {};
@@ -418,7 +419,7 @@
       const r = { d_during: distOf($(`${k}_d_during`)), d_after: distOf($(`${k}_d_after`)) };
       for (const f of ['days', 'h_during', 'h_after']) {
         const v = readNum($(`${k}_${f}`));
-        if (Number.isNaN(v)) throw new RangeError(`"${$(`${k}_${f}`).getAttribute('aria-label')}" must be a number`);
+        if (Number.isNaN(v)) throw Object.assign(new RangeError(`"${$(`${k}_${f}`).getAttribute('aria-label')}" must be a number`), { field: `${k}_${f}` });
         r[f] = v;
       }
       input.rows[k] = r;
@@ -559,8 +560,9 @@
 
   // ---- Render ----
   let last = null;
+  // Error message in the page box and the offending field marked (presentation review 2026-10-15)
+  const inputErr = UI.inputErrors('calcError');
   function render() {
-    const errBox = $('calcError');
     let input, out, cv, sc;
     try {
       input = readInputs();
@@ -571,13 +573,12 @@
       cv = CAREGIVER.curve(input, data);
       sc = CAREGIVER.selfCheck(input, data);
     } catch (err) {
-      errBox.textContent = err.message;
-      errBox.classList.remove('hidden');
+      inputErr.show(err.message, err.field);
       $('resultBlock').classList.add('hidden');
       last = null;
       return;
     }
-    errBox.classList.add('hidden');
+    inputErr.clear();
     $('resultBlock').classList.remove('hidden');
     last = { input, out, cv, sc };
 
@@ -681,7 +682,7 @@
   };
 
   $('btnPrint').addEventListener('click', () => {
-    if (!last) { alert('Correct the input errors first.'); return; }
+    if (!last) return;   // the button is hidden with the results
     const { input, out, cv, sc } = last;
     const inv = out.inverse;
     const prof = data.profiles[input.profile];
@@ -734,7 +735,7 @@
   });
 
   $('btnCsv').addEventListener('click', () => {
-    if (!last) { alert('Correct the input errors first.'); return; }
+    if (!last) return;   // the button is hidden with the results
     const { input, out, cv } = last;
     // Rectangular, self-describing CSV (as the Decay and Effluent exports):
     // identity, versions, inputs and status repeated on every row.

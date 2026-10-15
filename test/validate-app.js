@@ -87,11 +87,13 @@ async function main() {
     /Time to reach the Table A1 concentration level[^\n]+UTILS\.fmt\(t_clear_h\)/.test(decayHtml));
   console.log();
 
+  const noComments = src => src.replace(/^\s*\/\/.*$/gm, '');
   console.log('Test 4: input-state and validation wiring');
-  check('patient transmission starts disabled when attenuation is No',
-    /id="patientTx"[^>]+disabled/.test(doseHtml));
-  check('patient attenuation toggle controls disabled state',
-    /txInput\.disabled = false/.test(doseHtml) && /txInput\.disabled = true/.test(doseHtml));
+  // One optional field since the presentation review of 2026-10-15 (the Yes/No
+  // selector duplicated it): empty = no patient attenuation, no default value.
+  check('patient transmission is one optional field with no default value',
+    /id="patientTx"[^>]+value=""/.test(doseHtml) && !/id="patientAtten"/.test(doseHtml) &&
+    /txInput\.value\.trim\(\) !== '' \|\| txInput\.validity\.badInput/.test(doseHtml));
   check('patient transmission is exactly 1 when attenuation is No',
     /const patientTx = patientAttenEnabled \? parsed \/ 100 : 1/.test(doseHtml));
   check('shield thickness no longer coerces NaN to zero',
@@ -318,7 +320,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v53');
+    swVersion === 'nm-planner-v54');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -444,9 +446,13 @@ async function main() {
     check('decay: examples carry no unit, dates are labelled local, a manual elapsed time is recorded as such (T18)',
       !/e\.g\. 24 \(hours\)|e\.g\. 100 \(MBq\)/.test(decayHtml) && /Elapsed time entered manually; target date not used/.test(decayHtml) &&
       /'Elapsed_time_source'/.test(decayHtml) && /Fraction remaining \(%\)/.test(decayHtml));
-    check('decay and dose flag edited inputs as stale and export only the calculated snapshot (T19)',
-      /function watchStaleResults\(cardId\)/.test(uiJs) && /Inputs changed — recalculate to update results/.test(uiJs) &&
-      /staleWatch\.fresh\(\)/.test(decayHtml) && (doseHtml.match(/staleWatch\.fresh\(\)/g) || []).length === 2 &&
+    // T19 contract since the presentation review of 2026-10-15: live calculation,
+    // and an invalid input hides the results (no stale snapshot can be exported).
+    check('decay and dose recalculate live; an invalid input hides the results and the snapshot (T19)',
+      /function onInputs\(fn/.test(uiJs) && /function inputErrors\(boxId\)/.test(uiJs) &&
+      [decayHtml, doseHtml].every(h => /UI\.onInputs\(calculate, \{ exclude: '#nuclideCombobox, #resultsCard' \}\)/.test(h) &&
+        /function fail\(message, fieldId\) \{\s*errors\.show\(message, fieldId\);\s*document\.getElementById\('resultsCard'\)\.classList\.add\('hidden'\);/.test(h) &&
+        !/id="btnCalc"/.test(h) && !/\balert\(|\bconfirm\(/.test(noComments(h))) &&
       !/btnExportCsv[\s\S]{0,900}getElementById\('(refDateTime|targetDateTime)'\)/.test(decayHtml));
     check('dose: quantities are dose equivalents (no D\', no "whole body", no "worst case") (T20, T22)',
       !/D'\(0\)|D'\(t\)|D\(annual\)|whole body|worst case/.test(doseHtml) &&
@@ -983,8 +989,8 @@ async function main() {
     /\$\{t_h > 0 \? `<br>t = \$\{UTILS\.fmt\(t_h\)\} h: \$\{status\(At_Bq/.test(read('decay.html')) &&
     /const distWarning = d_m < 0\.25/.test(doseHtml));
   check('v1.12.2: Effluent and Caregiver Method collapsible (details > summary.card-title), visible marker, links open them',
-    /<details id="methodDetails">\s*<summary class="card-title">&#128214; Method/.test(effluentHtml) &&
-    /<details id="methodDetails">\s*<summary class="card-title">&#128214; Method/.test(caregiverHtml) &&
+    /<details id="methodDetails">\s*<summary class="card-title"><span class="ico ico-book" aria-hidden="true"><\/span> Method/.test(effluentHtml) &&
+    /<details id="methodDetails">\s*<summary class="card-title"><span class="ico ico-book" aria-hidden="true"><\/span> Method/.test(caregiverHtml) &&
     /summary\.card-title::before \{\s*content: '▶'/.test(styleCss) &&
     /data-open-details="methodDetails criteriaDetails"/.test(caregiverHtml) && /a\[data-open-details\]/.test(uiJs));
 
@@ -1066,6 +1072,45 @@ async function main() {
     /This table — \$\{dDay\} d → /.test(caregiverHtml) && /This table \(restrictions/.test(caregiverHtml) &&
     /_themeRole: 'indef', borderColor: theme\.spectrum\.X/.test(caregiverHtml) && /order: 2 \}\);/.test(caregiverHtml) &&
     /sort: \(a, b\) => a\.datasetIndex - b\.datasetIndex/.test(caregiverHtml) && /surface: token\('--white'\)/.test(uiJs));
+
+  console.log();
+  console.log('Test 20: usability and presentation review 2026-10-15 (v1.14.0)');
+  {
+    const pages = { index: indexHtml, decay: decayHtml, dose: doseHtml, effluent: effluentHtml, caregiver: caregiverHtml, about: aboutHtml };
+    check('property-card labels are not upper-cased (β Emax read "B EMAX", μ read "Μ", keV read "KEV")',
+      !/text-transform:\s*uppercase/.test(styleCss));
+    check('Dose report contains the indicative limit screening it announces (none for Y-90) and prints the distance once in metres',
+      /\.\.\.\(r\.isY90 \? \[\] : \[limitScreeningSection\(r\)\]\)/.test(doseHtml) &&
+      /function limitScreeningSection\(r\)[\s\S]{0,900}of 20 mSv\/y \(exposed workers\)[\s\S]{0,900}of 500 mSv\/y/.test(doseHtml) &&
+      /r\.distUnit === 'm' \? `\$\{r\.distRaw\} m`/.test(doseHtml));
+    check('no modal dialogs in the calculators: errors go to the page box with the field marked',
+      ['decay', 'dose', 'effluent', 'caregiver'].every(k => !/\balert\(|\bconfirm\(/.test(noComments(pages[k])) && /id="calcError"/.test(pages[k])) &&
+      /inputErr\.show\(err\.message, err\.field\)/.test(effluentHtml) && /inputErr\.show\(err\.message, err\.field\)/.test(caregiverHtml) &&
+      /el\.setAttribute\('aria-invalid', 'true'\)/.test(uiJs) && /\.form-input\.is-invalid/.test(styleCss));
+    check('extended ICRP 107 entries keep a visible "NOT manually validated" warning in Decay and Dose (replaces the confirm dialog)',
+      /n\._icrp107\s*\? '<div[^']*>&#9888; ICRP 107 extended entry: decay data have NOT been manually validated/.test(decayHtml) &&
+      /n\._icrp107\s*\? '<div[^']*>&#9888; ICRP 107 extended entry: photon emissions and dose constants are computed automatically and have NOT been manually validated/.test(doseHtml));
+    check('Decay without elapsed time or target date says the values are at t = 0 (screen and report)',
+      /const timeGiven = elapsedManual \|\| !!\(refDt && targetDt\)/.test(decayHtml) && /id="noTimeNote"/.test(decayHtml) &&
+      /r\.timeGiven === false \? 'none entered/.test(decayHtml));
+    check('Properties: table grows on wide screens with the header under the site header; bounded provenance text; no nested scroll in the spectrum table',
+      /@media \(min-width: 1240px\) \{\s*#nuclideTableWrap \{ overflow: visible; max-height: none; \}\s*#nuclideTable th \{ top: var\(--site-header-h\); \}/.test(styleCss) &&
+      (indexHtml.match(/<div class="src-text">/g) || []).length === 4 &&
+      /<details class="spectrum-lines mt-1"/.test(indexHtml) && !/max-height:200px/.test(indexHtml) &&
+      /Number\(p\.energy_keV\)\.toFixed\(1\)/.test(indexHtml));
+    check('main menu has a Guide entry on every page',
+      Object.values(pages).every(h => /<nav class="site-nav"[\s\S]*?<a href="about\.html"( class="active")?>Guide<\/a>\s*<\/nav>/.test(h)));
+    check('icons are own CSS-mask SVGs (no emoji in card titles, buttons or the theme toggle)',
+      /\.ico \{[\s\S]*?mask: var\(--ico\)/.test(styleCss) && /\.ico-moon \{ --ico: url\("data:image\/svg\+xml,/.test(styleCss) &&
+      Object.values(pages).every(h => !/<span id="darkIcon">/.test(h) && !/class="card-title">&#(9881|127959|8987|128202|128138|128679|127981|127968|128214);/.test(h) &&
+        !/>(📄|⬇|↺|&#128196;|&#11123;) /.test(h)) && /icon\.className = 'ico ' \+ \(isDark \? 'ico-sun' : 'ico-moon'\)/.test(uiJs));
+    check('theme follows prefers-color-scheme until the user chooses (stored choice wins)',
+      /matchMedia\('\(prefers-color-scheme: dark\)'\)/.test(uiJs) && /if \(stored === '1' \|\| stored === '0'\) apply\(stored === '1'\);\s*else apply\(!!\(system && system\.matches\)\);/.test(uiJs));
+    check('phones: header not sticky, logo and theme button on one row; Dose results stacked with inline values',
+      /@media \(max-width: 700px\) \{\s*\.site-header \{ position: static; \}/.test(styleCss) &&
+      /\.site-logo \{ order: 1; flex: 1 1 auto; \}/.test(styleCss) &&
+      /class="data-table stack-on-mobile stack-inline" id="resultsTable"/.test(doseHtml) && /\.stack-on-mobile\.stack-inline td \{ display: block;/.test(styleCss));
+  }
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);
   process.exitCode = failed === 0 ? 0 : 1;

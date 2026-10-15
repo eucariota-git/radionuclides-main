@@ -24,9 +24,10 @@
       <a href="dose.html">Dose</a>
       <a href="effluent.html">Effluent</a>
       <a href="caregiver.html">Caregiver</a>
+      <a href="about.html">Guide</a>
     </nav>
     <button id="darkToggle" type="button" class="btn-icon" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
-      <span id="darkIcon">🌙</span>
+      <span id="darkIcon" class="ico ico-moon" aria-hidden="true"></span>
     </button>
   </div>
 </header>
@@ -37,7 +38,7 @@
 
   <!-- Inputs -->
   <div class="card">
-    <h2 class="card-title">&#9881; Parameters</h2>
+    <h2 class="card-title"><span class="ico ico-sliders" aria-hidden="true"></span> Parameters</h2>
     <div class="form-grid">
       <div class="form-group">
         <label class="form-label" for="nuclideSearch" id="nuclideSearchLabel">Radionuclide</label>
@@ -118,14 +119,14 @@
       </div>
     </div>
 
-    <div class="mt-2">
-      <button class="btn btn-primary" id="btnCalc">Calculate</button>
-    </div>
+    <p class="form-hint mt-1">Results update as you type.</p>
   </div>
+
+  <div id="calcError" class="alert alert-danger mt-2 hidden" role="alert"></div>
 
   <!-- Results -->
   <div class="card mt-2 hidden" id="resultsCard">
-    <h2 class="card-title">&#128202; Results</h2>
+    <h2 class="card-title"><span class="ico ico-chart" aria-hidden="true"></span> Results</h2>
     <div id="nuclideInfo" class="alert alert-info mb-1"></div>
     <div class="result-grid" id="resultGrid"></div>
 
@@ -137,14 +138,14 @@
     <!-- Clearance assessment -->
     <div id="clearanceSection" class="hidden">
       <hr class="divider">
-      <h3 class="card-title">&#9851; Clearance assessment &mdash; RD 1217/2024, Annex IV Table A1</h3>
+      <h3 class="card-title"><span class="ico ico-check" aria-hidden="true"></span> Clearance assessment &mdash; RD 1217/2024, Annex IV Table A1</h3>
       <div id="clearanceContent"></div>
     </div>
 
     <!-- Exemption assessment (Table B) -->
     <div id="exemptionSection" class="hidden">
       <hr class="divider">
-      <h3 class="card-title">&#9878; Exemption assessment &mdash; RD 1217/2024, Annex IV Table B</h3>
+      <h3 class="card-title"><span class="ico ico-scale" aria-hidden="true"></span> Exemption assessment &mdash; RD 1217/2024, Annex IV Table B</h3>
       <div id="exemptionContent"></div>
     </div>
 
@@ -159,8 +160,8 @@
       <div class="d-flex align-center gap-2 mb-1 justify-between">
         <span class="text-sm text-muted" id="tableCaption">Activity at selected time points</span>
         <span class="d-flex gap-1">
-          <button class="btn btn-secondary btn-sm" id="btnPrintDecay" type="button" title="Generate a printable calculation report with traceability (sources, method, disclaimer)">&#128196; Report / PDF</button>
-          <button class="btn btn-secondary btn-sm" id="btnExportCsv" type="button">&#11123; Export CSV</button>
+          <button class="btn btn-secondary btn-sm" id="btnPrintDecay" type="button" title="Generate a printable calculation report with traceability (sources, method, disclaimer)"><span class="ico ico-file" aria-hidden="true"></span> Report / PDF</button>
+          <button class="btn btn-secondary btn-sm" id="btnExportCsv" type="button" title="Export results as CSV"><span class="ico ico-download" aria-hidden="true"></span> Export CSV</button>
         </span>
       </div>
       <div class="overflow-x-auto max-height-260">
@@ -255,6 +256,7 @@
   const dropdown     = document.getElementById('nuclideDropdown');
   const dbNuclides   = DB.getAll();
   let selectedNuclide = null;
+  let liveReady = false;   // set once calculate() and its state exist (end of this script)
 
   // Combobox keyboard model: aria-activedescendant.
   //
@@ -313,6 +315,7 @@
     hiddenSelect.value = id;
     searchInput.value = id;
     setExpanded(false);
+    if (liveReady) calculate();
   }
 
   searchInput.addEventListener('focus', () => {
@@ -418,8 +421,7 @@
 
   document.addEventListener('nm-theme-change', applyDecayChartTheme);
 
-  // ---- Calculate ----
-  document.getElementById('btnCalc').addEventListener('click', calculate);
+  // ---- Calculate (live: see the wiring at the end of this script) ----
 
   function fmtVal(v) {
     if (!isFinite(v)) return '—';
@@ -429,27 +431,20 @@
 
   function calculate() {
     const n = selectedNuclide || resolveNuclide(hiddenSelect.value);
-    if (!n) { alert('Select a valid nuclide first.'); return; }
-
-    if (n._icrp107) {
-      const confirmed = confirm(
-        'This nuclide is from ICRP 107 extended database. Decay data and constants have NOT been manually validated.\n\n' +
-        'For clinical or regulatory use, verify these values against primary sources (ICRP 107, 2008).\n\n' +
-        'Continue with calculation?'
-      );
-      if (!confirmed) return;
-    }
+    if (!n) return fail('Select a nuclide from the list.', 'nuclideSearch');
+    // Extended ICRP 107 entries: a permanent warning in the results replaces the
+    // confirm() dialog, which would interrupt every live recalculation.
 
     const A0raw    = parseFloat(document.getElementById('A0').value);
     if (!Number.isFinite(A0raw) || A0raw <= 0) {
-      alert('Activity must be a positive number.'); return;
+      return fail('Activity must be a positive number.', 'A0');
     }
     const A0unit   = document.getElementById('A0unit').value;
     const A0_MBq   = CALC.convertActivity(A0raw, A0unit, 'MBq');
     // A finite entry can overflow in the unit conversion (1e308 Ci → Infinity):
     // check again after converting (audit 2026-10-04, A07).
     if (!Number.isFinite(A0_MBq)) {
-      alert('Activity is outside the representable range.'); return;
+      return fail('Activity is outside the representable range.', 'A0');
     }
     const T_half_h = DB.halfLifeHours(n);
 
@@ -471,15 +466,18 @@
     const refDt    = document.getElementById('refDateTime').value || '';
     const targetDt = document.getElementById('targetDateTime').value || '';
     const elapsedVal  = document.getElementById('elapsed').value.trim();
+    if (document.getElementById('elapsed').validity.badInput) {
+      return fail('Elapsed time must be a valid number (e.g., 1, 1.5, 1e2).', 'elapsed');
+    }
     const elapsedManual = elapsedVal !== '';
     const elapsedUnit = document.getElementById('elapsedUnit').value;
     if (elapsedVal !== '') {
       if (!/^[0-9]*\.?[0-9]+([eE][+-]?[0-9]+)?$/.test(elapsedVal)) {
-        alert('Elapsed time must be a valid number (e.g., 1, 1.5, 1e2).'); return;
+        return fail('Elapsed time must be a valid number (e.g., 1, 1.5, 1e2).', 'elapsed');
       }
       const elapsedRaw = parseFloat(elapsedVal);
       if (!Number.isFinite(elapsedRaw) || elapsedRaw < 0) {
-        alert('Elapsed time must be a non-negative number.'); return;
+        return fail('Elapsed time must be a non-negative number.', 'elapsed');
       }
       const mul = { h: 1, min: 1 / 60, d: 24, s: 1 / 3600 };
       t_h = elapsedRaw * (mul[elapsedUnit] || 1);
@@ -487,9 +485,7 @@
       const ref    = document.getElementById('refDateTime').value;
       const target = document.getElementById('targetDateTime').value;
       if (target && !ref) {
-        alert('Enter a reference date and time before using a target date.');
-        document.getElementById('refDateTime').focus();
-        return;
+        return fail('Enter a reference date and time before using a target date.', 'refDateTime');
       }
       if (ref && target) {
         t_h = (new Date(target) - new Date(ref)) / 3.6e6;
@@ -498,12 +494,10 @@
       }
     }
     if (!Number.isFinite(t_h)) {
-      alert('Reference and target dates must be valid.');
-      return;
+      return fail('Reference and target dates must be valid.', 'targetDateTime');
     }
     if (Number.isFinite(t_h) && t_h < 0) {
-      alert('Target date must be after reference date.');
-      return;
+      return fail('Target date must be after reference date.', 'targetDateTime');
     }
 
     // Validate ALL inputs before rendering anything: the material mass used to
@@ -513,10 +507,8 @@
     const vialWeightInput = document.getElementById('vialWeight');
     const vialWeightText  = vialWeightInput.value.trim();
     const vialWeightRaw   = vialWeightText === '' ? NaN : Number(vialWeightText);
-    if (vialWeightText !== '' && (!Number.isFinite(vialWeightRaw) || vialWeightRaw <= 0)) {
-      alert('Mass of material must be a positive number.');
-      vialWeightInput.focus();
-      return;
+    if (vialWeightInput.validity.badInput || (vialWeightText !== '' && (!Number.isFinite(vialWeightRaw) || vialWeightRaw <= 0))) {
+      return fail('Mass of material must be a positive number.', 'vialWeight');
     }
     const vialWeightUnit  = document.getElementById('vialWeightUnit').value;
     const weight_kg       = vialWeightText === '' ? null : (vialWeightUnit === 'g' ? vialWeightRaw / 1000 : vialWeightRaw);
@@ -531,23 +523,23 @@
     const AtgtRaw   = AtgtText === '' ? NaN : Number(AtgtText);
     const AtgtUnit  = document.getElementById('AtargetUnit').value;
     if (!AtgtEmpty && (!Number.isFinite(AtgtRaw) || AtgtRaw < 0)) {
-      alert('Target activity must be a non-negative number.');
-      AtgtInput.focus();
-      return;
+      return fail('Target activity must be a non-negative number.', 'Atarget');
     }
     if (!AtgtEmpty && !Number.isFinite(CALC.convertActivity(AtgtRaw, AtgtUnit, 'MBq'))) {
-      alert('Target activity is outside the representable range.');
-      AtgtInput.focus();
-      return;
+      return fail('Target activity is outside the representable range.', 'Atarget');
     }
 
     const At_MBq = CALC.activityAtTime(A0_MBq, T_half_h, t_h);
     const fraction = At_MBq / A0_MBq;
 
     // Show results card
+    errors.clear();
     const card = document.getElementById('resultsCard');
     card.classList.remove('hidden');
-    staleWatch.fresh();
+    // No elapsed time and no target date: the values are those at t = 0, which
+    // used to fill four result boxes with A₀, 100 %, 0 h and 0 (presentation
+    // review 2026-10-15). Say so instead.
+    const timeGiven = elapsedManual || !!(refDt && targetDt);
 
     const sourceTag = n._icrp107
       ? `<span class="tag tag-icrp107" title="Decay data from ICRP 107">ICRP 107</span>`
@@ -555,11 +547,24 @@
     const chainNote = n.chain_members
       ? `<div class="text-sm" style="margin-top:.35rem;">&#9432; Chain entry (${n.chain_members.length} members): the curve follows the parent T&#189;, with progeny in secular equilibrium scaling proportionally. Valid once equilibrium is established (source aged &#8819; 10 daughter half-lives).</div>`
       : '';
+    const icrpWarning = n._icrp107
+      ? '<div class="text-sm" style="margin-top:.35rem;color:var(--warning-text);">&#9888; ICRP 107 extended entry: decay data have NOT been manually validated. For clinical or regulatory use, verify them against primary sources (ICRP 107, 2008).</div>'
+      : '';
     document.getElementById('nuclideInfo').innerHTML =
       `<strong>${UTILS.escapeHtml(n.symbol)} — ${UTILS.escapeHtml(n.name)}</strong> ${sourceTag} &nbsp;|&nbsp; T&#189; = ${UTILS.escapeHtml(n.half_life_display)} &nbsp;|&nbsp;
-       &lambda; = ${UTILS.fmt(CALC.lambda(T_half_h))} h&#8315;&#185;${chainNote}`;
+       &lambda; = ${UTILS.fmt(CALC.lambda(T_half_h))} h&#8315;&#185;${chainNote}${icrpWarning}`;
 
-    document.getElementById('resultGrid').innerHTML = `
+    document.getElementById('resultGrid').innerHTML = !timeGiven ? `
+      <div class="result-box">
+        <div class="result-label">A&#8320; (t = 0)</div>
+        <div class="result-value">${fmtVal(A0_MBq)}</div>
+        <div class="result-unit">MBq = ${fmtVal(CALC.convertActivity(A0_MBq,'MBq','GBq'))} GBq
+          = ${fmtVal(CALC.convertActivity(A0_MBq,'MBq','mCi'))} mCi</div>
+      </div>
+      <div class="alert alert-info result-grid-note" id="noTimeNote">
+        No elapsed time or target date entered: the values below are at t = 0.
+        Enter an <strong>elapsed time</strong>, or a <strong>target date and time</strong>, to calculate A(t).
+      </div>` : `
       <div class="result-box">
         <div class="result-label">A(t)</div>
         <div class="result-value">${fmtVal(At_MBq)}</div>
@@ -741,6 +746,7 @@
       data: { datasets },
       options: {
         color: chartTheme.text,
+        animation: false,   // redrawn on every input change
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
@@ -1069,10 +1075,8 @@
     lastDecayResult = {
       n, A0raw, A0unit, A0_MBq, t_h, At_MBq, fraction, T_half_h,
       AtgtRaw, AtgtUnit, vialWeightRaw, vialWeightUnit, weight_kg,
-      refDt, targetDt, elapsedManual,
+      refDt, targetDt, elapsedManual, timeGiven,
     };
-
-    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
   // ---- Printable report ----
@@ -1092,17 +1096,25 @@
     equal: 'Target already reached at t = 0: the target equals the initial activity',
     above: 'Target exceeds A₀ and cannot be reached by decay',
   };
-  const staleWatch = UI.watchStaleResults('resultsCard');
+  const errors = UI.inputErrors('calcError');
+  // An invalid input hides the results: nothing on screen, in the report or in
+  // the CSV can describe a case other than the one in the form.
+  function fail(message, fieldId) {
+    errors.show(message, fieldId);
+    document.getElementById('resultsCard').classList.add('hidden');
+    lastDecayResult = null;
+  }
 
   document.getElementById('btnPrintDecay').onclick = () => {
-    if (!lastDecayResult) { alert('Calculate first.'); return; }
+    if (!lastDecayResult) return;   // the button is hidden with the results
     const r = lastDecayResult;
     const lam = CALC.lambda(r.T_half_h);
 
     const inputs = [
       ['Initial activity A₀', `${r.A0raw} ${r.A0unit} (${UTILS.fmt(r.A0_MBq)} MBq)`],
       ['Half-life T½', `${r.n.half_life_display} (λ = ${UTILS.fmt(lam)} h⁻¹)`],
-      ['Elapsed time t', `${UTILS.fmt(r.t_h)} h = ${UTILS.fmt(r.t_h / 24)} d = ${UTILS.fmt(r.t_h / r.T_half_h)} T½`],
+      ['Elapsed time t', r.timeGiven === false ? 'none entered (no elapsed time or target date): values at t = 0'
+        : `${UTILS.fmt(r.t_h)} h = ${UTILS.fmt(r.t_h / 24)} d = ${UTILS.fmt(r.t_h / r.T_half_h)} T½`],
     ];
     if (r.refDt) inputs.push(['Reference date/time (local)', r.refDt.replace('T', ' ')]);
     if (r.elapsedManual) inputs.push(['Elapsed time source', 'Elapsed time entered manually; target date not used']);
@@ -1183,8 +1195,11 @@
     REPORT.print({ title: 'Decay Calculation', kind: 'decay', nuclide: r.n, sections, notes, sources });
   };
 
-  // Auto-calculate if nuclide pre-selected
-  if (urlId) setTimeout(calculate, 100);
+  // Live calculation: every input recalculates (the nuclide search box only
+  // when a nuclide is chosen).
+  UI.onInputs(calculate, { exclude: '#nuclideCombobox, #resultsCard' });
+  liveReady = true;
+  calculate();
 
 })();
 </script>

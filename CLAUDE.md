@@ -115,6 +115,8 @@ Caregiver page (`caregiver.html`): faithful port of the workbook v2.1 (sheets Do
 
 Dark mode is supported. When adding or modifying UI elements (tables, tooltips, graphs, markers), always check both light and dark mode contrast and visibility. Tooltips must not be clipped by overflow containers.
 
+Calculators recalculate live (Decay/Dose through `UI.onInputs`, Effluent/Caregiver through their `render()`); there is no Calculate button. Input errors go to the page's `#calcError` box through `UI.inputErrors` (field marked `aria-invalid`) and hide the results and the snapshot — never `alert()`/`confirm()`. Icons are the project's own SVGs as CSS masks (`.ico .ico-<name>` in style.css), not emoji. No `text-transform: uppercase` on labels that can contain symbols or units (it turned β into a Latin-looking B).
+
 ## Data
 
 - Edit `data/nuclides.json` to add/modify nuclides, then regenerate `data/nuclides-data.js` to keep offline support in sync
@@ -129,9 +131,10 @@ Dark mode is supported. When adding or modifying UI elements (tables, tooltips, 
 - Audit reports are local only (`docs/AUDIT_*.md`, gitignored). When the user asks for an audit without file changes, deliver it in the chat.
 - Bash heredocs with backslashes or nested quotes break: write helper scripts to the scratchpad and run them, or use the Edit tool.
 
-## Status and pending (as of 2026-10-15, v1.13.3)
+## Status and pending (as of 2026-10-15, v1.14.0)
 
 - Last package built and pushed: `dist/nm-radionuclide-planner-v1.13.3.zip` (SHA-256 f3f55e2a…, commit c21796f).
+- v1.14.0 (usability and presentation review: live calculation, inline errors, Dose report limit screening, Properties table, icons, Guide menu entry) committed on `main`, not pushed and not packaged. Pending decision: Spanish interface / decimal comma; saving and reopening a case (`UI.saveHistory`/`loadHistory` exist but are unused); a results summary near the top of Effluent.
 - **External distribution blocked by data rights**: permission requested from ICRP (permissions@icrp.org, 2026-10-15, personal capacity) for ICRP 74 Table A.21 (50 values), ICRP 119 Table G.1 (5 inhalation coefficients) and the Table F.1 chemical-form labels. When the reply arrives, update «Status / permissions» in `THIRD_PARTY_NOTICES.md` and its copy in `about.html`. DDEP/LNHB: no restriction, citation requested (done). Cornejo et al. 2015 (SEPR): courtesy request deferred until ICRP answers.
 - Professional use: the acceptance sheet (`docs/ACCEPTANCE_TEST.md`) has not been completed for the current version (the local copy is v1.2); PHITS coefficients of Effluent need an external technical review.
 - Open by the user's decision: T06 (I-131 0.8 GBq «at discharge» in Effluent), T13 (clinical uses without reference), Cs-137/Sm-153/Tm-170/Ac-225 half-lives kept on ICRP 107. Demir et al. 2016: local copy is a proof — compare Table 1 with the published version when available.

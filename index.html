@@ -24,9 +24,10 @@
       <a href="dose.html">Dose</a>
       <a href="effluent.html">Effluent</a>
       <a href="caregiver.html">Caregiver</a>
+      <a href="about.html">Guide</a>
     </nav>
     <button id="darkToggle" type="button" class="btn-icon" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
-      <span id="darkIcon">🌙</span>
+      <span id="darkIcon" class="ico ico-moon" aria-hidden="true"></span>
     </button>
   </div>
 </header>
@@ -45,7 +46,7 @@
       <input type="search" id="searchInput" class="search-input"
              placeholder="Search by name, symbol or clinical use…" autocomplete="off">
       <button class="btn btn-secondary btn-sm" id="clearSearch">Clear</button>
-      <button class="btn btn-secondary btn-sm" id="btnExportCsv" title="Export table as CSV">⬇ Export CSV</button>
+      <button class="btn btn-secondary btn-sm" id="btnExportCsv" title="Export table as CSV"><span class="ico ico-download" aria-hidden="true"></span> Export CSV</button>
     </div>
     <div class="filter-bar" id="filterBar">
       <button class="filter-btn active" data-modality="all">All</button>
@@ -57,7 +58,7 @@
     </div>
     <div id="rowCount" class="text-sm text-muted mb-1"></div>
 
-    <div class="overflow-x-auto table-scroll-wrap">
+    <div class="overflow-x-auto table-scroll-wrap" id="nuclideTableWrap">
       <table class="data-table" id="nuclideTable" aria-label="Radionuclide properties">
         <thead>
           <tr>
@@ -289,7 +290,7 @@
     if (!photons || !photons.length) { host.innerHTML = opts.note || ''; return; }
     // Extended entries with equilibrium progeny list the emitter of each line.
     const showFrom = !!opts.progeny;
-    const rows = photons.map(p => `<tr><td class="mono">${p.energy_keV}</td><td class="mono">${UTILS.fmtSig(p.yield_percent, 2)}</td><td class="mono">${UTILS.escapeHtml(p.type)}</td>${showFrom ? `<td class="mono">${UTILS.escapeHtml(p.from || '')}</td>` : ''}</tr>`).join('');
+    const rows = photons.map(p => `<tr><td class="mono">${Number(p.energy_keV).toFixed(1)}</td><td class="mono">${UTILS.fmtSig(p.yield_percent, 2)}</td><td class="mono">${UTILS.escapeHtml(p.type)}</td>${showFrom ? `<td class="mono">${UTILS.escapeHtml(p.from || '')}</td>` : ''}</tr>`).join('');
     const title = opts.chain ? 'Parent-only photon spectrum; dose constants include the stated progeny'
       : showFrom ? `Photon spectrum, parent + progeny in equilibrium (${UTILS.escapeHtml(opts.progeny)})` : 'Photon spectrum';
     host.innerHTML = `
@@ -304,11 +305,13 @@
         <canvas id="spectrumChart" role="img" aria-label="Photon spectrum of ${UTILS.safeAttr(opts.id || '')}: energy against yield or dose share; the table below lists the same lines"></canvas>
       </div>
       <div class="form-hint" id="spectrumHint"></div>
-      <div class="overflow-x-auto mt-1" style="max-height:200px;overflow-y:auto;">
+      <details class="spectrum-lines mt-1"${photons.length <= 12 ? ' open' : ''}>
+        <summary>Line table (${photons.length} line${photons.length === 1 ? '' : 's'})</summary>
+        <div class="overflow-x-auto">
         <table style="font-size:0.9em;width:100%;">
-          <thead style="position:sticky;top:0;background:var(--white);border-bottom:1px solid var(--border);">
+          <thead style="background:var(--white);border-bottom:1px solid var(--border);">
             <tr>
-              <th style="padding:0.3rem 0.5rem;text-align:left;border-right:1px solid var(--border);">E [keV]</th>
+              <th style="padding:0.3rem 0.5rem;text-align:right;border-right:1px solid var(--border);">E [keV]</th>
               <th style="padding:0.3rem 0.5rem;text-align:left;border-right:1px solid var(--border);">Yield [%]</th>
               <th style="padding:0.3rem 0.5rem;text-align:left;${showFrom ? 'border-right:1px solid var(--border);' : ''}">Type</th>
               ${showFrom ? '<th style="padding:0.3rem 0.5rem;text-align:left;">Emitter</th>' : ''}
@@ -316,8 +319,9 @@
           </thead>
           <tbody>${rows}</tbody>
         </table>
-      </div>
-      <div class="form-hint">Type — G: gamma; X: X-ray; AQ: annihilation photons. Yield: photons emitted per 100 decays${showFrom ? ' of the parent (progeny lines scaled by their equilibrium activity per parent decay)' : ''}.</div>`;
+        </div>
+      </details>
+      <div class="form-hint">Energies to 0.1 keV, as stored in the ICRP 107 index. Type — G: gamma; X: X-ray; AQ: annihilation photons. Yield: photons emitted per 100 decays${showFrom ? ' of the parent (progeny lines scaled by their equilibrium activity per parent decay)' : ''}.</div>`;
     spectrumState = { photons, chain: !!opts.chain, id: opts.id, view: 'yield' };
     host.querySelectorAll('[data-spectrum-view]').forEach(btn => btn.addEventListener('click', () => {
       host.querySelectorAll('[data-spectrum-view]').forEach(b => {
@@ -530,7 +534,7 @@
           <td class="num">${cellStatus('See details')}</td>
           <td class="num">${extendedDischargeCell(n.id)}</td>
           <td class="num">${extendedClearanceCell(n.id)}</td>
-          <td class="text-sm">H*/H′: ${SRC_CALC}${n._progenyIds ? `, incl. ${UTILS.escapeHtml(n._progenyIds)}` : ''} (not manually validated)</td>
+          <td class="text-sm"><div class="src-text">H*/H′: ${SRC_CALC}${n._progenyIds ? `, incl. ${UTILS.escapeHtml(n._progenyIds)}` : ''} (not manually validated)</div></td>
         </tr>`;
       }
 
@@ -548,7 +552,7 @@
         <td class="num">${n.representative_energy_keV ?? cellStatus('No selected photon line')}</td>
         <td class="num">${fmtEffluentLimit(n)}</td>
         <td class="num">${n.clearance_a1_kBq_per_kg != null ? n.clearance_a1_kBq_per_kg : cellStatus('Not tabulated')}</td>
-        <td class="text-sm">${UTILS.escapeHtml(gammaSourceLabel(n))}</td>
+        <td class="text-sm"><div class="src-text">${UTILS.escapeHtml(gammaSourceLabel(n))}</div></td>
       </tr>`;
     }).join('');
 
@@ -590,7 +594,7 @@
       <td><span class="tag tag-other" style="font-size:0.85em;">Regulatory only</span></td>
       <td class="num">${cellStatus('Not calculated')}</td><td class="num">${cellStatus('Not calculated')}</td><td class="num">${cellStatus('Not calculated')}</td>
       <td class="num">${cellStatus('No nuclear data')}</td><td class="num">${extendedDischargeCell(id)}</td><td class="num">${extendedClearanceCell(id)}</td>
-      <td class="text-sm">RD 1217/2024 / RD 783/2001 tables only — no nuclear data</td>
+      <td class="text-sm"><div class="src-text">RD 1217/2024 / RD 783/2001 tables only — no nuclear data</div></td>
     </tr>`;
   }
 
@@ -634,7 +638,7 @@
         <td class="num">${cellStatus('See details')}</td>
         <td class="num">${extendedDischargeCell(n.id)}</td>
         <td class="num">${extendedClearanceCell(n.id)}</td>
-        <td class="text-sm">H*/H′: ${SRC_CALC}${n._progenyIds ? `, incl. ${UTILS.escapeHtml(n._progenyIds)}` : ''} (not manually validated)</td>
+        <td class="text-sm"><div class="src-text">H*/H′: ${SRC_CALC}${n._progenyIds ? `, incl. ${UTILS.escapeHtml(n._progenyIds)}` : ''} (not manually validated)</div></td>
       </tr>`;
     }).join('');
 

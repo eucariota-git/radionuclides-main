@@ -195,7 +195,7 @@ async function main() {
       await open('decay.html?id=Lu-177', 1280);
       await ev(`(() => { const s = (i, v) => { document.getElementById(i).value = v; };
         s('A0', '2000'); s('elapsed', '10'); s('elapsedUnit', 'd'); s('vialWeight', '10'); s('vialWeightUnit', 'kg');
-        document.getElementById('btnCalc').click(); })()`);
+        document.getElementById('vialWeightUnit').dispatchEvent(new Event('change', { bubbles: true })); })()`);
       await sleep(600);
       {
         const charts = await pageChecks('decay Lu-177 2000 MBq 10 kg');
@@ -227,7 +227,7 @@ async function main() {
       // Dose: Lu-177 1 GBq at 0.3 m → 69.8 µSv/h; marker at the exact distance, also beyond 5 m
       for (const [dist, label] of [['0.33', '0.33 m'], ['7', '7 m']]) {
         await open('dose.html?id=Lu-177', 1280);
-        await ev(`(() => { document.getElementById('distance').value = '${dist}'; document.getElementById('btnCalc').click(); })()`);
+        await ev(`(() => { const d = document.getElementById('distance'); d.value = '${dist}'; d.dispatchEvent(new Event('input', { bubbles: true })); })()`);
         await sleep(600);
         await pageChecks(`dose Lu-177 at ${label}`);
         const m = await ev(`(() => { const c = Chart.getChart('distChart'); const mk = c.data.datasets.find(d => /^d = /.test(d.label)); return mk && mk.data[0] ? mk.data[0].x : null; })()`);
@@ -294,10 +294,9 @@ async function main() {
     await guard('Review v1.11 (R-01, R-02, R-06)', async () => {
       // R-01: an extended generator parent gets its progeny's dose by default
       await open('dose.html?id=Ge-68', 1280);
-      await ev(`document.getElementById('btnCalc').click()`); await sleep(400);
       const info = await text('#nuclideInfo');
       check('dose Ge-68: Γ includes Ga-68 in equilibrium (158) and says so', /incl\. Ga-68 in equilibrium/.test(info) && /= 158\b/.test(info), info.slice(0, 160));
-      await ev(`(() => { const s = document.getElementById('progenyMode'); s.value = 'parent'; s.dispatchEvent(new Event('change')); document.getElementById('btnCalc').click(); })()`);
+      await ev(`(() => { const s = document.getElementById('progenyMode'); s.value = 'parent'; s.dispatchEvent(new Event('change', { bubbles: true })); })()`);
       await sleep(400);
       check('dose Ge-68 parent only: no photon estimate, and the excluded progeny is stated',
         /Its short-lived progeny is excluded/.test(await text('#resultsBody')));
@@ -320,7 +319,6 @@ async function main() {
     await guard('Distribution audit 2026-10-15 (F-02, F-06)', async () => {
       // F-02: the Dose report states the progeny of an extended nuclide
       await open('dose.html?id=Ge-68', 1280);
-      await ev(`document.getElementById('btnCalc').click()`); await sleep(400);
       await ev(`document.getElementById('btnPrintDose').click()`); await sleep(100);
       const rep = await ev(`(document.getElementById('printReport') || {}).innerText || ''`);
       check('dose Ge-68 report: progeny row names Ga-68, no Cornejo source, header names the ICRP 107 index',
@@ -339,6 +337,87 @@ async function main() {
       await open('caregiver.html', 1280);
       await ev(`document.getElementById('btnPrint').click()`); await sleep(300);
       check('caregiver report is built without errors', realErrors().length === 0 && await ev('!!window.__printed'), realErrors().join(' | '));
+    });
+    await guard('Presentation review 2026-10-15', async () => {
+      const setVal = (id, v, type = 'input') => ev(`(() => { const e = document.getElementById('${id}'); e.value = ${JSON.stringify(v)}; e.dispatchEvent(new Event('${type}', { bubbles: true })); })()`);
+      // Main menu: a Guide entry on every page
+      for (const pg of ['index.html', 'decay.html', 'dose.html', 'effluent.html', 'caregiver.html', 'about.html']) {
+        await open(pg, 1280);
+        check(`${pg}: main menu links the guide`, await ev(`!!document.querySelector('.site-nav a[href="about.html"]')`));
+      }
+      // Properties: labels keep the case of symbols and units (β, μ, keV)
+      await open('index.html?id=Lu-177', 1280);
+      const pk = await ev(`(() => { const k = [...document.querySelectorAll('#detailProps .prop-key')].find(e => /E\s*max/i.test(e.textContent));
+        return k ? { tt: getComputedStyle(k).textTransform, txt: k.innerText } : null; })()`);
+      check('properties: "β Emax" label is not upper-cased (it read "B EMAX")', pk && pk.tt === 'none' && /^β E/.test(pk.txt), JSON.stringify(pk));
+      const lines = await ev(`[...document.querySelectorAll('.spectrum-lines tbody tr td:first-child')].map(td => td.textContent)`);
+      check('properties: photon-line energies with one decimal (65.0, not 65), in a collapsible block without inner scroll',
+        lines.length > 0 && lines.every(t => /^\d+\.\d$/.test(t)) &&
+        await ev(`(() => { const d = document.querySelector('.spectrum-lines'); return !!d && d.tagName === 'DETAILS' && getComputedStyle(d.querySelector('.overflow-x-auto')).maxHeight === 'none'; })()`),
+        lines.slice(0, 6).join(' '));
+      // Properties: the table grows with the page on wide screens, header sticky under the site header
+      for (const w of [1280, 1240]) {
+        await open('index.html', w);
+        const t = await ev(`(() => { const w = document.getElementById('nuclideTableWrap'), th = document.querySelector('#nuclideTable th');
+          return { oy: getComputedStyle(w).overflowY, top: getComputedStyle(th).top, rows: document.querySelectorAll('#nuclideBody tr').length }; })()`);
+        check(`properties @${w}: no inner scroll box, sticky header at 58 px, all 40 rows`, t.oy === 'visible' && t.top === '58px' && t.rows === 40, JSON.stringify(t));
+        await setVal('searchInput', 'Ge-68'); await sleep(300);
+        await pageChecks(`properties @${w} extended search Ge-68`);
+      }
+      // Below 1240 px the table keeps its own (viewport-high) scroll box: no page overflow
+      await open('index.html', 1150);
+      await setVal('searchInput', 'Ge-68'); await sleep(300);
+      await pageChecks('properties @1150 extended search Ge-68 (inner scroll fallback)');
+      // Decay: no Calculate button; without a time the t = 0 values are announced as such
+      await open('decay.html?id=Lu-177', 1280);
+      check('decay: no Calculate button; no time entered → the "values at t = 0" note',
+        await ev(`!document.getElementById('btnCalc') && !document.getElementById('noTimeNote').classList.contains('hidden')`));
+      await setVal('elapsed', '6.6443'); await setVal('elapsedUnit', 'd', 'change'); await sleep(400);
+      check('decay live: 1 T½ entered → 500 MBq without pressing anything', /^500(\.0)?$/.test((await text('#resultGrid .result-value')).trim()), await text('#resultGrid .result-value'));
+      await setVal('A0', ''); await sleep(400);
+      const bad = await ev(`({ err: !document.getElementById('calcError').classList.contains('hidden') && document.getElementById('calcError').textContent,
+        hidden: document.getElementById('resultsCard').classList.contains('hidden'), inv: document.getElementById('A0').getAttribute('aria-invalid') })`);
+      check('decay: an invalid activity shows an inline error, marks the field and hides the results', /Activity/.test(bad.err) && bad.hidden && bad.inv === 'true', JSON.stringify(bad));
+      await setVal('A0', '1000'); await sleep(400);
+      check('decay: correcting the field restores the results and clears the mark',
+        await ev(`!document.getElementById('resultsCard').classList.contains('hidden') && document.getElementById('calcError').classList.contains('hidden') && !document.getElementById('A0').hasAttribute('aria-invalid')`));
+      // Dose: one patient-transmission field; 50 % halves the rate; the report carries the limit screening
+      await open('dose.html?id=Lu-177', 1280);
+      await setVal('patientTx', '50'); await sleep(400);
+      check('dose: patient transmission 50 % halves the Lu-177 rate (69.8 → 34.9 µSv/h)', /34\.9/.test(await text('#resultsBody')), (await text('#resultsBody')).slice(0, 120));
+      await setVal('patientTx', ''); await sleep(400);
+      await ev(`document.getElementById('btnPrintDose').click()`); await sleep(100);
+      const drep = await ev(`(document.getElementById('printReport') || {}).innerText || ''`);
+      check('dose report: contains the indicative limit screening and the distance once ("0.3 m")',
+        /Annual dose limit comparison/.test(drep) && /of 20 mSv\/y/.test(drep) && /Distance\s*0\.3 m\s*Shielding/.test(drep) && !/0\.3 m \(0\.3 m\)/.test(drep), drep.slice(0, 200));
+      // Dose: an ICRP 107 nuclide calculates without a confirm() dialog and keeps a visible warning
+      await send('Page.addScriptToEvaluateOnNewDocument', { source: 'window.confirm=()=>{window.__confirmed=true;return true;};' });
+      await open('dose.html?id=Ge-68', 1280);
+      check('dose Ge-68: no confirm() dialog; the not-validated warning is in the results',
+        !(await ev('!!window.__confirmed')) && /NOT been manually validated/.test(await text('#nuclideInfo')));
+      // Effluent: the offending field is marked
+      await open('effluent.html', 1280);
+      await setVal('s1_t_external_h_y', ''); await sleep(200);
+      const eff = await ev(`({ inv: document.querySelector('#s1_t_external_h_y') && document.querySelector('#s1_t_external_h_y').getAttribute('aria-invalid'), err: document.getElementById('calcError').textContent })`);
+      check('effluent: an empty field is marked aria-invalid and named in the error box', eff.inv === 'true' && eff.err.length > 0, JSON.stringify(eff));
+      // Icons are drawn (CSS masks), not emoji
+      check('icons: card-title icons are CSS-mask SVGs', await ev(`(() => { const i = document.querySelector('.card-title .ico'); const st = i && getComputedStyle(i); return !!st && (st.maskImage || st.webkitMaskImage || '').startsWith('url('); })()`));
+      // Phone: header scrolls away, logo and theme button share a row; Dose results stacked
+      await open('dose.html?id=Lu-177', 390);
+      const hd = await ev(`(() => { const h = document.querySelector('.site-header'), l = document.querySelector('.site-logo').getBoundingClientRect(), b = document.getElementById('darkToggle').getBoundingClientRect();
+        return { pos: getComputedStyle(h).position, h: h.getBoundingClientRect().height, sameRow: Math.abs((l.top + l.bottom) / 2 - (b.top + b.bottom) / 2) < 12,
+          stacked: getComputedStyle(document.querySelector('#resultsTable thead')).display === 'none' }; })()`);
+      check('390 px: header not sticky, ≤ 100 px, logo and theme button on one row; Dose results stacked', hd.pos === 'static' && hd.h <= 100 && hd.sameRow && hd.stacked, JSON.stringify(hd));
+      await pageChecks('dose Lu-177 @390 stacked');
+    });
+    await guard('Theme follows the system preference without a stored choice', async () => {
+      await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'dark' }] });
+      await open('decay.html?id=Tc-99m', 1280);
+      check('system dark preference → dark theme, no stored choice needed', await ev(`document.documentElement.dataset.theme === 'dark' && document.getElementById('darkIcon').classList.contains('ico-sun')`));
+      await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'light' }] });
+      await open('decay.html?id=Tc-99m', 1280);
+      check('system light preference → light theme', await ev(`document.documentElement.dataset.theme !== 'dark'`));
+      await send('Emulation.setEmulatedMedia', { features: [] });
     });
   } finally {
     try { if (ws) ws.close(); } catch (e) { /* ignore */ }

@@ -49,6 +49,7 @@
   --radius-lg: 10px;
 
   --font-mono: 'Consolas', 'Menlo', 'Liberation Mono', monospace;
+  --site-header-h: 58px;
   --font-sans: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
 }
 
@@ -134,7 +135,7 @@ a:hover { text-decoration: underline; }
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  height: 58px;
+  height: var(--site-header-h);
 }
 
 /* The header is dark green in BOTH themes, so anything drawn on it must not use
@@ -496,6 +497,12 @@ summary.card-title:focus-visible { outline: 2px solid var(--green-700); outline-
   border-color: var(--gray-700);
 }
 
+/* Field named by the page's error box (UI.inputErrors) */
+.form-input.is-invalid, .form-select.is-invalid {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--danger) 25%, transparent);
+}
+
 .form-input:focus, .form-select:focus {
   outline: none;
   border-color: var(--green-600);
@@ -656,12 +663,14 @@ summary.card-title:focus-visible { outline: 2px solid var(--green-700); outline-
   padding: .55rem .75rem;
 }
 
+/* No forced capitals (text-transform). They turned "β Emax" into "Β EMAX" (a capital
+   beta reads as a Latin B), "μ (208 keV)" into "Μ (208 KEV)" — symbols and
+   units must keep their case (presentation review 2026-10-15). */
 .prop-key {
-  font-size: .72rem;
+  font-size: .76rem;
   font-weight: 700;
   color: var(--gray-700);
-  text-transform: uppercase;
-  letter-spacing: .04em;
+  letter-spacing: .01em;
 }
 
 .prop-val {
@@ -1116,11 +1125,24 @@ summary.card-title:focus-visible { outline: 2px solid var(--green-700); outline-
   color: var(--gray-500);
 }
 
-/* ---- Sticky table wrapper ---- */
+/* ---- Sticky table wrapper ----
+   Narrow screens: the table scrolls inside a box as tall as the viewport allows
+   (it was a fixed 420 px — 7 of 40 nuclides on a 1000 px screen). Wide
+   screens: see the Properties table block below — no inner scroll at all. */
 .table-scroll-wrap {
   overflow-x: auto;
   overflow-y: auto;
-  max-height: 420px;
+  max-height: max(320px, calc(100vh - 170px));
+}
+
+/* Properties table on wide screens (presentation review 2026-10-15): the table
+   grows with the page and its header sticks below the site header, instead of
+   a second scrollbar inside the card. The provenance text is bounded so it
+   wraps rather than widening the table. */
+#nuclideTable .src-text { min-width: 11rem; max-width: 17rem; }
+@media (min-width: 1240px) {
+  #nuclideTableWrap { overflow: visible; max-height: none; }
+  #nuclideTable th { top: var(--site-header-h); }
 }
 
 /* ---- Custom tooltips ---- */
@@ -1524,11 +1546,17 @@ kbd {
 }
 
 @media (max-width: 700px) {
+  .site-header { position: static; }
   .site-header .inner {
     height: auto;
-    padding: .6rem 0;
+    padding: .5rem 0 .35rem;
     flex-wrap: wrap;
+    row-gap: .35rem;
+    column-gap: .75rem;
   }
+  .site-logo { order: 1; flex: 1 1 auto; }
+  .btn-icon { order: 2; }
+  .site-nav { order: 3; flex: 1 1 100%; }
 
   .site-nav {
     gap: .15rem;
@@ -1539,8 +1567,11 @@ kbd {
   .site-nav a {
     white-space: nowrap;
     font-size: .8rem;
-    padding: .3rem .6rem;
+    padding: .3rem .45rem;
   }
+  .site-header { padding: 0 1rem; }
+  .site-nav { scrollbar-width: none; }
+  .site-nav::-webkit-scrollbar { display: none; }
 
   .page-body {
     padding: 1rem;
@@ -1589,9 +1620,17 @@ kbd {
   .stack-on-mobile td[data-label]::before {
     content: attr(data-label);
     font-weight: 600;
+    font-family: var(--font-sans);
+    text-align: left;
     color: var(--text-muted);
     flex: 0 0 45%;
   }
+  /* Cells with inline content (Dose results: Γ with a superscript, units): a
+     flex cell would split it into separate items, so the label floats left
+     and the value flows on the right. */
+  .stack-on-mobile.stack-inline td { display: block; text-align: right; overflow: hidden; }
+  .stack-on-mobile.stack-inline td[data-label]::before { float: left; margin-right: .75rem; }
+  .stack-on-mobile.stack-inline td.stack-title { text-align: left; }
   .stack-on-mobile td .form-input,
   .stack-on-mobile td .form-select { max-width: 50%; }
   .stack-on-mobile td.stack-title { font-weight: 700; }
@@ -1617,3 +1656,51 @@ kbd {
     grid-template-columns: 1fr;
   }
 }
+
+/* ---- Icons (presentation review 2026-10-15) ----
+   Drawn for this project (no third-party icon set). Each is an SVG used as a
+   CSS mask over currentColor, so it follows the text colour in light and dark
+   mode and looks the same on every platform — the emoji it replaces did not.
+   Decorative: always aria-hidden next to a text label. */
+.ico {
+  display: inline-block;
+  width: 1.1em;
+  height: 1.1em;
+  vertical-align: -0.18em;
+  background-color: currentColor;
+  -webkit-mask: var(--ico) center / contain no-repeat;
+  mask: var(--ico) center / contain no-repeat;
+  flex-shrink: 0;
+}
+.btn .ico { margin-right: .15rem; }
+#darkIcon { color: #f4d58d; width: 1.15rem; height: 1.15rem; }
+@media (forced-colors: active) {
+  .ico { forced-color-adjust: none; background-color: CanvasText; }
+}
+.ico-sliders { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6h18M3 12h18M3 18h18'/%3E%3Ccircle cx='9' cy='6' r='2.2' fill='white'/%3E%3Ccircle cx='15' cy='12' r='2.2' fill='white'/%3E%3Ccircle cx='7' cy='18' r='2.2' fill='white'/%3E%3C/svg%3E"); }
+.ico-source { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='2' fill='black'/%3E%3Cpath d='M7.8 7.8a6 6 0 0 0 0 8.4M16.2 7.8a6 6 0 0 1 0 8.4M4.9 4.9a10 10 0 0 0 0 14.2M19.1 4.9a10 10 0 0 1 0 14.2'/%3E%3C/svg%3E"); }
+.ico-shield { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z'/%3E%3C/svg%3E"); }
+.ico-clock { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7v5l3.5 2'/%3E%3C/svg%3E"); }
+.ico-chart { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 4v16h16'/%3E%3Cpath d='M8.5 16v-5M13 16V7M17.5 16v-7' stroke-width='2.6'/%3E%3C/svg%3E"); }
+.ico-check { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M8 12.5l3 3 5-6'/%3E%3C/svg%3E"); }
+.ico-scale { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4v16M7 20h10M5 7h14M5 7l-2.5 6h5zM19 7l-2.5 6h5z'/%3E%3C/svg%3E"); }
+.ico-file { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 3h8l5 5v13H6z'/%3E%3Cpath d='M14 3v5h5M9 13h7M9 17h7'/%3E%3C/svg%3E"); }
+.ico-download { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4v11M7 10l5 5 5-5M5 20h14'/%3E%3C/svg%3E"); }
+.ico-reset { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12a9 9 0 1 0 2.64-6.36L3 8'/%3E%3Cpath d='M3 3v5h5'/%3E%3C/svg%3E"); }
+.ico-book { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 5c3-1 6-1 9 1 3-2 6-2 9-1v14c-3-1-6-1-9 1-3-2-6-2-9-1z'/%3E%3Cpath d='M12 6v14'/%3E%3C/svg%3E"); }
+.ico-drop { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3s-6 7-6 11a6 6 0 0 0 12 0c0-4-6-11-6-11z'/%3E%3C/svg%3E"); }
+.ico-pipe { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 9q3-3 6 0t6 0 6 0M3 15q3-3 6 0t6 0 6 0'/%3E%3C/svg%3E"); }
+.ico-factory { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 21V10l6 3v-3l6 3V5h5v16zM3 21h18'/%3E%3C/svg%3E"); }
+.ico-user { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8' r='4'/%3E%3Cpath d='M4 21c0-4 4-7 8-7s8 3 8 7'/%3E%3C/svg%3E"); }
+.ico-home { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 11l9-7 9 7M5 10v10h14V10M10 20v-6h4v6'/%3E%3C/svg%3E"); }
+.ico-moon { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z'/%3E%3C/svg%3E"); }
+.ico-sun { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8'/%3E%3C/svg%3E"); }
+
+/* Photon-line table of the Properties detail panel: a collapsible block that
+   grows with the panel (it was a 200 px scroll box inside the scrolling panel). */
+.spectrum-lines > summary { cursor: pointer; font-weight: 600; font-size: .88rem; padding: .25rem 0; }
+.spectrum-lines td { padding: .1rem .5rem; }
+.spectrum-lines td:first-child { text-align: right; }
+
+/* A note that takes a whole row of the result grid (Decay without a time) */
+.result-grid-note { grid-column: 1 / -1; margin: 0; }

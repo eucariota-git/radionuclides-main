@@ -4,6 +4,14 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
+### v1.14.0 — usability and presentation review
+- **Defects**: the property cards of Properties (and the shielding cards of Dose) upper-cased their labels, which turned «β E<sub>max</sub>» into «Β EMAX» (a capital beta reads as a Latin B), «μ» into «Μ» and «keV» into «KEV»; labels now keep their case. The Dose report announced «the limit screening in this report» but did not contain it: it now carries the same indicative comparison with the RD 1029/2022 annual limits as the screen (none for Y-90), and prints the distance once when it was entered in metres («0.3 m», not «0.3 m (0.3 m)»).
+- **Live calculation in Decay and Dose**, as in Effluent and Caregiver: no Calculate button and no «inputs changed — recalculate» notice (copy audit T19). An invalid entry is named in a box under the form, the field is outlined (`aria-invalid`) and the results are hidden until it is corrected, so the report and the CSV always describe the inputs on screen. No `alert()` or `confirm()` remains in the calculators; for extended ICRP 107 nuclides the «NOT manually validated» confirmation is replaced by a permanent warning in the results. Effluent and Caregiver also mark the offending field.
+- **Decay** without elapsed time or target date shows A₀ and says that the values are at t = 0 (it used to fill four boxes with A₀, 100 %, 0 h and 0); the report says «none entered».
+- **Dose**: patient transmission is one optional field (empty = no patient attenuation; still no default value), instead of a Yes/No selector plus a disabled field. On phones the results table is stacked, one card per quantity.
+- **Properties**: on screens ≥ 1240 px the table grows with the page and its header sticks under the site header (it was a 420 px box showing 7 of 40 nuclides); narrower, the box is as tall as the viewport allows. The provenance column wraps instead of widening the table. The photon-line table is a collapsible block without its own scroll box, and energies are printed to 0.1 keV, the resolution of the ICRP 107 index («65.0» next to «65.1», not «65»).
+- **Navigation and look**: a «Guide» entry in the main menu of every page; own SVG icons (CSS masks, theme-aware) instead of emoji in card titles, buttons and the theme toggle; the theme follows the device's light/dark setting until the user chooses one (the choice is stored and wins). On phones the header is no longer pinned and takes two rows (logo and theme button, then the menu) instead of three.
+
 ### v1.13.3 — DDEP reuse terms checked
 - The LNHB nuclear-data page sets no reuse conditions and asks that the DDEP evaluations be cited (*Metrologia* articles, BIPM-5 monograph *Table of Radionuclides*), checked 2026-10-15: the third-party notices, their copy in About and the references now say so and cite the BIPM-5 monograph. The Cornejo et al. (2015) constants remain «attribution only, terms not checked».
 

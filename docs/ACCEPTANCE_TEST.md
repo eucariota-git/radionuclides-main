@@ -45,7 +45,7 @@ Commit fuente completo: ________________________________________ · SHA-256 del 
 | B1 | Las cuatro suites de tests (`node test/validate-app.js`, `validate-math.js`, `validate-data.js`, `validate-constants.js`) | Todas en verde (0 failed) | |
 | B2 | Nucleido ICRP 107 (p. ej. Na-22) buscado en Properties y abierto en Dose | Constantes Γ calculadas mostradas; la comparación con Cornejo la cubre `validate-constants.js` (B1) | |
 | B3 | Informe 📄 Report / PDF (Dose, Decay, Effluent y Caregiver) | Cabecera con versión de aplicación, build, versión de base de datos y fecha; método declarado, disclaimer y línea de firma | |
-| B4 | Nucleido ICRP 107 extendido (p. ej. Na-22) en Dose | Aviso "NOT manually validated" antes de calcular | |
+| B4 | Nucleido ICRP 107 extendido (p. ej. Na-22) en Dose | Aviso "NOT manually validated" visible en los resultados | |
 | B5 | Funcionamiento offline | Abrir vía `file://` y, en HTTPS, recargar sin conexión tras primera visita (service worker) | |
 | B6 | Instalación PWA (Android/desktop, HTTPS) | El navegador ofrece "Instalar"; icono trébol; arranca standalone | |
 | B7 | Modo oscuro | Tablas, gráficas, tooltips y avisos legibles en ambos modos | |

@@ -23,9 +23,10 @@
       <a href="dose.html">Dose</a>
       <a href="effluent.html" class="active">Effluent</a>
       <a href="caregiver.html">Caregiver</a>
+      <a href="about.html">Guide</a>
     </nav>
     <button id="darkToggle" type="button" class="btn-icon" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
-      <span id="darkIcon">🌙</span>
+      <span id="darkIcon" class="ico ico-moon" aria-hidden="true"></span>
     </button>
   </div>
 </header>
@@ -49,7 +50,7 @@
 
   <!-- A. Source term -->
   <div class="card">
-    <h2 class="card-title">&#128138; A. Source term</h2>
+    <h2 class="card-title"><span class="ico ico-drop" aria-hidden="true"></span> A. Source term</h2>
     <div class="overflow-x-auto">
       <table class="data-table" id="sourceTable">
         <thead>
@@ -88,7 +89,7 @@
 
   <!-- B. Scenario 1 -->
   <div class="card mt-2">
-    <h2 class="card-title">&#128679; B. Scenario 1 — sewer system inspector</h2>
+    <h2 class="card-title"><span class="ico ico-pipe" aria-hidden="true"></span> B. Scenario 1 — sewer system inspector</h2>
     <div class="form-grid">
       <div class="form-group">
         <label class="form-label" for="facility">Facility type</label>
@@ -102,7 +103,7 @@
 
   <!-- C. Scenario 2 -->
   <div class="card mt-2">
-    <h2 class="card-title">&#127981; C. Scenario 2 — STP sludge process operator</h2>
+    <h2 class="card-title"><span class="ico ico-factory" aria-hidden="true"></span> C. Scenario 2 — STP sludge process operator</h2>
     <div class="form-grid" id="s2Grid"></div>
     <div class="form-hint mt-1">
       Wet sludge production is plant-specific: PRTR-España
@@ -121,7 +122,7 @@
 
   <!-- D. Common -->
   <div class="card mt-2">
-    <h2 class="card-title">&#9881; D. Common parameters</h2>
+    <h2 class="card-title"><span class="ico ico-sliders" aria-hidden="true"></span> D. Common parameters</h2>
     <div class="form-grid" id="commonGrid"></div>
     <details class="mt-2">
       <summary><strong>Sources and assumptions of the parameters</strong></summary>
@@ -131,7 +132,7 @@
 
   <!-- Results -->
   <div class="card mt-2">
-    <h2 class="card-title">&#128202; Results</h2>
+    <h2 class="card-title"><span class="ico ico-chart" aria-hidden="true"></span> Results</h2>
     <div id="calcError" class="alert alert-danger hidden" role="alert"></div>
     <div id="resultBlock">
 
@@ -216,16 +217,16 @@
       </details>
 
       <div class="d-flex gap-2 mt-2 mb-1" data-no-print>
-        <button class="btn btn-secondary btn-sm" id="btnPrint" type="button" title="Generate a printable calculation report with traceability (sources, method, disclaimer)">📄 Report / PDF</button>
-        <button class="btn btn-secondary btn-sm" id="btnCsv" type="button" title="Export results as CSV">⬇ Export CSV</button>
-        <button class="btn btn-secondary btn-sm" id="btnReset" type="button" title="Restore the default values">↺ Defaults</button>
+        <button class="btn btn-secondary btn-sm" id="btnPrint" type="button" title="Generate a printable calculation report with traceability (sources, method, disclaimer)"><span class="ico ico-file" aria-hidden="true"></span> Report / PDF</button>
+        <button class="btn btn-secondary btn-sm" id="btnCsv" type="button" title="Export results as CSV"><span class="ico ico-download" aria-hidden="true"></span> Export CSV</button>
+        <button class="btn btn-secondary btn-sm" id="btnReset" type="button" title="Restore the default values"><span class="ico ico-reset" aria-hidden="true"></span> Defaults</button>
       </div>
     </div>
   </div>
 
   <div class="card mt-2">
     <details id="methodDetails">
-    <summary class="card-title">&#128214; Method — formulas, sources and adaptations</summary>
+    <summary class="card-title"><span class="ico ico-book" aria-hidden="true"></span> Method — formulas, sources and adaptations</summary>
     <div class="text-sm">
       <p>For each nuclide, with A the activity reaching the sewer in one year and DF = exp(−λ·t<sub>transit</sub>):</p>
       <p><strong>Scenario 1</strong> (NUREG/CR-5814 §5.2.1, transit ≈ 0.2 h, dilution in the facility's annual water volume V):</p>
@@ -373,7 +374,7 @@
 
   function readNumber(el) {
     const v = parseFloat(el.value);
-    if (!Number.isFinite(v)) throw new RangeError(`"${el.title || el.id}" must be a number`);
+    if (!Number.isFinite(v)) throw Object.assign(new RangeError(`"${el.title || el.id}" must be a number`), { field: el.id });
     return v;
   }
 
@@ -384,7 +385,7 @@
       input[s] = {};
       for (const key of Object.keys(PG[s])) {
         input[s][key] = readNumber(document.getElementById(`${s}_${key}`));
-        if (PG[s][key].positive && !(input[s][key] > 0)) throw new RangeError(`"${PG[s][key].label}" must be greater than 0`);
+        if (PG[s][key].positive && !(input[s][key] > 0)) throw Object.assign(new RangeError(`"${PG[s][key].label}" must be greater than 0`), { field: `${s}_${key}` });
       }
     }
     input.nuclides = nuclides.map(({ nd, T }, i) => ({
@@ -418,9 +419,10 @@
   };
   const pct = f => Number.isFinite(f) ? UTILS.fmtRatio(f * 100, 100) : '—';
   let last = null;
+  // Error message in the page box and the offending field marked (presentation review 2026-10-15)
+  const inputErr = UI.inputErrors('calcError');
 
   function render() {
-    const errBox = document.getElementById('calcError');
     let input, out;
     try {
       input = readInputs();
@@ -430,13 +432,12 @@
         throw new RangeError('The entered values are outside the representable range');
       }
     } catch (err) {
-      errBox.textContent = err.message;
-      errBox.classList.remove('hidden');
+      inputErr.show(err.message, err.field);
       document.getElementById('resultBlock').classList.add('hidden');
       last = null;
       return;
     }
-    errBox.classList.add('hidden');
+    inputErr.clear();
     document.getElementById('resultBlock').classList.remove('hidden');
     last = { input, out };
 
@@ -580,7 +581,7 @@
   const paramRows = (input, s) => Object.keys(PG[s]).map(key => [`${PG[s][key].label} (${PG[s][key].unit})`, String(input[s][key])]);
 
   document.getElementById('btnPrint').addEventListener('click', () => {
-    if (!last) { alert('Correct the input errors first.'); return; }
+    if (!last) return;   // the button is hidden with the results
     const { input, out } = last;
     const geo = input.geometry;
     const scenarioRows = (res, extra) => res.rows.map(r => r.partial
@@ -637,7 +638,7 @@
   });
 
   document.getElementById('btnCsv').addEventListener('click', () => {
-    if (!last) { alert('Correct the input errors first.'); return; }
+    if (!last) return;   // the button is hidden with the results
     const { input, out } = last;
     // Rectangular, self-describing CSV (audit 2026-10-03, H-09): identity,
     // versions and completeness repeated on every row, as the Decay export.

@@ -1,6 +1,6 @@
 /* =========================================================
    UI Module — Shared functionality across all pages
-   Dark mode, print, keyboard shortcuts, history management
+   Dark mode, print, keyboard shortcuts, live calculation, input errors
    ========================================================= */
 
 // Chart.js formats tick labels with the BROWSER locale, so a Spanish browser
@@ -31,35 +31,51 @@ const UI = (() => {
     }
   });
 
-  /* --- Dark Mode --- */
+  /* --- Dark Mode ---
+   * An explicit choice (button or Alt+D) is stored and wins. Without one, the
+   * page follows the operating-system preference, also when it changes while
+   * the page is open (presentation review 2026-10-15). */
   function initDarkMode() {
-    // Restore dark mode preference from localStorage
+    let stored = null;
     try {
-      const stored = localStorage.getItem('nm_dark_mode');
-      if (stored === '1') {
-        document.documentElement.dataset.theme = 'dark';
-      }
+      stored = localStorage.getItem('nm_dark_mode');
     } catch (e) {
       // localStorage may not be available (e.g., file:// on some browsers)
     }
+    const system = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+    const apply = dark => { document.documentElement.dataset.theme = dark ? 'dark' : ''; };
+    if (stored === '1' || stored === '0') apply(stored === '1');
+    else apply(!!(system && system.matches));
 
     const btn = document.getElementById('darkToggle');
-    if (!btn) return;
 
     function syncIcon() {
       const isDark = document.documentElement.dataset.theme === 'dark';
       const icon = document.getElementById('darkIcon');
-      if (icon) {
-        icon.textContent = isDark ? '☀️' : '🌙';
-      }
-      btn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+      if (icon) icon.className = 'ico ' + (isDark ? 'ico-sun' : 'ico-moon');
+      if (btn) btn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
     }
+    const announce = () => document.dispatchEvent(new CustomEvent('nm-theme-change', {
+      detail: { theme: document.documentElement.dataset.theme || 'light' },
+    }));
 
     syncIcon();
 
+    if (system && system.addEventListener) {
+      system.addEventListener('change', ev => {
+        let explicit = null;
+        try { explicit = localStorage.getItem('nm_dark_mode'); } catch (e) { /* unavailable */ }
+        if (explicit === '1' || explicit === '0') return;
+        apply(ev.matches);
+        syncIcon();
+        announce();
+      });
+    }
+
+    if (!btn) return;
     btn.addEventListener('click', () => {
       const isDark = document.documentElement.dataset.theme === 'dark';
-      document.documentElement.dataset.theme = isDark ? '' : 'dark';
+      apply(!isDark);
 
       try {
         localStorage.setItem('nm_dark_mode', isDark ? '0' : '1');
@@ -68,9 +84,7 @@ const UI = (() => {
       }
 
       syncIcon();
-      document.dispatchEvent(new CustomEvent('nm-theme-change', {
-        detail: { theme: document.documentElement.dataset.theme || 'light' },
-      }));
+      announce();
     });
   }
 
@@ -183,35 +197,59 @@ const UI = (() => {
     }
   }
 
-  /* --- Stale results (copy audit 2026-10-03, T19) ---
-   * After a calculation, editing any input outside the results card leaves the
-   * displayed results (and the report/CSV, which describe the LAST calculation)
-   * out of step with the form. watchStaleResults() shows a notice at the top of
-   * the results card until the next successful calculation calls fresh(). */
-  function watchStaleResults(cardId) {
-    const card = document.getElementById(cardId);
-    if (!card) return { fresh() {}, isStale: () => false };
-    const note = document.createElement('div');
-    note.id = 'staleNote';
-    note.className = 'alert alert-warning mb-1 hidden';
-    note.setAttribute('role', 'status');
-    note.textContent = 'Inputs changed — recalculate to update results. The report and the CSV export still describe the last calculation.';
-    const title = card.querySelector('.card-title');
-    if (title) title.insertAdjacentElement('afterend', note); else card.prepend(note);
-    let stale = false, calculated = false;
-    const mark = e => {
-      if (!calculated || card.contains(e.target)) return;
-      if (!e.target.closest || !e.target.closest('main')) return;
-      if (!e.target.matches('input, select, textarea, li')) return;
-      stale = true;
-      note.classList.remove('hidden');
+  /* --- Live calculation and input errors (presentation review 2026-10-15) ---
+   * The four calculators recalculate as the inputs change. Decay and Dose had a
+   * Calculate button and an «inputs changed — recalculate» notice (copy audit
+   * 2026-10-03, T19); they now follow the contract of Effluent and Caregiver:
+   * the results always describe the inputs on screen, and an invalid input
+   * hides them, so the report and the CSV cannot describe a different case.
+   *
+   * onInputs(fn, {delay, exclude}) calls fn, debounced while typing, after any
+   * input/change of a control inside <main> that is not inside `exclude`.
+   * inputErrors(boxId) returns { show(message, fieldId), clear() }: the message
+   * goes to the page's error box (instead of a modal alert) and the offending
+   * field is marked aria-invalid and described by that box. */
+  function onInputs(fn, { delay = 150, exclude = '' } = {}) {
+    let timer = null;
+    const handler = e => {
+      const t = e.target;
+      if (!t || !t.closest || !t.closest('main') || !t.matches('input, select, textarea')) return;
+      if (exclude && t.closest(exclude)) return;
+      clearTimeout(timer);
+      timer = setTimeout(fn, e.type === 'change' ? 0 : delay);
     };
-    document.addEventListener('input', mark);
-    document.addEventListener('change', mark);
-    return {
-      fresh() { calculated = true; stale = false; note.classList.add('hidden'); },
-      isStale: () => stale,
-    };
+    document.addEventListener('input', handler);
+    document.addEventListener('change', handler);
+  }
+
+  function inputErrors(boxId) {
+    const box = document.getElementById(boxId);
+    let marked = [];
+    function clear() {
+      for (const el of marked) {
+        el.classList.remove('is-invalid');
+        el.removeAttribute('aria-invalid');
+        if (el.dataset.describedbyBefore) el.setAttribute('aria-describedby', el.dataset.describedbyBefore);
+        else el.removeAttribute('aria-describedby');
+        delete el.dataset.describedbyBefore;
+      }
+      marked = [];
+      if (box) { box.textContent = ''; box.classList.add('hidden'); }
+    }
+    function show(message, fieldId) {
+      clear();
+      if (box) { box.textContent = message; box.classList.remove('hidden'); }
+      const el = fieldId ? document.getElementById(fieldId) : null;
+      if (el) {
+        const before = el.getAttribute('aria-describedby');
+        if (before) el.dataset.describedbyBefore = before;
+        el.classList.add('is-invalid');
+        el.setAttribute('aria-invalid', 'true');
+        if (box) el.setAttribute('aria-describedby', [before, boxId].filter(Boolean).join(' '));
+        marked.push(el);
+      }
+    }
+    return { show, clear };
   }
 
   /* --- Calculation History --- */
@@ -251,7 +289,8 @@ const UI = (() => {
     initKeyboard,
     showFatalError,
     getChartTheme,
-    watchStaleResults,
+    onInputs,
+    inputErrors,
     saveHistory,
     loadHistory,
   };

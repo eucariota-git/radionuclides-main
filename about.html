@@ -23,9 +23,10 @@
       <a href="dose.html">Dose</a>
       <a href="effluent.html">Effluent</a>
       <a href="caregiver.html">Caregiver</a>
+      <a href="about.html" class="active">Guide</a>
     </nav>
     <button id="darkToggle" type="button" class="btn-icon" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
-      <span id="darkIcon">🌙</span>
+      <span id="darkIcon" class="ico ico-moon" aria-hidden="true"></span>
     </button>
   </div>
 </header>
@@ -56,8 +57,9 @@
       <li><strong>Browsers</strong>: current Firefox, Chrome, Safari or Edge, on desktop or mobile.</li>
       <li><strong>Offline</strong>: Calculators work offline with the complete local copy (opened from <code>file://</code>, or from the local cache of a copy first loaded over HTTP(S)); external references need a connection.</li>
       <li><strong>Install as app (PWA)</strong>: served through <code>localhost</code> or HTTPS, a compatible browser offers "Install" / "Add to Home screen"; the app then runs standalone and fully offline.</li>
-      <li><strong>Reports and CSV</strong>: Decay, Dose, Effluent and Caregiver have a <strong>📄 Report / PDF</strong> button (inputs, results, method, sources, disclaimer and sign-off line; use the browser's "Save as PDF") and a CSV export in which every row repeats the application version, build, data version, export time (UTC) and the inputs needed to reproduce the result.</li>
-      <li>Each page explains its method, sources and limits in its own <em>Method</em> and notes blocks (collapsed: click the title marked ▸ to open them); this guide gives the purpose, the use and the key limits.</li>
+      <li><strong>Reports and CSV</strong>: Decay, Dose, Effluent and Caregiver have a <strong>Report / PDF</strong> button (inputs, results, method, sources, disclaimer and sign-off line; use the browser's "Save as PDF") and a CSV export in which every row repeats the application version, build, data version, export time (UTC) and the inputs needed to reproduce the result.</li>
+      <li><strong>Results update as you type</strong> on the four calculators. An invalid entry is named in a red box under the form, the field is outlined, and the results are hidden until it is corrected — the report and the CSV always describe the inputs on screen.</li>
+      <li>Each page explains its method, sources and limits in its own <em>Method</em> and notes blocks (collapsed: click the title marked ▸ to open them); this guide — <strong>Guide</strong> in the menu — gives the purpose, the use and the key limits.</li>
     </ul>
 
     <hr>
@@ -83,7 +85,7 @@
       <li>Give the time either as <strong>reference and target date/time</strong> (local time of the device) or as an <strong>elapsed time</strong>, which takes precedence when filled.</li>
       <li>Optional <strong>target activity</strong>: the time to reach it (a target ≥ A₀ is reported as already reached or unreachable; zero as never reached in finite time).</li>
       <li>Optional <strong>mass of material being assessed</strong>, the mass that contains the activity (state whether the container is included). It enables the Table A1 clearance check and the Table B exemption criteria, which Annex II A.1 sets <em>separately</em>: a) total activity of a source vs column 3; b) moderate quantity (≤ 1000 kg) vs column 2.</li>
-      <li>Press <strong>Calculate</strong>: A(t), fraction remaining, the decay curve and a table of values. If an input changes afterwards, a notice asks to recalculate; the report and CSV describe the last calculation.</li>
+      <li><strong>Results</strong> (updated as you type): A(t), fraction remaining, the decay curve and a table of values. With no elapsed time and no target date the values are those at t = 0, and a note says so.</li>
     </ol>
     <p><strong>Key limits</strong>: one nuclide; mixtures and sums over sources are not evaluated; reaching the Table A1 level is not by itself a clearance (Annex III applies).</p>
     <p><strong>Example</strong> (stored half-life 6.007 h): 1000 MBq Tc-99m → after 6 hours ≈ 500 MBq; time to reach 100 MBq ≈ 20.0 hours.</p>
@@ -95,10 +97,10 @@
     <ol>
       <li>Select the nuclide and <strong>activity</strong> (A₀ is the activity at the start of each exposure). For an extended ICRP 107 nuclide with short-lived progeny (Ge-68 → Ga-68, Sn-113 → In-113m, Mo-99 → Tc-99m…), <strong>Short-lived progeny</strong> chooses between the progeny in equilibrium (default, as for the curated chains) and the parent alone (freshly separated source).</li>
       <li><strong>Distance</strong> in m or cm (below 0.25 m the result carries a warning: the point-source model depends on the real source size there).</li>
-      <li>Optional <strong>shielding</strong> — lead, elemental iron (ρ = 7.874 g/cm³, not a generic steel) or normal / light-weight concrete — and optional <strong>patient transmission</strong> (no default: it depends on energy, anatomy and geometry). <em>Shielding details</em> names the method used: the Archer broad-beam fit of Oumano et al. (2025) for Tc-99m, F-18, I-131 and Lu-177 behind lead or concrete, otherwise spectrum-weighted narrow-beam attenuation with build-up; it gives the first HVL/TVL and warns when part of the spectrum falls outside the tabulated range.</li>
+      <li>Optional <strong>shielding</strong> — lead, elemental iron (ρ = 7.874 g/cm³, not a generic steel) or normal / light-weight concrete — and optional <strong>patient transmission</strong> in % (empty = no patient attenuation; no default value: it depends on energy, anatomy and geometry). <em>Shielding details</em> names the method used: the Archer broad-beam fit of Oumano et al. (2025) for Tc-99m, F-18, I-131 and Lu-177 behind lead or concrete, otherwise spectrum-weighted narrow-beam attenuation with build-up; it gives the first HVL/TVL and warns when part of the spectrum falls outside the tabulated range.</li>
       <li><strong>Exposure</strong> time per administration and administrations per year; choose whether physical decay is integrated during each exposure.</li>
-      <li>Press <strong>Calculate Dose</strong>: rate at t = 0 and after decay, reference rate at 1 m, annual integrated dose for <strong>H*(10)</strong> (estimator of effective dose) and <strong>H'(0.07)</strong> (skin/extremity indicator), and the rate against distance.</li>
-      <li><strong>Annual limit screening</strong> (indicative): percentages of the limits of the Spanish Royal Decree 1029/2022 — 20 mSv/y effective (workers), 1 mSv/y (public), 500 mSv/y skin and extremities, lens of the eye 100 mSv in 5 consecutive years with at most 50 mSv in one year. No "safe" verdict is issued.</li>
+      <li><strong>Results</strong> (updated as you type): rate at t = 0 and after decay, reference rate at 1 m, annual integrated dose for <strong>H*(10)</strong> (estimator of effective dose) and <strong>H'(0.07)</strong> (skin/extremity indicator), and the rate against distance.</li>
+      <li><strong>Annual limit screening</strong> (indicative): percentages of the limits of the Spanish Royal Decree 1029/2022 — 20 mSv/y effective (workers), 1 mSv/y (public), 500 mSv/y skin and extremities, lens of the eye 100 mSv in 5 consecutive years with at most 50 mSv in one year. No "safe" verdict is issued. The report includes the same screening.</li>
     </ol>
     <p><strong>Key limits</strong>: point source; room scatter and source distribution are not modelled. H*(10) and H'(0.07) are area-monitoring quantities: these estimates do not establish compliance (personal quantities are Hp(10), Hp(0.07), Hp(3); RD 1029/2022 art. 34 allows estimating category B doses from workplace monitoring). Decay between administrations is not modelled. <strong>Y-90</strong> has no photon line: Dose offers only an experimental container-dependent bremsstrahlung scenario, with direct beta dose excluded and no regulatory verdict. For other nuclides without photon lines no estimate is made — which is not evidence that there is no external hazard.</p>
     <p><strong>Example</strong>: 100 MBq Tc-99m, point source at 50 cm, no shielding, 10 min per administration, 200 administrations per year, decay integrated:</p>
@@ -142,7 +144,7 @@
 
     <hr>
     <h3 id="guide-dark-mode">Dark Mode</h3>
-    <p>The <strong>moon icon</strong> (🌙) in the top-right corner toggles dark mode; the choice is saved in the browser.</p>
+    <p>Without a saved choice the app follows the light or dark setting of the device. The <strong>moon / sun button</strong> in the top-right corner switches it; that choice is saved in the browser and then takes precedence.</p>
     <h3 id="guide-keyboard-shortcuts">Keyboard Shortcuts</h3>
     <div class="overflow-x-auto">
       <table class="about-table">
@@ -576,7 +578,7 @@ FUTURE UPDATES, ENHANCEMENTS, OR MODIFICATIONS TO THE SOFTWARE.</pre>
     <p>This is the authoritative notice file for all third-party material bundled or redistributed in this application — both <strong>software</strong> (MIT, texts reproduced in full below) and <strong>data</strong> (see the Data sources section).</p>
     <p>The original application <strong>code</strong> is licensed under EUPL-1.2 only (see <a href="#license-code">LICENSE</a> and the scope map above). The EUPL does not relicense the bundled third-party software or data. Those items retain the terms below and in <a href="#license-data">LICENSE.TXT</a>; some commercial uses of the data require separate permission from the respective rights holders.</p>
 
-    <h3>⚠️ <code>LICENSE</code> and <code>LICENSE.TXT</code> are two different licences</h3>
+    <h3>&#9888; <code>LICENSE</code> and <code>LICENSE.TXT</code> are two different licences</h3>
     <p>They are <strong>not</strong> variants of the same file, and neither supersedes the other:</p>
     <div class="overflow-x-auto">
       <table class="about-table">
