@@ -108,7 +108,9 @@ recommended values of the Decay Data Evaluation Project, LNHB/CEA *Table de
 Radionucléides* (https://www.lnhb.fr/), consulted 2026-10-14; the recent
 evaluations are published in Metrologia 62 (2025) 029001 / 029002 and 63 (2026)
 019001. Sixteen numeric values cited with attribution in each entry; the tables
-are not redistributed. The reuse terms of the LNHB tables have not been checked.
+are not redistributed. The LNHB nuclear-data page sets no reuse conditions and asks
+that its evaluations be cited — the *Metrologia* articles and the BIPM-5 monograph
+*Table of Radionuclides* (checked 2026-10-15); both are cited.
 
 ### Cornejo et al. (2015) — published dose-rate constants
 `gamma_Kair` of 32 curated entries and their comparison values
@@ -225,9 +227,10 @@ reference, not the article.
   transcription of the former.
 - The NIST and NUREG numeric tables are used with attribution under the terms
   stated in their sections; Oumano is CC BY 4.0.
-- **Attribution only, terms not checked.** The 16 DDEP half-lives and the
-  Cornejo et al. (2015) constants (SEPR) are cited with attribution; no reuse
-  permission is on file for either.
+- **Citation requested, no restriction.** The 16 DDEP half-lives: the LNHB asks
+  only that its evaluations be cited (checked 2026-10-15).
+- **Attribution only, terms not checked.** The Cornejo et al. (2015) constants
+  (SEPR) are cited with attribution; no reuse permission is on file.
 - For **commercial use of the affected data**, first obtain permission from ICRP (ICRP-107 data
   and any substantial ICRU/ICRP-74 material) and written confirmation of the
   applicable terms from NIST (XCOM SRD 8) and NRC/ORNL or ANS (ANS-6.4.3 buildup).

@@ -4,6 +4,9 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
+### v1.13.3 — DDEP reuse terms checked
+- The LNHB nuclear-data page sets no reuse conditions and asks that the DDEP evaluations be cited (*Metrologia* articles, BIPM-5 monograph *Table of Radionuclides*), checked 2026-10-15: the third-party notices, their copy in About and the references now say so and cite the BIPM-5 monograph. The Cornejo et al. (2015) constants remain «attribution only, terms not checked».
+
 ### v1.13.2 — presentation of Properties and of the Caregiver chart
 - Properties: the «Γ source» column keeps a minimum width, so between ~700 and ~1100 px the rows no longer grow to ~160 px (one word per line); β E<sub>max</sub> note starts with its unit (MeV), like the other cards; the reference notes separate clearance (Table A1, not tabulated → RP 122 Part 1) from the exemption of moderate quantities (Table B: column 3 for sources, column 2 for materials, separate criteria; not tabulated → Annex II A.3.a, CSN values).
 - Caregiver chart: the case of the cohabitation table is marked on the curve (restriction → treatment dose; a horizontal line when the two rows have different restrictions); colours validated for colour-vision deficiency in light and dark — curve green, criterion red dashed, indefinite restriction (floor or upper asymptote) blue dotted and drawn on top of the curve, adopted restriction a neutral vertical line — with the values in the legend.

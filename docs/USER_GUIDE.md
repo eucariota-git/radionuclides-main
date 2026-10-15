@@ -157,7 +157,7 @@ The **moon icon** (🌙) in the top-right corner toggles dark mode; the choice i
 - **Cornejo Díaz N., Brosed Serreta A., Ruiz Manzano P.** (2015). "Constantes de tasa de kerma en aire y de tasa de equivalente de dosis ambiental de algunos radionucleidos utilizados en aplicaciones médicas." *Radioprotección* (SEPR), Nº 83, 39–42.
 - **ICRP Publication 74** (1996). "Conversion Coefficients for Use in Radiological Protection against External Radiation."
 - **ICRP Publication 107** (2008). "Nuclear Decay Data for Dosimetric Calculations." Endo & Eckerman.
-- **DDEP — Decay Data Evaluation Project**. LNHB/CEA *Table de Radionucléides*, recommended half-lives (consulted 14 October 2026); Mougeot X. et al., *Metrologia* 62 (2025) 029001/029002 and 63 (2026) 019001 for the recent evaluations.
+- **DDEP — Decay Data Evaluation Project**. LNHB/CEA *Table de Radionucléides*, recommended half-lives (consulted 14 October 2026); Mougeot X. et al., *Metrologia* 62 (2025) 029001/029002 and 63 (2026) 019001 for the recent evaluations; *Table of Radionuclides*, Monographie BIPM-5 (Bureau International des Poids et Mesures), the compiled DDEP evaluations.
 - **ICRP Publication 116** (2010). "Conversion Coefficients for Radiological Protection Quantities for External Radiation Exposures." With the corrigenda in ICRP Publication 129 (2015).
 - **ICRP Publication 119** (2012). "Compendium of Dose Coefficients based on ICRP Publication 60." Numerical transcription of RD 783/2001 Annex III tables a) and b).
 - **Real Decreto 783/2001**, Anexo III, tablas a) y b) (public dose coefficients). Repealed by RD 1029/2022, whose third transitional provision — and the CSN Resolution of 3 April 2024 — keep these coefficients in force for members of the public.
