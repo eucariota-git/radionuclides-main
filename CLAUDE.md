@@ -133,7 +133,7 @@ Calculators recalculate live (Decay/Dose through `UI.onInputs`, Effluent/Caregiv
 
 ## Status and pending (as of 2026-10-15, v1.16.1)
 
-- Last package built and pushed: `dist/nm-radionuclide-planner-v1.13.3.zip` (SHA-256 f3f55e2a…, commit c21796f).
+- Last package built: `dist/nm-radionuclide-planner-v1.16.1.zip` (SHA-256 5546a896…, commit e2858ed, pushed); manual checks of DEVELOPMENT § Verify (file://, HTTP(S), PWA, offline) not yet done for it.
 - v1.14.0 (usability and presentation review), v1.15.0 (decimal point or comma) and v1.15.1 (fixes D-01…D-03 of an independent review) pushed (03cc8d0), not packaged. v1.16.0 (optional Spanish screens: engine, glossary, catalogs of the five pages, reports, data notes and Spanish guide) pushed (7009fb8), not packaged; pending the author's review of the Spanish texts (`docs/I18N_GLOSSARY_ES.md` items marked D or P) and acceptance row B15. English stays the default. Pending decision: saving and reopening a case (`UI.saveHistory`/`loadHistory` exist but are unused); a results summary near the top of Effluent.
 - **External distribution blocked by data rights**: permission requested from ICRP (permissions@icrp.org, 2026-10-15, personal capacity) for ICRP 74 Table A.21 (50 values), ICRP 119 Table G.1 (5 inhalation coefficients) and the Table F.1 chemical-form labels. When the reply arrives, update «Status / permissions» in `THIRD_PARTY_NOTICES.md` and its copy in `about.html`. DDEP/LNHB: no restriction, citation requested (done). Cornejo et al. 2015 (SEPR): courtesy request deferred until ICRP answers.
 - Professional use: the acceptance sheet (`docs/ACCEPTANCE_TEST.md`) has not been completed for the current version (the local copy is v1.2); PHITS coefficients of Effluent need an external technical review.
