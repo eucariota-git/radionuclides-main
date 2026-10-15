@@ -671,7 +671,7 @@
     }
     const csv = rows.map(r => r.map(v => {
       const str = String(v);
-      const safe = /^[=+\-@\t\r]/.test(str) ? "'" + str : str;
+      const safe = UTILS.csvSafe(str);
       return `"${safe.replace(/"/g, '""')}"`;
     }).join(',')).join('\r\n');
     const blob = new Blob([csv], { type: 'text/csv' });

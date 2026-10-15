@@ -5,8 +5,8 @@ const UTILS = (() => {
   // two different code versions never produce indistinguishable reports
   // (audit 2026-07-16, H-07). APP_BUILD must equal CACHE_VERSION in sw.js —
   // update both together; validate-app.js enforces the match.
-  const APP_VERSION = '1.12.2';
-  const APP_BUILD = 'nm-planner-v49';
+  const APP_VERSION = '1.13.0';
+  const APP_BUILD = 'nm-planner-v50';
 
   function escapeHtml(text) {
     const div = document.createElement('div');
@@ -123,6 +123,20 @@ const UTILS = (() => {
     return val.toPrecision(sig);
   }
 
+  /**
+   * CSV cell guard against formula injection: a text cell starting with
+   * = + - @ TAB or CR gets a leading apostrophe. A NUMBER is never prefixed —
+   * the old per-page guard turned a negative margin into the text "'-2.86"
+   * (audit 2026-10-15, F-03).
+   * @param {string} str
+   */
+  function csvSafe(str) {
+    const s = String(str);
+    // a plain decimal number, nothing around it (Number() would also accept "\t1")
+    if (/^-?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?$/.test(s)) return s;
+    return /^[=+\-@\t\r]/.test(s) ? "'" + s : s;
+  }
+
   function formatDate(date) {
     if (!(date instanceof Date) || !isFinite(date)) return '—';
     return date.toLocaleString();
@@ -143,6 +157,7 @@ const UTILS = (() => {
     fmtRatio,
     fmtSig,
     toSci,
+    csvSafe,
     formatDate,
     safeAttr,
   };

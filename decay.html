@@ -854,7 +854,7 @@
       ];
       const csvCell = value => {
         const str = String(value ?? '');
-        const safe = /^[=+\-@\t\r]/.test(str) ? "'" + str : str;
+        const safe = UTILS.csvSafe(str);
         return `"${safe.replace(/"/g, '""')}"`;
       };
 

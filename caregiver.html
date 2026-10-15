@@ -136,7 +136,7 @@
   <div class="card mt-2">
     <h2 class="card-title">&#127968; B. Cohabitation</h2>
     <div class="overflow-x-auto">
-      <table class="data-table" id="rowsTable">
+      <table class="data-table stack-on-mobile" id="rowsTable">
         <thead>
           <tr>
             <th>Contact</th>
@@ -383,14 +383,16 @@
       <td class="num" id="own_${i}_f">—</td>
     </tr>`).join('');
 
+  // data-label: on phones the table is stacked as one card per row and each
+  // cell shows its column name (audit 2026-10-15, F-06)
   $('rowsBody').innerHTML = ROWS.map(([k, label]) => `<tr>
-    <td>${esc(label)}</td>
-    <td><input type="number" class="form-input" id="${k}_days" min="0" step="any" aria-label="${UTILS.safeAttr(label)} restriction days" title="Restriction (d from discharge)"></td>
-    <td><input type="number" class="form-input" id="${k}_h_during" min="0" max="24" step="any" aria-label="${UTILS.safeAttr(label)} hours per day during" title="Hours per day during the restriction"></td>
-    <td><select class="form-select" id="${k}_d_during" aria-label="${UTILS.safeAttr(label)} distance during" title="Distance during the restriction (m)"></select></td>
-    <td><input type="number" class="form-input" id="${k}_h_after" min="0" max="24" step="any" aria-label="${UTILS.safeAttr(label)} hours per day after" title="Hours per day after the restriction"></td>
-    <td><select class="form-select" id="${k}_d_after" aria-label="${UTILS.safeAttr(label)} distance after" title="Distance after the restriction (m)"></select></td>
-    <td class="num" id="${k}_dose">—</td>
+    <td class="stack-title">${esc(label)}</td>
+    <td data-label="Restriction (d from discharge)"><input type="number" class="form-input" id="${k}_days" min="0" step="any" aria-label="${UTILS.safeAttr(label)} restriction days" title="Restriction (d from discharge)"></td>
+    <td data-label="During (h/d)"><input type="number" class="form-input" id="${k}_h_during" min="0" max="24" step="any" aria-label="${UTILS.safeAttr(label)} hours per day during" title="Hours per day during the restriction"></td>
+    <td data-label="During (m)"><select class="form-select" id="${k}_d_during" aria-label="${UTILS.safeAttr(label)} distance during" title="Distance during the restriction (m)"></select></td>
+    <td data-label="After (h/d)"><input type="number" class="form-input" id="${k}_h_after" min="0" max="24" step="any" aria-label="${UTILS.safeAttr(label)} hours per day after" title="Hours per day after the restriction"></td>
+    <td data-label="After (m)"><select class="form-select" id="${k}_d_after" aria-label="${UTILS.safeAttr(label)} distance after" title="Distance after the restriction (m)"></select></td>
+    <td class="num" data-label="Dose / cycle (mSv)" id="${k}_dose">—</td>
   </tr>`).join('');
 
   // ---- Reading and writing the form ----
@@ -730,7 +732,7 @@
     for (const p of cv.points) add('curve', 'Treatment dose', p.days, p.dose_mSv, 'mSv');
     const csv = rows.map(r => r.map(v => {
       const str = String(v);
-      const safe = /^[=+\-@\t\r]/.test(str) ? "'" + str : str;
+      const safe = UTILS.csvSafe(str);
       return `"${safe.replace(/"/g, '""')}"`;
     }).join(',')).join('\r\n');
     const blob = new Blob([csv], { type: 'text/csv' });

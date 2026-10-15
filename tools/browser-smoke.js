@@ -317,6 +317,23 @@ async function main() {
       check('properties Na-24 spectrum: no comma in tick labels (1000, not 1,000) and the y axis ends below 1000 %',
         !/,/.test(sp.x + sp.y) && /\b1000\b/.test(sp.x) && sp.max < 1000, JSON.stringify(sp));
     });
+    await guard('Distribution audit 2026-10-15 (F-02, F-06)', async () => {
+      // F-02: the Dose report states the progeny of an extended nuclide
+      await open('dose.html?id=Ge-68', 1280);
+      await ev(`document.getElementById('btnCalc').click()`); await sleep(400);
+      await ev(`document.getElementById('btnPrintDose').click()`); await sleep(100);
+      const rep = await ev(`(document.getElementById('printReport') || {}).innerText || ''`);
+      check('dose Ge-68 report: progeny row names Ga-68, no Cornejo source, header names the ICRP 107 index',
+        /Progeny in the constants\s*included in equilibrium[^\n]*Ga-68/.test(rep) && !/Cornejo/.test(rep) && /ICRP 107 extended index/.test(rep), rep.slice(0, 200));
+      // F-06: the cohabitation table fits a phone as stacked cards
+      await open('caregiver.html', 390);
+      const t = await ev(`(() => { const tb = document.getElementById('rowsTable'), w = tb.parentElement;
+        return { head: getComputedStyle(tb.querySelector('thead')).display, sw: w.scrollWidth, cw: w.clientWidth,
+          label: getComputedStyle(document.querySelector('#rowsBody td[data-label]'), '::before').content }; })()`);
+      check('caregiver 390 px: cohabitation table stacked (no hidden columns, labels shown)',
+        t.head === 'none' && t.sw <= t.cw + 1 && /Restriction/.test(t.label), JSON.stringify(t));
+      await pageChecks('caregiver 390 px');
+    });
     await guard('Report: the print path builds the report without errors', async () => {
       // Report: the print path builds the report without errors
       await open('caregiver.html', 1280);

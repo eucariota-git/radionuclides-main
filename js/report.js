@@ -128,7 +128,10 @@ const REPORT = (() => {
         <table class="rpt-meta">
           <tr><td>Generated</td><td>${esc(ts)}</td></tr>
           <tr><td>Application</td><td>NM Radionuclide Planner v${esc(appVersion)} (build ${esc(appBuild)})</td></tr>
-          ${typeof DB !== 'undefined' ? `<tr><td>Database</td><td>nuclides.json v${esc(meta.version || '?')} — ${esc(meta.reference ? String(meta.reference).slice(0, 90) : '')}&hellip;</td></tr>` : ''}
+          ${typeof DB !== 'undefined' ? (spec.nuclide && spec.nuclide._icrp107
+            // an extended nuclide does not come from the curated database (F-02)
+            ? `<tr><td>Database</td><td>ICRP 107 extended index (the curated nuclides.json v${esc(meta.version || '?')} is not used for this nuclide)</td></tr>`
+            : `<tr><td>Database</td><td>nuclides.json v${esc(meta.version || '?')} — ${esc(meta.reference ? String(meta.reference).slice(0, 90) : '')}&hellip;</td></tr>`) : ''}
           ${nuclideRows}
         </table>
       </div>`;

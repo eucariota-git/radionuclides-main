@@ -48,8 +48,10 @@ copies supplied to end users.
   `data/icrp107-index.json`, `data/icrp107-data.js`, and ICRP-107-derived values
   in `data/nuclides.json` and `data/nuclides-data.js`.
 - Numerical tables, coefficients, legal texts and publication-derived material
-  from ICRU/ICRP, NIST, NUREG/ANS, BOE and Oumano et al. retain the terms and
-  attribution stated in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
+  from ICRU/ICRP, NIST, NUREG/ANS, BOE, DDEP (LNHB/CEA), Cornejo et al. (2015),
+  Oumano et al. and the Caregiver sources (Monserrat Fuertes, Kurth, Demir,
+  Gayol Vilorio, Foro CSN-SEPR-SEFM) retain the terms and attribution stated in
+  [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 - Generated copies and transformed data do not acquire the EUPL merely because
   project code produced or packaged them.
 

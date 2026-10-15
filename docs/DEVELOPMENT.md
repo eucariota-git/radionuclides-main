@@ -315,6 +315,6 @@ violated; step 5 remains manual.
 See also `docs/ACCEPTANCE_TEST.md` (independent validation sheet).
 
 **Document version:** 2.6 — this guide only; the application and database are
-versioned separately (`nuclides.json` v1.3 — bump its `version` whenever its content changes, since reports print it —, `UTILS.APP_VERSION` in
+versioned separately (`nuclides.json` v1.4 — bump its `version` whenever its content changes, since reports print it; `test/validate-data.js` maps each version to the SHA-256 of its `nuclides` array and fails otherwise —, `UTILS.APP_VERSION` in
 `js/utils.js`, `CACHE_VERSION` in `sw.js`)  
-**Last updated:** 2026-10-14
+**Last updated:** 2026-10-15

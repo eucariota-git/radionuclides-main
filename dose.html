@@ -694,6 +694,17 @@
     return 'Within the tabulated attenuation and build-up ranges';
   }
   const Y90_SCOPE = 'Experimental bremsstrahlung component only; direct beta dose is excluded';
+  // Which progeny the constants include — printed in the report and the CSV,
+  // which used to give Γ(Ge-68) = 157.9 with no mention of Ga-68 (audit
+  // 2026-10-15, F-02). '' = nothing to state (curated single-nuclide entry).
+  function progenyText(n) {
+    if (n.chain_members) return 'included in secular equilibrium (curated chain): ' +
+      n.chain_members.slice(1).map(m => `${m.id} ${m.equilibrium_activity_fraction} Bq/Bq`).join(', ');
+    const p = (n._progeny || []).filter(m => m.fraction >= 1e-3);
+    if (!p.length) return n._icrp107 ? 'none (no short-lived progeny under the app criterion)' : '';
+    return (n._progenyIncluded ? 'included in equilibrium (app criterion: T½ ≤ 1/10 of the parent and ≤ 30 d): '
+      : 'EXCLUDED — parent only, as selected: ') + p.map(m => `${m.id} ${Number(m.fraction.toPrecision(3))} Bq/Bq`).join(', ');
+  }
   const ARCHER_BASIS = 'Archer transmission from Oumano et al. (2025), based on dose at 1 cm depth in tissue. Applied here as an approximation to both operational quantities';
 
   document.getElementById('btnPrintDose').onclick = () => {
@@ -725,7 +736,9 @@
       sources.push('Zanzonico et al. (1999) J Nucl Med 40(6):1024–1028 — bremsstrahlung dose-rate methodology (the container constants used here are estimates, not tabulated in that publication).');
     } else {
       sources.push('ICRP Publication 74 (1996), Table A.21 — conversion coefficients h*(10), h\'(0.07,0°) per unit fluence.');
-      sources.push('Cornejo Díaz N., Brosed Serreta A., Ruiz Manzano P. (2015) — Constantes de tasa de kerma en aire y de dosis. Radioprotección Nº 83.');
+      // Cornejo applies to curated entries only (published comparison values),
+      // never to the ICRP 107 extended ones (F-02)
+      if (!r.n._icrp107) sources.push('Cornejo Díaz N., Brosed Serreta A., Ruiz Manzano P. (2015) — Constantes de tasa de kerma en aire y de dosis. Radioprotección Nº 83.');
       if (r.method === 'archer') {
         sources.push('Oumano et al. (2025) J Appl Clin Med Phys — Archer broad-beam shielding parameters.');
       } else if (r.method === 'narrow_beam_spectrum' || r.method === 'narrow_beam') {
@@ -750,6 +763,7 @@
           ['Administrations per year', String(r.nAdmin)],
           ['Decay during exposure', r.withDecay === undefined ? '—' : r.withDecay ? 'integrated A(t)' : 'no (constant activity for the dose integral)'],
           ['Dose rate constants', `Γ(H*(10)) = ${r.gammaWB}; Γ(${r.useH007 ? "H'(0.07)" : 'H*(10) fallback'}) = ${r.gammaExt} μSv·h⁻¹·GBq⁻¹·m²`],
+          ...(progenyText(r.n) ? [['Progeny in the constants', progenyText(r.n)]] : []),
         ]},
         { heading: 'Results', rows: [
           ['H*(10) rate at d, t = 0', fdr(r.Hdot_WB)],
@@ -779,7 +793,7 @@
       'Exposure_per_administration_h', 'Administrations_per_y', 'Decay_during_exposure',
       'Shielding', 'Shielding_method', 'Shielding_validity', 'Patient_transmission',
       'Quantity', 'Gamma_uSv_h_GBq_m2', 'Dose_rate_t0_at_d_uSv_h', 'Dose_rate_after_decay_at_d_uSv_h',
-      'Dose_rate_t0_at_1m_uSv_h', 'Dose_rate_after_decay_at_1m_uSv_h', 'Annual_dose_uSv_per_y', 'Note'];
+      'Dose_rate_t0_at_1m_uSv_h', 'Dose_rate_after_decay_at_1m_uSv_h', 'Annual_dose_uSv_per_y', 'Note', 'Progeny'];
     const common = [UTILS.APP_VERSION, UTILS.APP_BUILD, meta.version || '', exportedUtc, n.id,
       A0raw, A0unit, Number(A0_GBq.toPrecision(6)), distRaw, distUnit, Number(d_m.toPrecision(6)),
       t_h, nAdmin, withDecay === undefined ? '' : withDecay ? 'integrated A(t)' : 'no (constant activity for the dose integral)',
@@ -789,14 +803,14 @@
       patientTx !== undefined && patientTx < 1 ? patientTx : 1];
     const rows = [head,
       [...common, isY90 ? 'Y-90 H*(10), ambient' : 'H*(10), ambient', gammaWB,
-        Hdot_WB.toPrecision(5), Hdot_WB_t.toPrecision(5), Hdot_WB_1m.toPrecision(5), Hdot_WB_t_1m.toPrecision(5), (H_WB_cum * nAdmin).toPrecision(5), isY90 ? Y90_SCOPE : ''],
+        Hdot_WB.toPrecision(5), Hdot_WB_t.toPrecision(5), Hdot_WB_1m.toPrecision(5), Hdot_WB_t_1m.toPrecision(5), (H_WB_cum * nAdmin).toPrecision(5), isY90 ? Y90_SCOPE : '', progenyText(n)],
       [...common, isY90 ? `Y-90 ${extLabel}` : extLabel, gammaExt,
         Hdot_Ext.toPrecision(5), Hdot_Ext_t.toPrecision(5), Hdot_Ext_1m.toPrecision(5), Hdot_Ext_t_1m.toPrecision(5), (H_Ext_cum * nAdmin).toPrecision(5),
-        [isY90 ? Y90_SCOPE + '; not a complete skin/extremity assessment' : '', useH007 ? '' : "H*(10) value — no H'(0.07) constant"].filter(Boolean).join('; ')],
+        [isY90 ? Y90_SCOPE + '; not a complete skin/extremity assessment' : '', useH007 ? '' : "H*(10) value — no H'(0.07) constant"].filter(Boolean).join('; '), progenyText(n)],
     ];
     const csv = rows.map(r => r.map(v => {
       const str = String(v);
-      const safe = /^[=+\-@\t\r]/.test(str) ? "'" + str : str;
+      const safe = UTILS.csvSafe(str);
       return `"${safe.replace(/"/g, '""')}"`;
     }).join(',')).join('\r\n');
     const blob = new Blob([csv], { type: 'text/csv' });

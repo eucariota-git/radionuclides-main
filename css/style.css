@@ -1559,6 +1559,35 @@ kbd {
     font-size: 1.8rem;
   }
 
+  /* Tables marked .stack-on-mobile become one card per row with the column
+     name next to each value: the Caregiver cohabitation table was cut at
+     "During (" with its hours and distances out of view (audit 2026-10-15, F-06). */
+  .stack-on-mobile thead { display: none; }
+  .stack-on-mobile, .stack-on-mobile tbody, .stack-on-mobile tr { display: block; width: 100%; }
+  .stack-on-mobile tr {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: .6rem;
+    padding: .3rem .5rem;
+  }
+  .stack-on-mobile td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: .75rem;
+    border: none;
+    padding: .25rem 0;
+  }
+  .stack-on-mobile td[data-label]::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--text-muted);
+    flex: 0 0 45%;
+  }
+  .stack-on-mobile td .form-input,
+  .stack-on-mobile td .form-select { max-width: 50%; }
+  .stack-on-mobile td.stack-title { font-weight: 700; }
+
   /* The "Γ source" column wrapped to five lines and left ~2 nuclides per screen
      (audit 2026-10-14 v1.11, R-10); it is repeated in the detail panel. */
   #nuclideTable th:last-child,

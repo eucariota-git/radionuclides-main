@@ -4,6 +4,16 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
+### v1.13.0 — distribution audit of v1.12.2 (F-01…F-08); database nuclides.json v1.4
+- **Database version** (F-01): `nuclides.json` changed in v1.12.0 but kept "v1.3", so two different contents carried the same label in reports and CSVs. It is now **v1.4**, with `notes.content_sha256`; `test/validate-data.js` pins each version to its content hash.
+- **Progeny in the Dose report and CSV** (F-02): a new report row and CSV column *Progeny* state whether Γ includes the short-lived progeny (included / EXCLUDED, with the Bq/Bq ratios) or the curated chain. Extended nuclides no longer cite Cornejo et al. (2015) among the report sources, and the report header names the ICRP 107 index instead of the curated database.
+- **CSV exports** (F-03): the formula-injection guard no longer turns negative numbers into text (Caregiver margin "'-2.86" → -2.86); shared `UTILS.csvSafe` for the five exports.
+- **Third-party notices** (F-04): DDEP (LNHB/CEA) half-lives and Cornejo et al. (2015) constants added to `THIRD_PARTY_NOTICES.md`, its copy in About and `LICENSING.md`.
+- **IS-28** (F-05): the reference cites the correction of 11 November 2010 and the CSN consultation on a revision 1.
+- **Phones** (F-06): the Caregiver cohabitation table is stacked as one card per row with the column names.
+- **Repository** (F-07): the Caregiver source PDFs and workbook are git-ignored like the other local references. **Offline** (F-08): `caregiver.json` and `effluent-scenarios.json` are precached (no 503 in the console).
+- Shielding spectra of chain entries use their `chain_members` ratios, the same as Γ (Pd-103: Rh-103m 1.001 Bq/Bq; weights change by ≤ 1·10⁻⁵).
+
 ### v1.12.2 — collapsible Method sections
 - Effluent and Caregiver: the *Method* card is collapsed by default and opens from its title, like the reference notes of Properties; titles name what they contain. Collapsible card titles now show a ▸/▾ marker (the Properties one had none) with keyboard focus outline. Links pointing inside ("Model and sources under Method", "see Method › Criteria per category") open the section before scrolling.
 

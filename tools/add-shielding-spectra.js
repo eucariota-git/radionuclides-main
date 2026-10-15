@@ -165,9 +165,15 @@ for (const n of nuclideData.nuclides) {
     continue;
   }
 
-  const members = EQUILIBRIUM_OVERRIDES[n.id]
-    ? EQUILIBRIUM_OVERRIDES[n.id].map(([id, branch]) => ({ id, branch }))
-    : chainMembers(headId, icrpMap);
+  // The entry's own chain_members first: they are what Γ was computed with
+  // (tools/recalc-gamma.js), so the shielding weights use the same equilibrium
+  // ratios (Pd-103: Rh-103m 1.001 Bq/Bq, not the bare branching 0.99875 —
+  // audit 2026-10-15). Then the explicit overrides, then the generic walker.
+  const members = Array.isArray(n.chain_members) && n.chain_members.length
+    ? n.chain_members.map(m => ({ id: m.id, branch: m.equilibrium_activity_fraction }))
+    : EQUILIBRIUM_OVERRIDES[n.id]
+      ? EQUILIBRIUM_OVERRIDES[n.id].map(([id, branch]) => ({ id, branch }))
+      : chainMembers(headId, icrpMap);
   const photons = combinedPhotons(members, icrpMap);
 
   // dose-weighted lines, one weighting per operational quantity

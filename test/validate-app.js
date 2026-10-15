@@ -202,7 +202,7 @@ async function main() {
 
   scenario.cached = null;
   scenario.fetchError = new Error('offline');
-  const offlineData = await dispatchFetch({ method: 'GET', mode: 'cors', url: 'https://example.test/data/nuclides.json' });
+  const offlineData = await dispatchFetch({ method: 'GET', mode: 'cors', url: 'https://example.test/data/icrp107-index.json' });
   check('an uncached offline resource returns an explicit 503 response', offlineData.status === 503);
 
   scenario.navigationFallback = new Response('app shell', { status: 200 });
@@ -318,7 +318,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v49');
+    swVersion === 'nm-planner-v50');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -985,6 +985,36 @@ async function main() {
     /<details id="methodDetails">\s*<summary class="card-title">&#128214; Method/.test(caregiverHtml) &&
     /summary\.card-title::before \{\s*content: '▶'/.test(styleCss) &&
     /data-open-details="methodDetails criteriaDetails"/.test(caregiverHtml) && /a\[data-open-details\]/.test(uiJs));
+
+  console.log();
+  console.log('Test 17: distribution audit of v1.12.2 (2026-10-15) — F-01..F-08');
+  {
+    const uctx = vm.createContext({ document: { createElement: () => ({}) } });
+    vm.runInContext(read('js/utils.js').replace('const UTILS', 'var UTILS'), uctx);
+    const U = vm.runInContext('UTILS', uctx);
+    check('F-03: CSV guard keeps negative numbers numeric and still neutralises formulas',
+      U.csvSafe('-2.85925') === '-2.85925' && U.csvSafe('-1e-5') === '-1e-5' && U.csvSafe('=1+1') === "'=1+1" &&
+      U.csvSafe('-cmd') === "'-cmd" && U.csvSafe('\t1') === "'\t1" &&
+      ['caregiver.html', 'decay.html', 'dose.html', 'effluent.html', 'index.html'].every(f => /const safe = UTILS\.csvSafe\(str\);/.test(read(f)) && !/const safe = \/\^\[=/.test(read(f))));
+    check('F-02: Dose report and CSV state the progeny; Cornejo only for curated entries; report header for extended entries',
+      /\['Progeny in the constants', progenyText\(r\.n\)\]/.test(doseHtml) && /'Note', 'Progeny'\]/.test(doseHtml) &&
+      /if \(!r\.n\._icrp107\) sources\.push\('Cornejo/.test(doseHtml) && /ICRP 107 extended index \(the curated nuclides\.json/.test(reportJs));
+    check('F-04: notices and About list DDEP and Cornejo et al. (2015); LICENSING names them',
+      [read('THIRD_PARTY_NOTICES.md'), read('about.html')].every(t => /DDEP \(LNHB\/CEA\) — recommended half-lives/.test(t) && /Cornejo et al\. \(2015\) — published dose-rate constants/.test(t)) &&
+      /DDEP \(LNHB\/CEA\), Cornejo et al\. \(2015\)/.test(read('LICENSING.md')));
+    check('F-05/F-06/F-07/F-08: IS-28 correction cited; stacked cohabitation table; references ignored; JSON precached',
+      /corrected by the CSN Resolution of 11 November 2010/.test(read('docs/USER_GUIDE.md')) &&
+      /class="data-table stack-on-mobile" id="rowsTable"/.test(caregiverHtml) && /\.stack-on-mobile td\[data-label\]::before/.test(styleCss) &&
+      // .gitignore and tools/ do not ship in the distribution package: checked in the repository only
+      (!fs.existsSync(path.join(ROOT, '.gitignore')) || (/references\/Demir\*\.pdf/.test(read('.gitignore')) && /references\/Dosis_acompanantes\*\.xlsx/.test(read('.gitignore')))) &&
+      /'\.\/data\/nuclides\.json',\s*'\.\/data\/regulatory\.json',\s*'\.\/data\/caregiver\.json',\s*'\.\/data\/effluent-scenarios\.json',/.test(swJs));
+    const nucs = JSON.parse(read('data/nuclides.json'));
+    const pd = nucs.nuclides.find(n => n.id === 'Pd-103');
+    check('F-01: database v1.4 with content hash; Pd-103 shielding spectrum built with its chain_members ratio',
+      nucs.version === '1.4' && /^[0-9a-f]{64}$/.test(nucs.notes.content_sha256) &&
+      (!fs.existsSync(path.join(ROOT, 'tools/add-shielding-spectra.js')) || /Array\.isArray\(n\.chain_members\) && n\.chain_members\.length/.test(read('tools/add-shielding-spectra.js'))) &&
+      pd.shielding_spectrum.length === 16);
+  }
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);
   process.exitCode = failed === 0 ? 0 : 1;

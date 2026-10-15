@@ -25,6 +25,15 @@ references/NRC NUREG-CR-5814*.pdf
 references/OIEA SRS-19*.pdf
 references/IRA-*.xlsx
 references/Efluentes*.xlsx
+# Caregiver sources and the source workbook — kept local like the rest
+# (Kurth 2018 and Monserrat Fuertes 2023 are CC BY 4.0, the others are not;
+# audit 2026-10-15, F-07).
+references/Demir*.pdf
+references/Foro*.pdf
+references/Gayol*.pdf
+references/Kurth*.pdf
+references/Monserrat*.pdf
+references/Dosis_acompanantes*.xlsx
 
 # ICRP 107 raw distribution files (© ICRP, "all rights reserved") — local only.
 # Download free from icrp.org and verify SHA256 against data/icrp107-index.json.

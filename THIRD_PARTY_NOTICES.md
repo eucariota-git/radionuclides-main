@@ -102,6 +102,24 @@ the h'(0.07) column did not match the table). © ICRP. ICRP publications retain
 copyright; verify permission for the intended reuse. This is separate from the
 terms of the ICRP-07 decay data package (`LICENSE.TXT`).
 
+### DDEP (LNHB/CEA) — recommended half-lives
+The `half_life_s` of the 16 curated entries whose `half_life_source` names DDEP:
+recommended values of the Decay Data Evaluation Project, LNHB/CEA *Table de
+Radionucléides* (https://www.lnhb.fr/), consulted 2026-10-14; the recent
+evaluations are published in Metrologia 62 (2025) 029001 / 029002 and 63 (2026)
+019001. Sixteen numeric values cited with attribution in each entry; the tables
+are not redistributed. The reuse terms of the LNHB tables have not been checked.
+
+### Cornejo et al. (2015) — published dose-rate constants
+`gamma_Kair` of 32 curated entries and their comparison values
+(`cornejo_validation`: Γ^K-air, Γ^H*(10) and, where printed, Γ^H'(0.07)), plus
+Γ^H*(10) of Cs-137 and Mo-99+Tc-99m: Cornejo Díaz N., Brosed Serreta A., Ruiz
+Manzano P., «Constantes de tasa de kerma en aire y de tasa de equivalente de
+dosis ambiental de algunos radionucleidos utilizados en aplicaciones médicas»,
+*Radioprotección* (SEPR) nº 83 (2015) 39–42, Table III. Numeric values cited with
+attribution; the article is not redistributed. No reuse permission has been
+requested from the SEPR.
+
 ### NIST XCOM / XAAMDI — photon mass attenuation coefficients
 The `ATTENUATION` table in `js/data.js` contains mass attenuation values for
 lead, elemental iron and ordinary concrete. Reference values from NIST (X-Ray Attenuation and Absorption
@@ -207,6 +225,9 @@ reference, not the article.
   transcription of the former.
 - The NIST and NUREG numeric tables are used with attribution under the terms
   stated in their sections; Oumano is CC BY 4.0.
+- **Attribution only, terms not checked.** The 16 DDEP half-lives and the
+  Cornejo et al. (2015) constants (SEPR) are cited with attribution; no reuse
+  permission is on file for either.
 - For **commercial use of the affected data**, first obtain permission from ICRP (ICRP-107 data
   and any substantial ICRU/ICRP-74 material) and written confirmation of the
   applicable terms from NIST (XCOM SRD 8) and NRC/ORNL or ANS (ANS-6.4.3 buildup).

@@ -163,7 +163,7 @@ The **moon icon** (🌙) in the top-right corner toggles dark mode; the choice i
 - **Real Decreto 783/2001**, Anexo III, tablas a) y b) (public dose coefficients). Repealed by RD 1029/2022, whose third transitional provision — and the CSN Resolution of 3 April 2024 — keep these coefficients in force for members of the public.
 - **[Real Decreto 1029/2022](https://www.boe.es/buscar/act.php?id=BOE-A-2022-21682)**, de 20 de diciembre, Reglamento sobre protección de la salud contra los riesgos derivados de la exposición a las radiaciones ionizantes. BOE-A-2022-21682.
 - **[Real Decreto 1217/2024](https://www.boe.es/buscar/act.php?id=BOE-A-2024-25205)**, de 3 de diciembre, Reglamento sobre instalaciones nucleares y radiactivas, y otras actividades relacionadas con la exposición a las radiaciones ionizantes. BOE-A-2024-25205.
-- **Instrucción IS-28** (CSN, 22 September 2010). BOE nº 246, 11 October 2010 (BOE-A-2010-15594).
+- **Instrucción IS-28** (CSN, 22 September 2010). BOE nº 246, 11 October 2010 (BOE-A-2010-15594); errors corrected by the CSN Resolution of 11 November 2010. The CSN has opened a prior public consultation on a revision 1: check the version in force on the CSN list of instructions before relying on the II.A.4 level.
 - **NIST XCOM / XAAMDI**. Photon mass attenuation coefficients for lead, elemental iron and ordinary concrete.
 - **Trubey D.K.** (1991). *New Gamma-Ray Buildup Factor Data for Point Kernel Calculations: ANS-6.4.3 Standard Reference Data*. NUREG/CR-5740 / ORNL/RSIC-49/R1, Table 3.
 - **Oumano M. et al.** (2025). "Shielding resources for four common radiopharmaceuticals utilized for imaging and therapy: Tc-99m, F-18, I-131, and Lu-177." *J Appl Clin Med Phys* 26(5):e70084. DOI 10.1002/acm2.70084 (CC BY 4.0).

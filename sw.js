@@ -13,7 +13,7 @@
 'use strict';
 
 const CACHE_PREFIX = 'nm-planner-';
-const CACHE_VERSION = 'nm-planner-v49';
+const CACHE_VERSION = 'nm-planner-v50';
 
 const ASSETS = [
   './',
@@ -41,14 +41,22 @@ const ASSETS = [
   './js/regulatory.js',
   './js/ui.js',
   './js/utils.js',
-  // The .json twins of the two databases are NOT precached: every page loads
-  // the embedded .js copies (NUCLIDE_DATA / ICRP107_DATA) and the loaders fall
-  // back to them offline, so precaching the JSONs doubled the install (~16 MB).
+  // The ICRP 107 .json twin is NOT precached: every page loads the embedded
+  // .js copy (ICRP107_DATA) and the loader never fetches the JSON when it is
+  // present; precaching it would double the install (~16 MB).
   './data/nuclides-data.js',
   './data/icrp107-data.js',
   './data/effluent-scenarios-data.js',
   './data/caregiver-data.js',
   './data/regulatory-data.js',
+  // The small JSON sources are always fetched first (to pick up edits) and
+  // compared with their embedded twin; without them every offline load logged
+  // a 503 before falling back (audit 2026-10-15, F-08). Only the ICRP 107 index
+  // (~8 MB) stays out: its loader uses the embedded copy and never fetches it.
+  './data/nuclides.json',
+  './data/regulatory.json',
+  './data/caregiver.json',
+  './data/effluent-scenarios.json',
 ];
 
 self.addEventListener('install', (event) => {
@@ -83,7 +91,7 @@ self.addEventListener('fetch', (event) => {
     caches.open(CACHE_VERSION).then((cache) => cache.match(event.request, { ignoreSearch: true })).then((cached) => {
       if (cached) return cached;
 
-      // Deliberately uncached resources (notably data/nuclides.json) use the
+      // Deliberately uncached resources (notably data/icrp107-index.json) use the
       // network when available. A 503 response lets their loaders select the
       // embedded fallback without respondWith ever resolving to undefined.
       return fetch(event.request).catch(async () => {

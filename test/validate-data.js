@@ -485,6 +485,25 @@ console.log('TEST: RD 1217/2024 Annex IV and adult public e(g) vs the BOE');
 }
 console.log();
 
+// Database identity (audit 2026-10-15, F-01): reports and CSVs print
+// "nuclides.json v<version>", so one version must mean one content. Each
+// released version is pinned to the SHA-256 of JSON.stringify(nuclides); a
+// content change without a new version (as happened between v1.11.0 and
+// v1.12.0, both "v1.3") fails here. To release new content: bump `version`,
+// update notes.content_sha256 and add the pair below.
+{
+  const DB_CONTENT_SHA256 = {
+    '1.4': '221265852fa6bd75665ac131dce52b5d537c9568ef0a5baf4c10c41c47c0c3c4',
+  };
+  const actual = require('crypto').createHash('sha256').update(JSON.stringify(nuclides)).digest('hex');
+  totalTests++;
+  const okNotes = nuclideData.notes && nuclideData.notes.content_sha256 === actual;
+  const okPinned = DB_CONTENT_SHA256[nuclideData.version] === actual;
+  if (okNotes && okPinned) { passedTests++; console.log(`  ✓ nuclides.json v${nuclideData.version}: content hash matches notes.content_sha256 and the pinned value`); }
+  else { failedTests++; console.log(`  ✗ nuclides.json v${nuclideData.version}: content ${actual.slice(0, 12)} — notes ${okNotes ? 'ok' : 'differ'}, pinned ${okPinned ? 'ok' : 'differ'} (content changed without a version bump?)`); }
+  console.log();
+}
+
 // Summary
 console.log('=== SUMMARY ===');
 console.log(`Total: ${passedTests} passed, ${failedTests} failed (out of ${totalTests} tests)`);

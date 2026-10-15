@@ -934,7 +934,7 @@
       origin(n)
     ].map(v => {
       const str = String(v);
-      const safe = /^[=+\-@\t\r]/.test(str) ? "'" + str : str;
+      const safe = UTILS.csvSafe(str);
       return `"${safe.replace(/"/g, '""')}"`;
     }).join(','));
     const csv = [headers.join(','), ...rows].join('\r\n');
