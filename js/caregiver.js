@@ -216,7 +216,7 @@ const CAREGIVER = (() => {
       criterion: criterionOf(input, data),
       kinetics: null, rows: {}, fr: null, fn: null, maxHours: null,
       perCycle_mSv: null, treatment_mSv: null, margin_mSv: null,
-      inverse: { ready: false, maxRate_uSv_h: null, floor_mSv: null, minRestriction_d: null,
+      inverse: { ready: false, maxRate_uSv_h: null, floor_mSv: null, indefiniteKind: null, minRestriction_d: null,
         minRestrictionCode: null, adopted_d: null, adoptedNote: '', doseAtAdopted_mSv: null },
     };
     const general = generalStatus(input, data);
@@ -244,6 +244,10 @@ const CAREGIVER = (() => {
     if ([day.days, sleep.days, day.h_during, sleep.h_during, day.h_after, sleep.h_after].every(num)) {
       out.maxHours = maxHoursPerDay(day, sleep);
     }
+    // More weighted contact DURING the restriction than after it: restricting
+    // then raises the dose. Usually a table filled the wrong way round
+    // (audit 2026-10-15, second opinion, finding 2).
+    const restrictionIncreases = num(out.fr) && num(out.fn) && out.fr - out.fn > EPS_F;
 
     // Warnings (B10)
     const prof = data.profiles[input.profile];
@@ -256,6 +260,9 @@ const CAREGIVER = (() => {
     const spc = input.spc_min_restriction_d;
     if (num(spc) && spc > 0 && num(day.days) && num(sleep.days) && Math.min(day.days, sleep.days) < spc) {
       out.warnings.push('A restriction is shorter than the minimum of the product information (SmPC).');
+    }
+    if (restrictionIncreases) {
+      out.warnings.push('Contact during the restriction is greater than after it (spatial factor × hours): restricting increases the dose. Check the cohabitation table.');
     }
     if (num(input.discharge_h) && num(input.fast_end_h) && input.fast_end_h > 0 && input.discharge_h >= input.fast_end_h) {
       out.warnings.push('Discharge after the end of the fast phase: the discharge rate must already be measured in the slow phase.');
@@ -311,14 +318,21 @@ const CAREGIVER = (() => {
     out.commonFeasible = out.commonDuring_h !== null && out.commonDuring_h <= 24;
     if (out.ready && num(crit) && crit > 0 && num(fr) && num(fn)) {
       inv.ready = true;
-      // floor = indefinite common restriction: only defined if that schedule fits in a day
+      // Dose with an indefinite common restriction: only defined if that schedule
+      // fits in a day. It is a FLOOR (lower bound) only when fr < fn; when fr > fn
+      // it is the upper asymptote the dose grows towards (second opinion, finding 2).
       inv.floor_mSv = out.commonFeasible ? N * fr * k.Iinf * 1000 : null;       // D38
+      inv.indefiniteKind = Math.abs(fn - fr) <= EPS_F ? 'equal' : fr < fn ? 'floor' : 'ceiling';
       const target = crit / 1000 / N;                                             // D59
       let t = null, code = null;
       if (Math.abs(fn - fr) <= EPS_F) {
         code = target >= fr * k.Iinf ? 'not_dependent' : 'unattainable';
       } else if (fn < fr) {
-        code = 'no_reduction';
+        // The dose is lowest with NO restriction (D(0) = N·fn·I∞) and grows with it.
+        // The workbook answered "does not reduce the dose" even when 0 d met the
+        // criterion; the answer is 0 d, or unattainable however short.
+        if (target >= fn * k.Iinf) t = 0;
+        else code = 'restriction_increases';
       } else if (target >= fn * k.Iinf) {
         t = 0;
       } else if (target <= fr * k.Iinf) {
@@ -344,6 +358,11 @@ const CAREGIVER = (() => {
           ? 'The cohabitation table uses fewer days than the adopted restriction'
           : 'The cohabitation table covers the adopted restriction';
         inv.doseAtAdopted_mSv = doseWithRestriction(N, fr, fn, k, inv.adopted_d * S_PER_D);  // D41
+        // A product-information minimum can push the adopted restriction past the
+        // criterion when restricting raises the dose (fr > fn): say so.
+        if (inv.doseAtAdopted_mSv > crit * (1 + 1e-12)) {
+          inv.adoptedNote += ' — with this restriction the treatment dose EXCEEDS the criterion';
+        }
       }
       if (!out.commonFeasible && !(inv.adopted_d === 0)) {
         // a positive (or no) common restriction would need > 24 h/d during it
@@ -357,7 +376,7 @@ const CAREGIVER = (() => {
   const INVERSE_TEXT = {
     not_dependent: 'Does not depend on the restriction: criterion met',
     unattainable: 'Unattainable: reduce contact',
-    no_reduction: 'The restriction does not reduce the dose',
+    restriction_increases: 'Unattainable: with more contact during the restriction than after it, any restriction increases the dose — reduce contact',
     unattainable_reduce: 'Unattainable: reduce contact during the restriction',
     infeasible_common: 'Not applicable: with the same restriction in both rows the hours during the restriction exceed 24 h/day',
   };

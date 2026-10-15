@@ -4,6 +4,12 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
+### v1.13.1 — second-opinion review of v1.13.0
+- **Caregiver inverse with more contact during the restriction than after it** (fr > fn): the app answered "The restriction does not reduce the dose" even when no restriction already met the criterion, and called the dose with an indefinite restriction a "floor" although the curve rises towards it. Now: minimum and adopted restriction 0 d when the 0-day dose meets the criterion, otherwise "Unattainable: … any restriction increases the dose"; the value is named an upper asymptote in the table, chart, report and CSV; a warning flags the table; and a product-information minimum that pushes the dose above the criterion is stated in the adopted-restriction note. Unchanged for the usual case fr < fn (workbook parity and the 324 cells of Gayol Vilorio et al. 2025 still reproduced).
+- **CSV of Dose and Decay**: for an extended nuclide `Database_version` names the ICRP 107 index (generation date, NDX SHA-256) instead of the curated nuclides.json.
+- **PWA update**: the service worker now fills its cache with `cache: 'reload'`. An update test (v1.13.0 installed, then v1.13.1 served on the same origin) showed the new cache v51 filled with the OLD files from the browser's HTTP cache, so the app kept running 1.13.0; it now runs 1.13.1 from the second load, also offline.
+- `validate-constants`: the three unsourced Γ references (I-123, Co-60, In-111 — old app values) are removed; their published values are checked against Cornejo in `validate-data`.
+
 ### v1.13.0 — distribution audit of v1.12.2 (F-01…F-08); database nuclides.json v1.4
 - **Database version** (F-01): `nuclides.json` changed in v1.12.0 but kept "v1.3", so two different contents carried the same label in reports and CSVs. It is now **v1.4**, with `notes.content_sha256`; `test/validate-data.js` pins each version to its content hash.
 - **Progeny in the Dose report and CSV** (F-02): a new report row and CSV column *Progeny* state whether Γ includes the short-lived progeny (included / EXCLUDED, with the Bq/Bq ratios) or the curated chain. Extended nuclides no longer cite Cornejo et al. (2015) among the report sources, and the report header names the ICRP 107 index instead of the curated database.

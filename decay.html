@@ -844,7 +844,10 @@
         'Exemption_TableB_col2_kBq_per_kg', 'Exemption_TableB_col3_Bq',
       ];
       const commonValues = [
-        UTILS.APP_VERSION, UTILS.APP_BUILD, dbMeta.version || '', exportedUtc,
+        UTILS.APP_VERSION, UTILS.APP_BUILD,
+        // extended nuclide: name the ICRP 107 index, not the curated database (second opinion, finding 4)
+        n._icrp107 && typeof ICRP107 !== 'undefined' ? `${ICRP107.identity()}; curated nuclides.json v${dbMeta.version || '?'} not used` : (dbMeta.version || ''),
+        exportedUtc,
         n.id, T_half_h, A0raw, A0unit, A0_MBq,
         referenceDateTime, targetDateTime, elapsedManual ? 'entered manually (target date not used)' : 'reference and target date/time (local)',
         showConcentration ? vialWeightRaw : '', showConcentration ? vialWeightUnit : '',

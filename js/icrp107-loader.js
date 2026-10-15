@@ -204,6 +204,18 @@ const ICRP107 = (function() {
   // (audit 2026-10-03).
 
   /**
+   * Identity of the extended index, for CSV exports (second opinion
+   * 2026-10-15, finding 4: the CSV printed the curated database version for
+   * an extended nuclide). Generation date and the SHA-256 of the source NDX.
+   */
+  function identity() {
+    if (!indexData) return 'ICRP 107 extended index';
+    const meta = indexData.notes || {};   // the parser writes its provenance under notes
+    const ndx = meta.source_files_hashes && meta.source_files_hashes.icrp107_ndx_sha256;
+    return `ICRP 107 extended index (generated ${meta.generated_at || '?'}${ndx ? `, NDX SHA-256 ${ndx.slice(0, 12)}` : ''})`;
+  }
+
+  /**
    * Check if data is loaded
    */
   function isReady() {
@@ -220,6 +232,7 @@ const ICRP107 = (function() {
     calcConstants,
     progeny,
     photonsWithProgeny,
+    identity,
     isReady,
     // For testing:
     _ensureLoaded: ensureLoaded,

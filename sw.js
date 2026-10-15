@@ -13,7 +13,7 @@
 'use strict';
 
 const CACHE_PREFIX = 'nm-planner-';
-const CACHE_VERSION = 'nm-planner-v50';
+const CACHE_VERSION = 'nm-planner-v51';
 
 const ASSETS = [
   './',
@@ -61,7 +61,13 @@ const ASSETS = [
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_VERSION).then((cache) => cache.addAll(ASSETS)).then(() => self.skipWaiting())
+    // cache: 'reload' bypasses the browser's HTTP cache. Without it addAll()
+    // could fill the NEW version's cache with the OLD files still fresh in the
+    // HTTP cache: an installed app updated v1.13.0 → v1.13.1 got cache v51 but
+    // kept running 1.13.0 (update test, 2026-10-15).
+    caches.open(CACHE_VERSION)
+      .then((cache) => cache.addAll(ASSETS.map((url) => new Request(url, { cache: 'reload' }))))
+      .then(() => self.skipWaiting())
   );
 });
 

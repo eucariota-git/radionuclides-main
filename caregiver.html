@@ -196,7 +196,7 @@
         <table class="data-table" id="inverseTable">
           <tbody>
             <tr><td>Maximum rate at 1 m at discharge with the restrictions entered</td><td class="num" id="maxRate">—</td><td>µSv/h</td></tr>
-            <tr><td>Treatment dose with an indefinite restriction (floor)</td><td class="num" id="floor">—</td><td>mSv</td></tr>
+            <tr><td id="floorLabel">Treatment dose with an indefinite restriction (floor)</td><td class="num" id="floor">—</td><td>mSv</td></tr>
             <tr><td>Minimum restriction</td><td class="num" id="minRestriction">—</td><td>d</td></tr>
             <tr><td>Adopted restriction (rounded up, ≥ product information)</td><td class="num" id="adopted">—</td><td>d</td></tr>
             <tr><td>Treatment dose with the adopted restriction</td><td class="num" id="doseAdopted">—</td><td>mSv</td></tr>
@@ -211,7 +211,9 @@
 
       <h3 class="card-title mt-2">Treatment dose vs restriction</h3>
       <p class="text-sm">Same restriction in both cohabitation rows, with the hours and distances of the table. The curve tends to the
-        floor (indefinite restriction): below it the dose can only be lowered by reducing contact during the restriction.</p>
+        dose with an indefinite restriction. With less contact during the restriction than after it, that value is a floor: below
+        it the dose can only be lowered by reducing contact during the restriction. With more contact during it, the curve rises
+        towards it (upper asymptote) and restricting only increases the dose.</p>
       <p class="form-hint" id="curveNote"></p>
       <div class="chart-wrap">
         <canvas id="curveChart" aria-label="Treatment dose versus restriction days" role="img"></canvas>
@@ -253,7 +255,7 @@
         <li>Dose per cycle and row = I<sub>before</sub> · h<sub>during</sub>/24 · f<sub>during</sub> + I<sub>after</sub> · h<sub>after</sub>/24 · f<sub>after</sub>,
           with f the spatial factor of the profile relative to 1 m; treatment dose = cycles × Σ rows</li>
         <li>f<sub>r</sub> = Σ h<sub>during</sub> f<sub>during</sub> / 24, f<sub>n</sub> = Σ h<sub>after</sub> f<sub>after</sub> / 24;
-          floor = cycles · f<sub>r</sub> · I<sub>∞</sub></li>
+          dose with an indefinite restriction = cycles · f<sub>r</sub> · I<sub>∞</sub> (a floor if f<sub>r</sub> &lt; f<sub>n</sub>, an upper asymptote if f<sub>r</sub> &gt; f<sub>n</sub>)</li>
         <li>Maximum rate = Ḣ<sub>0</sub> · criterion / treatment dose (the dose is proportional to the rate).
           Minimum restriction: the C that solves cycles · [f<sub>r</sub> I<sub>∞</sub> + (f<sub>n</sub> − f<sub>r</sub>) I<sub>after</sub>(C)] = criterion, analytically in either phase</li>
       </ul>
@@ -460,6 +462,15 @@
 
   // ---- Chart ----
   let chart = null;
+  // What the dose with an indefinite restriction is for this table (second
+  // opinion 2026-10-15, finding 2): a floor only when fr < fn.
+  const INDEF_TEXT = {
+    floor: 'Treatment dose with an indefinite restriction (floor)',
+    ceiling: 'Treatment dose with an indefinite restriction (upper asymptote — restricting increases the dose)',
+    equal: 'Treatment dose with an indefinite restriction (same as without restriction)',
+  };
+  const INDEF_CHART = { floor: 'Floor — indefinite restriction', ceiling: 'Upper asymptote — indefinite restriction', equal: 'Indefinite restriction' };
+  const indefText = inv => INDEF_TEXT[inv.indefiniteKind] || 'Treatment dose with an indefinite restriction';
   function datasetsFor(cv, out) {
     const theme = UI.getChartTheme();
     const pts = cv.points.map(p => ({ x: p.days, y: p.dose_mSv }));
@@ -472,7 +483,7 @@
         backgroundColor: theme.danger, borderDash: [6, 4], borderWidth: 1.5, pointRadius: 0, showLine: true, pointStyle: 'line' });
     }
     if (Number.isFinite(out.inverse.floor_mSv)) {
-      ds.push({ label: 'Floor — indefinite restriction (mSv)', data: [{ x: 0, y: out.inverse.floor_mSv }, { x: xMax, y: out.inverse.floor_mSv }],
+      ds.push({ label: `${INDEF_CHART[out.inverse.indefiniteKind] || 'Indefinite restriction'} (mSv)`, data: [{ x: 0, y: out.inverse.floor_mSv }, { x: xMax, y: out.inverse.floor_mSv }],
         _themeRole: 'warning', borderColor: theme.orange, backgroundColor: theme.orange, borderDash: [2, 3], borderWidth: 1.5, pointRadius: 0, showLine: true, pointStyle: 'line' });
     }
     if (Number.isFinite(out.inverse.adopted_d) && pts.length) {
@@ -582,6 +593,7 @@
     const inv = out.inverse;
     $('maxRate').textContent = f3(inv.maxRate_uSv_h);
     $('floor').textContent = f3(inv.floor_mSv);
+    $('floorLabel').textContent = indefText(inv);
     $('minRestriction').textContent = inv.minRestriction_d !== null ? f2d(inv.minRestriction_d)
       : (inv.minRestrictionCode ? CAREGIVER.INVERSE_TEXT[inv.minRestrictionCode] : '—');
     $('adopted').textContent = inv.adopted_d !== null ? String(inv.adopted_d) : '—';
@@ -677,7 +689,7 @@
         ] },
         { heading: 'Inverse calculations (same restriction in both rows)', rows: [
           ['Maximum rate at 1 m at discharge', `${f3(inv.maxRate_uSv_h)} µSv/h`],
-          ['Treatment dose with an indefinite restriction (floor)', `${f3(inv.floor_mSv)} mSv`],
+          [indefText(inv), `${f3(inv.floor_mSv)} mSv`],
           ['Minimum restriction', inv.minRestriction_d !== null ? `${f2d(inv.minRestriction_d)} d` : (CAREGIVER.INVERSE_TEXT[inv.minRestrictionCode] || '—')],
           ['Adopted restriction', inv.adopted_d !== null ? `${inv.adopted_d} d — ${inv.adoptedNote}` : '—'],
           ['Treatment dose with the adopted restriction', `${f3(inv.doseAtAdopted_mSv)} mSv`],
@@ -725,7 +737,7 @@
     add('result', 'Dose of the treatment', '', out.treatment_mSv, 'mSv');
     add('result', 'Margin to the criterion', '', out.margin_mSv, 'mSv');
     add('inverse', 'Maximum rate at 1 m at discharge', '', inv.maxRate_uSv_h, 'uSv/h');
-    add('inverse', 'Floor (indefinite restriction)', '', inv.floor_mSv, 'mSv');
+    add('inverse', indefText(inv), '', inv.floor_mSv, 'mSv');
     add('inverse', 'Minimum restriction', '', inv.minRestriction_d !== null ? inv.minRestriction_d : (CAREGIVER.INVERSE_TEXT[inv.minRestrictionCode] || ''), 'd');
     add('inverse', 'Adopted restriction', '', inv.adopted_d, 'd');
     add('inverse', 'Treatment dose with the adopted restriction', inv.adopted_d ?? '', inv.doseAtAdopted_mSv, 'mSv');

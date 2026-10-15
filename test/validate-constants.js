@@ -15,12 +15,12 @@ const REFERENCE_VALUES = {
   'I-131':   { gammaH10: 65.76,  halfLife_h: 192.559, photonCountMin: 3, validated: false },
   'Lu-177':  { gammaH10: 6.28,   halfLife_h: 159.410, photonCountMin: 5, validated: false },
   'Ga-68':   { gammaH10: 157.8,  halfLife_h: 1.1285,  photonCountMin: 1, validated: false },
-  'I-123':   { gammaH10: 46.51,  halfLife_h: 13.224,  photonCountMin: 5, validated: false },
+  'I-123':   { gammaH10: null,   halfLife_h: 13.224,  photonCountMin: 5, validated: false },  // no sourced Γ reference (46.51 was an old app value); Cornejo 46.4 is checked in validate-data
   'Tl-201':  { gammaH10: 17.63,  halfLife_h: 73.010,  photonCountMin: 5, validated: false },
   'I-125':   { gammaH10: 35.52,  halfLife_h: 1426.43, photonCountMin: 1, validated: true },  // ICRP-107 recalc (log-log); published Cornejo 35.3
-  'Co-60':   { gammaH10: 349.35, halfLife_h: 46208.0, photonCountMin: 2, validated: false },
+  'Co-60':   { gammaH10: null,   halfLife_h: 46208.0, photonCountMin: 2, validated: false },  // idem (349.35 unsourced); Cornejo 355 in validate-data
   'Se-75':   { gammaH10: 65.76,  halfLife_h: 2874.39, photonCountMin: 4, validated: false },
-  'In-111':  { gammaH10: 89.15,  halfLife_h: 67.31,   photonCountMin: 2, validated: false },
+  'In-111':  { gammaH10: null,   halfLife_h: 67.31,   photonCountMin: 2, validated: false },  // idem (89.15 unsourced); Cornejo 89.9 in validate-data
   'Sm-153':  { gammaH10: 17.54,  halfLife_h: 46.50,   photonCountMin: 1, validated: false },
   'Re-186':  { gammaH10: 3.86,   halfLife_h: 89.24,   photonCountMin: 3, validated: false },  // fixed 2026-06: RAD parser no longer absorbs Re-186m block; matches published Cornejo 3.86
   'Y-90':    { gammaH10: null,   halfLife_h: 64.10,   photonCountMin: 0, validated: false },

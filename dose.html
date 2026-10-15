@@ -794,7 +794,10 @@
       'Shielding', 'Shielding_method', 'Shielding_validity', 'Patient_transmission',
       'Quantity', 'Gamma_uSv_h_GBq_m2', 'Dose_rate_t0_at_d_uSv_h', 'Dose_rate_after_decay_at_d_uSv_h',
       'Dose_rate_t0_at_1m_uSv_h', 'Dose_rate_after_decay_at_1m_uSv_h', 'Annual_dose_uSv_per_y', 'Note', 'Progeny'];
-    const common = [UTILS.APP_VERSION, UTILS.APP_BUILD, meta.version || '', exportedUtc, n.id,
+    // The data set actually used: an extended nuclide does not come from the
+    // curated nuclides.json (second opinion 2026-10-15, finding 4).
+    const dbCell = n._icrp107 ? `${ICRP107.identity()}; curated nuclides.json v${meta.version || '?'} not used` : (meta.version || '');
+    const common = [UTILS.APP_VERSION, UTILS.APP_BUILD, dbCell, exportedUtc, n.id,
       A0raw, A0unit, Number(A0_GBq.toPrecision(6)), distRaw, distUnit, Number(d_m.toPrecision(6)),
       t_h, nAdmin, withDecay === undefined ? '' : withDecay ? 'integrated A(t)' : 'no (constant activity for the dose integral)',
       isY90 ? `Y-90 bremsstrahlung container: ${containerName || '—'}` : mat && mat !== 'none' ? `${mat}, ${thick} cm` : 'none',

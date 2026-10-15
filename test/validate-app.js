@@ -318,7 +318,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v50');
+    swVersion === 'nm-planner-v51');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -601,7 +601,7 @@ async function main() {
       'Target_datetime', 'Material_mass_input', 'Material_mass_unit',
       'Clearance_level_kBq_per_kg',
     ].every(field => decayHtml.includes(`'${field}'`)) &&
-    /UTILS\.APP_VERSION, UTILS\.APP_BUILD, dbMeta\.version/.test(decayHtml) &&
+    /UTILS\.APP_VERSION, UTILS\.APP_BUILD,[\s\S]{0,300}?\(dbMeta\.version \|\| ''\)/.test(decayHtml) &&
     /const csv = \[headers, \.\.\.rows\]/.test(decayHtml));
   check('deployment docs build distributions from an allowlist, never the working folder',
     /allowlist/i.test(developmentMd) && /data\/sources\//.test(developmentMd) &&
@@ -751,7 +751,9 @@ async function main() {
   check('inverse branches: unattainable, not dependent on the restriction, restriction does not reduce the dose',
     mod(x => { x.rows.day.d_during = 0.1; }).inverse.minRestrictionCode === 'unattainable_reduce' &&
     mod(x => { x.rows.sleep.h_after = 0; x.rows.sleep.d_after = null; }).inverse.minRestrictionCode === 'not_dependent' &&
-    mod(x => { x.rows.day.d_during = 0.5; x.rows.sleep.h_after = 0; }).inverse.minRestrictionCode === 'no_reduction');
+    // fr > fn (more contact during than after): 0 d if that meets the criterion, else "restriction increases"
+    mod(x => { x.rows.day.d_during = 0.5; x.rows.sleep.h_after = 0; }).inverse.minRestriction_d === 0 &&
+    mod(x => { x.rows.day.d_during = 0.5; x.rows.sleep.h_after = 0; x.rate_1m_uSv_h = 300; }).inverse.minRestrictionCode === 'restriction_increases');
   check('profile warnings: DOTATATE profile on PSMA, Lu-177 profile on I-131; SmPC minimum raises the adopted restriction',
     mod(x => { x.profile = 'dotatate_measured'; }).warnings.some(w => /DOTATATE/.test(w)) &&
     mod(x => { x.radiopharmaceutical = 'I-131'; }).warnings.some(w => /Lu-177 profile/.test(w)) &&
@@ -1014,6 +1016,45 @@ async function main() {
       nucs.version === '1.4' && /^[0-9a-f]{64}$/.test(nucs.notes.content_sha256) &&
       (!fs.existsSync(path.join(ROOT, 'tools/add-shielding-spectra.js')) || /Array\.isArray\(n\.chain_members\) && n\.chain_members\.length/.test(read('tools/add-shielding-spectra.js'))) &&
       pd.shielding_spectrum.length === 16);
+  }
+
+  console.log();
+  console.log('Test 18: Caregiver inverse in the three regimes fr < fn, fr = fn, fr > fn (second opinion 2026-10-15)');
+  {
+    const cg = (crit, during, after, extra = () => {}) => {
+      const x = CG.defaultInput(); x.category = 'other'; x.manual_criterion_mSv = crit;
+      x.rows = { day: { days: 0, h_during: during, d_during: 1, h_after: after, d_after: 1 }, sleep: { days: 0, h_during: 0, d_during: null, h_after: 0, d_after: null } };
+      extra(x); return CG.evaluate(x);
+    };
+    // the reviewer's case: 12 h/d during, 1 h/d after, 6 cycles, 15 µSv/h
+    const a = cg(0.3, 12, 1);
+    check('fr > fn, criterion above the 0-day dose: minimum and adopted restriction 0 d, value named an upper asymptote, warning',
+      relEq(a.treatment_mSv, a.inverse.doseAtAdopted_mSv) && a.inverse.minRestriction_d === 0 && a.inverse.adopted_d === 0 &&
+      a.inverse.indefiniteKind === 'ceiling' && a.inverse.floor_mSv > a.treatment_mSv && a.warnings.some(w => /restricting increases the dose/.test(w)));
+    const b = cg(0.1, 12, 1);
+    check('fr > fn, criterion below the 0-day dose: "restriction increases" (no days proposed), dose unchanged',
+      b.inverse.minRestrictionCode === 'restriction_increases' && b.inverse.minRestriction_d === null && b.inverse.adopted_d === null &&
+      relEq(b.treatment_mSv, a.treatment_mSv) && /any restriction increases the dose/.test(CG.INVERSE_TEXT.restriction_increases));
+    const c = cg(0.3, 12, 1, x => { x.spc_min_restriction_d = 7; });
+    check('fr > fn with a product-information minimum: adopted 7 d and the note says the dose then EXCEEDS the criterion',
+      c.inverse.adopted_d === 7 && c.inverse.doseAtAdopted_mSv > 0.3 && /EXCEEDS the criterion/.test(c.inverse.adoptedNote));
+    const d = cg(1, 6, 6), e = cg(1, 1, 12);
+    check('fr = fn: not dependent on the restriction; fr < fn: value is a floor and a positive restriction is found',
+      d.inverse.indefiniteKind === 'equal' && d.inverse.minRestrictionCode === 'not_dependent' &&
+      e.inverse.indefiniteKind === 'floor' && e.inverse.minRestriction_d > 0 && e.inverse.floor_mSv < e.treatment_mSv);
+    check('fr > fn: the curve rises with the restriction towards the asymptote',
+      (() => { const x = CG.defaultInput(); x.category = 'other'; x.manual_criterion_mSv = 0.3;
+        x.rows = { day: { days: 0, h_during: 12, d_during: 1, h_after: 1, d_after: 1 }, sleep: { days: 0, h_during: 0, d_during: null, h_after: 0, d_after: null } };
+        const p = CG.curve(x).points; return p.length > 2 && p.every((q, i) => i === 0 || q.dose_mSv >= p[i - 1].dose_mSv) && p[p.length - 1].dose_mSv <= a.inverse.floor_mSv * (1 + 1e-9); })());
+    check('CSV of Dose and Decay name the ICRP 107 index for an extended nuclide (finding 4)',
+      /n\._icrp107 \? `\$\{ICRP107\.identity\(\)\}; curated nuclides\.json v/.test(doseHtml) &&
+      /n\._icrp107 && typeof ICRP107 !== 'undefined' \? `\$\{ICRP107\.identity\(\)\}/.test(read('decay.html')) &&
+      /function identity\(\)/.test(read('js/icrp107-loader.js')));
+    check('service worker installs from the network, not the HTTP cache (an update kept the old files)',
+      /cache\.addAll\(ASSETS\.map\(\(url\) => new Request\(url, \{ cache: 'reload' \}\)\)\)/.test(swJs));
+    check('page labels follow the regime (table, chart legend, report, CSV)',
+      /\$\('floorLabel'\)\.textContent = indefText\(inv\)/.test(caregiverHtml) && /Upper asymptote — indefinite restriction/.test(caregiverHtml) &&
+      /\[indefText\(inv\), `\$\{f3\(inv\.floor_mSv\)\} mSv`\]/.test(caregiverHtml) && /add\('inverse', indefText\(inv\)/.test(caregiverHtml));
   }
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);
