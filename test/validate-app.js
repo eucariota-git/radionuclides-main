@@ -1180,7 +1180,7 @@ async function main() {
     const pages = { index: indexHtml, decay: decayHtml, dose: doseHtml, effluent: effluentHtml, caregiver: caregiverHtml, about: aboutHtml };
     check('catalog loads: exact, scoped and anchored patterns',
       ES && typeof ES.exact === 'object' && typeof ES.scoped === 'object' && Array.isArray(ES.patterns) &&
-      ES.patterns.every(([re, rep]) => re instanceof i18nCtx.RegExp && re.source.startsWith('^') && re.source.endsWith('$') && typeof rep === 'string'));
+      ES.patterns.every(([re, rep]) => Object.prototype.toString.call(re) === '[object RegExp]' &&re.source.startsWith('^') && re.source.endsWith('$') && ['string', 'function'].includes(typeof rep)));
     // Every key must exist verbatim in the sources (entities decoded, white space
     // collapsed): a changed English text leaves its Spanish entry orphaned and
     // this check fails until the catalog is updated.
@@ -1188,7 +1188,8 @@ async function main() {
       .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(+d)).replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)))
       .replace(/&nbsp;/g, ' ').replace(/&mdash;/g, '—').replace(/&ndash;/g, '–').replace(/&middot;/g, '·').replace(/&hellip;/g, '…')
       .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&rsquo;/g, '’').replace(/&ldquo;/g, '“').replace(/&rdquo;/g, '”').replace(/&amp;/g, '&')
-      .replace(/\\'/g, "'").replace(/\s+/g, ' ');
+      .replace(/&le;/g, '≤').replace(/&ge;/g, '≥').replace(/&copy;/g, '©')
+      .replace(/\\'/g, "'").replace(/\\"/g, '"').replace(/\s+/g, ' ');
     const srcFiles = [...Object.keys(pages).map(k => `${k}.html`),
       ...fs.readdirSync(path.join(ROOT, 'js')).filter(f => f.endsWith('.js') && !['i18n-es.js', 'chart.umd.min.js'].includes(f)).map(f => `js/${f}`),
       ...fs.readdirSync(path.join(ROOT, 'data')).filter(f => f.endsWith('.json')).map(f => `data/${f}`)];

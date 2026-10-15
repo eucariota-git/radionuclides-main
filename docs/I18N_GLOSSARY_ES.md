@@ -1,12 +1,12 @@
-# Glosario español de las pantallas (borrador para revisión)
+# Glosario español de las pantallas
 
 Terminología del catálogo `js/i18n-es.js`. Cada término lleva la fuente española de la que se toma, con el texto consultado en la biblioteca profesional (`archivos_profesionales`).
 
 **Estado**
 - **✓**: literal en la fuente citada.
-- **P**: propuesto sin fuente normativa en la biblioteca; requiere tu decisión.
+- **D**: sin fuente normativa en la biblioteca; adoptado por decisión del usuario (15-10-2026).
 
-Hasta que el glosario esté revisado no se traduce nada fuera de la cabecera.
+Revisado por el usuario el 15-10-2026: se aceptan los términos propuestos con dos cambios, «haz amplio» y «solo cribado orientativo»; se adoptan la coma en los nombres de magnitud y «/a» como símbolo de año. Los términos que antes eran P quedan como **D** (decisión del usuario).
 
 **Fuentes**
 - **RD 1029/2022**: Real Decreto 1029/2022, Reglamento sobre protección de la salud contra los riesgos derivados de la exposición a las radiaciones ionizantes (BOE-A-2022-21682). Vigente.
@@ -36,9 +36,9 @@ Hasta que el glosario esté revisado no se traduce nada fuera de la cabecera.
 | equivalent dose (skin, lens) | dosis equivalente (en la piel, en el cristalino) | ✓ | anexo I.3 (tabla), art. 11 |
 | air-kerma rate constant, Γ K-air | constante de tasa de kerma en aire | ✓ | Cornejo 2015 |
 | ambient dose-equivalent rate constant, Γ H*(10) | constante de tasa de equivalente de dosis ambiental | ✓ | Cornejo 2015 |
-| directional dose-equivalent rate constant, Γ H'(0.07) | constante de tasa de equivalente de dosis direccional | P | por analogía con Cornejo 2015 |
+| directional dose-equivalent rate constant, Γ H'(0.07) | constante de tasa de equivalente de dosis direccional | D | por analogía con Cornejo 2015 |
 
-**Decisión de estilo (P):** en las pantallas en español, los nombres de magnitud se escriben con coma: H'(0,07), Hp(0,07), como en el anexo I del RD 1029/2022. Es independiente del botón «1.5 / 1,5», que solo afecta a los valores.
+**Decisión de estilo (D):** en las pantallas en español, los nombres de magnitud se escriben con coma: H'(0,07), Hp(0,07), como en el anexo I del RD 1029/2022. Es independiente del botón «1.5 / 1,5», que solo afecta a los valores.
 
 ## 2. Límites y personas (RD 1029/2022)
 
@@ -72,7 +72,7 @@ Hasta que el glosario esté revisado no se traduce nada fuera de la cabecera.
 | radioactive sources | fuentes radiactivas | ✓ | anexo II.A.1.a |
 | mixtures: Σ Cᵢ/Lᵢ ≤ 1 | la suma ponderada… dividida por el correspondiente nivel de desclasificación no será superior a la unidad | ✓ | anexo III.1.a |
 | secular equilibrium | equilibrio secular | ✓ | anexo IV, tabla A2 |
-| Not tabulated | No figura en la tabla | P | término propio de la app |
+| Not tabulated | No figura en la tabla | D | término propio de la app |
 
 ## 4. Vertido al alcantarillado (IS-28, anexo II, II.A.4)
 
@@ -83,7 +83,7 @@ Hasta que el glosario esté revisado no se traduce nada fuera de la cabecera.
 | final discharge point | punto final de vertido | ✓ | II.A.4 |
 | sum of fractions | suma de las fracciones | ✓ | II.A.4 |
 | express authorisation | autorización expresa | ✓ | II.A.4 |
-| ingestion coefficient e(g), adult | coeficiente de dosis por ingestión e(g), adulto | P | RD 783/2001, anexo III, tabla a): pendiente de comprobar la redacción literal del título |
+| ingestion coefficient e(g), adult | coeficiente de dosis por ingestión e(g), adulto | D | RD 783/2001, anexo III, tabla a): pendiente de comprobar la redacción literal del título |
 
 ## 5. Medicina nuclear, efluentes y alta (guías)
 
@@ -96,15 +96,15 @@ Hasta que el glosario esté revisado no se traduce nada fuera de la cabecera.
 | decay tanks | depósitos de decaimiento | ✓ | Foro-Ef |
 | sewage treatment plant (STP) | planta depuradora | ✓ | Foro-Ef («planta depuradora»). La sigla EDAR (estación depuradora de aguas residuales) no figura en las fuentes revisadas: P |
 | sludge | lodos | ✓ | Foro-Ef |
-| sewer system inspector | trabajador de la red de alcantarillado | P | Foro-Ef habla de escenarios de «descargas al sistema de alcantarillado» |
+| sewer system inspector | trabajador de la red de alcantarillado | D | Foro-Ef habla de escenarios de «descargas al sistema de alcantarillado» |
 | STP sludge operator | trabajador de planta depuradora (manipulación de lodos) | ✓ | Foro-Ef, escenario 2 |
 | dose rate at 1 m | tasa de dosis a 1 m | ✓ | Foro-I131 |
 | patient discharge | alta radiológica | ✓ | Foro-I131 |
 | relatives / companions | familiares o acompañantes | ✓ | Foro-I131 |
-| Caregiver (page name) | Acompañantes | P | nombre del libro de origen; la página cubre cuidadores, familiares, público y compañeros de trabajo |
+| Caregiver (page name) | Acompañantes | D | nombre del libro de origen; la página cubre cuidadores, familiares, público y compañeros de trabajo |
 | year (unit symbol, /y) | a (por ejemplo, mSv/a, GBq/a) | ✓ | Foro-Ef («1 GBq/a») |
 
-## 6. Blindaje y cálculo (sin fuente española en la biblioteca: P)
+## 6. Blindaje y cálculo (sin fuente española en la biblioteca: D)
 
 | Inglés | Español propuesto |
 |---|---|
@@ -113,11 +113,11 @@ Hasta que el glosario esté revisado no se traduce nada fuera de la cabecera.
 | transmission | transmisión |
 | half-value layer (HVL) / tenth-value layer (TVL) | capa hemirreductora (CHR) / capa decimorreductora (CDR) |
 | build-up factor | factor de acumulación (*build-up*) |
-| narrow beam / broad beam | haz estrecho / haz ancho |
+| narrow beam / broad beam | haz estrecho / haz amplio |
 | mean free path (mfp) | recorrido libre medio (rlm) |
 | photon yield (% per decay) | rendimiento de emisión (% por desintegración) |
 | representative energy | energía representativa |
-| indicative screening only | solo comparación orientativa |
+| indicative screening only | solo cribado orientativo |
 | screening estimate | estimación de cribado |
 | point-source approximation (1/d²) | aproximación de fuente puntual (1/d²) |
 
@@ -127,9 +127,3 @@ Hasta que el glosario esté revisado no se traduce nada fuera de la cabecera.
 - Símbolos y unidades SI, salvo «/y» → «/a».
 - Las cabeceras y los valores de los CSV.
 - Los textos de licencia.
-
-## Decisiones que necesito de ti
-
-1. Confirmar o corregir los términos P, en especial los de la sección 6, «Not tabulated» y el nombre de la página «Acompañantes».
-2. Coma en los nombres de magnitud en español: H'(0,07).
-3. «/a» como símbolo de año en las pantallas en español.

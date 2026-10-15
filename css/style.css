@@ -1140,6 +1140,11 @@ summary.card-title:focus-visible { outline: 2px solid var(--green-700); outline-
    a second scrollbar inside the card. The provenance text is bounded so it
    wraps rather than widening the table. */
 #nuclideTable .src-text { min-width: 11rem; max-width: 17rem; }
+/* Headers may wrap when they do not fit (the Spanish ones are longer); the
+   English ones still fit on one line, so their layout does not change. */
+html[lang="es"] #nuclideTable th { white-space: normal; }
+html[lang="es"] #nuclideTable th:last-child,
+html[lang="es"] #nuclideTable td:last-child { min-width: 13.5rem; }
 @media (min-width: 1240px) {
   #nuclideTableWrap { overflow: visible; max-height: none; }
   #nuclideTable th { top: var(--site-header-h); }

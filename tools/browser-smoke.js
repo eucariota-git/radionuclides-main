@@ -544,9 +544,15 @@ async function main() {
         check(`${pg}: ES — html lang "es", menu in Spanish, button "ES", choice stored`,
           state.lang === 'es' && /Propiedades/.test(state.nav) && /Acompañantes/.test(state.nav) && state.btn === 'ES' && state.stored === 'es', JSON.stringify(state));
         check(`${pg}: ES — field and option values, chart data and CSV identical to EN`, en === es, en === es ? '' : 'snapshots differ');
+        await pageChecks(`${pg} in ES @1280`);   // longer Spanish texts must not overflow
         await ev(`document.getElementById('langToggle').click()`); await sleep(400);
         check(`${pg}: back to EN — page text identical to the initial load`, (await ev('document.body.innerText')) === textEn);
         await pageChecks(`${pg} EN/ES`);
+      }
+      for (const [pg, w] of [['index.html', 1240], ['index.html?id=Ra-223', 390], ['decay.html?id=Lu-177', 390], ['dose.html?id=Pd-103', 390], ['effluent.html', 390], ['caregiver.html', 390]]) {
+        await open(pg, w);
+        await ev(`document.getElementById('langToggle').click()`); await sleep(400);
+        await pageChecks(`${pg} in ES @${w}`);
       }
       // Live recalculation in ES: results follow the inputs, the menu stays in Spanish
       await open('dose.html?id=Lu-177', 1280);

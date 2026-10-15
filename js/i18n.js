@@ -26,7 +26,8 @@ const I18N = (() => {
   let lang = 'en';
   let exact = new Map();
   let patterns = [];
-  let scoped = [];   // [[CSS selector, Map]] — context-dependent entries, checked first
+  let scoped = [];
+  const hits = new Set();   // entries used in this session (tools/i18n-coverage.js)   // [[CSS selector, Map]] — context-dependent entries, checked first
   let observer = null;
   // node → { en, shown }: the English text and what is displayed, so a later
   // change by the page (new English text) is told apart from our own rewrite
@@ -53,13 +54,13 @@ const I18N = (() => {
     let t;
     if (el && el.closest) {
       for (const [sel, map] of scoped) {
-        if (map.has(core) && el.closest(sel)) { t = map.get(core); break; }
+        if (map.has(core) && el.closest(sel)) { t = map.get(core); hits.add(core); break; }
       }
     }
-    if (t === undefined) t = exact.get(core);
+    if (t === undefined) { t = exact.get(core); if (t !== undefined) hits.add(core); }
     if (t === undefined) {
       for (const [re, rep] of patterns) {
-        if (re.test(core)) { t = core.replace(re, rep); break; }
+        if (re.test(core)) { t = core.replace(re, rep); hits.add(re.source); break; }
       }
     }
     return t === undefined ? null : m[1] + t + m[3];
@@ -221,6 +222,8 @@ const I18N = (() => {
     getLang: () => lang,
     /** Spanish for a string (null if none) — for tests and tools */
     lookup,
+    /** Catalog entries used so far (keys and pattern sources) — for the coverage tool */
+    hits: () => [...hits],
     /** Translate a subtree now (e.g. a report just built) */
     translate: root => { if (lang === 'es') walk(root); },
   };
