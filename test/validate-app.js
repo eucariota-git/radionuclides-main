@@ -1188,7 +1188,9 @@ async function main() {
       .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(+d)).replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)))
       .replace(/&nbsp;/g, ' ').replace(/&mdash;/g, '—').replace(/&ndash;/g, '–').replace(/&middot;/g, '·').replace(/&hellip;/g, '…')
       .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&rsquo;/g, '’').replace(/&ldquo;/g, '“').replace(/&rdquo;/g, '”').replace(/&amp;/g, '&')
-      .replace(/&le;/g, '≤').replace(/&ge;/g, '≥').replace(/&copy;/g, '©')
+      .replace(/&le;/g, '≤').replace(/&ge;/g, '≥').replace(/&copy;/g, '©').replace(/&Sigma;/g, 'Σ').replace(/&lambda;/g, 'λ').replace(/&beta;/g, 'β')
+      // JavaScript strings split over lines: 'abc ' +\n 'def' reads as 'abc def'
+      .replace(/(['"`])\s*\+\s*\n\s*\1/g, '')
       .replace(/\\'/g, "'").replace(/\\"/g, '"').replace(/\s+/g, ' ');
     const srcFiles = [...Object.keys(pages).map(k => `${k}.html`),
       ...fs.readdirSync(path.join(ROOT, 'js')).filter(f => f.endsWith('.js') && !['i18n-es.js', 'chart.umd.min.js'].includes(f)).map(f => `js/${f}`),
