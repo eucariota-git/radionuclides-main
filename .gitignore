@@ -45,6 +45,8 @@ docs/AUDIT_*.json
 tools/audit-copy-evidence.js
 # Local audit evidence folders (e.g. output/auditoria-rd1217-2026-10-03/).
 output/
+# Scratch folders of reviews (extracts of copyrighted sources, scripts, results).
+tmp/
 
 # Local working copy of the acceptance sheet (partially filled evidence).
 # The tracked docs/ACCEPTANCE_TEST.md must stay a clean template.
