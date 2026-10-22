@@ -1087,8 +1087,9 @@ const I18N_ES = {
     'Distance during the restriction (m)': 'Distancia durante la restricción (m)',
     'Hours per day after the restriction': 'Horas al día después de la restricción',
     'Distance after the restriction (m)': 'Distancia después de la restricción (m)',
-    'Hours are mutually exclusive: sleeping is not counted as day-time cohabitation. «Sleeping in the same room» during the restriction is usually 0 h (sleeping apart). Zero hours = no contact; the distance may then be left empty. The distance is chosen from the profile list; 0.1 m = contact. Days are counted from discharge and each cycle is integrated to infinity. The criterion covers only the administrations entered; it does not by itself demonstrate annual compliance.':
-      'Las horas son excluyentes: dormir no cuenta como convivencia diurna. «Dormir en la misma habitación» durante la restricción suele ser 0 h (dormir aparte). Cero horas = sin contacto; la distancia puede quedar vacía. La distancia se elige de la lista del perfil; 0,1 m = contacto. Los días se cuentan desde el alta y cada ciclo se integra hasta el infinito. El criterio solo cubre las administraciones introducidas; no demuestra por sí solo el cumplimiento anual.',
+    'Hours of the two rows are mutually exclusive; 0 h = no contact (distance may be left empty); 0.1 m = contact.':
+      'Las horas de las dos filas son excluyentes; 0 h = sin contacto (la distancia puede quedar vacía); 0,1 m = contacto.',
+    'Row': 'Fila',
     'Dose per administration': 'Dosis por administración',
     'Dose of the treatment': 'Dosis del tratamiento',
     'Applied criterion': 'Criterio aplicado',
@@ -1396,6 +1397,8 @@ const I18N_ES = {
       "Medidas propias: introduzca las distancias y las tasas a esas distancias, medidas al mismo tiempo que la lectura a 1 m. Registre el protocolo. No repita distancias.",
     "Discharge time and end of the fast phase are counted from administration. With the Kurth and Demir model the fast phase ends at 24 h. If discharge is later (or the end is 0) only the slow half-life is used, and the discharge rate must already belong to the slow phase.":
       "El momento del alta y el final de la fase rápida se cuentan desde la administración. Con el modelo de Kurth y Demir la fase rápida termina a las 24 h. Si el alta es posterior (o el final es 0) solo se usa el periodo lento, y la tasa en el alta debe pertenecer ya a la fase lenta.",
+    "Restriction days are counted from discharge. The criterion covers only the administrations entered; it does not by itself demonstrate annual compliance.":
+      "Los días de restricción se cuentan desde el alta. El criterio solo cubre las administraciones introducidas; no demuestra por sí solo el cumplimiento anual.",
     "Each cycle is integrated to infinity: with several weeks between cycles, practically the whole dose of a cycle is received before the next one.":
       "Cada ciclo se integra hasta el infinito: con varias semanas entre ciclos, prácticamente toda la dosis de un ciclo se recibe antes del siguiente.",
     "DOTATATE measured":

@@ -152,7 +152,7 @@
       <table class="data-table stack-on-mobile" id="rowsTable">
         <thead>
           <tr>
-            <th>Contact</th>
+            <th>Row</th>
             <th title="Restriction days counted from discharge">Restriction (d from discharge)</th>
             <th>During (h/d)</th>
             <th>During (m)</th>
@@ -164,13 +164,8 @@
         <tbody id="rowsBody"></tbody>
       </table>
     </div>
-    <div class="alert alert-info mt-1">
-      Hours are mutually exclusive: sleeping is not counted as day-time cohabitation. «Sleeping in the same room» during
-      the restriction is usually 0 h (sleeping apart). Zero hours = no contact; the distance may then be left empty.
-      The distance is chosen from the profile list; 0.1 m = contact.
-      Days are counted from discharge and each cycle is integrated to infinity. The criterion covers only the
-      administrations entered; it does not by itself demonstrate annual compliance.
-    </div>
+    <!-- Input rules only; the calculation assumptions are in Method › Assumptions (user review 2026-10-22) -->
+    <div class="form-hint mt-1">Hours of the two rows are mutually exclusive; 0 h = no contact (distance may be left empty); 0.1 m = contact.</div>
   </div>
 
   <!-- Results -->

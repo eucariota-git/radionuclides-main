@@ -4,6 +4,12 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
+### v1.17.3 — Caregiver: cohabitation table header and note
+- The first column of the cohabitation table is «Row» («Fila»): «Contact» repeated the name of the first row of the child scenarios.
+- Under the table, a one-line hint with the input rules only (hours of the two rows mutually exclusive; 0 h = no contact, distance may be left empty; 0.1 m = contact). The old note spoke of «Sleeping in the same room», which only fits the partner scenario.
+- Its calculation statements moved to Method › Assumptions (and the report notes): «Restriction days are counted from discharge. The criterion covers only the administrations entered; it does not by itself demonstrate annual compliance.» Integration of each cycle to infinity was already there.
+- `caregiver.json` v1.5; Test 25 check.
+
 ### v1.17.2 — Caregiver: children always 1 mSv; rows «Contact» / «Proximity»
 - Children of any age take the public criterion (1 mSv), a department decision: the scenario «Child over 11 years» now proposes and accepts only the public category (it proposed «Carer ≤ 60», 3 mSv, from Table 2 of the Forum). «Work with children» still proposes the Forum's 0.3 mSv and accepts the public criterion without a warning.
 - Row names of the child and work scenarios: «Contact» and «Proximity» (Spanish «Contacto» / «Proximidad»), and «Contact at work», instead of «Close contact» / «Nearby», which read too alike.

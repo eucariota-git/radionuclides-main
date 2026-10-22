@@ -320,7 +320,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v62');
+    swVersion === 'nm-planner-v63');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -1332,6 +1332,9 @@ async function main() {
         return r.ready && r.treatment_mSv === wb.treatment_mSv && Math.abs(r.perCycle_mSv - 0.488) < 5e-4 && Math.abs(r.inverse.maxRate_uSv_h - 15.4) < 0.05; })());
     check('days in one row only: an error of the other row, as before',
       (() => { const x = CG.defaultInput(); x.rows.day.days = 3; const r = CG.evaluate(x); return !r.tableReady && /^Sleeping: missing days or hours$/.test(r.status); })());
+    check('table B: first column «Row»; under it only the input rules; the calculation assumptions live in Method › Assumptions',
+      /<th>Row<\/th>/.test(caregiverHtml) && !/<th>Contact<\/th>/.test(caregiverHtml) && !/sleeping is not counted as day-time/.test(caregiverHtml) &&
+      cgData.assumptions.some(a => /counted from discharge.*annual compliance/.test(a)) && cgData.assumptions.some(a => /integrated to infinity/.test(a)));
     check('without days the 24 h/d check uses the common schedule (during and after)',
       (() => { const x = CG.defaultInput(); x.rows.day.h_after = 20; return /exceeds 24 hours/.test(CG.evaluate(x).status); })());
   }

@@ -1,6 +1,6 @@
 {
   "meta": {
-    "version": "1.4",
+    "version": "1.5",
     "date": "2026-10-22",
     "description": "Caregiver / family-member external dose after discharge of a radionuclide-therapy patient: proximity profiles, evaluation criteria per category, references and model assumptions.",
     "origin": "Port of the author's workbook Dosis_acompanantes_simple_v2.1.xlsx (sheets Dosis, Curva and Comprobación)."
@@ -399,7 +399,8 @@
     "Approximate profiles: published conventions, not universal measured factors. No automatic interpolation or extrapolation: the distance is chosen from the profile list.",
     "Own measurements: enter distances and the rates at those distances, measured at the same time as the 1 m reading. Record the protocol. Do not repeat distances.",
     "Discharge time and end of the fast phase are counted from administration. With the Kurth and Demir model the fast phase ends at 24 h. If discharge is later (or the end is 0) only the slow half-life is used, and the discharge rate must already belong to the slow phase.",
-    "Each cycle is integrated to infinity: with several weeks between cycles, practically the whole dose of a cycle is received before the next one."
+    "Each cycle is integrated to infinity: with several weeks between cycles, practically the whole dose of a cycle is received before the next one.",
+    "Restriction days are counted from discharge. The criterion covers only the administrations entered; it does not by itself demonstrate annual compliance."
   ],
   "inverse_note": "Maximum rate: the discharge rate that exactly exhausts the criterion with the restrictions of the table (the dose is proportional to the rate). Minimum restriction: days that exhaust the criterion applying the same duration to both rows; \"Unattainable\" = not met however long it lasts: contact during the restriction must be reduced. To apply it, enter the adopted restriction in the days column of the cohabitation table.",
   "own_protocol_note": "Own-measurement protocol to record: radiopharmaceutical, distance reference, posture, orientation and time of measurement.",
