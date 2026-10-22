@@ -110,9 +110,9 @@ No installation or authentication is needed:
 
 **Criteria per category** (per treatment, all cycles together; department criteria, not values fixed by regulation for this treatment — RD 601/2019 requires carer constraints but sets no value): carer ≤ 60 years 3 mSv (EC RP 97, Foro 2011); carer > 60 years 5 mSv (ICRP 103 para. 351, ICRP 94, IAEA SSG-46); public 1 mSv (RD 1029/2022 art. 15); co-worker 0.3 mSv (RP 97, Foro). The criterion never changes the calculated dose.
 
-**Key limits**: one person and equal cycles; the integral of the measured operational quantity estimates external exposure, not the individual effective or fetal dose; internal contamination and the dose before discharge are not included; occupancy is a daily average.
+**Key limits**: one person and equal cycles; the integral of the measured operational quantity estimates external exposure, not the individual effective or fetal dose; internal contamination and the dose before discharge are not included; occupancy is a daily average (h/24). Under the results the page bounds the dose for any timetable with the declared hours of each period: in each 24 h interval from discharge the rate is taken at its start (upper bound) or at its end (lower bound). Close contact early in the day makes the average underestimate the dose; the bounds are widest in the fast phase and with an early discharge (defaults without restriction: ×0.75 to ×1.35). They are informative and never change the dose.
 
-**Example** (defaults: Lu-177-PSMA-617, 15 µSv/h at 1 m at 6 h, carer ≤ 60 years; day-time 6 h/d at 1 m; sleeping apart during the restriction, then 8 h/d in contact): on opening, minimum restriction 2.92 d → adopted 3 d. With **Use the adopted restriction in the table** (3 d in both rows): dose per administration 0.488 mSv; treatment 2.93 mSv against 3 mSv; maximum discharge rate 15.4 µSv/h.
+**Example** (defaults: Lu-177-PSMA-617, 15 µSv/h at 1 m at 6 h, carer ≤ 60 years; day-time 6 h/d at 1 m; sleeping apart during the restriction, then 8 h/d in contact): on opening, minimum restriction 2.92 d → adopted 3 d. With **Use the adopted restriction in the table** (3 d in both rows): dose per administration 0.488 mSv; treatment 2.93 mSv against 3 mSv; maximum discharge rate 15.4 µSv/h; daily-average occupancy bounds 2.32 to 3.69 mSv (×0.79 to ×1.26).
 
 ---
 

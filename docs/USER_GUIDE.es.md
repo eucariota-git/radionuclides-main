@@ -127,12 +127,12 @@ No hace falta instalación ni autenticación:
 
 El criterio nunca cambia la dosis calculada.
 
-**Limitaciones principales**: una sola persona y ciclos iguales; la integral de la magnitud operacional medida estima la exposición externa, no la dosis efectiva individual ni la dosis fetal; no se incluyen la contaminación interna ni la dosis antes del alta; la ocupación es una media diaria.
+**Limitaciones principales**: una sola persona y ciclos iguales; la integral de la magnitud operacional medida estima la exposición externa, no la dosis efectiva individual ni la dosis fetal; no se incluyen la contaminación interna ni la dosis antes del alta; la ocupación es una media diaria (h/24). Bajo los resultados, la página acota la dosis para cualquier horario con las horas declaradas en cada periodo: en cada intervalo de 24 h desde el alta, la tasa se toma al inicio (cota superior) o al final (cota inferior). El contacto cercano al principio del día hace que la media subestime la dosis; las cotas son máximas en la fase rápida y con un alta temprana (valores por defecto sin restricción: ×0,75 a ×1,35). Son informativas y nunca cambian la dosis.
 
 **Ejemplo**:
 - Datos (valores por defecto): Lu-177-PSMA-617, 15 µSv/h a 1 m a las 6 h, persona cuidadora ≤ 60 años; convivencia diurna de 6 h/d a 1 m; dormir aparte durante la restricción y después 8 h/d en contacto.
 - Al abrir: restricción mínima 2,92 d → adoptada 3 d.
-- Con **Use the adopted restriction in the table** (3 d en las dos filas): dosis por administración 0,488 mSv; tratamiento 2,93 mSv frente a 3 mSv; tasa máxima en el alta 15,4 µSv/h.
+- Con **Use the adopted restriction in the table** (3 d en las dos filas): dosis por administración 0,488 mSv; tratamiento 2,93 mSv frente a 3 mSv; tasa máxima en el alta 15,4 µSv/h; cotas por la ocupación promediada diaria de 2,32 a 3,69 mSv (×0,79 a ×1,26).
 
 ---
 

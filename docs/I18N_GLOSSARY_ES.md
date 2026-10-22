@@ -101,6 +101,7 @@ Revisado por el usuario el 15-10-2026: se aceptan los términos propuestos con d
 | dose rate at 1 m | tasa de dosis a 1 m | ✓ | Foro-I131 |
 | patient discharge | alta radiológica | ✓ | Foro-I131 |
 | relatives / companions | familiares o acompañantes | ✓ | Foro-I131 |
+| daily-average occupancy (h/24); bounds | ocupación promediada diaria (h/24); cotas | D | nota técnica del autor (22-10-2026), «factor de ocupación promediado» |
 | Caregiver (page name) | Acompañantes | D | nombre del libro de origen; la página cubre cuidadores, familiares, público y compañeros de trabajo |
 | year (unit symbol, /y) | a (por ejemplo, mSv/a, GBq/a) | ✓ | Foro-Ef («1 GBq/a») |
 

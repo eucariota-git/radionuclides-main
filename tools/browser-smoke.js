@@ -268,12 +268,20 @@ async function main() {
         check('caregiver on load: days empty, warning status, no table dose or maximum rate; floor 0.898, 2.92 → 3 d, curve drawn, button highlighted',
           JSON.stringify(v0) === JSON.stringify(['—', '—', '—', '0.898', '2.92', '3', 'OK']) && st0.days.join() === ',' &&
           /Restriction days not entered/.test(st0.status) && /btn-primary/.test(st0.btn) && st0.chart, JSON.stringify({ v0, st0 }));
+        // v1.18.0: bounds of the daily-average occupancy, here of the dose with the adopted restriction
+        const occ0 = await text('#occupancyValue');
+        check('caregiver on load: occupancy bounds of the dose with the adopted restriction (2.32 to 3.69 mSv, ×0.79 to ×1.26)',
+          occ0 === 'Daily-average occupancy bounds of the treatment dose: 2.32 to 3.69 mSv (×0.79 to ×1.26), with the adopted restriction.', occ0);
         await pageChecks('caregiver no days');
         await shot('caregiver_no_days', '#resultsCard');
         await ev(`document.getElementById('btnApplyAdopted').click()`); await sleep(300);
         const v = await ev(VALS);
         check('caregiver A16 (adopted restriction applied): 0.488 / 2.93 mSv, 15.4 µSv/h, floor 0.898, 2.92 → 3 d, self-check OK',
           JSON.stringify(v) === JSON.stringify(['0.488', '2.93', '15.4', '0.898', '2.92', '3', 'OK']) && /btn-secondary/.test(await ev(`document.getElementById('btnApplyAdopted').className`)), JSON.stringify(v));
+        const occ1 = await text('#occupancyValue');
+        check('caregiver A16: occupancy bounds of the table dose shown, informative line visible',
+          occ1 === 'Daily-average occupancy bounds of the treatment dose: 2.32 to 3.69 mSv (×0.79 to ×1.26).' &&
+          !(await ev(`document.getElementById('occupancyBox').classList.contains('hidden')`)), occ1);
         // A-01 (audit 2026-10-22): an input error must clear the row doses, which sit outside the result block
         const rowDoses = `[document.getElementById('day_dose').textContent, document.getElementById('sleep_dose').textContent, !document.getElementById('calcError').classList.contains('hidden')]`;
         await ev(`(() => { const e = document.getElementById('rate_1m_uSv_h'); e.value = 'oops'; e.dispatchEvent(new Event('input', { bubbles: true })); })()`); await sleep(200);
@@ -442,6 +450,9 @@ async function main() {
       await ev(`document.getElementById('langToggle').click()`); await sleep(400);
       const esRows = await ev(`[document.getElementById('day_label_text').textContent, document.getElementById('sleep_label_text').textContent]`);
       check('caregiver ES: the rows of a child scenario read «Contacto» and «Proximidad»', esRows.join('|') === 'Contacto|Proximidad', JSON.stringify(esRows));
+      const esOcc = await ev(`document.getElementById('occupancyBox').textContent.replace(/\\s+/g, ' ').trim()`);
+      check('caregiver ES: the occupancy bounds and their note are in Spanish', /^Cotas de la dosis del tratamiento por la ocupación promediada diaria: de \S+ a \S+ mSv \(×\S+ a ×\S+\)/.test(esOcc) &&
+        /La dosis mostrada usa la ocupación promediada diaria/.test(esOcc) && !/Daily-average|The dose shown/.test(esOcc), esOcc);
       await shot('caregiver_scenario_es', '.card:has(#rowsTable)');
       await ev(`document.getElementById('langToggle').click()`); await sleep(300);
     });

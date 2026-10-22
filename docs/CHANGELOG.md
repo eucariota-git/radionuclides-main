@@ -4,6 +4,12 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
+### v1.18.0 — Caregiver: bounds of the daily-average occupancy
+- The dose uses occupancy averaged over the day (h/24), as the source workbook, the Foro CSN-SEPR-SEFM (2011) and Gayol Vilorio et al. (2025) do. The page now bounds that approximation for any timetable with the declared hours of each period: the rate falls, so in each 24 h interval from discharge it lies between its values at the end and at the start. Lower and upper bound, and their ratio to the daily-average dose, are shown under the results, in the report and in the CSV (rows `occupancy`). With the days empty they refer to the dose with the adopted restriction.
+- For one exponential the ratios are x·e^−x/(1 − e^−x) and x/(1 − e^−x), x = λ·24 h (Lu-177 physical half-life ×1.053; 85.7 h ×1.100). The fast phase widens them: defaults without restriction ×0.75 to ×1.35; with the adopted 3 d, 2.32 to 3.69 mSv (×0.79 to ×1.26) for 2.93 mSv.
+- Informative only: no dose, inverse result or self-check changes (workbook port still to 1e-9), and no criterion is attached to the upper bound. Assumption on h/24 rewritten (sign of the error; the Forum's Annex 3.A, eqs. 4 and 7, takes the start-of-day rate for the period without restrictions). Method formula, guides (EN/ES) and Spanish texts.
+- `caregiver.json` v1.7; Test 27 and browser-smoke cases.
+
 ### v1.17.4 — fixes of an external audit (2026-10-22, A-01…A-05)
 - **A-01** Caregiver: after an invalid entry the row doses of the cohabitation table (outside the result block) kept the previous case's values; they are now cleared with the rest of the results and come back when the entry is corrected.
 - **A-02** Caregiver self-check: with the days empty it could say «OK» having checked nothing of the current case (a 0-day answer, or a missing criterion). Every answer of the inverse calculation now has its own independent check with the hour model — positive minimum, 0 d, not dependent, unattainable (both kinds), restriction increases — and a case with nothing to check is «current case not checked (no current result to verify)», never OK. A missing criterion with the days empty is named in the status. Introduced in v1.17.1.

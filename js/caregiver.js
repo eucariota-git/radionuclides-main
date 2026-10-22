@@ -207,6 +207,44 @@ const CAREGIVER = (() => {
     return N * (fr * k.Iinf + (fn - fr) * integralAfter(k, Rs)) * 1000;
   }
 
+  /**
+   * Bounds of the daily-average occupancy (h/24) for ANY timetable that keeps
+   * the declared hours of each period. The rate falls monotonically, so in each
+   * 24 h interval from discharge it lies between its values at the end and at
+   * the start of the interval: the dose lies between Σ Ḣ(end)·E and Σ Ḣ(start)·E,
+   * E = ∫ f dt over the interval. For one exponential the ratios are
+   * x·e^−x/(1 − e^−x) and x/(1 − e^−x), x = λ·24 h. Informative only: it never
+   * changes the calculated dose (the port stays identical to the workbook).
+   * @param segs [{until_s, f}] piecewise-constant weighted factor, last until = Infinity
+   * @returns {{kMin:number,kMax:number}|null} null when the dose is zero
+   */
+  function occupancyBounds(k, segs) {
+    const W = S_PER_D;
+    const rate = t => (t < k.tr ? k.A * Math.exp(-k.lf * t) : k.A * Math.exp(-k.lf * k.tr - k.ls * (t - k.tr)));
+    const equiv = (a, b) => segs.reduce((s, g, i) => {
+      const lo = Math.max(a, i ? segs[i - 1].until_s : 0), hi = Math.min(b, g.until_s);
+      return hi > lo ? s + g.f * (hi - lo) : s;
+    }, 0);
+    let avg = 0;
+    segs.forEach((g, i) => {
+      avg += g.f * (integralAfter(k, i ? segs[i - 1].until_s : 0) - (g.until_s === Infinity ? 0 : integralAfter(k, g.until_s)));
+    });
+    if (!(avg > 0)) return null;
+    // Whole intervals up to the end of the fast phase and the last breakpoint
+    const tEnd = Math.max(k.tr, segs.length > 1 ? segs[segs.length - 2].until_s : 0);
+    let hi = 0, lo = 0, t = 0;
+    for (; t < tEnd; t += W) {
+      const E = equiv(t, t + W);
+      hi += rate(t) * E;
+      lo += rate(t + W) * E;
+    }
+    // Then constant f and one exponential: geometric series
+    const q = Math.exp(-k.ls * W), E = segs[segs.length - 1].f * W;
+    hi += rate(t) * E / (1 - q);
+    lo += rate(t) * q * E / (1 - q);
+    return { kMin: lo / avg, kMax: hi / avg };
+  }
+
   // ---------------------------------------------------------------------------
   // Main evaluation (sheet Dosis)
   // ---------------------------------------------------------------------------
@@ -399,6 +437,28 @@ const CAREGIVER = (() => {
           adoptedNote: '', doseAtAdopted_mSv: null });
       }
     }
+
+    // Bounds of the daily-average occupancy: for the table when it gives a dose,
+    // otherwise for the adopted restriction (same days in both rows)
+    out.occupancy = null;
+    const segsOf = cuts => {
+      const at = t => ['day', 'sleep'].reduce((s, key) => {
+        const row = input.rows[key], f = R[key], C = cuts[key];
+        return s + (t < C ? row.h_during * f.fDuring : row.h_after * f.fAfter) / 24;
+      }, 0);
+      const ends = [...new Set([cuts.day, cuts.sleep].filter(C => C > 0))].sort((a, b) => a - b);
+      return ends.map((C, i) => ({ until_s: C, f: at(i ? ends[i - 1] : 0) })).concat([{ until_s: Infinity, f: at(Infinity) }]);
+    };
+    const occ = (basis, cuts, dose) => {
+      const b = occupancyBounds(k, segsOf(cuts));
+      return b && { basis, ...b, low_mSv: b.kMin * dose, high_mSv: b.kMax * dose };
+    };
+    if (out.ready && out.treatment_mSv > 0) {
+      out.occupancy = occ('table', { day: R.day.C_s, sleep: R.sleep.C_s }, out.treatment_mSv);
+    } else if (out.tableReady && num(inv.adopted_d) && inv.doseAtAdopted_mSv > 0) {
+      const C = inv.adopted_d * S_PER_D;
+      out.occupancy = occ('adopted', { day: C, sleep: C }, inv.doseAtAdopted_mSv);
+    }
     return out;
   }
 
@@ -508,6 +568,6 @@ const CAREGIVER = (() => {
     load, getData, setData, evaluate, curve, selfCheck, defaultInput, profilePoints,
     INVERSE_TEXT,
     // exposed for the test suite
-    _internal: { kinetics, integralBefore, integralAfter, spatialFactor, maxHoursPerDay, hourModel },
+    _internal: { kinetics, integralBefore, integralAfter, spatialFactor, maxHoursPerDay, hourModel, occupancyBounds },
   };
 })();

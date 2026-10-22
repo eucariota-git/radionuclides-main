@@ -320,7 +320,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v64');
+    swVersion === 'nm-planner-v65');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -1385,6 +1385,56 @@ async function main() {
     const nB = (acc.match(/^\| B\d+ \|/gm) || []).length;
     check(`A-05: acceptance sheet without the old «recalculate» notice, invalid input hides the results, B denominator = ${nB}`,
       !/Inputs changed — recalculate/.test(acc) && /resultados ocultos/.test(acc) && acc.includes(`| Comprobaciones B superadas | ____ / ${nB} |`));
+  }
+
+  console.log();
+  console.log('Test 27: caregiver — bounds of the daily-average occupancy (v1.18.0)');
+  {
+    const I = CG._internal;
+    const mono = T => I.occupancyBounds(I.kinetics({ rate_1m_uSv_h: 10, discharge_h: 6, fast_end_h: 0, T_fast_h: null, T_slow_h: T }),
+      [{ until_s: Infinity, f: 1 }]);
+    const exact = T => { const x = 24 * Math.LN2 / T; return [x * Math.exp(-x) / (1 - Math.exp(-x)), x / (1 - Math.exp(-x))]; };
+    check('one exponential: bounds = x·e^−x/(1 − e^−x) and x/(1 − e^−x), x = λ·24 h (Lu-177 physical 159.53 h → ×1.053; 85.7 h → ×1.100)',
+      [159.53, 85.7, 40.5, 21.7].every(T => { const b = mono(T), [lo, hi] = exact(T);
+        return Math.abs(b.kMin - lo) < 1e-12 && Math.abs(b.kMax - hi) < 1e-12; }) &&
+      mono(159.53).kMax.toFixed(3) === '1.053' && mono(85.7).kMax.toFixed(3) === '1.100');
+    // Default kinetics (PSMA 16.4 / 40.5 h, discharge 6 h, fast phase to 24 h), no restriction:
+    // brute force over the 24 h intervals, independent of the closed-form tail
+    const z = (() => { const x = CG.defaultInput(); x.rows.day.days = 0; x.rows.sleep.days = 0; return CG.evaluate(x); })();
+    const brute = (() => { const k = z.kinetics, H = t => (t < k.tr ? k.A * Math.exp(-k.lf * t) : k.A * Math.exp(-k.lf * k.tr - k.ls * (t - k.tr)));
+      let hi = 0, lo = 0; for (let n = 0; n < 2000; n++) { hi += H(n * 86400); lo += H((n + 1) * 86400); }
+      return [lo * 86400 / k.Iinf, hi * 86400 / k.Iinf]; })();
+    check(`default kinetics without restriction: ×${z.occupancy.kMin.toFixed(3)} to ×${z.occupancy.kMax.toFixed(3)} (expected 0.753 / 1.354), equal to the brute-force sum`,
+      z.occupancy.basis === 'table' && z.occupancy.kMin.toFixed(3) === '0.753' && z.occupancy.kMax.toFixed(3) === '1.354' &&
+      Math.abs(z.occupancy.kMin - brute[0]) < 1e-9 && Math.abs(z.occupancy.kMax - brute[1]) < 1e-9);
+    // With a restriction the bounds use the time-weighted factor of each interval; the
+    // daily-average dose they are referred to is the table dose itself
+    const w = CG.evaluate(wbInput());
+    const segs = [{ until_s: 3 * 86400, f: w.fr }, { until_s: Infinity, f: w.fn }];
+    const b = I.occupancyBounds(w.kinetics, segs);
+    check('workbook case (3 d): bounds bracket the table dose, the dose itself is unchanged (port to 1e-9)',
+      w.occupancy && w.occupancy.kMin < 1 && w.occupancy.kMax > 1 && Math.abs(w.occupancy.kMax - b.kMax) < 1e-12 &&
+      Math.abs(w.occupancy.low_mSv - w.occupancy.kMin * w.treatment_mSv) < 1e-12 &&
+      Math.abs(w.treatment_mSv - CG.evaluate(wbInput()).treatment_mSv) < 1e-12);
+    // Rows with different days: three segments; the bound reproduces a direct per-interval sum
+    const d2 = (() => { const x = wbInput(); x.rows.day.days = 1.5; x.rows.sleep.days = 4; return x; })();
+    const r2 = CG.evaluate(d2);
+    const direct = (() => { const k = r2.kinetics, H = t => (t < k.tr ? k.A * Math.exp(-k.lf * t) : k.A * Math.exp(-k.lf * k.tr - k.ls * (t - k.tr)));
+      const f = t => ['day', 'sleep'].reduce((s, key) => { const row = d2.rows[key], o = r2.rows[key];
+        return s + (t < row.days * 86400 ? row.h_during * o.fDuring : row.h_after * o.fAfter) / 24; }, 0);
+      let hi = 0; for (let n = 0; n < 2000; n++) { let E = 0; for (let j = 0; j < 1440; j++) E += f(n * 86400 + (j + 0.5) * 60) * 60; hi += H(n * 86400) * E; }
+      return hi * d2.cycles * 1000; })();
+    check('rows with different restrictions (1.5 d / 4 d): upper bound equals a direct per-interval sum',
+      Math.abs(r2.occupancy.high_mSv - direct) < 1e-6 * direct);
+    // Days empty: the bounds refer to the dose with the adopted restriction
+    const e = CG.evaluate(CG.defaultInput());
+    check('days empty: bounds of the dose with the adopted restriction',
+      e.occupancy && e.occupancy.basis === 'adopted' && Math.abs(e.occupancy.low_mSv - e.occupancy.kMin * e.inverse.doseAtAdopted_mSv) < 1e-12);
+    check('page: bounds line, method formula, report row and CSV rows; Spanish entries present',
+      /id="occupancyValue"/.test(caregiverHtml) && caregiverHtml.includes('Daily-average occupancy bounds (informative)') &&
+      caregiverHtml.includes("['Daily-average occupancy bounds of the treatment dose'") &&
+      caregiverHtml.includes("add('occupancy', 'Treatment dose, upper bound for any timetable'") &&
+      read('js/i18n-es.js').includes('Daily-average occupancy bounds of the treatment dose'));
   }
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);
