@@ -1118,8 +1118,8 @@ const I18N_ES = {
     'Value': 'Valor',
     'Status': 'Estado',
     'REVIEW': 'REVISAR',
-    'reference cases OK — current case not checked (inputs rejected)': 'casos de referencia OK — caso actual no comprobado (entradas rechazadas)',
-    'reference cases OK; current case not checked (inputs rejected)': 'casos de referencia OK; caso actual no comprobado (entradas rechazadas)',
+    'reference cases OK — current case not checked (no current result to verify)': 'casos de referencia OK — caso actual no comprobado (no hay resultado actual que comprobar)',
+    'reference cases OK; current case not checked (no current result to verify)': 'casos de referencia OK; caso actual no comprobado (no hay resultado actual que comprobar)',
     'Method — formulas, assumptions, profiles, criteria and references': 'Método — fórmulas, hipótesis, perfiles, criterios y referencias',
     'Integration in SI (Sv/s, s, Sv); the interface uses µSv/h, h, d and mSv.': 'Integración en SI (Sv/s, s, Sv); la interfaz usa µSv/h, h, d y mSv.',
     'Assumptions': 'Hipótesis',
@@ -1257,8 +1257,8 @@ const I18N_ES = {
       "Tasa de dosis a 1 m — Demir et al. (2016), tabla 1, 23 pacientes, 7,4 GBq: 15 ± 4 µSv/h a las 6 h y 7 ± 2 µSv/h a las 24 h tras la infusión. La tabla 1 no indica el estadístico tras ±; el artículo usa media ± DE en su tabla 3.",
     "T fast: no dispersion published; 16.4 h is derived from the mean rates. With mean + 2 SD at both times (23 and 11 µSv/h): 18 h · ln 2 / ln(23/11) = 16.9 h, the «high» case of the source workbook v6.":
       "T rápida: no se publica dispersión; 16,4 h se deduce de las tasas medias. Con media + 2 DE en ambos momentos (23 y 11 µSv/h): 18 h · ln 2 / ln(23/11) = 16,9 h, el caso «alto» del libro de origen v6.",
-    "T slow — Kurth et al. (2018), Table 3, measurement at 48 h: 40.5 ± 15.8 h (mean ± SD), minimum 21.7 h, maximum 85.7 h; the maximum is the T slow of the «high» case of workbook v6. The abstract prints «40.5 ± 9.6 h»: 9.6 h is the SD of the 72 h column (38.4 ± 9.6 h, 25.7–74.5 h, 25 patients), an erratum of the source; Table 3 is followed. At 24 h: 26.0 ± 12.4 h (11.0–73.5 h).":
-      "T lenta — Kurth et al. (2018), tabla 3, medida a las 48 h: 40,5 ± 15,8 h (media ± DE), mínimo 21,7 h, máximo 85,7 h; el máximo es la T lenta del caso «alto» del libro v6. El resumen imprime «40.5 ± 9.6 h»: 9,6 h es la DE de la columna de 72 h (38,4 ± 9,6 h, 25,7–74,5 h, 25 pacientes), errata de la fuente; se sigue la tabla 3. A las 24 h: 26,0 ± 12,4 h (11,0–73,5 h).",
+    "T slow — Kurth et al. (2018), Table 3, measurement at 48 h: 40.5 ± 15.8 h (mean ± SD), minimum 21.7 h, maximum 85.7 h; the maximum is the T slow of the «high» case of workbook v6. The abstract prints «40.5 ± 9.6 h»: 9.6 h is the SD of the 72 h column (38.4 ± 9.6 h, 25.7–74.5 h, 25 patients), a discrepancy between abstract and table; Table 3 is followed. At 24 h: 26.0 ± 12.4 h (11.0–73.5 h).":
+      "T lenta — Kurth et al. (2018), tabla 3, medida a las 48 h: 40,5 ± 15,8 h (media ± DE), mínimo 21,7 h, máximo 85,7 h; el máximo es la T lenta del caso «alto» del libro v6. El resumen imprime «40.5 ± 9.6 h»: 9,6 h es la DE de la columna de 72 h (38,4 ± 9,6 h, 25,7–74,5 h, 25 pacientes), discrepancia entre el resumen y la tabla; se sigue la tabla 3. A las 24 h: 26,0 ± 12,4 h (11,0–73,5 h).",
     "No SD published: Tef,1 = 22 h is the median of two literature values, Gayol Vilorio et al. (2025), Table 2: early mono-exponential 18.5 h (Parlak) and 26 h (Kurth).":
       "No se publica DE: Tef,1 = 22 h es la mediana de dos valores de la literatura, Gayol Vilorio et al. (2025), tabla 2: monoexponencial temprano 18,5 h (Parlak) y 26 h (Kurth).",
     "Tef,2 = 42 h is the median of seven literature values from five studies (late mono-exponential or slow bi-exponential), spread 38.4–54 h. Table 2 labels the 26 and 38.4 h of Kurth as medians; in Kurth et al. (2018), Table 3, they are means (24 h and 72 h). For the cohort SD see the workbook preset.":
@@ -1269,10 +1269,10 @@ const I18N_ES = {
       "Tef,2 = 55 h es la mediana de cinco valores de la literatura (monoexponencial tardío o componente lenta biexponencial), con dispersión 49,5–58 h.",
     "Teff from the 6 and 24 h values — Monserrat Fuertes et al. (2023), Table 2, 20 patients: 25 (12, 21, 36, 92) h, median (minimum, Q1, Q3, maximum).":
       "Tef de los valores a 6 y 24 h — Monserrat Fuertes et al. (2023), tabla 2, 20 pacientes: 25 (12; 21; 36; 92) h, mediana (mínimo; Q1; Q3; máximo).",
-    "Teff from the 24, 48 and 168 h values: 58 (35, 47, 67, 119) h, median (minimum, Q1, Q3, maximum).":
-      "Tef de los valores a 24, 48 y 168 h: 58 (35; 47; 67; 119) h, mediana (mínimo; Q1; Q3; máximo).",
-    "Dose rate at 1 m at discharge (24 h): 5.4 (2.4, 3.7, 6.5, 19.5) µSv/h. The distributions are not normal (Shapiro–Wilk) and no SD is given; the ± of each patient in Table 2 is the uncertainty of the fit, not a cohort dispersion.":
-      "Tasa de dosis a 1 m en el alta (24 h): 5,4 (2,4; 3,7; 6,5; 19,5) µSv/h. Las distribuciones no son normales (Shapiro–Wilk) y no se da DE; el ± de cada paciente en la tabla 2 es la incertidumbre del ajuste, no una dispersión de la cohorte.",
+    "Teff from the 24, 48 and 168 h values: 58 (35, 47, 67, 119) h, median (minimum, Q1, Q3, maximum). Neither half-life distribution is normal (Shapiro–Wilk), so no SD is given.":
+      "Tef de los valores a 24, 48 y 168 h: 58 (35; 47; 67; 119) h, mediana (mínimo; Q1; Q3; máximo). Ninguna de las dos distribuciones de periodos es normal (Shapiro–Wilk), por lo que no se da DE.",
+    "Dose rate at 1 m at discharge (24 h): 5.4 (2.4, 3.7, 6.5, 19.5) µSv/h, median (minimum, Q1, Q3, maximum). The ± of each patient in Table 2 is the uncertainty of the fit, not a cohort dispersion.":
+      "Tasa de dosis a 1 m en el alta (24 h): 5,4 (2,4; 3,7; 6,5; 19,5) µSv/h, mediana (mínimo; Q1; Q3; máximo). El ± de cada paciente en la tabla 2 es la incertidumbre del ajuste, no una dispersión de la cohorte.",
     "No dispersion published: the source gives a single fixed value.":
       "No se publica dispersión: la fuente da un único valor fijo.",
     "Partner":
@@ -1755,8 +1755,8 @@ const I18N_ES = {
     [/^mSv — (\d+) cycle\(s\)$/, 'mSv — $1 ciclo(s)'],
     [/^The proximity profile does not list (.+): choose an approximate profile or enter the distances by hand\.$/,
       'El perfil de proximidad no incluye $1: elija un perfil aproximado o introduzca las distancias a mano.'],
-    [/^(⚠ )?Category «(.+)» is not the one the Forum assigns to the scenario «(.+)» \((.+)\): check the criterion\.$/, (m, w, c, sc, ok) =>
-      `${w || ''}La categoría «${esText(c)}» no es la que el Foro asigna al escenario «${esText(sc)}» (${ok.split(' or ').map(esText).join(' o ')}): revise el criterio.`],
+    [/^(⚠ )?Category «(.+)» is not the one adopted in this application for the scenario «(.+)» \((.+)\): check the criterion\.$/, (m, w, c, sc, ok) =>
+      `${w || ''}La categoría «${esText(c)}» no es la adoptada en la aplicación para el escenario «${esText(sc)}» (${ok.split(' or ').map(esText).join(' o ')}): revise el criterio.`],
     [/^(.+) — Foro CSN-SEPR-SEFM \(2011\), Annex 3\.B, Table 3\.B 1$/, (m, l) => `${esText(l)} — Foro CSN-SEPR-SEFM (2011), anexo 3.B, tabla 3.B 1`],
     [/^mSv — (.+)$/, (m, label) => { const t = esText(label); return t === label ? m : `mSv — ${t}`; }],
     [/^([\s\S]+) — with this restriction the treatment dose EXCEEDS the criterion$/, (m, a) => `${esText(a)} — con esta restricción la dosis del tratamiento SUPERA el criterio`],

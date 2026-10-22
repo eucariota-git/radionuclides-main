@@ -4,6 +4,15 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
+### v1.17.4 — fixes of an external audit (2026-10-22, A-01…A-05)
+- **A-01** Caregiver: after an invalid entry the row doses of the cohabitation table (outside the result block) kept the previous case's values; they are now cleared with the rest of the results and come back when the entry is corrected.
+- **A-02** Caregiver self-check: with the days empty it could say «OK» having checked nothing of the current case (a 0-day answer, or a missing criterion). Every answer of the inverse calculation now has its own independent check with the hour model — positive minimum, 0 d, not dependent, unattainable (both kinds), restriction increases — and a case with nothing to check is «current case not checked (no current result to verify)», never OK. A missing criterion with the days empty is named in the status. Introduced in v1.17.1.
+- **A-03** Caregiver: with the days empty, a «during» schedule over 24 h/d rejected the whole case although a 0-day restriction never applies it and already met the criterion (audit case: 2 µSv/h, 0.998 mSv). Without days only the schedule after the restriction is checked against 24 h/d; a positive common restriction is still «not applicable» as before. Introduced in v1.17.1.
+- **A-04** The category warning of the cohabitation scenarios spoke of the category «the Forum assigns»; for children it is the department's choice (1 mSv at any age; the Forum's Table 2 gives 3 mSv over 10 years). It now says «adopted in this application».
+- **A-05** Acceptance sheet: A14.d and A15.b described the old Calculate/recalculate behaviour; the B denominator was 13 for 15 checks. Updated, with a new case A20 for A-01…A-03.
+- Wording of the sources, also from the audit: Kurth 2018 — «discrepancy between abstract and table» instead of «erratum» (no published correction located); Monserrat 2023 — the normality test refers to the half-lives, not to the discharge rate.
+- `caregiver.json` v1.6; Test 26 and browser-smoke cases (A-01, A-03); test/README baseline.
+
 ### v1.17.3 — Caregiver: cohabitation table header and note
 - The first column of the cohabitation table is «Row» («Fila»): «Contact» repeated the name of the first row of the child scenarios.
 - Under the table, a one-line hint with the input rules only (hours of the two rows mutually exclusive; 0 h = no contact, distance may be left empty; 0.1 m = contact). The old note spoke of «Sleeping in the same room», which only fits the partner scenario.

@@ -320,7 +320,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v63');
+    swVersion === 'nm-planner-v64');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -1296,7 +1296,7 @@ async function main() {
     const withScenario = (key, category) => { const x = wbInput(); const s = SC.find(q => q.key === key);
       for (const k of ['day', 'sleep']) for (const f of F) x.rows[k][f] = s.rows[k][f];
       Object.assign(x, { scenario: key, category, manual_criterion_mSv: 2 }); return CG.evaluate(x); };
-    const mismatch = r => r.warnings.some(w => /is not the one the Forum assigns/.test(w));
+    const mismatch = r => r.warnings.some(w => /is not the one adopted in this application/.test(w));
     check('category coherence: warning for a child with the carer category, none for public, «other» or the free scenario; the dose does not change',
       mismatch(withScenario('child_2_5', 'carer_le60')) && !mismatch(withScenario('child_2_5', 'public')) && !mismatch(withScenario('child_2_5', 'other')) &&
       withScenario('child_2_5', 'carer_le60').ready && withScenario('child_2_5', 'carer_le60').treatment_mSv === withScenario('child_2_5', 'public').treatment_mSv &&
@@ -1335,8 +1335,56 @@ async function main() {
     check('table B: first column «Row»; under it only the input rules; the calculation assumptions live in Method › Assumptions',
       /<th>Row<\/th>/.test(caregiverHtml) && !/<th>Contact<\/th>/.test(caregiverHtml) && !/sleeping is not counted as day-time/.test(caregiverHtml) &&
       cgData.assumptions.some(a => /counted from discharge.*annual compliance/.test(a)) && cgData.assumptions.some(a => /integrated to infinity/.test(a)));
-    check('without days the 24 h/d check uses the common schedule (during and after)',
+    check('without days the 24 h/d check uses the schedule after the restriction (the one sure to apply)',
       (() => { const x = CG.defaultInput(); x.rows.day.h_after = 20; return /exceeds 24 hours/.test(CG.evaluate(x).status); })());
+  }
+
+  console.log();
+  console.log('Test 26: external audit 2026-10-22 (A-01..A-05)');
+  {
+    // A-03: empty days must not block a valid 0-day answer. Case of the audit:
+    // 2 µSv/h, criterion 3 mSv, 6 cycles; row 1 20 h/d at 1 m during, 0 after; row 2 8 h/d at 1 m during, 8 h/d at 0.1 m after
+    const a03 = (days, rate = 2) => { const x = CG.defaultInput(); x.rate_1m_uSv_h = rate;
+      Object.assign(x.rows.day, { days, h_during: 20, d_during: 1, h_after: 0, d_after: null });
+      Object.assign(x.rows.sleep, { days, h_during: 8, d_during: 1, h_after: 8, d_after: 0.1 }); return x; };
+    const e = CG.evaluate(a03(null)), z = CG.evaluate(a03(0));
+    // By hand: I∞ = 2 µSv/h·[(1 − e^(−λf·18 h))/λf + e^(−λf·18 h)/λs], λf = ln2/16.4 h, λs = ln2/40.5 h; D(0) = 6·(8/24·6.25)·I∞
+    const lf = Math.LN2 / 16.4, ls = Math.LN2 / 40.5, Iinf = 2 * ((1 - Math.exp(-lf * 18)) / lf + Math.exp(-lf * 18) / ls);
+    check('A-03: with empty days the 28 h/d «during» schedule no longer blocks the answer: minimum and adopted 0 d, as with 0 d entered',
+      e.tableReady && e.inverse.minRestriction_d === 0 && e.inverse.adopted_d === 0 && z.inverse.adopted_d === 0 &&
+      Math.abs(Iinf - 79.8159) < 5e-4 && Math.abs(z.treatment_mSv - 6 * (8 / 24 * 6.25) * Iinf / 1000) < 1e-9 && Math.abs(z.treatment_mSv - 0.997698) < 1e-6);
+    check('A-03: when 0 d does not meet the criterion, a positive common restriction with that schedule is «not applicable» (> 24 h/d); with 3 d entered the table itself is rejected',
+      CG.evaluate(a03(null, 20)).inverse.minRestrictionCode === 'infeasible_common' && /exceeds 24 hours/.test(CG.evaluate(a03(3, 20)).status));
+    // A-02: every answer of the inverse calculation is checked; nothing checked is never OK
+    const mk = (rate, rows) => { const x = CG.defaultInput(); x.rate_1m_uSv_h = rate; for (const [k, r] of Object.entries(rows)) Object.assign(x.rows[k], r); return x; };
+    const equal = { day: { h_during: 6, d_during: 1, h_after: 6, d_after: 1 }, sleep: { h_during: 0, d_during: null, h_after: 0, d_after: null } };
+    const more = { day: { h_during: 8, d_during: 0.1, h_after: 6, d_after: 1 }, sleep: { h_during: 0, d_during: null, h_after: 0, d_after: null } };
+    const cases = { positive: mk(15, {}), zero: mk(1, {}), not_dependent: mk(15, equal), unattainable: mk(60, equal),
+      unattainable_reduce: mk(60, {}), restriction_increases: mk(60, more) };
+    const got = Object.fromEntries(Object.entries(cases).map(([n, x]) => { const r = CG.evaluate(x), s = CG.selfCheck(x);
+      return [n, { code: r.inverse.minRestrictionCode || (r.inverse.minRestriction_d === 0 ? 'zero' : 'positive'), ok: s.ok, checked: s.items.some(i => /Inverse calculation: minimum/.test(i.label)) }]; }));
+    check('A-02: every branch of the inverse calculation (positive, 0 d, not dependent, unattainable ×2, restriction increases) has its own independent check, and all pass without days',
+      Object.entries(got).every(([n, g]) => g.code === n && g.ok && g.checked), JSON.stringify(got));
+    check('A-02: with no current result to verify the self-check is «not checked», not OK; a missing criterion is named in the status',
+      (() => { const x = CG.defaultInput(); x.category = 'other'; x.manual_criterion_mSv = null; const s = CG.selfCheck(x), r = CG.evaluate(x);
+        return s.currentOk === null && s.ok === false && s.referencesOk && /criterion is missing/.test(r.status); })() &&
+      /current case not checked \(no current result to verify\)/.test(caregiverHtml) && !/inputs rejected/.test(caregiverHtml));
+    check('A-02: the independent check detects a wrong inverse answer (the minimum restriction shifted by 0.1 d)',
+      (() => { const x = cases.positive; const r = CG.evaluate(x); const N = x.cycles;
+        const m = CG._internal.hourModel(x.rate_1m_uSv_h, x.discharge_h, x.fast_end_h, x.T_fast_h, x.T_slow_h);
+        const d = N * (r.fr * m.T + (r.fn - r.fr) * m.U((r.inverse.minRestriction_d + 0.1) * 24)) / 1000;
+        return Math.abs(d - r.criterion.value) > 1e-6 * r.criterion.value; })());
+    // A-01: the row doses outside the result block are cleared on an input error
+    check('A-01: an input error clears the row doses of the cohabitation table (they are outside the result block)',
+      /inputErr\.show\(err\.message, err\.field\);\s*\$\('resultBlock'\)\.classList\.add\('hidden'\);[\s\S]{0,200}for \(const \[k\] of ROWS\) \$\(`\$\{k\}_dose`\)\.textContent = '—';/.test(caregiverHtml));
+    // A-04: the warning names the application's choice, not the Forum
+    check('A-04: the category warning speaks of the category adopted in the application, not of the Forum',
+      /is not the one adopted in this application for the scenario/.test(caregiverJs) && !/is not the one the Forum assigns/.test(read('js/caregiver.js')));
+    // A-05: acceptance sheet matches the live recalculation and counts its B checks
+    const acc = read('docs/ACCEPTANCE_TEST.md');
+    const nB = (acc.match(/^\| B\d+ \|/gm) || []).length;
+    check(`A-05: acceptance sheet without the old «recalculate» notice, invalid input hides the results, B denominator = ${nB}`,
+      !/Inputs changed — recalculate/.test(acc) && /resultados ocultos/.test(acc) && acc.includes(`| Comprobaciones B superadas | ____ / ${nB} |`));
   }
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);

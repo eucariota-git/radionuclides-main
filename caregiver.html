@@ -698,6 +698,9 @@
     } catch (err) {
       inputErr.show(err.message, err.field);
       $('resultBlock').classList.add('hidden');
+      // the row doses sit in the cohabitation table, outside the result block:
+      // never leave the previous case's values there (audit 2026-10-22, A-01)
+      for (const [k] of ROWS) $(`${k}_dose`).textContent = '—';
       last = null;
       return;
     }
@@ -755,7 +758,7 @@
     $('btnApplyAdopted').className = `btn btn-sm ${out.noDays && inv.adopted_d !== null ? 'btn-primary' : 'btn-secondary'}`;
 
     $('selfCheckStatus').textContent = sc.ok ? 'OK'
-      : (sc.currentOk === null && sc.referencesOk ? 'reference cases OK — current case not checked (inputs rejected)' : 'REVIEW');
+      : (sc.currentOk === null && sc.referencesOk ? 'reference cases OK — current case not checked (no current result to verify)' : 'REVIEW');
     $('selfCheckStatus').className = sc.ok ? 'meets-yes' : '';
     $('selfCheckBody').innerHTML = sc.items.map(i => `<tr><td>${esc(i.label)}</td><td class="num">${Number.isFinite(i.value) ? UTILS.dec(i.value.toFixed(i.reference ? 2 : 4)) : ''}</td>` +
       `<td>${i.ok ? '<span class="meets-yes">OK</span>' : '<strong style="color:var(--danger);">REVIEW</strong>'}</td></tr>`).join('');
@@ -868,7 +871,7 @@
           ['Treatment dose with the adopted restriction', `${f3(inv.doseAtAdopted_mSv)} mSv`],
         ] },
         { heading: 'Treatment dose vs restriction', rows: cv.points.map(p => [`${UTILS.num(p.days)} d`, `${f3(p.dose_mSv)} mSv`]) },
-        { heading: 'Self-check', rows: [['Overall', sc.ok ? 'OK' : (sc.currentOk === null && sc.referencesOk ? 'reference cases OK; current case not checked (inputs rejected)' : 'REVIEW')]].concat(sc.items.map(i => [i.label, i.ok ? 'OK' : 'REVIEW'])) },
+        { heading: 'Self-check', rows: [['Overall', sc.ok ? 'OK' : (sc.currentOk === null && sc.referencesOk ? 'reference cases OK; current case not checked (no current result to verify)' : 'REVIEW')]].concat(sc.items.map(i => [i.label, i.ok ? 'OK' : 'REVIEW'])) },
       ],
       notes: [data.inverse_note, data.cohabitation_note].concat(data.assumptions),
       sources: data.references,

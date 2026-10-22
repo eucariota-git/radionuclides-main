@@ -274,6 +274,23 @@ async function main() {
         const v = await ev(VALS);
         check('caregiver A16 (adopted restriction applied): 0.488 / 2.93 mSv, 15.4 µSv/h, floor 0.898, 2.92 → 3 d, self-check OK',
           JSON.stringify(v) === JSON.stringify(['0.488', '2.93', '15.4', '0.898', '2.92', '3', 'OK']) && /btn-secondary/.test(await ev(`document.getElementById('btnApplyAdopted').className`)), JSON.stringify(v));
+        // A-01 (audit 2026-10-22): an input error must clear the row doses, which sit outside the result block
+        const rowDoses = `[document.getElementById('day_dose').textContent, document.getElementById('sleep_dose').textContent, !document.getElementById('calcError').classList.contains('hidden')]`;
+        await ev(`(() => { const e = document.getElementById('rate_1m_uSv_h'); e.value = 'oops'; e.dispatchEvent(new Event('input', { bubbles: true })); })()`); await sleep(200);
+        const bad = await ev(rowDoses);
+        await ev(`(() => { const e = document.getElementById('rate_1m_uSv_h'); e.value = '15'; e.dispatchEvent(new Event('input', { bubbles: true })); })()`); await sleep(200);
+        const good = await ev(rowDoses);
+        check('caregiver A-01: an invalid rate clears the row doses (—) with the error shown; correcting it restores 0.150 / 0.339 mSv',
+          bad.join('|') === '—|—|true' && good.join('|') === '0.150|0.339|false', JSON.stringify({ bad, good }));
+        // A-03: empty days and a 28 h/d «during» schedule still give the valid 0-day answer
+        await open('caregiver.html', 1280);
+        await ev(`(() => { const s = (i, v) => { const e = document.getElementById(i); e.value = v; e.dispatchEvent(new Event('change')); };
+          s('rate_1m_uSv_h', 2); s('day_h_during', 20); s('day_d_during', 1); s('day_h_after', 0); s('day_d_after', '');
+          s('sleep_h_during', 8); s('sleep_d_during', 1); s('sleep_h_after', 8); s('sleep_d_after', 0.1); })()`);
+        await sleep(300);
+        const z = await ev(`['minRestriction','adopted','selfCheckStatus'].map(i => document.getElementById(i).textContent.trim())`);
+        check('caregiver A-03: empty days with 20 + 8 h/d during the restriction: minimum 0.00 d, adopted 0 d, self-check OK',
+          z.join('|') === '0.00|0|OK', JSON.stringify(z));
         await ev(`(() => { const s = (i, v) => { const e = document.getElementById(i); e.value = v; e.dispatchEvent(new Event('change')); };
           s('rate_1m_uSv_h', 10); s('day_days', 0); s('day_h_during', 20); s('day_d_during', 1); s('day_h_after', 0); s('day_d_after', '');
           s('sleep_days', 3); s('sleep_h_during', 8); s('sleep_d_during', 1); s('sleep_h_after', 8); s('sleep_d_after', 0.1); })()`);
@@ -385,15 +402,15 @@ async function main() {
       await setC('scenario', 'child_2_5');
       st = await ev(rowState);
       check('caregiver: «Child 2 to 5 years» fills hours and distances, names the rows and proposes the public category; days untouched',
-        st.v === '0||2|0.1|5|1.5|5|1' && st.cat === 'public' && st.l1 === 'Contact' && !st.err && st.days === '' && !/not the one the Forum/.test(st.warn), JSON.stringify(st));
+        st.v === '0||2|0.1|5|1.5|5|1' && st.cat === 'public' && st.l1 === 'Contact' && !st.err && st.days === '' && !/not the one adopted/.test(st.warn), JSON.stringify(st));
       await setC('category', 'carer_le60');
       st = await ev(rowState);
-      check('caregiver: a category the Forum does not assign gives a warning, not an error', /not the one the Forum assigns/.test(st.warn) && !st.err, JSON.stringify(st));
+      check('caregiver: a category the application does not adopt for the scenario gives a warning, not an error', /not the one adopted in this application/.test(st.warn) && !st.err, JSON.stringify(st));
       await shot('caregiver_scenario_warning', '#rowsTable'); await shot('caregiver_scenario_b', '.card:has(#rowsTable)');
       await setC('day_h_after', '3', 'input');
       st = await ev(rowState);
       check('caregiver: a manual edit switches to the free scenario, with the row names kept as placeholders and no category warning',
-        st.sc === 'free' && st.in1 && st.l1hidden && st.ph1 === 'Contact' && !/not the one the Forum/.test(st.warn), JSON.stringify(st));
+        st.sc === 'free' && st.in1 && st.l1hidden && st.ph1 === 'Contact' && !/not the one adopted/.test(st.warn), JSON.stringify(st));
       await setC('day_label', 'Grandchild on the lap', 'input');
       await shot('caregiver_scenario_free', '.card:has(#rowsTable)');
       await ev(`document.getElementById('btnPrint').click()`); await sleep(300);

@@ -114,9 +114,9 @@ offline reload and `content://` remain manual (ACCEPTANCE_TEST). The manual and 
 
 ## Expected baseline
 
-At v1.13.3 (2026-10-15): validate-math 197, validate-data 238,
-validate-constants 1282 (0 warned), validate-app 212, browser-smoke 83 — all
-0 failed. The exact totals can increase when regressions are added.
+At v1.17.4 (2026-10-22): validate-math 197, validate-data 238,
+validate-constants 1282 (0 warned), validate-app 271, browser-smoke 258 — all
+0 failed. (At v1.13.3, 2026-10-15: validate-app 212, browser-smoke 83.) The exact totals can increase when regressions are added.
 
 `tools/browser-smoke.js` uses a temporary profile under the OS temp folder. Ad
 hoc headless scripts must also use a SHORT profile path: with a long one Cache

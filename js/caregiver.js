@@ -251,9 +251,12 @@ const CAREGIVER = (() => {
     }
     if ([day.days, sleep.days, day.h_during, sleep.h_during, day.h_after, sleep.h_after].every(num)) {
       out.maxHours = maxHoursPerDay(day, sleep);
-    } else if (noDays && [day.h_during, sleep.h_during, day.h_after, sleep.h_after].every(num)) {
-      // no days yet: the schedules of a common restriction, during and after it
-      out.maxHours = Math.max(day.h_during + sleep.h_during, day.h_after + sleep.h_after);
+    } else if (noDays && [day.h_after, sleep.h_after].every(num)) {
+      // No days yet: only the schedule after the restriction is sure to apply (a
+      // 0-day restriction never uses the "during" hours). The common schedule
+      // during a positive restriction is checked by the inverse calculation
+      // (commonFeasible), as with days entered (audit 2026-10-22, A-03).
+      out.maxHours = day.h_after + sleep.h_after;
     }
     // More weighted contact DURING the restriction than after it: restricting
     // then raises the dose. Usually a table filled the wrong way round
@@ -278,13 +281,14 @@ const CAREGIVER = (() => {
     if (num(input.discharge_h) && num(input.fast_end_h) && input.fast_end_h > 0 && input.discharge_h >= input.fast_end_h) {
       out.warnings.push('Discharge after the end of the fast phase: the discharge rate must already be measured in the slow phase.');
     }
-    // Cohabitation scenario of the Forum (Table 3.B 1) and a category it does not
-    // assign: a warning, not a block (the manual criterion is never questioned)
+    // Cohabitation scenario and a category the application does not adopt for it
+    // (children: public criterion at any age, a department decision — not the
+    // Forum's Table 2): a warning, not a block; the manual criterion is never questioned
     const sc = (data.cohabitation_scenarios || []).find(s => s.key === input.scenario);
     const cat = data.categories.find(c => c.key === input.category);
     if (sc && cat && cat.key !== 'other' && !sc.categories_ok.includes(cat.key)) {
       const ok = sc.categories_ok.map(k => (data.categories.find(c => c.key === k) || {}).label).join(' or ');
-      out.warnings.push(`Category «${cat.label}» is not the one the Forum assigns to the scenario «${sc.label}» (${ok}): check the criterion.`);
+      out.warnings.push(`Category «${cat.label}» is not the one adopted in this application for the scenario «${sc.label}» (${ok}): check the criterion.`);
     }
 
     if (general) { out.status = general; return out; }
@@ -311,7 +315,9 @@ const CAREGIVER = (() => {
     else if (out.maxHours > 24) out.status = 'Cohabitation exceeds 24 hours/day in some period';
     else if (noDays) {
       out.tableReady = true;
-      out.status = 'Restriction days not entered: the minimum and adopted restriction do not depend on them. Enter the days, or use the adopted restriction, to get the dose of the table and the maximum rate.';
+      out.status = !num(crit) || crit <= 0
+        ? 'Restriction days not entered and a positive dose criterion is missing: enter the criterion to get the minimum and adopted restriction.'
+        : 'Restriction days not entered: the minimum and adopted restriction do not depend on them. Enter the days, or use the adopted restriction, to get the dose of the table and the maximum rate.';
     } else {
       out.ready = out.tableReady = true;
       out.perCycle_mSv = R.day.dose_mSv + R.sleep.dose_mSv;
@@ -446,10 +452,21 @@ const CAREGIVER = (() => {
       const indep = out.ready ? (rowDose('day') + rowDose('sleep')) / 1000 : null;
       if (out.ready) items.push({ label: 'Direct calculation (dose per cycle)', ok: Math.abs(indep - out.perCycle_mSv) <= 1e-9 * Math.max(1, Math.abs(indep)) });
       const inv = out.inverse;
-      if (num(inv.minRestriction_d) && inv.minRestriction_d > 0) {
-        const Ch = inv.minRestriction_d * 24;
-        const d = input.cycles * (out.fr * m.T + (out.fn - out.fr) * m.U(Ch)) / 1000;
-        items.push({ label: 'Inverse calculation: minimum restriction', ok: Math.abs(d - crit) <= 1e-6 * crit });
+      // Every answer of the inverse calculation is checked with the hour model,
+      // not only a positive solution (audit 2026-10-22, A-02): D(C) = N·[fr·T + (fn − fr)·U(C)]
+      if (inv.ready && num(out.fr) && num(out.fn)) {
+        const N = input.cycles, D0 = N * out.fn * m.T / 1000, Dinf = N * out.fr * m.T / 1000;
+        const le = (a, b) => a <= b * (1 + 1e-9), gt = (a, b) => a > b * (1 - 1e-9);
+        let ok = null;
+        if (num(inv.minRestriction_d) && inv.minRestriction_d > 0) {
+          const d = N * (out.fr * m.T + (out.fn - out.fr) * m.U(inv.minRestriction_d * 24)) / 1000;
+          ok = Math.abs(d - crit) <= 1e-6 * crit;
+        } else if (inv.minRestriction_d === 0) ok = le(D0, crit);                       // no restriction already meets it
+        else if (inv.minRestrictionCode === 'not_dependent') ok = le(Dinf, crit) && le(D0, crit);
+        else if (inv.minRestrictionCode === 'unattainable') ok = gt(Dinf, crit) && gt(D0, crit);
+        else if (inv.minRestrictionCode === 'unattainable_reduce') ok = out.fr < out.fn && le(crit, Dinf);
+        else if (inv.minRestrictionCode === 'restriction_increases') ok = out.fr > out.fn && gt(D0, crit);
+        if (ok !== null) items.push({ label: 'Inverse calculation: minimum restriction', ok });
       }
       if (num(inv.maxRate_uSv_h) && num(indep) && indep > 0) {
         items.push({ label: 'Inverse calculation: maximum rate', ok: Math.abs(inv.maxRate_uSv_h * indep / input.rate_1m_uSv_h * input.cycles - crit) <= 1e-6 * crit });
@@ -477,7 +494,8 @@ const CAREGIVER = (() => {
     // current inputs, which are reported as "not checked", never as OK.
     const current = items.filter(i => !i.reference);
     const referencesOk = items.filter(i => i.reference).every(i => i.ok);
-    const currentOk = out.tableReady ? current.every(i => i.ok) : null;
+    // No check of the current case is "not checked", never OK ([].every() is true)
+    const currentOk = out.tableReady && current.length ? current.every(i => i.ok) : null;
     return { ok: referencesOk && currentOk === true, referencesOk, currentOk, items };
   }
 
