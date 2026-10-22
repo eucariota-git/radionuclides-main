@@ -173,10 +173,10 @@ const CAREGIVER = (() => {
 
   /** B32/B33: validation of one cohabitation row. Returns null when ready.
    *  The page may pass the row's current name (cohabitation scenario) as row.label. */
-  function rowStatus(key, row, fDuring, fAfter) {
+  function rowStatus(key, row, fDuring, fAfter, daysOptional = false) {
     const n = row.label || ROW_NAME[key];
-    if (!num(row.days) || !num(row.h_during) || !num(row.h_after)) return `${n}: missing days or hours`;
-    if (row.days < 0 || row.h_during < 0 || row.h_during > 24 || row.h_after < 0 || row.h_after > 24) {
+    if ((!daysOptional && !num(row.days)) || !num(row.h_during) || !num(row.h_after)) return `${n}: missing days or hours`;
+    if ((num(row.days) && row.days < 0) || row.h_during < 0 || row.h_during > 24 || row.h_after < 0 || row.h_after > 24) {
       return `${n}: invalid days or hours`;
     }
     if (fDuring === null || fAfter === null) return `${n}: distance without a valid factor in the profile`;
@@ -214,7 +214,9 @@ const CAREGIVER = (() => {
   function evaluate(input, data = _data) {
     if (!data) throw new Error('Caregiver data not loaded');
     const out = {
-      ready: false, status: '', warnings: [],
+      // ready: the table gives a dose (days entered); tableReady: hours and
+      // distances give fr and fn, enough for the inverse calculations and the curve
+      ready: false, tableReady: false, noDays: false, status: '', warnings: [],
       criterion: criterionOf(input, data),
       kinetics: null, rows: {}, fr: null, fn: null, maxHours: null,
       perCycle_mSv: null, treatment_mSv: null, margin_mSv: null,
@@ -225,13 +227,17 @@ const CAREGIVER = (() => {
     const points = profilePoints(input, data);
     out.points = points;
 
-    // Spatial factors and row checks
+    // Spatial factors and row checks. The restriction days may be left empty in
+    // BOTH rows (the default since v1.17.1): the minimum and adopted restriction
+    // depend only on fr and fn, so they are given before the user chooses the days.
     const rowStatuses = {};
+    const noDays = [input.rows.day.days, input.rows.sleep.days].every(v => v === null || v === undefined);
+    out.noDays = noDays;
     for (const key of ['day', 'sleep']) {
       const row = input.rows[key];
       const fDuring = num(row.h_during) ? spatialFactor(row.h_during, row.d_during, points) : null;
       const fAfter = num(row.h_after) ? spatialFactor(row.h_after, row.d_after, points) : null;
-      rowStatuses[key] = rowStatus(key, row, fDuring, fAfter);
+      rowStatuses[key] = rowStatus(key, row, fDuring, fAfter, noDays);
       out.rows[key] = { fDuring, fAfter, status: rowStatuses[key], before_Sv: null, after_Sv: null, dose_mSv: null };
     }
     const day = input.rows.day, sleep = input.rows.sleep;
@@ -245,6 +251,9 @@ const CAREGIVER = (() => {
     }
     if ([day.days, sleep.days, day.h_during, sleep.h_during, day.h_after, sleep.h_after].every(num)) {
       out.maxHours = maxHoursPerDay(day, sleep);
+    } else if (noDays && [day.h_during, sleep.h_during, day.h_after, sleep.h_after].every(num)) {
+      // no days yet: the schedules of a common restriction, during and after it
+      out.maxHours = Math.max(day.h_during + sleep.h_during, day.h_after + sleep.h_after);
     }
     // More weighted contact DURING the restriction than after it: restricting
     // then raises the dose. Usually a table filled the wrong way round
@@ -285,7 +294,7 @@ const CAREGIVER = (() => {
 
     // Rows 56–57: integrals and dose per row per cycle
     for (const key of ['day', 'sleep']) {
-      if (rowStatuses[key]) continue;
+      if (rowStatuses[key] || noDays) continue;
       const row = input.rows[key];
       const C = row.days * S_PER_D;
       const before = integralBefore(k, C), after = integralAfter(k, C);
@@ -300,8 +309,11 @@ const CAREGIVER = (() => {
     if (rowStatuses.day) out.status = rowStatuses.day;
     else if (rowStatuses.sleep) out.status = rowStatuses.sleep;
     else if (out.maxHours > 24) out.status = 'Cohabitation exceeds 24 hours/day in some period';
-    else {
-      out.ready = true;
+    else if (noDays) {
+      out.tableReady = true;
+      out.status = 'Restriction days not entered: the minimum and adopted restriction do not depend on them. Enter the days, or use the adopted restriction, to get the dose of the table and the maximum rate.';
+    } else {
+      out.ready = out.tableReady = true;
       out.perCycle_mSv = R.day.dose_mSv + R.sleep.dose_mSv;
       out.treatment_mSv = out.perCycle_mSv * N;
       if (!num(crit) || crit <= 0) out.status = 'Dose calculated; a positive dose criterion is missing';
@@ -326,7 +338,7 @@ const CAREGIVER = (() => {
     // (audit 2026-10-14, N-07 — v1.9.1 rejected it).
     out.commonDuring_h = num(day.h_during) && num(sleep.h_during) ? day.h_during + sleep.h_during : null;
     out.commonFeasible = out.commonDuring_h !== null && out.commonDuring_h <= 24;
-    if (out.ready && num(crit) && crit > 0 && num(fr) && num(fn)) {
+    if (out.tableReady && num(crit) && crit > 0 && num(fr) && num(fn)) {
       inv.ready = true;
       // Dose with an indefinite common restriction: only defined if that schedule
       // fits in a day. It is a FLOOR (lower bound) only when fr < fn; when fr > fn
@@ -364,9 +376,10 @@ const CAREGIVER = (() => {
           const row = input.rows[key], f = R[key];
           return row.h_during * f.fDuring !== row.h_after * f.fAfter && row.days < inv.adopted_d;
         };
-        inv.adoptedNote = short('day') || short('sleep')
-          ? 'The cohabitation table uses fewer days than the adopted restriction'
-          : 'The cohabitation table covers the adopted restriction';
+        inv.adoptedNote = noDays ? 'Restriction days not entered in the cohabitation table'
+          : short('day') || short('sleep')
+            ? 'The cohabitation table uses fewer days than the adopted restriction'
+            : 'The cohabitation table covers the adopted restriction';
         inv.doseAtAdopted_mSv = doseWithRestriction(N, fr, fn, k, inv.adopted_d * S_PER_D);  // D41
         // A product-information minimum can push the adopted restriction past the
         // criterion when restricting raises the dose (fr > fn): say so.
@@ -396,7 +409,7 @@ const CAREGIVER = (() => {
     const out = evaluate(input, data);
     // Only for accepted inputs and a feasible common schedule (the workbook's
     // Curva only requires D45 and fr/fn, and plots rejected cases)
-    if (!out.ready || !out.commonFeasible || !num(out.fr) || !num(out.fn)) return { points: [], out };
+    if (!out.tableReady || !out.commonFeasible || !num(out.fr) || !num(out.fn)) return { points: [], out };
     const N = input.cycles;
     return {
       points: days.map(d => ({ days: d, dose_mSv: doseWithRestriction(N, out.fr, out.fn, out.kinetics, d * S_PER_D) })),
@@ -423,22 +436,22 @@ const CAREGIVER = (() => {
     const items = [];
     const out = evaluate(input, data);
     const crit = out.criterion.value;
-    // A. Current inputs (D13–D21)
-    if (out.ready) {
+    // A. Current inputs (D13–D21); without restriction days only the inverse one
+    if (out.tableReady) {
       const m = hourModel(input.rate_1m_uSv_h, input.discharge_h, input.fast_end_h, input.T_fast_h, input.T_slow_h);
       const rowDose = key => {
         const row = input.rows[key], f = out.rows[key], Ch = row.days * 24;
         return row.h_during / 24 * f.fDuring * (m.T - m.U(Ch)) + row.h_after / 24 * f.fAfter * m.U(Ch);
       };
-      const indep = (rowDose('day') + rowDose('sleep')) / 1000;
-      items.push({ label: 'Direct calculation (dose per cycle)', ok: Math.abs(indep - out.perCycle_mSv) <= 1e-9 * Math.max(1, Math.abs(indep)) });
+      const indep = out.ready ? (rowDose('day') + rowDose('sleep')) / 1000 : null;
+      if (out.ready) items.push({ label: 'Direct calculation (dose per cycle)', ok: Math.abs(indep - out.perCycle_mSv) <= 1e-9 * Math.max(1, Math.abs(indep)) });
       const inv = out.inverse;
       if (num(inv.minRestriction_d) && inv.minRestriction_d > 0) {
         const Ch = inv.minRestriction_d * 24;
         const d = input.cycles * (out.fr * m.T + (out.fn - out.fr) * m.U(Ch)) / 1000;
         items.push({ label: 'Inverse calculation: minimum restriction', ok: Math.abs(d - crit) <= 1e-6 * crit });
       }
-      if (num(inv.maxRate_uSv_h) && indep > 0) {
+      if (num(inv.maxRate_uSv_h) && num(indep) && indep > 0) {
         items.push({ label: 'Inverse calculation: maximum rate', ok: Math.abs(inv.maxRate_uSv_h * indep / input.rate_1m_uSv_h * input.cycles - crit) <= 1e-6 * crit });
       }
     }
@@ -464,7 +477,7 @@ const CAREGIVER = (() => {
     // current inputs, which are reported as "not checked", never as OK.
     const current = items.filter(i => !i.reference);
     const referencesOk = items.filter(i => i.reference).every(i => i.ok);
-    const currentOk = out.ready ? current.every(i => i.ok) : null;
+    const currentOk = out.tableReady ? current.every(i => i.ok) : null;
     return { ok: referencesOk && currentOk === true, referencesOk, currentOk, items };
   }
 

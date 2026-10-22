@@ -1,6 +1,6 @@
 {
   "meta": {
-    "version": "1.2",
+    "version": "1.3",
     "date": "2026-10-22",
     "description": "Caregiver / family-member external dose after discharge of a radionuclide-therapy patient: proximity profiles, evaluation criteria per category, references and model assumptions.",
     "origin": "Port of the author's workbook Dosis_acompanantes_simple_v2.1.xlsx (sheets Dosis, Curva and Comprobación)."
@@ -167,14 +167,14 @@
     "profile": "lu177_approx",
     "rows": {
       "day": {
-        "days": 3,
+        "days": null,
         "h_during": 6,
         "d_during": 1,
         "h_after": 6,
         "d_after": 1
       },
       "sleep": {
-        "days": 3,
+        "days": null,
         "h_during": 0,
         "d_during": null,
         "h_after": 8,

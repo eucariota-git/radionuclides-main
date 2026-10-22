@@ -756,6 +756,8 @@
     $('doseAdopted').textContent = f3(inv.doseAtAdopted_mSv);
     $('adoptedNote').textContent = inv.adoptedNote;
     $('btnApplyAdopted').disabled = inv.adopted_d === null;
+    // Days not entered yet: the button is the suggested next step
+    $('btnApplyAdopted').className = `btn btn-sm ${out.noDays && inv.adopted_d !== null ? 'btn-primary' : 'btn-secondary'}`;
 
     $('selfCheckStatus').textContent = sc.ok ? 'OK'
       : (sc.currentOk === null && sc.referencesOk ? 'reference cases OK — current case not checked (inputs rejected)' : 'REVIEW');
@@ -770,7 +772,7 @@
     } else {
       if (chart) { chart.destroy(); chart = null; }
       $('curveChart').parentElement.classList.add('hidden');
-      $('curveNote').textContent = !out.ready
+      $('curveNote').textContent = !out.tableReady
         ? 'No curve: the inputs are rejected (see the status above).'
         : 'No curve: with the same restriction in both rows the hours during the restriction would exceed 24 h/day.';
     }
@@ -820,7 +822,7 @@
   const rowText = (input, out, k) => {
     const r = input.rows[k], o = out.rows[k];
     const nv = (v, none) => (v === null || v === undefined ? none : UTILS.num(v));
-    return `${nv(r.days, '—')} d restriction; during ${nv(r.h_during, '—')} h/d at ${distText(r.d_during)} (factor ${nv(o.fDuring, 'none')}); ` +
+    return `${r.days === null ? 'restriction days not entered' : `${UTILS.num(r.days)} d restriction`}; during ${nv(r.h_during, '—')} h/d at ${distText(r.d_during)} (factor ${nv(o.fDuring, 'none')}); ` +
       `after ${nv(r.h_after, '—')} h/d at ${distText(r.d_after)} (factor ${nv(o.fAfter, 'none')}); dose/cycle ${f3(o.dose_mSv)} mSv`;
   };
 
@@ -899,7 +901,7 @@
       `preset=${input.preset}`, `T_fast=${input.T_fast_h} h`, `T_slow=${input.T_slow_h} h`, `cycles=${input.cycles}`, `category=${input.category}`,
       `spc_min=${input.spc_min_restriction_d ?? ''} d`, `profile=${input.profile}`, `scenario=${input.scenario}`,
       ...ROWS.map(([k]) => { const r = input.rows[k], o = out.rows[k];
-        return `${k} (${r.label}): ${r.days} d, during ${r.h_during} h/d @ ${r.d_during ?? ''} m (f=${o.fDuring ?? 'none'}), after ${r.h_after} h/d @ ${r.d_after ?? ''} m (f=${o.fAfter ?? 'none'})`; }),
+        return `${k} (${r.label}): ${r.days === null ? 'days not entered' : `${r.days} d`}, during ${r.h_during} h/d @ ${r.d_during ?? ''} m (f=${o.fDuring ?? 'none'}), after ${r.h_after} h/d @ ${r.d_after ?? ''} m (f=${o.fAfter ?? 'none'})`; }),
       ...(input.profile === 'own' ? out.points.map(p => `own ${p.distance_m ?? ''} m: ${p.rate_uSv_h ?? ''} uSv/h, f=${p.factor ?? 'none'}`) : []),
     ].join('; ');
     const common = [UTILS.APP_VERSION, UTILS.APP_BUILD, data.meta.version, exportedUtc, input.radiopharmaceutical];

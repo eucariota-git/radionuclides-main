@@ -260,9 +260,20 @@ async function main() {
       // Caregiver default case (acceptance A16) and the impossible common restriction (A18)
       await open('caregiver.html', 1280);
       {
-        const v = await ev(`['perCycle','treatment','maxRate','floor','minRestriction','adopted','selfCheckStatus'].map(i => document.getElementById(i).textContent.trim())`);
-        check('caregiver default: 0.488 / 2.93 mSv, 15.4 µSv/h, floor 0.898, 2.92 → 3 d, self-check OK',
-          JSON.stringify(v) === JSON.stringify(['0.488', '2.93', '15.4', '0.898', '2.92', '3', 'OK']), JSON.stringify(v));
+        const VALS = `['perCycle','treatment','maxRate','floor','minRestriction','adopted','selfCheckStatus'].map(i => document.getElementById(i).textContent.trim())`;
+        // v1.17.1: the restriction days start empty; the inverse calculation already proposes them
+        const v0 = await ev(VALS);
+        const st0 = await ev(`({ days: [document.getElementById('day_days').value, document.getElementById('sleep_days').value], status: document.getElementById('statusBox').textContent,
+          btn: document.getElementById('btnApplyAdopted').className, chart: !document.getElementById('curveChart').parentElement.classList.contains('hidden') })`);
+        check('caregiver on load: days empty, warning status, no table dose or maximum rate; floor 0.898, 2.92 → 3 d, curve drawn, button highlighted',
+          JSON.stringify(v0) === JSON.stringify(['—', '—', '—', '0.898', '2.92', '3', 'OK']) && st0.days.join() === ',' &&
+          /Restriction days not entered/.test(st0.status) && /btn-primary/.test(st0.btn) && st0.chart, JSON.stringify({ v0, st0 }));
+        await pageChecks('caregiver no days');
+        await shot('caregiver_no_days', '#resultsCard');
+        await ev(`document.getElementById('btnApplyAdopted').click()`); await sleep(300);
+        const v = await ev(VALS);
+        check('caregiver A16 (adopted restriction applied): 0.488 / 2.93 mSv, 15.4 µSv/h, floor 0.898, 2.92 → 3 d, self-check OK',
+          JSON.stringify(v) === JSON.stringify(['0.488', '2.93', '15.4', '0.898', '2.92', '3', 'OK']) && /btn-secondary/.test(await ev(`document.getElementById('btnApplyAdopted').className`)), JSON.stringify(v));
         await ev(`(() => { const s = (i, v) => { const e = document.getElementById(i); e.value = v; e.dispatchEvent(new Event('change')); };
           s('rate_1m_uSv_h', 10); s('day_days', 0); s('day_h_during', 20); s('day_d_during', 1); s('day_h_after', 0); s('day_d_after', '');
           s('sleep_days', 3); s('sleep_h_during', 8); s('sleep_d_during', 1); s('sleep_h_after', 8); s('sleep_d_after', 0.1); })()`);
@@ -374,7 +385,7 @@ async function main() {
       await setC('scenario', 'child_2_5');
       st = await ev(rowState);
       check('caregiver: «Child 2 to 5 years» fills hours and distances, names the rows and proposes the public category; days untouched',
-        st.v === '0||2|0.1|5|1.5|5|1' && st.cat === 'public' && st.l1 === 'Close contact' && !st.err && st.days === '3' && !/not the one the Forum/.test(st.warn), JSON.stringify(st));
+        st.v === '0||2|0.1|5|1.5|5|1' && st.cat === 'public' && st.l1 === 'Close contact' && !st.err && st.days === '' && !/not the one the Forum/.test(st.warn), JSON.stringify(st));
       await setC('category', 'carer_le60');
       st = await ev(rowState);
       check('caregiver: a category the Forum does not assign gives a warning, not an error', /not the one the Forum assigns/.test(st.warn) && !st.err, JSON.stringify(st));

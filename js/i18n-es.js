@@ -1188,6 +1188,10 @@ const I18N_ES = {
     'Exceeds the applied criterion': 'Supera el criterio aplicado',
     'The cohabitation table uses fewer days than the adopted restriction': 'La tabla de convivencia usa menos días que la restricción adoptada',
     'The cohabitation table covers the adopted restriction': 'La tabla de convivencia cubre la restricción adoptada',
+    "Restriction days not entered: the minimum and adopted restriction do not depend on them. Enter the days, or use the adopted restriction, to get the dose of the table and the maximum rate.":
+      "Días de restricción no introducidos: la restricción mínima y la adoptada no dependen de ellos. Introduzca los días, o use la restricción adoptada, para obtener la dosis de la tabla y la tasa máxima.",
+    "Restriction days not entered in the cohabitation table":
+      "Días de restricción no introducidos en la tabla de convivencia",
     'Does not depend on the restriction: criterion met': 'No depende de la restricción: criterio cumplido',
     'Unattainable: reduce contact': 'Inalcanzable: reduzca el contacto',
     'Unattainable: with more contact during the restriction than after it, any restriction increases the dose — reduce contact':
@@ -1770,6 +1774,8 @@ const I18N_ES = {
       `${esText(l)} ${esText(r)} — ${esText(n)}`],
     [/^Own measurement (.+) m$/, 'Medida propia a $1 m'],
     [/^(.+) µSv\/h → factor (.+)$/, '$1 µSv/h → factor $2'],
+    [/^restriction days not entered; during ([\s\S]+)$/, (m, rest) => `días de restricción no introducidos; durante ${rest
+      .replace(/ h\/d at /g, ' h/d a ').replace('; after ', '; después ').replace(/\(factor none\)/g, '(sin factor)').replace('; dose/cycle ', '; dosis/ciclo ')}`],
     [/^(.+) d restriction; during ([\s\S]+)$/, (m, d, rest) => `${d} d de restricción; durante ${rest
       .replace(/ h\/d at /g, ' h/d a ').replace('; after ', '; después ').replace(/\(factor none\)/g, '(sin factor)').replace('; dose/cycle ', '; dosis/ciclo ')}`],
     [/^(.+) d — ([\s\S]+)$/, (m, d, note) => { const t = esText(note.replace(/ — with this restriction the treatment dose EXCEEDS the criterion$/, ''));

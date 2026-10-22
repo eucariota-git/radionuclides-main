@@ -320,7 +320,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v60');
+    swVersion === 'nm-planner-v61');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -720,8 +720,11 @@ async function main() {
   vm.runInContext(caregiverJs + ';this.__CG = CAREGIVER;', cgCtx);
   const CG = cgCtx.__CG;
   CG.setData(cgData);
+  // The workbook's preloaded case: the page defaults plus its 3-day restriction
+  // in both rows (the page leaves the days empty since v1.17.1)
+  const wbInput = () => { const x = CG.defaultInput(); x.rows.day.days = 3; x.rows.sleep.days = 3; return x; };
   const relEq = (a, b, tol = 1e-9) => Number.isFinite(a) && Math.abs(a - b) <= tol * Math.max(1, Math.abs(b));
-  const base = CG.defaultInput();
+  const base = wbInput();
   const o = CG.evaluate(base);
   // Values of the workbook's preloaded case (sheet Dosis D5–D41, as calculated by Excel)
   check('default case reproduces the workbook: dose per cycle and per treatment, margin',
@@ -745,7 +748,7 @@ async function main() {
   const sc = CG.selfCheck(base);
   check('self-check: independent formulation and the 9 workbook v6 reference cases pass',
     sc.ok && sc.items.filter(i => i.reference).length === 9);
-  const mod = f => { const x = CG.defaultInput(); f(x); return CG.evaluate(x); };
+  const mod = f => { const x = wbInput(); f(x); return CG.evaluate(x); };
   check('discharge after the fast phase: slow half-life only, fast half-life not required, warning shown',
     (() => { const r = mod(x => { x.discharge_h = 24; x.rate_1m_uSv_h = 7; x.T_fast_h = null; });
       return r.ready && relEq(r.treatment_mSv, 2.10449073719245) && r.warnings.some(w => /slow phase/.test(w)); })());
@@ -785,7 +788,7 @@ async function main() {
     /href="caregiver\.html" class="active"/.test(caregiverHtml) &&
     /not values fixed by regulation for this treatment/.test(caregiverHtml) && /not values fixed by regulation/.test(cgData.criteria_note));
   check('review fix 1: no inverse result or curve when the common restriction would exceed 24 h/d',
-    (() => { const x = CG.defaultInput(); x.rate_1m_uSv_h = 10;
+    (() => { const x = wbInput(); x.rate_1m_uSv_h = 10;
       x.rows.day = { days: 0, h_during: 20, d_during: 1, h_after: 0, d_after: null };
       x.rows.sleep = { days: 3, h_during: 8, d_during: 1, h_after: 8, d_after: 0.1 };
       const r = CG.evaluate(x);
@@ -795,13 +798,13 @@ async function main() {
     /Invalid minimum restriction/.test(mod(x => { x.rows.sleep.h_after = 0; x.spc_min_restriction_d = -3; }).status) &&
     mod(x => { x.rows.sleep.h_after = 0; x.spc_min_restriction_d = -3; }).inverse.adopted_d === null);
   check('review fix 3: rejected inputs give no curve and a self-check that is not OK',
-    (() => { const x = CG.defaultInput(); x.rows.day.h_after = 20; const s = CG.selfCheck(x);
+    (() => { const x = wbInput(); x.rows.day.h_after = 20; const s = CG.selfCheck(x);
       return CG.curve(x).points.length === 0 && s.ok === false && s.currentOk === null && s.referencesOk === true; })());
   check('review fix 4: the caregiver CSV carries warnings, adopted note and self-check state',
     /'Status', 'Warnings', 'Adopted_restriction_note', 'Self_check'/.test(caregiverHtml) && /out\.warnings\.join\(' \| '\)/.test(caregiverHtml));
   check('kinetics presets: every preset is complete, its profile exists and it gives a ready result with the default case',
     cgData.kinetic_presets.length === 7 && cgData.kinetic_presets.every(p => {
-      const x = CG.defaultInput();
+      const x = wbInput();
       for (const f of ['radiopharmaceutical', 'fast_end_h', 'T_fast_h', 'T_slow_h', 'cycles', 'profile']) x[f] = p[f];
       x.rows.day.d_during = x.rows.day.d_after = 1;
       const r = CG.evaluate(x);
@@ -817,7 +820,7 @@ async function main() {
     Object.entries(foro).every(([key, days]) => {
       const p = cgData.kinetic_presets.find(q => q.key === key);
       return [5, 10, 15, 20, 25, 30, 35, 40].every((rate, i) => {
-        const x = CG.defaultInput();
+        const x = wbInput();
         Object.assign(x, { rate_1m_uSv_h: rate, fast_end_h: 0, T_fast_h: null, T_slow_h: p.T_slow_h, cycles: 1,
           profile: 'i131_approx', radiopharmaceutical: 'I-131', category: 'other', manual_criterion_mSv: 2 });
         const inv = CG.evaluate(x).inverse;
@@ -876,7 +879,7 @@ async function main() {
   // N-07: a 0-day solution never uses the "during" hours and must not be rejected
   check('N-07: caregiver keeps the 0-day solution when the common "during" schedule exceeds 24 h/d',
     (() => {
-      const x = CG.defaultInput(); x.rate_1m_uSv_h = 2;
+      const x = wbInput(); x.rate_1m_uSv_h = 2;
       x.rows.day = { days: 0, h_during: 20, d_during: 1, h_after: 0, d_after: null };
       x.rows.sleep = { days: 3, h_during: 8, d_during: 1, h_after: 8, d_after: 0.1 };
       const r = CG.evaluate(x);
@@ -1029,7 +1032,7 @@ async function main() {
   console.log('Test 18: Caregiver inverse in the three regimes fr < fn, fr = fn, fr > fn (second opinion 2026-10-15)');
   {
     const cg = (crit, during, after, extra = () => {}) => {
-      const x = CG.defaultInput(); x.category = 'other'; x.manual_criterion_mSv = crit;
+      const x = wbInput(); x.category = 'other'; x.manual_criterion_mSv = crit;
       x.rows = { day: { days: 0, h_during: during, d_during: 1, h_after: after, d_after: 1 }, sleep: { days: 0, h_during: 0, d_during: null, h_after: 0, d_after: null } };
       extra(x); return CG.evaluate(x);
     };
@@ -1050,7 +1053,7 @@ async function main() {
       d.inverse.indefiniteKind === 'equal' && d.inverse.minRestrictionCode === 'not_dependent' &&
       e.inverse.indefiniteKind === 'floor' && e.inverse.minRestriction_d > 0 && e.inverse.floor_mSv < e.treatment_mSv);
     check('fr > fn: the curve rises with the restriction towards the asymptote',
-      (() => { const x = CG.defaultInput(); x.category = 'other'; x.manual_criterion_mSv = 0.3;
+      (() => { const x = wbInput(); x.category = 'other'; x.manual_criterion_mSv = 0.3;
         x.rows = { day: { days: 0, h_during: 12, d_during: 1, h_after: 1, d_after: 1 }, sleep: { days: 0, h_during: 0, d_during: null, h_after: 0, d_after: null } };
         const p = CG.curve(x).points; return p.length > 2 && p.every((q, i) => i === 0 || q.dose_mSv >= p[i - 1].dose_mSv) && p[p.length - 1].dose_mSv <= a.inverse.floor_mSv * (1 + 1e-9); })());
     check('CSV of Dose and Decay name the ICRP 107 index for an extended nuclide (finding 4)',
@@ -1269,7 +1272,7 @@ async function main() {
       for (const [pk, tab] of Object.entries(foroT)) {
         const p = cgData.kinetic_presets.find(q => q.key === pk);
         for (const [rate, row] of Object.entries(tab)) {
-          const x = CG.defaultInput();
+          const x = wbInput();
           Object.assign(x, { rate_1m_uSv_h: +rate, fast_end_h: 0, T_fast_h: null, T_slow_h: p.T_slow_h, cycles: 1,
             profile: 'i131_approx', radiopharmaceutical: 'I-131', category: 'other', manual_criterion_mSv: RD, scenario: key });
           for (const k of ['day', 'sleep']) for (const f of F) x.rows[k][f] = s.rows[k][f];
@@ -1286,21 +1289,47 @@ async function main() {
       /1–2 years \(8 cells\)/.test(cgData.cohabitation_method.reproduction) && /work with children \(1 cell/.test(cgData.cohabitation_method.reproduction), JSON.stringify(differing));
 
     // Engine: category coherence is a warning; the manual criterion is never questioned
-    const withScenario = (key, category) => { const x = CG.defaultInput(); const s = SC.find(q => q.key === key);
+    const withScenario = (key, category) => { const x = wbInput(); const s = SC.find(q => q.key === key);
       for (const k of ['day', 'sleep']) for (const f of F) x.rows[k][f] = s.rows[k][f];
       Object.assign(x, { scenario: key, category, manual_criterion_mSv: 2 }); return CG.evaluate(x); };
     const mismatch = r => r.warnings.some(w => /is not the one the Forum assigns/.test(w));
     check('category coherence: warning for a child with the carer category, none for public, «other» or the free scenario; the dose does not change',
       mismatch(withScenario('child_2_5', 'carer_le60')) && !mismatch(withScenario('child_2_5', 'public')) && !mismatch(withScenario('child_2_5', 'other')) &&
       withScenario('child_2_5', 'carer_le60').ready && withScenario('child_2_5', 'carer_le60').treatment_mSv === withScenario('child_2_5', 'public').treatment_mSv &&
-      !mismatch((() => { const x = CG.defaultInput(); x.scenario = 'free'; x.category = 'coworker'; return CG.evaluate(x); })()));
+      !mismatch((() => { const x = wbInput(); x.scenario = 'free'; x.category = 'coworker'; return CG.evaluate(x); })()));
     check('a row error names the row as the page shows it (scenario row name), and the module default stays «Day-time»',
-      (() => { const x = CG.defaultInput(); x.rows.day.label = 'Close contact'; x.rows.day.h_after = null; return /^Close contact: missing days or hours$/.test(CG.evaluate(x).status); })() &&
-      (() => { const x = CG.defaultInput(); x.rows.day.h_after = null; return /^Day-time: missing days or hours$/.test(CG.evaluate(x).status); })());
+      (() => { const x = wbInput(); x.rows.day.label = 'Close contact'; x.rows.day.h_after = null; return /^Close contact: missing days or hours$/.test(CG.evaluate(x).status); })() &&
+      (() => { const x = wbInput(); x.rows.day.h_after = null; return /^Day-time: missing days or hours$/.test(CG.evaluate(x).status); })());
     check('caregiver page: scenario selector with a free option, scenario fields only (never the days), manual edits switch to the free scenario',
       /<select class="form-select" id="scenario"/.test(caregiverHtml) && /const SCENARIO_FIELDS = \['h_during', 'd_during', 'h_after', 'd_after'\]/.test(caregiverHtml) &&
       /\$\('scenario'\)\.value = match \? match\.key : 'free'/.test(caregiverHtml) && /<option value="free">/.test(caregiverHtml) &&
       /id="cohabitationDetails"/.test(caregiverHtml) && /`scenario=\$\{input\.scenario\}`/.test(caregiverHtml));
+  }
+
+  console.log();
+  console.log('Test 25: caregiver — restriction days empty by default (v1.17.1)');
+  {
+    const d0 = CG.defaultInput();
+    const r0 = CG.evaluate(d0);
+    const wb = CG.evaluate(wbInput());
+    check('the defaults leave the restriction days empty in both rows (no value that looks recommended)',
+      cgData.defaults.rows.day.days === null && cgData.defaults.rows.sleep.days === null);
+    check('without days: warning status, no table dose, no maximum rate; minimum 2.92 d → adopted 3 d and the indefinite-restriction dose as with days',
+      !r0.ready && r0.tableReady && r0.noDays && /^Restriction days not entered/.test(r0.status) &&
+      r0.perCycle_mSv === null && r0.treatment_mSv === null && r0.inverse.maxRate_uSv_h === null &&
+      r0.inverse.minRestriction_d === wb.inverse.minRestriction_d && Math.abs(r0.inverse.minRestriction_d - 2.92) < 0.005 &&
+      r0.inverse.adopted_d === 3 && r0.inverse.floor_mSv === wb.inverse.floor_mSv && r0.inverse.doseAtAdopted_mSv === wb.inverse.doseAtAdopted_mSv &&
+      /not entered/.test(r0.inverse.adoptedNote));
+    check('without days the curve is drawn and the self-check covers the inverse calculation',
+      CG.curve(d0).points.length === cgData.curve_days.length && (() => { const s = CG.selfCheck(d0);
+        return s.ok && s.items.some(i => /minimum restriction/.test(i.label)) && !s.items.some(i => /Direct calculation/.test(i.label)); })());
+    check('applying the adopted restriction gives the workbook case exactly (0.488 / 2.93 mSv, 15.4 µSv/h)',
+      (() => { const x = CG.defaultInput(); x.rows.day.days = x.rows.sleep.days = r0.inverse.adopted_d; const r = CG.evaluate(x);
+        return r.ready && r.treatment_mSv === wb.treatment_mSv && Math.abs(r.perCycle_mSv - 0.488) < 5e-4 && Math.abs(r.inverse.maxRate_uSv_h - 15.4) < 0.05; })());
+    check('days in one row only: an error of the other row, as before',
+      (() => { const x = CG.defaultInput(); x.rows.day.days = 3; const r = CG.evaluate(x); return !r.tableReady && /^Sleeping: missing days or hours$/.test(r.status); })());
+    check('without days the 24 h/d check uses the common schedule (during and after)',
+      (() => { const x = CG.defaultInput(); x.rows.day.h_after = 20; return /exceeds 24 hours/.test(CG.evaluate(x).status); })());
   }
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);
