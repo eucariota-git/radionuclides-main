@@ -161,10 +161,13 @@ async function main() {
       }
       await sleep(900);
     }
-    async function shot(name) {
+    // sel: capture only that element (page coordinates), else the whole page
+    async function shot(name, sel) {
       if (!SHOTS) return;
       fs.mkdirSync(SHOTS, { recursive: true });
-      const r = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true });
+      const clip = sel ? await ev(`(() => { const r = document.querySelector(${JSON.stringify(sel)}).getBoundingClientRect();
+        return { x: r.left + scrollX, y: r.top + scrollY, width: r.width, height: r.height, scale: 1 }; })()`) : undefined;
+      const r = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true, ...(clip ? { clip } : {}) });
       fs.writeFileSync(path.join(SHOTS, name + '.png'), Buffer.from(r.result.data, 'base64'));
     }
     const text = sel => ev(`(document.querySelector(${JSON.stringify(sel)})||{}).textContent||''`);
@@ -357,6 +360,54 @@ async function main() {
       check('caregiver 390 px: cohabitation table stacked (no hidden columns, labels shown)',
         t.head === 'none' && t.sw <= t.cw + 1 && /Restriction/.test(t.label), JSON.stringify(t));
       await pageChecks('caregiver 390 px');
+    });
+    await guard('Caregiver: cohabitation scenarios of the Forum (Table 3.B 1) and preset spread', async () => {
+      const setC = (id, v, type = 'change') => ev(`(() => { const e = document.getElementById('${id}'); e.value = ${JSON.stringify(v)}; e.dispatchEvent(new Event('${type}', { bubbles: true })); })()`);
+      const rowState = `(() => { const g = id => document.getElementById(id); return { sc: g('scenario').value, cat: g('category').value,
+        v: ['day_h_during','day_d_during','day_h_after','day_d_after','sleep_h_during','sleep_d_during','sleep_h_after','sleep_d_after'].map(i => g(i).value).join('|'),
+        l1: g('day_label_text').textContent, l1hidden: g('day_label_text').classList.contains('hidden'), in1: !g('day_label').classList.contains('hidden'), ph1: g('day_label').placeholder,
+        err: !g('calcError').classList.contains('hidden'), warn: g('warningList').innerText, days: g('day_days').value }; })()`;
+      await open('caregiver.html', 1280);
+      let st = await ev(rowState);
+      check('caregiver: default scenario is the partner of Table 3.B 1, rows keep their names',
+        st.sc === 'partner' && st.l1 === 'Day-time cohabitation' && !st.in1, JSON.stringify(st));
+      await setC('scenario', 'child_2_5');
+      st = await ev(rowState);
+      check('caregiver: «Child 2 to 5 years» fills hours and distances, names the rows and proposes the public category; days untouched',
+        st.v === '0||2|0.1|5|1.5|5|1' && st.cat === 'public' && st.l1 === 'Close contact' && !st.err && st.days === '3' && !/not the one the Forum/.test(st.warn), JSON.stringify(st));
+      await setC('category', 'carer_le60');
+      st = await ev(rowState);
+      check('caregiver: a category the Forum does not assign gives a warning, not an error', /not the one the Forum assigns/.test(st.warn) && !st.err, JSON.stringify(st));
+      await shot('caregiver_scenario_warning', '#rowsTable'); await shot('caregiver_scenario_b', '.card:has(#rowsTable)');
+      await setC('day_h_after', '3', 'input');
+      st = await ev(rowState);
+      check('caregiver: a manual edit switches to the free scenario, with the row names kept as placeholders and no category warning',
+        st.sc === 'free' && st.in1 && st.l1hidden && st.ph1 === 'Close contact' && !/not the one the Forum/.test(st.warn), JSON.stringify(st));
+      await setC('day_label', 'Grandchild on the lap', 'input');
+      await shot('caregiver_scenario_free', '.card:has(#rowsTable)');
+      await ev(`document.getElementById('btnPrint').click()`); await sleep(300);
+      const rep = await ev(`(document.getElementById('printReport') || {}).innerText || ''`);
+      check('caregiver report: free scenario named, the typed row name and the preset spread are printed',
+        /Free scenario \(not in the Forum\)/.test(rep) && /Grandchild on the lap/.test(rep) && /Spread in the source[\s\S]*15\.8 h/.test(rep), rep.slice(0, 200));
+      await open('caregiver.html', 1280);
+      await setC('preset', 'dotatate_gayol'); await setC('scenario', 'child_lt1');
+      st = await ev(rowState);
+      const status = await text('#statusBox');
+      check('caregiver: a scenario distance missing from the profile (1.5 m, DOTATATE measured) is flagged in the hint and the status',
+        /does not list 1\.5 m/.test(await text('#scenarioMissing')) && /Nearby: distance without a valid factor/.test(status) && st.sc === 'child_lt1', status);
+      await setC('profile', 'lu177_approx');
+      st = await ev(rowState);
+      check('caregiver: an approximate profile restores the scenario distances', st.sc === 'child_lt1' && st.v === '0||3|0.1|3|1.5|3|0.5' && !st.err && (await text('#scenarioMissing')) === '', JSON.stringify(st));
+      await ev(`document.querySelectorAll('details').forEach(d => d.open = true)`);
+      const m = await ev(`({ rows: document.querySelectorAll('#cohabBody tr').length, spread: document.getElementById('presetList').innerText })`);
+      check('caregiver Method: Table 3.B 1 lists 8 scenarios × 2 rows; every preset shows its spread (Kurth SD 15.8 h, Monserrat quartiles)',
+        m.rows === 16 && (m.spread.match(/Spread in the source/g) || []).length === 7 && /40\.5 ± 15\.8 h/.test(m.spread) && /25 \(12, 21, 36, 92\) h/.test(m.spread), JSON.stringify({ rows: m.rows }));
+      await pageChecks('caregiver scenarios + Method open');
+      await shot('caregiver_method_light', '#cohabitationDetails'); await shot('caregiver_presets', '#presetList');
+      await ev(`document.getElementById('darkToggle') && document.getElementById('darkToggle').click()`); await sleep(200);
+      await pageChecks('caregiver scenarios dark');
+      await shot('caregiver_method_dark', '#cohabitationDetails');
+      await ev(`document.getElementById('darkToggle') && document.getElementById('darkToggle').click()`);
     });
     await guard('Report: the print path builds the report without errors', async () => {
       // Report: the print path builds the report without errors

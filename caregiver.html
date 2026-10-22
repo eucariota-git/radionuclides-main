@@ -140,6 +140,14 @@
   <!-- B. Cohabitation -->
   <div class="card mt-2">
     <h2 class="card-title"><span class="ico ico-home" aria-hidden="true"></span> B. Cohabitation</h2>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label" for="scenario">Cohabitation scenario</label>
+        <select class="form-select" id="scenario" title="Cohabitation scenario"></select>
+        <div class="form-hint"><span id="scenarioHint"></span> <span id="scenarioMissing" style="color:var(--warning-text);"></span>
+          See <a href="#cohabitationDetails" data-open-details="methodDetails cohabitationDetails">Method › Cohabitation conditions</a>.</div>
+      </div>
+    </div>
     <div class="overflow-x-auto">
       <table class="data-table stack-on-mobile" id="rowsTable">
         <thead>
@@ -289,6 +297,20 @@
         </div>
         <p id="criteriaNote"></p>
       </details>
+      <details class="mt-1" id="cohabitationDetails">
+        <summary><strong>Cohabitation conditions — Foro (2011), Table 3.B 1</strong></summary>
+        <p class="mt-1" id="cohabSource"></p>
+        <div class="overflow-x-auto">
+          <table class="data-table">
+            <thead><tr><th>Person</th><th>Normal cohabitation</th><th>During the restriction</th><th>Row in the app</th>
+              <th class="text-right">During (h / m)</th><th class="text-right">After (h / m)</th><th>Category (first: proposed)</th><th>Note</th></tr></thead>
+            <tbody id="cohabBody"></tbody>
+          </table>
+        </div>
+        <ul id="cohabCoworkers"></ul>
+        <p id="cohabNote"></p>
+        <p id="cohabReproduction"></p>
+      </details>
       <details class="mt-1">
         <summary><strong>References</strong></summary>
         <ul class="ref-list mt-1" id="refList" translate="no"></ul>
@@ -346,9 +368,12 @@
   $('preset').innerHTML = PRESETS.map(p => `<option value="${p.key}">${esc(p.label)}</option>`).join('') +
     '<option value="custom">Custom (values entered)</option>';
   $('presetNote').textContent = data.kinetic_presets_note;
+  // Under each preset, the dispersion its source publishes (statistic named in the text)
+  const spreadItems = p => (p.spread.length ? p.spread.map(s => s.text) : [data.kinetic_presets_no_spread]);
   $('presetList').innerHTML = PRESETS.map(p => `<li><strong>${esc(p.label)}</strong> — ` +
     `${p.fast_end_h > 0 ? `fast phase until ${p.fast_end_h} h, T fast ${p.T_fast_h} h, ` : 'single exponential, '}T slow ${p.T_slow_h} h, ` +
-    `${p.cycles} cycle(s), profile ${esc(data.profiles[p.profile].label)}. ${esc(p.source)}</li>`).join('');
+    `${p.cycles} cycle(s), profile ${esc(data.profiles[p.profile].label)}. ${esc(p.source)}` +
+    `<div class="mt-1"><em>Spread in the source:</em></div><ul>${spreadItems(p).map(t => `<li>${esc(t)}</li>`).join('')}</ul></li>`).join('');
   const presetHint = () => {
     const p = PRESETS.find(q => q.key === $('preset').value);
     $('presetHint').textContent = p ? 'Fills radiopharmaceutical, fast phase, half-lives, cycles and profile. See the sources below.'
@@ -369,6 +394,84 @@
     presetHint();
   }
 
+  // Cohabitation scenarios of the Forum (Table 3.B 1): they fill the hours and
+  // distances of both rows and propose the category, never the restriction days.
+  // The free scenario keeps the table and lets the user name the rows.
+  const SCENARIOS = data.cohabitation_scenarios;
+  const FREE = data.cohabitation_free;
+  const SCENARIO_FIELDS = ['h_during', 'd_during', 'h_after', 'd_after'];
+  const scenarioOf = key => SCENARIOS.find(s => s.key === key);
+  $('scenario').innerHTML = SCENARIOS.map(s => `<option value="${s.key}">${esc(s.label)}</option>`).join('') +
+    `<option value="free">${esc(FREE.label)}</option>`;
+  // Names the free rows take while their field is empty: those of the scenario left
+  let freeFallback = { ...FREE.row_labels };
+  let lastScenario = data.defaults.scenario;
+  const rowLabel = k => { const s = scenarioOf($('scenario').value); return s ? s.rows[k].label : ($(`${k}_label`).value.trim() || freeFallback[k]); };
+  function applyScenarioRows(key) {
+    const s = scenarioOf(key);
+    if (!s) return;
+    for (const [k] of ROWS) for (const f of SCENARIO_FIELDS) {
+      const v = s.rows[k][f];
+      $(`${k}_${f}`).value = f.startsWith('h_') ? UTILS.inputValue(v) : (v === null ? '' : String(v));
+    }
+  }
+  function applyScenario(key) {
+    const s = scenarioOf(key);
+    if (!s) return;
+    applyScenarioRows(key);
+    if (!(s.keep_category && s.categories_ok.includes($('category').value))) $('category').value = s.category;
+  }
+  // Leaving a scenario for the free one keeps its row names as placeholders
+  function enterFree() {
+    const prev = scenarioOf(lastScenario);
+    if (prev) freeFallback = { day: prev.rows.day.label, sleep: prev.rows.sleep.label };
+  }
+  // A manual edit of hours or distances switches to the matching scenario or to the free one
+  function syncScenario() {
+    const match = SCENARIOS.find(s => ROWS.every(([k]) => SCENARIO_FIELDS.every(f =>
+      (f.startsWith('h_') ? readNum($(`${k}_${f}`)) : distOf($(`${k}_${f}`))) === s.rows[k][f])));
+    if (!match && lastScenario !== 'free') enterFree();
+    $('scenario').value = match ? match.key : 'free';
+  }
+  function updateRowLabels() {
+    const free = $('scenario').value === 'free';
+    const words = { days: 'restriction days', h_during: 'hours per day during', d_during: 'distance during', h_after: 'hours per day after', d_after: 'distance after' };
+    for (const [k] of ROWS) {
+      const label = rowLabel(k);
+      $(`${k}_label_text`).textContent = label;
+      $(`${k}_label_text`).classList.toggle('hidden', free);
+      $(`${k}_label`).classList.toggle('hidden', !free);
+      $(`${k}_label`).placeholder = freeFallback[k];
+      for (const [f, w] of Object.entries(words)) $(`${k}_${f}`).setAttribute('aria-label', `${label} ${w}`);
+    }
+    lastScenario = $('scenario').value;
+  }
+  function scenarioHint(input) {
+    const s = scenarioOf($('scenario').value);
+    $('scenarioHint').textContent = s
+      ? 'Fills the hours and distances of both rows and proposes the category; the restriction days are not changed.'
+      : 'Free scenario: hours, distances and row names entered by hand; the category is not checked against the Forum.';
+    // Distances of the scenario that the selected proximity profile does not list
+    const listed = new Set(CAREGIVER.profilePoints(input, data).map(p => p.distance_m));
+    const missing = s ? [...new Set(ROWS.flatMap(([k]) => [s.rows[k].d_during, s.rows[k].d_after]))]
+      .filter(d => d !== null && !listed.has(d)).sort((a, b) => a - b) : [];
+    $('scenarioMissing').textContent = missing.length
+      ? `The proximity profile does not list ${missing.map(d => `${UTILS.num(d)} m`).join(', ')}: choose an approximate profile or enter the distances by hand.` : '';
+  }
+  const hm = (h, d) => `${UTILS.num(h)} h${d === null ? '' : ` / ${UTILS.num(d)} m`}`;
+  const buildCohabTable = () => {
+    const catLabel = k => (data.categories.find(c => c.key === k) || {}).label || k;
+    $('cohabBody').innerHTML = SCENARIOS.flatMap(s => ROWS.map(([k], i) => `<tr>` +
+      (i === 0 ? `<td rowspan="2"><strong>${esc(s.label)}</strong></td><td rowspan="2">${esc(s.normal)}</td><td rowspan="2">${esc(s.restriction)}</td>` : '') +
+      `<td>${esc(s.rows[k].label)}</td><td class="num" style="white-space:nowrap;">${hm(s.rows[k].h_during, s.rows[k].d_during)}</td><td class="num" style="white-space:nowrap;">${hm(s.rows[k].h_after, s.rows[k].d_after)}</td>` +
+      (i === 0 ? `<td rowspan="2">${s.categories_ok.map(c => esc(catLabel(c))).join('<br>')}</td><td rowspan="2" class="text-sm">${esc(s.note)}</td>` : '') +
+      `</tr>`)).join('');
+  };
+  $('cohabSource').textContent = data.cohabitation_method.source;
+  $('cohabCoworkers').innerHTML = data.cohabitation_method.coworkers.map(t => `<li>${esc(t)}</li>`).join('');
+  $('cohabNote').textContent = data.cohabitation_note;
+  $('cohabReproduction').textContent = data.cohabitation_method.reproduction;
+
   $('radiopharmaceutical').innerHTML = data.radiopharmaceuticals.map(r => `<option value="${UTILS.safeAttr(r)}">${esc(r)}</option>`).join('');
   // Rebuilt on a separator switch, keeping the selection (decimal review 2026-10-15, D-03)
   const buildCategoryOptions = () => {
@@ -388,6 +491,7 @@
     `<tr><td>${esc(c.label)}</td><td class="num">${c.criterion_mSv === null ? '—' : UTILS.num(c.criterion_mSv)}</td><td>${esc(c.basis)}</td></tr>`).join('');
   };
   buildProfileTables();
+  buildCohabTable();
   $('criteriaNote').textContent = data.criteria_note;
   $('profilesNote').textContent = data.profiles_note;
   $('refList').innerHTML = data.references.map(r => `<li>${esc(r)}</li>`).join('');
@@ -406,7 +510,7 @@
   // data-label: on phones the table is stacked as one card per row and each
   // cell shows its column name (audit 2026-10-15, F-06)
   $('rowsBody').innerHTML = ROWS.map(([k, label]) => `<tr>
-    <td class="stack-title">${esc(label)}</td>
+    <td class="stack-title"><span id="${k}_label_text">${esc(label)}</span><input type="text" autocomplete="off" class="form-input hidden" id="${k}_label" maxlength="60" aria-label="Row name (free scenario)" title="Row name (free scenario)"></td>
     <td data-label="Restriction (d from discharge)"><input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="${k}_days" aria-label="${UTILS.safeAttr(label)} restriction days" title="Restriction (d from discharge)"></td>
     <td data-label="During (h/d)"><input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="${k}_h_during" aria-label="${UTILS.safeAttr(label)} hours per day during" title="Hours per day during the restriction"></td>
     <td data-label="During (m)"><select class="form-select" id="${k}_d_during" aria-label="${UTILS.safeAttr(label)} distance during" title="Distance during the restriction (m)"></select></td>
@@ -421,7 +525,7 @@
   const distOf = el => (el.value === '' ? null : parseFloat(el.value));
 
   function readInputs() {
-    const input = { preset: $('preset').value, radiopharmaceutical: $('radiopharmaceutical').value, category: $('category').value, profile: $('profile').value };
+    const input = { preset: $('preset').value, scenario: $('scenario').value, radiopharmaceutical: $('radiopharmaceutical').value, category: $('category').value, profile: $('profile').value };
     for (const f of NUM_FIELDS) {
       const v = readNum($(f));
       if (Number.isNaN(v)) throw Object.assign(new RangeError(`"${$(f).title}" must be a number`), { field: f });
@@ -429,7 +533,7 @@
     }
     input.rows = {};
     for (const [k] of ROWS) {
-      const r = { d_during: distOf($(`${k}_d_during`)), d_after: distOf($(`${k}_d_after`)) };
+      const r = { label: rowLabel(k), d_during: distOf($(`${k}_d_during`)), d_after: distOf($(`${k}_d_after`)) };
       for (const f of ['days', 'h_during', 'h_after']) {
         const v = readNum($(`${k}_${f}`));
         if (Number.isNaN(v)) throw Object.assign(new RangeError(`"${$(`${k}_${f}`).getAttribute('aria-label')}" must be a number`), { field: `${k}_${f}` });
@@ -458,6 +562,10 @@
 
   function writeInputs(inp) {
     $('preset').value = inp.preset || 'custom';
+    $('scenario').value = inp.scenario || 'free';
+    lastScenario = $('scenario').value;
+    freeFallback = { ...FREE.row_labels };
+    for (const [k] of ROWS) $(`${k}_label`).value = '';
     $('radiopharmaceutical').value = inp.radiopharmaceutical;
     $('category').value = inp.category;
     $('profile').value = inp.profile;
@@ -581,9 +689,11 @@
     // Fields written by the page (Defaults, presets, adopted restriction) fire
     // no input event: refresh the "Read as …" notes here (decimal review 2026-10-15, D-01)
     UI.refreshNumberHints();
+    updateRowLabels();
     let input, out, cv, sc;
     try {
       input = readInputs();
+      scenarioHint(input);
       out = CAREGIVER.evaluate(input, data);
       // Finite inputs can still overflow in the products (audit 2026-10-04, A07)
       const nums = [out.perCycle_mSv, out.treatment_mSv, out.inverse.maxRate_uSv_h, out.inverse.floor_mSv, out.inverse.doseAtAdopted_mSv];
@@ -671,8 +781,12 @@
       if (el.id === 'preset') applyPreset(el.value);
       else if (PRESET_FIELDS.includes(el.id)) syncPreset();
       if (el.id === 'preset') presetHint();
+      if (el.id === 'scenario') { if (el.value === 'free') enterFree(); else applyScenario(el.value); }
+      else if (/^(day|sleep)_(h_during|d_during|h_after|d_after)$/.test(el.id)) syncScenario();
       if (el.id === 'profile' || el.id === 'preset' || /^own_|^rate_1m/.test(el.id)) {
         try { fillDistanceSelects(readInputs()); } catch (e) { /* render reports it */ }
+        // the scenario keeps its distances when the new profile lists them
+        if ($('scenario').value !== 'free') applyScenarioRows($('scenario').value);
       }
       render();
     };
@@ -685,6 +799,7 @@
   document.addEventListener('nm-decimal-change', () => {
     buildCategoryOptions();
     buildProfileTables();
+    buildCohabTable();
     try { fillDistanceSelects(readInputs()); } catch (e) { /* render reports it */ }
     render();
   });
@@ -720,6 +835,9 @@
         ['Radiopharmaceutical', input.radiopharmaceutical],
         ['Kinetics', (() => { const p = PRESETS.find(q => q.key === input.preset);
           return p ? `Preset «${p.label}». ${p.source}` : 'Entered by hand (no preset)'; })()],
+        // one row per item: each is a data text of its own (and of the Spanish catalog)
+        ...(() => { const p = PRESETS.find(q => q.key === input.preset);
+          return (p ? spreadItems(p) : ['not applicable (kinetics entered by hand)']).map((t, i) => [i ? '' : 'Spread in the source', t]); })(),
         ['Data status', `caregiver.json v${data.meta.version} (${data.meta.date}). ${data.meta.origin}`],
       ],
       omitCommonSources: true,
@@ -735,7 +853,9 @@
           ['Minimum restriction of the product information', input.spc_min_restriction_d === null ? 'not entered' : `${UTILS.num(input.spc_min_restriction_d)} d`],
           ['Proximity profile', `${prof.label} ${prof.ref} — ${prof.nature}`],
         ].concat(input.profile === 'own' ? out.points.map(p => [`Own measurement ${p.distance_m != null ? UTILS.num(p.distance_m) : '—'} m`, `${p.rate_uSv_h != null ? UTILS.num(p.rate_uSv_h) : '—'} µSv/h → factor ${Number.isFinite(p.factor) ? UTILS.dec(p.factor.toPrecision(4)) : 'none'}`]) : []) },
-        { heading: 'Cohabitation', rows: ROWS.map(([k, label]) => [label, rowText(input, out, k)]) },
+        { heading: 'Cohabitation', rows: [['Scenario', (() => { const s = scenarioOf(input.scenario);
+          return s ? `${s.label} — Foro CSN-SEPR-SEFM (2011), Annex 3.B, Table 3.B 1` : FREE.label; })()]]
+          .concat(ROWS.map(([k]) => [input.rows[k].label, rowText(input, out, k)])) },
         { heading: 'Results', rows: [
           ['Status', out.status],
           ['Warnings', out.warnings.join(' ') || 'none'],
@@ -753,7 +873,7 @@
         { heading: 'Treatment dose vs restriction', rows: cv.points.map(p => [`${UTILS.num(p.days)} d`, `${f3(p.dose_mSv)} mSv`]) },
         { heading: 'Self-check', rows: [['Overall', sc.ok ? 'OK' : (sc.currentOk === null && sc.referencesOk ? 'reference cases OK; current case not checked (inputs rejected)' : 'REVIEW')]].concat(sc.items.map(i => [i.label, i.ok ? 'OK' : 'REVIEW'])) },
       ],
-      notes: [data.inverse_note].concat(data.assumptions),
+      notes: [data.inverse_note, data.cohabitation_note].concat(data.assumptions),
       sources: data.references,
       disclaimer: 'Screening estimate of the external dose to one person from a discharged radionuclide-therapy patient, for radiation protection planning. ' +
         'The criteria per category are evaluation criteria adopted by the department, not values fixed by regulation for this treatment. ' +
@@ -777,9 +897,9 @@
     const assumptions = [
       `rate_1m=${input.rate_1m_uSv_h} uSv/h`, `discharge=${input.discharge_h} h`, `fast_end=${input.fast_end_h} h`,
       `preset=${input.preset}`, `T_fast=${input.T_fast_h} h`, `T_slow=${input.T_slow_h} h`, `cycles=${input.cycles}`, `category=${input.category}`,
-      `spc_min=${input.spc_min_restriction_d ?? ''} d`, `profile=${input.profile}`,
+      `spc_min=${input.spc_min_restriction_d ?? ''} d`, `profile=${input.profile}`, `scenario=${input.scenario}`,
       ...ROWS.map(([k]) => { const r = input.rows[k], o = out.rows[k];
-        return `${k}: ${r.days} d, during ${r.h_during} h/d @ ${r.d_during ?? ''} m (f=${o.fDuring ?? 'none'}), after ${r.h_after} h/d @ ${r.d_after ?? ''} m (f=${o.fAfter ?? 'none'})`; }),
+        return `${k} (${r.label}): ${r.days} d, during ${r.h_during} h/d @ ${r.d_during ?? ''} m (f=${o.fDuring ?? 'none'}), after ${r.h_after} h/d @ ${r.d_after ?? ''} m (f=${o.fAfter ?? 'none'})`; }),
       ...(input.profile === 'own' ? out.points.map(p => `own ${p.distance_m ?? ''} m: ${p.rate_uSv_h ?? ''} uSv/h, f=${p.factor ?? 'none'}`) : []),
     ].join('; ');
     const common = [UTILS.APP_VERSION, UTILS.APP_BUILD, data.meta.version, exportedUtc, input.radiopharmaceutical];
@@ -789,7 +909,7 @@
       out.criterion.value ?? '', out.criterion.basis, assumptions];
     const rows = [head];
     const add = (type, item, R, v, unit) => rows.push([...common, type, item, R, p6(v), unit, ...tail]);
-    for (const [k, label] of ROWS) add('row', `${label} dose per cycle`, input.rows[k].days, out.rows[k].dose_mSv, 'mSv');
+    for (const [k] of ROWS) add('row', `${input.rows[k].label} dose per cycle`, input.rows[k].days, out.rows[k].dose_mSv, 'mSv');
     add('result', 'Dose per administration', '', out.perCycle_mSv, 'mSv');
     add('result', 'Dose of the treatment', '', out.treatment_mSv, 'mSv');
     add('result', 'Margin to the criterion', '', out.margin_mSv, 'mSv');

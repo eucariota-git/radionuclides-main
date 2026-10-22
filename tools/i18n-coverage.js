@@ -79,6 +79,9 @@ const STATES = [
   ['caregiver', 'own profile', set('profile', 'own'), 'btnPrint'],
   ['caregiver', 'impossible common restriction', set('rate_1m_uSv_h', '10', 'input') + set('day_days', '0', 'input') + set('day_h_during', '20', 'input') + set('day_d_during', '1') + set('day_h_after', '0', 'input') + set('sleep_days', '3', 'input') + set('sleep_h_during', '8', 'input') + set('sleep_d_during', '1') + set('sleep_h_after', '8', 'input') + set('sleep_d_after', '0.1'), null],
   ['caregiver', 'error', set('rate_1m_uSv_h', 'x', 'input')],
+  ['caregiver', 'scenario child + category warning', set('scenario', 'child_2_5') + set('category', 'carer_le60'), 'btnPrint'],
+  ['caregiver', 'scenario distance missing', set('preset', 'dotatate_gayol') + set('scenario', 'child_lt1'), null],
+  ['caregiver', 'free scenario', set('scenario', 'coworker') + set('day_h_after', '6', 'input'), 'btnPrint'],
   ['about', 'about', null],
 ];
 

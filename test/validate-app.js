@@ -320,7 +320,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v59');
+    swVersion === 'nm-planner-v60');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -1223,6 +1223,84 @@ async function main() {
       /id="licences" translate="no"/.test(aboutHtml) && /id="third-party-notices" translate="no"/.test(aboutHtml) &&
       /data-href-es="#guia-calidad-de-los-datos-y-limitaciones"/.test(aboutHtml) && aboutHtml.includes('id="guia-calidad-de-los-datos-y-limitaciones"') &&
       /data-href-es="#guia-referencias"/.test(aboutHtml) && aboutHtml.includes('id="guia-referencias"'));
+  }
+
+  console.log();
+  console.log('Test 24: caregiver — preset spread and cohabitation scenarios of the Forum (Table 3.B 1)');
+  {
+    // Spread: the statistic is named and the values are the ones checked on the page images of the sources
+    check('every kinetics preset carries its published spread (statistic named) or none; no SD for the fixed Forum values',
+      cgData.kinetic_presets.every(p => Array.isArray(p.spread) && p.spread.every(s => s.statistic && s.parameter && s.text.length > 40)) &&
+      cgData.kinetic_presets.filter(p => p.key.startsWith('i131')).every(p => p.spread.length === 0) && /single fixed value/.test(cgData.kinetic_presets_no_spread));
+    const spreadOf = key => cgData.kinetic_presets.find(p => p.key === key).spread.map(s => s.text).join(' ');
+    check('Kurth 2018: SD of the 48 h half-life is 15.8 h (Table 3); the 9.6 h of the abstract is flagged as the 72 h column',
+      /40\.5 ± 15\.8 h \(mean ± SD\)/.test(spreadOf('psma_workbook')) && /9\.6 h is the SD of the 72 h column/.test(spreadOf('psma_workbook')) &&
+      /15 ± 4 µSv\/h at 6 h and 7 ± 2 µSv\/h at 24 h/.test(spreadOf('psma_workbook')));
+    check('Monserrat 2023: medians with (minimum, Q1, Q3, maximum), never presented as SD',
+      /25 \(12, 21, 36, 92\) h/.test(spreadOf('dotatate_monserrat')) && /58 \(35, 47, 67, 119\) h/.test(spreadOf('dotatate_monserrat')) &&
+      /5\.4 \(2\.4, 3\.7, 6\.5, 19\.5\) µSv\/h/.test(spreadOf('dotatate_monserrat')) &&
+      cgData.kinetic_presets.find(p => p.key === 'dotatate_monserrat').spread.every(s => !/SD/.test(s.statistic)));
+    check('the workbook «high» case is mean + 2 SD of Demir: 18 h · ln 2 / ln(23/11) = 16.9 h (reference case 3)',
+      Math.abs(18 * Math.LN2 / Math.log(23 / 11) - 16.9) < 0.05 && cgData.reference_cases.cases[2].T_fast_h === 16.9 && cgData.reference_cases.cases[2].rate === 15 + 2 * 4);
+
+    // Scenarios
+    const SC = cgData.cohabitation_scenarios;
+    const F = ['h_during', 'd_during', 'h_after', 'd_after'];
+    check('8 scenarios of Table 3.B 1 and its co-worker paragraph; the default is the partner and equals the default table',
+      SC.map(s => s.key).join() === 'partner,child_lt1,child_1_2,child_2_5,child_5_11,child_gt11,coworker,work_children' &&
+      cgData.defaults.scenario === 'partner' &&
+      ['day', 'sleep'].every(k => F.every(f => SC[0].rows[k][f] === cgData.defaults.rows[k][f])));
+    check('every scenario: proposed category among those it accepts, all categories exist, hours ≤ 24 h/d, a distance exactly when there are hours',
+      SC.every(s => s.categories_ok.includes(s.category) && s.categories_ok.every(c => cgData.categories.some(q => q.key === c)) &&
+        ['h_during', 'h_after'].every(h => s.rows.day[h] + s.rows.sleep[h] <= 24) &&
+        ['day', 'sleep'].every(k => ['during', 'after'].every(w => (s.rows[k][`h_${w}`] > 0) === (s.rows[k][`d_${w}`] !== null)))));
+    check('every scenario distance is listed by the approximate I-131 and Lu-177 profiles',
+      SC.every(s => ['day', 'sleep'].every(k => [s.rows[k].d_during, s.rows[k].d_after].every(d => d === null ||
+        ['i131_approx', 'lu177_approx'].every(pr => cgData.profiles[pr].points.some(p => p.distance_m === d))))));
+    // Foro Tables 3.B 3 (Tef 3 d) and 3.B 4 (Tef 5 d), columns > 11, 5–11, 2–5, 1–2, < 1 years, general work, work with children
+    const foroT = {
+      i131_ablation: { 5: [0,0,0,0,0,0,0], 10: [0,0,0,0,0,0,2], 15: [0,0,0,0,1,1,4], 20: [0,0,0,1,2,1,4], 25: [0,0,1,2,3,2,5], 30: [0,0,2,3,3,3,6], 35: [0,1,2,3,4,3,6], 40: [1,1,3,4,4,3,7] },
+      i131_metastases: { 5: [0,0,0,0,0,0,3], 10: [0,0,0,1,2,1,6], 15: [0,0,2,4,4,3,8], 20: [0,1,3,5,6,5,10], 25: [2,2,5,7,7,6,11], 30: [3,4,6,8,9,7,12], 35: [4,5,7,9,10,8,13], 40: [5,6,9,10,10,8,13] },
+    };
+    const cols = [['child_gt11', 1], ['child_5_11', 1], ['child_2_5', 1], ['child_1_2', 1], ['child_lt1', 1], ['coworker', 0.3], ['work_children', 0.3]];
+    const differing = cols.map(([key, RD], c) => {
+      const s = SC.find(q => q.key === key);
+      let n = 0;
+      for (const [pk, tab] of Object.entries(foroT)) {
+        const p = cgData.kinetic_presets.find(q => q.key === pk);
+        for (const [rate, row] of Object.entries(tab)) {
+          const x = CG.defaultInput();
+          Object.assign(x, { rate_1m_uSv_h: +rate, fast_end_h: 0, T_fast_h: null, T_slow_h: p.T_slow_h, cycles: 1,
+            profile: 'i131_approx', radiopharmaceutical: 'I-131', category: 'other', manual_criterion_mSv: RD, scenario: key });
+          for (const k of ['day', 'sleep']) for (const f of F) x.rows[k][f] = s.rows[k][f];
+          const inv = CG.evaluate(x).inverse;
+          if (Math.round(inv.minRestriction_d) !== row[c]) n++;
+        }
+      }
+      return n;
+    });
+    check('Table 3.B 1 reproduces the Forum tables with no discrepancy: children < 1, 2–5, 5–11 years (1 mSv) and general work (0.3 mSv)',
+      [differing[1], differing[2], differing[4], differing[5]].every(n => n === 0), JSON.stringify(differing));
+    check('the columns not reproducible as printed stay as documented: > 11 years 2, 1–2 years 8, work with children 1 cell (of 16)',
+      differing[0] === 2 && differing[3] === 8 && differing[6] === 1 && /2 cells differ with 1 mSv/.test(cgData.cohabitation_method.reproduction) &&
+      /1–2 years \(8 cells\)/.test(cgData.cohabitation_method.reproduction) && /work with children \(1 cell/.test(cgData.cohabitation_method.reproduction), JSON.stringify(differing));
+
+    // Engine: category coherence is a warning; the manual criterion is never questioned
+    const withScenario = (key, category) => { const x = CG.defaultInput(); const s = SC.find(q => q.key === key);
+      for (const k of ['day', 'sleep']) for (const f of F) x.rows[k][f] = s.rows[k][f];
+      Object.assign(x, { scenario: key, category, manual_criterion_mSv: 2 }); return CG.evaluate(x); };
+    const mismatch = r => r.warnings.some(w => /is not the one the Forum assigns/.test(w));
+    check('category coherence: warning for a child with the carer category, none for public, «other» or the free scenario; the dose does not change',
+      mismatch(withScenario('child_2_5', 'carer_le60')) && !mismatch(withScenario('child_2_5', 'public')) && !mismatch(withScenario('child_2_5', 'other')) &&
+      withScenario('child_2_5', 'carer_le60').ready && withScenario('child_2_5', 'carer_le60').treatment_mSv === withScenario('child_2_5', 'public').treatment_mSv &&
+      !mismatch((() => { const x = CG.defaultInput(); x.scenario = 'free'; x.category = 'coworker'; return CG.evaluate(x); })()));
+    check('a row error names the row as the page shows it (scenario row name), and the module default stays «Day-time»',
+      (() => { const x = CG.defaultInput(); x.rows.day.label = 'Close contact'; x.rows.day.h_after = null; return /^Close contact: missing days or hours$/.test(CG.evaluate(x).status); })() &&
+      (() => { const x = CG.defaultInput(); x.rows.day.h_after = null; return /^Day-time: missing days or hours$/.test(CG.evaluate(x).status); })());
+    check('caregiver page: scenario selector with a free option, scenario fields only (never the days), manual edits switch to the free scenario',
+      /<select class="form-select" id="scenario"/.test(caregiverHtml) && /const SCENARIO_FIELDS = \['h_during', 'd_during', 'h_after', 'd_after'\]/.test(caregiverHtml) &&
+      /\$\('scenario'\)\.value = match \? match\.key : 'free'/.test(caregiverHtml) && /<option value="free">/.test(caregiverHtml) &&
+      /id="cohabitationDetails"/.test(caregiverHtml) && /`scenario=\$\{input\.scenario\}`/.test(caregiverHtml));
   }
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);

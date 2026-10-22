@@ -39,6 +39,7 @@ const CAREGIVER = (() => {
   function isValidData(d) {
     return !!(d && d.meta && d.defaults && d.profiles && Array.isArray(d.categories) &&
       d.categories.length && Array.isArray(d.curve_days) && d.reference_cases &&
+      Array.isArray(d.cohabitation_scenarios) && d.cohabitation_scenarios.length && d.cohabitation_free &&
       Object.values(d.profiles).every(p => p && p.label && Array.isArray(p.points)));
   }
 
@@ -170,9 +171,10 @@ const CAREGIVER = (() => {
 
   const ROW_NAME = { day: 'Day-time', sleep: 'Sleeping' };
 
-  /** B32/B33: validation of one cohabitation row. Returns null when ready. */
+  /** B32/B33: validation of one cohabitation row. Returns null when ready.
+   *  The page may pass the row's current name (cohabitation scenario) as row.label. */
   function rowStatus(key, row, fDuring, fAfter) {
-    const n = ROW_NAME[key];
+    const n = row.label || ROW_NAME[key];
     if (!num(row.days) || !num(row.h_during) || !num(row.h_after)) return `${n}: missing days or hours`;
     if (row.days < 0 || row.h_during < 0 || row.h_during > 24 || row.h_after < 0 || row.h_after > 24) {
       return `${n}: invalid days or hours`;
@@ -266,6 +268,14 @@ const CAREGIVER = (() => {
     }
     if (num(input.discharge_h) && num(input.fast_end_h) && input.fast_end_h > 0 && input.discharge_h >= input.fast_end_h) {
       out.warnings.push('Discharge after the end of the fast phase: the discharge rate must already be measured in the slow phase.');
+    }
+    // Cohabitation scenario of the Forum (Table 3.B 1) and a category it does not
+    // assign: a warning, not a block (the manual criterion is never questioned)
+    const sc = (data.cohabitation_scenarios || []).find(s => s.key === input.scenario);
+    const cat = data.categories.find(c => c.key === input.category);
+    if (sc && cat && cat.key !== 'other' && !sc.categories_ok.includes(cat.key)) {
+      const ok = sc.categories_ok.map(k => (data.categories.find(c => c.key === k) || {}).label).join(' or ');
+      out.warnings.push(`Category «${cat.label}» is not the one the Forum assigns to the scenario «${sc.label}» (${ok}): check the criterion.`);
     }
 
     if (general) { out.status = general; return out; }

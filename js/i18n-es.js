@@ -1134,6 +1134,43 @@ const I18N_ES = {
     'References': 'Referencias',
     'Treatment dose vs restriction (mSv)': 'Dosis del tratamiento frente a la restricción (mSv)',
     'Treatment dose (mSv)': 'Dosis del tratamiento (mSv)',
+    // Cohabitation scenarios and preset spread (v1.17.0)
+    "Cohabitation scenario":
+      "Escenario de convivencia",
+    "See":
+      "Véase",
+    "Method › Cohabitation conditions":
+      "Método › Condiciones de convivencia",
+    "Fills the hours and distances of both rows and proposes the category; the restriction days are not changed.":
+      "Rellena las horas y distancias de las dos filas y propone la categoría; no cambia los días de restricción.",
+    "Free scenario: hours, distances and row names entered by hand; the category is not checked against the Forum.":
+      "Escenario libre: horas, distancias y nombres de fila introducidos a mano; la categoría no se contrasta con el Foro.",
+    "Row name (free scenario)":
+      "Nombre de la fila (escenario libre)",
+    "Spread in the source:":
+      "Dispersión en la fuente:",
+    "Cohabitation conditions — Foro (2011), Table 3.B 1":
+      "Condiciones de convivencia — Foro (2011), tabla 3.B 1",
+    "Person":
+      "Persona",
+    "Normal cohabitation":
+      "Convivencia normal",
+    "During the restriction":
+      "Durante la restricción",
+    "Row in the app":
+      "Fila en la app",
+    "During (h / m)":
+      "Durante (h / m)",
+    "After (h / m)":
+      "Después (h / m)",
+    "Category (first: proposed)":
+      "Categoría (la primera, propuesta)",
+    "Spread in the source":
+      "Dispersión en la fuente",
+    "not applicable (kinetics entered by hand)":
+      "no aplicable (cinética introducida a mano)",
+    "Scenario":
+      "Escenario",
     // js/caregiver.js
     'Missing data: discharge rate, discharge time, end of the fast phase, slow half-life or number of cycles': 'Faltan datos: tasa en el alta, momento del alta, final de la fase rápida, periodo lento o número de ciclos',
     'Invalid rate, times, half-life or number of cycles': 'Tasa, tiempos, periodo o número de ciclos no válidos',
@@ -1179,8 +1216,8 @@ const I18N_ES = {
     // Caregiver data texts (data/caregiver.json)
     "Port of the author's workbook Dosis_acompanantes_simple_v2.1.xlsx (sheets Dosis, Curva and Comprobación).":
       "Adaptación del libro del autor Dosis_acompanantes_simple_v2.1.xlsx (hojas Dosis, Curva y Comprobación).",
-    "A preset fills the radiopharmaceutical, the end of the fast phase, the effective half-lives, the number of cycles and the proximity profile. It never changes the measured discharge rate, the discharge time, the category or the cohabitation table. Literature values describe a cohort, not the patient.":
-      "Una cinética predefinida rellena el radiofármaco, el final de la fase rápida, los periodos efectivos, el número de ciclos y el perfil de proximidad. Nunca cambia la tasa en el alta medida, el momento del alta, la categoría ni la tabla de convivencia. Los valores de la literatura describen una cohorte, no al paciente.",
+    "A preset fills the radiopharmaceutical, the end of the fast phase, the effective half-lives, the number of cycles and the proximity profile. It never changes the measured discharge rate, the discharge time, the category or the cohabitation table. Literature values describe a cohort, not the patient. Under each preset, «Spread in the source» gives the dispersion the source publishes, with its statistic named (mean ± SD, median with quartiles and range, or spread of literature values). It describes the cohort, not an interval for the patient: mean + 2 SD is only a reference high value. No SD is derived here from ranges or quartiles.":
+      "Una cinética predefinida rellena el radiofármaco, el final de la fase rápida, los periodos efectivos, el número de ciclos y el perfil de proximidad. Nunca cambia la tasa en el alta medida, el momento del alta, la categoría ni la tabla de convivencia. Los valores de la literatura describen una cohorte, no al paciente. Bajo cada cinética, «Dispersión en la fuente» da la dispersión que publica la fuente, con el estadístico indicado (media ± DE, mediana con cuartiles y extremos, o dispersión de los valores de la literatura). Describe la cohorte, no un intervalo para el paciente: media + 2 DE es solo un valor alto de referencia. Aquí no se deduce ninguna DE a partir de intervalos o cuartiles.",
     "Evaluation criteria adopted by the department, not values fixed by regulation for this treatment. Scope: one person, the whole treatment (all cycles together) — the ICRP «episode» (the duration of a given release after therapy) is applied to the complete treatment, which is the more restrictive reading. Carers are people who, outside their occupation, knowingly and voluntarily help in the care of the patient (RD 601/2019, art. 7.1); children and pregnant women are assessed with the public category. The criterion only changes the comparison and the inverse calculations, never the calculated dose.":
       "Criterios de evaluación adoptados por el servicio, no valores fijados por la normativa para este tratamiento. Alcance: una persona, el tratamiento completo (todos los ciclos juntos); el «episodio» de ICRP (la duración de una liberación concreta tras la terapia) se aplica al tratamiento completo, que es la lectura más restrictiva. Las personas cuidadoras son las que, fuera de su ocupación, ayudan consciente y voluntariamente en la atención del paciente (RD 601/2019, art. 7.1); los niños y las embarazadas se evalúan con la categoría de público. El criterio solo cambia la comparación y los cálculos inversos, nunca la dosis calculada.",
     "Maximum rate: the discharge rate that exactly exhausts the criterion with the restrictions of the table (the dose is proportional to the rate). Minimum restriction: days that exhaust the criterion applying the same duration to both rows; \"Unattainable\" = not met however long it lasts: contact during the restriction must be reduced. To apply it, enter the adopted restriction in the days column of the cohabitation table.":
@@ -1211,6 +1248,112 @@ const I18N_ES = {
       "Foro CSN-SEPR-SEFM (2011), anexo 3.B, tabla 3.B 4: «T.ef. (vida media efectiva) = 5 días» = 1/λ, es decir, periodo efectivo 5 d · ln 2 = 83,2 h. Una sola exponencial.",
     "Foro CSN-SEPR-SEFM (2011), Annex 3.C, Table 3.C 2: «T.ef. (vida media efectiva) = 7,2 días», computed with the equation of Annex 3.B, where Tef = 1/λ: effective half-life 7.2 d · ln 2 = 119.8 h. Single exponential from discharge; the thyroid uptake peaks at 24–48 h, so early urinary excretion of an out-patient is not modelled. Usually out-patient; the Forum gives this table by administered activity (185–800 MBq), the app needs the rate measured at 1 m.":
       "Foro CSN-SEPR-SEFM (2011), anexo 3.C, tabla 3.C 2: «T.ef. (vida media efectiva) = 7,2 días», calculado con la ecuación del anexo 3.B, en la que Tef = 1/λ: periodo efectivo 7,2 d · ln 2 = 119,8 h. Una sola exponencial desde el alta; la captación tiroidea alcanza su máximo a las 24–48 h, por lo que no se modela la excreción urinaria temprana de un paciente ambulatorio. Habitualmente ambulatorio; el Foro da esta tabla por actividad administrada (185–800 MBq), la app necesita la tasa medida a 1 m.",
+    "Dose rate at 1 m — Demir et al. (2016), Table 1, 23 patients, 7.4 GBq: 15 ± 4 µSv/h at 6 h and 7 ± 2 µSv/h at 24 h after infusion. Table 1 does not name the statistic after ±; the paper uses mean ± SD in its Table 3.":
+      "Tasa de dosis a 1 m — Demir et al. (2016), tabla 1, 23 pacientes, 7,4 GBq: 15 ± 4 µSv/h a las 6 h y 7 ± 2 µSv/h a las 24 h tras la infusión. La tabla 1 no indica el estadístico tras ±; el artículo usa media ± DE en su tabla 3.",
+    "T fast: no dispersion published; 16.4 h is derived from the mean rates. With mean + 2 SD at both times (23 and 11 µSv/h): 18 h · ln 2 / ln(23/11) = 16.9 h, the «high» case of the source workbook v6.":
+      "T rápida: no se publica dispersión; 16,4 h se deduce de las tasas medias. Con media + 2 DE en ambos momentos (23 y 11 µSv/h): 18 h · ln 2 / ln(23/11) = 16,9 h, el caso «alto» del libro de origen v6.",
+    "T slow — Kurth et al. (2018), Table 3, measurement at 48 h: 40.5 ± 15.8 h (mean ± SD), minimum 21.7 h, maximum 85.7 h; the maximum is the T slow of the «high» case of workbook v6. The abstract prints «40.5 ± 9.6 h»: 9.6 h is the SD of the 72 h column (38.4 ± 9.6 h, 25.7–74.5 h, 25 patients), an erratum of the source; Table 3 is followed. At 24 h: 26.0 ± 12.4 h (11.0–73.5 h).":
+      "T lenta — Kurth et al. (2018), tabla 3, medida a las 48 h: 40,5 ± 15,8 h (media ± DE), mínimo 21,7 h, máximo 85,7 h; el máximo es la T lenta del caso «alto» del libro v6. El resumen imprime «40.5 ± 9.6 h»: 9,6 h es la DE de la columna de 72 h (38,4 ± 9,6 h, 25,7–74,5 h, 25 pacientes), errata de la fuente; se sigue la tabla 3. A las 24 h: 26,0 ± 12,4 h (11,0–73,5 h).",
+    "No SD published: Tef,1 = 22 h is the median of two literature values, Gayol Vilorio et al. (2025), Table 2: early mono-exponential 18.5 h (Parlak) and 26 h (Kurth).":
+      "No se publica DE: Tef,1 = 22 h es la mediana de dos valores de la literatura, Gayol Vilorio et al. (2025), tabla 2: monoexponencial temprano 18,5 h (Parlak) y 26 h (Kurth).",
+    "Tef,2 = 42 h is the median of seven literature values from five studies (late mono-exponential or slow bi-exponential), spread 38.4–54 h. Table 2 labels the 26 and 38.4 h of Kurth as medians; in Kurth et al. (2018), Table 3, they are means (24 h and 72 h). For the cohort SD see the workbook preset.":
+      "Tef,2 = 42 h es la mediana de siete valores de la literatura de cinco estudios (monoexponencial tardío o componente lenta biexponencial), con dispersión 38,4–54 h. La tabla 2 presenta los 26 y 38,4 h de Kurth como medianas; en Kurth et al. (2018), tabla 3, son medias (24 h y 72 h). Para la DE de la cohorte, véase la cinética del libro de trabajo.",
+    "No SD published: Tef,1 = 25 h is the only early value in Gayol Vilorio et al. (2025), Table 2 (Monserrat); its cohort spread is given under the Monserrat preset.":
+      "No se publica DE: Tef,1 = 25 h es el único valor temprano de Gayol Vilorio et al. (2025), tabla 2 (Monserrat); su dispersión en la cohorte figura en la cinética de Monserrat.",
+    "Tef,2 = 55 h is the median of five literature values (late mono-exponential or slow bi-exponential), spread 49.5–58 h.":
+      "Tef,2 = 55 h es la mediana de cinco valores de la literatura (monoexponencial tardío o componente lenta biexponencial), con dispersión 49,5–58 h.",
+    "Teff from the 6 and 24 h values — Monserrat Fuertes et al. (2023), Table 2, 20 patients: 25 (12, 21, 36, 92) h, median (minimum, Q1, Q3, maximum).":
+      "Tef de los valores a 6 y 24 h — Monserrat Fuertes et al. (2023), tabla 2, 20 pacientes: 25 (12; 21; 36; 92) h, mediana (mínimo; Q1; Q3; máximo).",
+    "Teff from the 24, 48 and 168 h values: 58 (35, 47, 67, 119) h, median (minimum, Q1, Q3, maximum).":
+      "Tef de los valores a 24, 48 y 168 h: 58 (35; 47; 67; 119) h, mediana (mínimo; Q1; Q3; máximo).",
+    "Dose rate at 1 m at discharge (24 h): 5.4 (2.4, 3.7, 6.5, 19.5) µSv/h. The distributions are not normal (Shapiro–Wilk) and no SD is given; the ± of each patient in Table 2 is the uncertainty of the fit, not a cohort dispersion.":
+      "Tasa de dosis a 1 m en el alta (24 h): 5,4 (2,4; 3,7; 6,5; 19,5) µSv/h. Las distribuciones no son normales (Shapiro–Wilk) y no se da DE; el ± de cada paciente en la tabla 2 es la incertidumbre del ajuste, no una dispersión de la cohorte.",
+    "No dispersion published: the source gives a single fixed value.":
+      "No se publica dispersión: la fuente da un único valor fijo.",
+    "Partner":
+      "Pareja",
+    "Child under 1 year":
+      "Niño menor de 1 año",
+    "Child 1 to 2 years":
+      "Niño de 1 a 2 años",
+    "Child 2 to 5 years":
+      "Niño de 2 a 5 años",
+    "Child 5 to 11 years":
+      "Niño de 5 a 11 años",
+    "Child over 11 years":
+      "Niño mayor de 11 años",
+    "Work with children (nurseries, childminders)":
+      "Trabajo con niños (guarderías, cuidadores de niños)",
+    "Free scenario (not in the Forum)":
+      "Escenario libre (no recogido en el Foro)",
+    "6 hours at 1 metre, 8 hours at 0.1 m":
+      "6 horas a 1 metro, 8 horas a 0,1 m",
+    "Sleeping alone":
+      "Dormir sin compañía",
+    "6 periods of 30 minutes at 0.1 metre and 3 hours at 0.5 metres":
+      "6 periodos de 30 minutos a 0,1 metro y 3 horas a 0,5 metros",
+    "3 hours at 1.5 metres or not living in the same home":
+      "3 horas a 1,5 metros o no convivir en el mismo domicilio",
+    "4 periods of 25 minutes at 0.1 metre and 3 hours at 0.5 metres":
+      "4 periodos de 25 minutos a 0,1 metro y 3 horas a 0,5 metros",
+    "2 hours at 0.1 metre and 5 hours at 1 metre":
+      "2 horas a 0,1 metro y 5 horas a 1 metro",
+    "5 hours at 1.5 metres or not living in the same home":
+      "5 horas a 1,5 metros o no convivir en el mismo domicilio",
+    "1 hour at 0.1 metre and 5 hours at 1 metre":
+      "1 hora a 0,1 metro y 5 horas a 1 metro",
+    "5 hours at 1.5 metres":
+      "5 horas a 1,5 metros",
+    "1 hour at 0.1 metre and 4 hours at 1 metre":
+      "1 hora a 0,1 metro y 4 horas a 1 metro",
+    "3 hours at 1.5 metres":
+      "3 horas a 1,5 metros",
+    "8 hours at 1 metre from the co-worker":
+      "8 horas a un metro del compañero",
+    "Not going to work":
+      "No acudir al trabajo",
+    "3 hours at 1 metre, 3 hours at 0.1 m":
+      "3 horas a 1 metro, 3 horas a 0,1 m",
+    "Close contact":
+      "Contacto cercano",
+    "Nearby":
+      "Cerca",
+    "At work":
+      "En el trabajo",
+    "Not used":
+      "Sin uso",
+    "Close contact at work":
+      "Contacto cercano en el trabajo",
+    "Contact 1":
+      "Contacto 1",
+    "Contact 2":
+      "Contacto 2",
+    "Day-time contact continues during the restriction.":
+      "El contacto diurno continúa durante la restricción.",
+    "Not living in the same home: enter 0 h during the restriction in both rows.":
+      "No convivir en el mismo domicilio: introduzca 0 h durante la restricción en las dos filas.",
+    "4 × 25 min = 1.667 h. Not living in the same home: enter 0 h during the restriction in both rows.":
+      "4 × 25 min = 1,667 h. No convivir en el mismo domicilio: introduzca 0 h durante la restricción en las dos filas.",
+    "Category proposed from Table 2 of the Forum (children over 10 years and adults up to 60: 3 mSv per treatment). The Forum's own Tables 3.B 3 and 3.B 4 are not reproduced with 3 mSv for this column; the public criterion (1 mSv) is the more conservative choice.":
+      "Categoría propuesta a partir de la tabla 2 del Foro (niños de más de 10 años y adultos hasta 60 años: 3 mSv por tratamiento). Las propias tablas 3.B 3 y 3.B 4 del Foro no se reproducen con 3 mSv para esta columna; el criterio del público (1 mSv) es la opción más conservadora.",
+    "A pregnant co-worker is assessed individually (distances and times): use the free scenario.":
+      "Una compañera embarazada se valora de forma particularizada (distancias y tiempos): use el escenario libre.",
+    "Criterion for the children cared for: the Forum applies the co-worker constraint (0.3 mSv), which is below the public one.":
+      "Criterio para los niños atendidos: el Foro aplica la restricción de los compañeros de trabajo (0,3 mSv), inferior a la del público.",
+    "A scenario fills the hours and distances of both rows and proposes the category; it never changes the restriction days. The free scenario keeps the table as it is and lets you name the rows, for cases the Forum does not cover (a pregnant co-worker, other timetables or other people). Source: Foro CSN-SEPR-SEFM (2011), Annex 3.B, Table 3.B 1 and the paragraph «Para compañeros de trabajo» (p. 29); the 0.3 mSv for co-workers comes from its section 4.6.":
+      "Un escenario rellena las horas y distancias de las dos filas y propone la categoría; nunca cambia los días de restricción. El escenario libre conserva la tabla tal como está y permite dar nombre a las filas, para casos que el Foro no recoge (una compañera embarazada, otros horarios u otras personas). Fuente: Foro CSN-SEPR-SEFM (2011), anexo 3.B, tabla 3.B 1 y el párrafo «Para compañeros de trabajo» (p. 29); los 0,3 mSv para compañeros de trabajo proceden de su apartado 4.6.",
+    "Foro CSN-SEPR-SEFM (2011), Annex 3.B, Table 3.B 1 «Condiciones de convivencia sin y con restricciones para familiares y personas que cuidan al paciente (periodos diarios)» and the paragraph that follows it (p. 29). Daily periods.":
+      "Foro CSN-SEPR-SEFM (2011), anexo 3.B, tabla 3.B 1 «Condiciones de convivencia sin y con restricciones para familiares y personas que cuidan al paciente (periodos diarios)» y el párrafo que la sigue (p. 29). Periodos diarios.",
+    "For co-workers, a stay of 8 hours at one metre from the co-worker is assumed. If a co-worker is pregnant, the conditions (distances and times) are assessed individually when the restriction period is calculated.":
+      "Para compañeros de trabajo se supone una permanencia de 8 horas a un metro del compañero. Si hay alguna compañera embarazada, se valorarán las condiciones de forma particularizada (distancias y tiempos) a la hora de calcular el periodo de restricciones.",
+    "Work with children (nurseries, childminders): 3 hours at 1 metre, 3 hours at 0.1 m.":
+      "Trabajo con niños (guarderías, cuidadores de niños): 3 horas a 1 metro, 3 horas a 0,1 m.",
+    "Since the inverse square law does not hold at short distances, for the calculation the dose rate at 0.1 m, which would be contact, is taken as the one at 0.4 m. The restriction in this case consists in not going to work during the period indicated.":
+      "Puesto que a distancias cortas no se cumple el inverso del cuadrado de la distancia, a efectos de cálculo la tasa de dosis a 0,1 m, que sería la de estar en contacto, se considera la que corresponde a 0,4 m. La restricción en este caso consiste en no acudir al trabajo durante el periodo indicado.",
+    "Co-workers should not exceed the dose constraint of 0.3 mSv (section 4.6). Food handlers (Table 3.B 2) are an internal-contamination pathway of consumers and are not modelled here.":
+      "Los compañeros de trabajo no deberían superar la restricción de dosis de 0,3 mSv (apartado 4.6). Los manipuladores de alimentos (tabla 3.B 2) son una vía de contaminación interna de los consumidores y no se modelan aquí.",
+    "Check with the app (I-131 presets, Tef = 1/λ, contact at 0.4 m, days rounded to the nearest integer): with the conditions of Table 3.B 1 it reproduces all 16 cells of Tables 3.B 3 and 3.B 4 for the partner under 60 (2 mSv), children under 1, 2–5 and 5–11 years (1 mSv) and general work (0.3 mSv). It does not reproduce, as printed, the columns over 11 years (2 cells differ with 1 mSv, 5 with 3 mSv), 1–2 years (8 cells) and work with children (1 cell: 6.49 d against 7 at 40 µSv/h, Tef 3 d). The tables state «condiciones en Rivas 2002», which may differ from Table 3.B 1; with several free parameters no other set of conditions can be identified conclusively, so Table 3.B 1 is used as printed.":
+      "Comprobación con la app (cinéticas de I-131, Tef = 1/λ, contacto a 0,4 m, días redondeados al entero más próximo): con las condiciones de la tabla 3.B 1 reproduce las 16 celdas de las tablas 3.B 3 y 3.B 4 para la pareja menor de 60 años (2 mSv), los niños menores de 1 año, de 2–5 y de 5–11 años (1 mSv) y el trabajo en general (0,3 mSv). No reproduce, tal como están impresas, las columnas de mayores de 11 años (difieren 2 celdas con 1 mSv y 5 con 3 mSv), de 1–2 años (8 celdas) y de trabajo con niños (1 celda: 6,49 d frente a 7 con 40 µSv/h, Tef 3 d). Las tablas indican «condiciones en Rivas 2002», que pueden diferir de la tabla 3.B 1; con varios parámetros libres no puede identificarse de forma concluyente otro conjunto de condiciones, por lo que se usa la tabla 3.B 1 tal como está impresa.",
     "Carer ≤ 60 years":
       "Persona cuidadora ≤ 60 años",
     "Carer > 60 years":
@@ -1598,13 +1741,18 @@ const I18N_ES = {
     [/^— (fast phase until (.+?) h, T fast (.+?) h|single exponential), T slow (.+?) h, (\d+) cycle\(s\), profile (.+?)\. ([\s\S]+)$/, (m, ph, end, tf, ts, n, prof, src) =>
       `— ${ph.startsWith('single') ? 'una sola exponencial' : `fase rápida hasta ${end} h, T rápida ${tf} h`}, T lenta ${ts} h, ${n} ciclo(s), perfil ${esText(prof)}. ${esText(src)}`],
     [/^Own measurement (\d+) (distance \(m\)|rate \(µSv\/h\))$/, (m, n, w) => `Medida propia ${n}: ${w.startsWith('distance') ? 'distancia (m)' : 'tasa (µSv/h)'}`],
-    [/^(Day-time cohabitation|Sleeping in the same room) (restriction days|hours per day during|distance during|hours per day after|distance after)$/, (m, row, w) =>
+    [/^(.+) (restriction days|hours per day during|distance during|hours per day after|distance after)$/, (m, row, w) =>
       `${esText(row)}: ${({ 'restriction days': 'días de restricción', 'hours per day during': 'horas al día durante', 'distance during': 'distancia durante',
         'hours per day after': 'horas al día después', 'distance after': 'distancia después' })[w]}`],
-    [/^(Day-time|Sleeping): (missing days or hours|invalid days or hours|distance without a valid factor in the profile)$/, (m, row, w) =>
-      `${row === 'Sleeping' ? 'Dormir' : 'Diurna'}: ${({ 'missing days or hours': 'faltan días u horas', 'invalid days or hours': 'días u horas no válidos',
+    [/^(.+): (missing days or hours|invalid days or hours|distance without a valid factor in the profile)$/, (m, row, w) =>
+      `${({ Sleeping: 'Dormir', 'Day-time': 'Diurna' })[row] || esText(row)}: ${({ 'missing days or hours': 'faltan días u horas', 'invalid days or hours': 'días u horas no válidos',
         'distance without a valid factor in the profile': 'distancia sin factor válido en el perfil' })[w]}`],
     [/^mSv — (\d+) cycle\(s\)$/, 'mSv — $1 ciclo(s)'],
+    [/^The proximity profile does not list (.+): choose an approximate profile or enter the distances by hand\.$/,
+      'El perfil de proximidad no incluye $1: elija un perfil aproximado o introduzca las distancias a mano.'],
+    [/^(⚠ )?Category «(.+)» is not the one the Forum assigns to the scenario «(.+)» \((.+)\): check the criterion\.$/, (m, w, c, sc, ok) =>
+      `${w || ''}La categoría «${esText(c)}» no es la que el Foro asigna al escenario «${esText(sc)}» (${ok.split(' or ').map(esText).join(' o ')}): revise el criterio.`],
+    [/^(.+) — Foro CSN-SEPR-SEFM \(2011\), Annex 3\.B, Table 3\.B 1$/, (m, l) => `${esText(l)} — Foro CSN-SEPR-SEFM (2011), anexo 3.B, tabla 3.B 1`],
     [/^mSv — (.+)$/, (m, label) => { const t = esText(label); return t === label ? m : `mSv — ${t}`; }],
     [/^([\s\S]+) — with this restriction the treatment dose EXCEEDS the criterion$/, (m, a) => `${esText(a)} — con esta restricción la dosis del tratamiento SUPERA el criterio`],
     [/^Criterion — (.+)$/, 'Criterio — $1'],
