@@ -385,7 +385,7 @@ async function main() {
       await setC('scenario', 'child_2_5');
       st = await ev(rowState);
       check('caregiver: «Child 2 to 5 years» fills hours and distances, names the rows and proposes the public category; days untouched',
-        st.v === '0||2|0.1|5|1.5|5|1' && st.cat === 'public' && st.l1 === 'Close contact' && !st.err && st.days === '' && !/not the one the Forum/.test(st.warn), JSON.stringify(st));
+        st.v === '0||2|0.1|5|1.5|5|1' && st.cat === 'public' && st.l1 === 'Contact' && !st.err && st.days === '' && !/not the one the Forum/.test(st.warn), JSON.stringify(st));
       await setC('category', 'carer_le60');
       st = await ev(rowState);
       check('caregiver: a category the Forum does not assign gives a warning, not an error', /not the one the Forum assigns/.test(st.warn) && !st.err, JSON.stringify(st));
@@ -393,7 +393,7 @@ async function main() {
       await setC('day_h_after', '3', 'input');
       st = await ev(rowState);
       check('caregiver: a manual edit switches to the free scenario, with the row names kept as placeholders and no category warning',
-        st.sc === 'free' && st.in1 && st.l1hidden && st.ph1 === 'Close contact' && !/not the one the Forum/.test(st.warn), JSON.stringify(st));
+        st.sc === 'free' && st.in1 && st.l1hidden && st.ph1 === 'Contact' && !/not the one the Forum/.test(st.warn), JSON.stringify(st));
       await setC('day_label', 'Grandchild on the lap', 'input');
       await shot('caregiver_scenario_free', '.card:has(#rowsTable)');
       await ev(`document.getElementById('btnPrint').click()`); await sleep(300);
@@ -405,7 +405,7 @@ async function main() {
       st = await ev(rowState);
       const status = await text('#statusBox');
       check('caregiver: a scenario distance missing from the profile (1.5 m, DOTATATE measured) is flagged in the hint and the status',
-        /does not list 1\.5 m/.test(await text('#scenarioMissing')) && /Nearby: distance without a valid factor/.test(status) && st.sc === 'child_lt1', status);
+        /does not list 1\.5 m/.test(await text('#scenarioMissing')) && /Proximity: distance without a valid factor/.test(status) && st.sc === 'child_lt1', status);
       await setC('profile', 'lu177_approx');
       st = await ev(rowState);
       check('caregiver: an approximate profile restores the scenario distances', st.sc === 'child_lt1' && st.v === '0||3|0.1|3|1.5|3|0.5' && !st.err && (await text('#scenarioMissing')) === '', JSON.stringify(st));
@@ -419,6 +419,14 @@ async function main() {
       await pageChecks('caregiver scenarios dark');
       await shot('caregiver_method_dark', '#cohabitationDetails');
       await ev(`document.getElementById('darkToggle') && document.getElementById('darkToggle').click()`);
+      // Spanish row names of a child scenario: «Contacto» and «Proximidad» (user review 2026-10-22)
+      await open('caregiver.html', 1280);
+      await setC('scenario', 'child_2_5');
+      await ev(`document.getElementById('langToggle').click()`); await sleep(400);
+      const esRows = await ev(`[document.getElementById('day_label_text').textContent, document.getElementById('sleep_label_text').textContent]`);
+      check('caregiver ES: the rows of a child scenario read «Contacto» and «Proximidad»', esRows.join('|') === 'Contacto|Proximidad', JSON.stringify(esRows));
+      await shot('caregiver_scenario_es', '.card:has(#rowsTable)');
+      await ev(`document.getElementById('langToggle').click()`); await sleep(300);
     });
     await guard('Report: the print path builds the report without errors', async () => {
       // Report: the print path builds the report without errors

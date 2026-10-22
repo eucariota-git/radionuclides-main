@@ -320,7 +320,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v61');
+    swVersion === 'nm-planner-v62');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -1257,6 +1257,10 @@ async function main() {
       SC.every(s => s.categories_ok.includes(s.category) && s.categories_ok.every(c => cgData.categories.some(q => q.key === c)) &&
         ['h_during', 'h_after'].every(h => s.rows.day[h] + s.rows.sleep[h] <= 24) &&
         ['day', 'sleep'].every(k => ['during', 'after'].every(w => (s.rows[k][`h_${w}`] > 0) === (s.rows[k][`d_${w}`] !== null)))));
+    check('children of any age: the child scenarios propose and accept only the public criterion (1 mSv)',
+      SC.filter(s => s.key.startsWith('child_')).length === 5 &&
+      SC.filter(s => s.key.startsWith('child_')).every(s => s.category === 'public' && s.categories_ok.join() === 'public') &&
+      SC.find(s => s.key === 'work_children').categories_ok.includes('public'));
     check('every scenario distance is listed by the approximate I-131 and Lu-177 profiles',
       SC.every(s => ['day', 'sleep'].every(k => [s.rows[k].d_during, s.rows[k].d_after].every(d => d === null ||
         ['i131_approx', 'lu177_approx'].every(pr => cgData.profiles[pr].points.some(p => p.distance_m === d))))));
@@ -1298,7 +1302,7 @@ async function main() {
       withScenario('child_2_5', 'carer_le60').ready && withScenario('child_2_5', 'carer_le60').treatment_mSv === withScenario('child_2_5', 'public').treatment_mSv &&
       !mismatch((() => { const x = wbInput(); x.scenario = 'free'; x.category = 'coworker'; return CG.evaluate(x); })()));
     check('a row error names the row as the page shows it (scenario row name), and the module default stays «Day-time»',
-      (() => { const x = wbInput(); x.rows.day.label = 'Close contact'; x.rows.day.h_after = null; return /^Close contact: missing days or hours$/.test(CG.evaluate(x).status); })() &&
+      (() => { const x = wbInput(); x.rows.day.label = 'Contact'; x.rows.day.h_after = null; return /^Contact: missing days or hours$/.test(CG.evaluate(x).status); })() &&
       (() => { const x = wbInput(); x.rows.day.h_after = null; return /^Day-time: missing days or hours$/.test(CG.evaluate(x).status); })());
     check('caregiver page: scenario selector with a free option, scenario fields only (never the days), manual edits switch to the free scenario',
       /<select class="form-select" id="scenario"/.test(caregiverHtml) && /const SCENARIO_FIELDS = \['h_during', 'd_during', 'h_after', 'd_after'\]/.test(caregiverHtml) &&

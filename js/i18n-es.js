@@ -1318,16 +1318,14 @@ const I18N_ES = {
       "No acudir al trabajo",
     "3 hours at 1 metre, 3 hours at 0.1 m":
       "3 horas a 1 metro, 3 horas a 0,1 m",
-    "Close contact":
-      "Contacto cercano",
-    "Nearby":
-      "Cerca",
+    "Proximity":
+      "Proximidad",
     "At work":
       "En el trabajo",
     "Not used":
       "Sin uso",
-    "Close contact at work":
-      "Contacto cercano en el trabajo",
+    "Contact at work":
+      "Contacto en el trabajo",
     "Contact 1":
       "Contacto 1",
     "Contact 2":
@@ -1338,8 +1336,8 @@ const I18N_ES = {
       "No convivir en el mismo domicilio: introduzca 0 h durante la restricción en las dos filas.",
     "4 × 25 min = 1.667 h. Not living in the same home: enter 0 h during the restriction in both rows.":
       "4 × 25 min = 1,667 h. No convivir en el mismo domicilio: introduzca 0 h durante la restricción en las dos filas.",
-    "Category proposed from Table 2 of the Forum (children over 10 years and adults up to 60: 3 mSv per treatment). The Forum's own Tables 3.B 3 and 3.B 4 are not reproduced with 3 mSv for this column; the public criterion (1 mSv) is the more conservative choice.":
-      "Categoría propuesta a partir de la tabla 2 del Foro (niños de más de 10 años y adultos hasta 60 años: 3 mSv por tratamiento). Las propias tablas 3.B 3 y 3.B 4 del Foro no se reproducen con 3 mSv para esta columna; el criterio del público (1 mSv) es la opción más conservadora.",
+    "Children of any age: public criterion (1 mSv), a department decision. Table 2 of the Forum gives 3 mSv over 10 years, but its own Tables 3.B 3 and 3.B 4 are closer to 1 mSv for this column.":
+      "Niños de cualquier edad: criterio del público (1 mSv), decisión del servicio. La tabla 2 del Foro da 3 mSv a partir de 10 años, pero sus propias tablas 3.B 3 y 3.B 4 se aproximan más a 1 mSv en esta columna.",
     "A pregnant co-worker is assessed individually (distances and times): use the free scenario.":
       "Una compañera embarazada se valora de forma particularizada (distancias y tiempos): use el escenario libre.",
     "Criterion for the children cared for: the Forum applies the co-worker constraint (0.3 mSv), which is below the public one.":

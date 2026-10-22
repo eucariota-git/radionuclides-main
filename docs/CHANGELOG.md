@@ -4,6 +4,11 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
+### v1.17.2 — Caregiver: children always 1 mSv; rows «Contact» / «Proximity»
+- Children of any age take the public criterion (1 mSv), a department decision: the scenario «Child over 11 years» now proposes and accepts only the public category (it proposed «Carer ≤ 60», 3 mSv, from Table 2 of the Forum). «Work with children» still proposes the Forum's 0.3 mSv and accepts the public criterion without a warning.
+- Row names of the child and work scenarios: «Contact» and «Proximity» (Spanish «Contacto» / «Proximidad»), and «Contact at work», instead of «Close contact» / «Nearby», which read too alike.
+- `caregiver.json` v1.4; Test 24 and browser-smoke (Spanish row names) updated.
+
 ### v1.17.1 — Caregiver: restriction days empty by default
 - The cohabitation table no longer opens with 3 d in both rows. That value was the reference case of the source workbook v6, not a value from the product information or the Forum, but on screen it looked recommended. The days now start empty and must be entered or taken from the inverse calculation.
 - Without days the page still gives everything that does not depend on them: dose with an indefinite restriction, minimum and adopted restriction, dose with the adopted restriction, the curve and the self-check of the inverse calculation. The dose of the table, the margin and the maximum rate need the days. The status says so, and the button «Use the adopted restriction in the table» is highlighted. Days in only one row remain an error of the other row.
