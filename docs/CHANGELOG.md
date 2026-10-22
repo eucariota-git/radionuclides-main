@@ -4,6 +4,11 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
+### v1.18.1 — fixes of the audit of v1.18.0 (2026-10-22, A-06, A-07)
+- **A-06** Caregiver occupancy bounds: with a restriction ending inside a 24 h interval (e.g. 1.5 d) the split day was prorated (h/24 × fraction), so a timetable with the full daily hours in that half day (audit case: 8 h at 0–8 h and 24–32 h, 0.187 mSv) exceeded the upper bound (0.160 mSv). That timetable has 16 h of contact where the daily-average dose counts 12 h: the daily-average dose does not represent it either. The bounds are now given only when every restriction that changes the contact ends at a whole number of days from discharge (the adopted restriction always does); otherwise «Not available» with the reason, on screen, in the report and in the CSV. Texts say «the declared hours in every 24 h interval from discharge».
+- **A-07** The bounds walked one 24 h interval per day: restrictions of 10¹² d blocked the page. Runs of whole intervals with one occupancy and one exponential are now summed as geometric series; the cost depends on the number of changes, not on the days.
+- No dose, inverse result or self-check changes. `caregiver.json` v1.8; Test 27 now checks explicit block timetables independent of h/24 (start, end, random), the A-06 case and the A-07 timing; browser-smoke case for A-06.
+
 ### v1.18.0 — Caregiver: bounds of the daily-average occupancy
 - The dose uses occupancy averaged over the day (h/24), as the source workbook, the Foro CSN-SEPR-SEFM (2011) and Gayol Vilorio et al. (2025) do. The page now bounds that approximation for any timetable with the declared hours of each period: the rate falls, so in each 24 h interval from discharge it lies between its values at the end and at the start. Lower and upper bound, and their ratio to the daily-average dose, are shown under the results, in the report and in the CSV (rows `occupancy`). With the days empty they refer to the dose with the adopted restriction.
 - For one exponential the ratios are x·e^−x/(1 − e^−x) and x/(1 − e^−x), x = λ·24 h (Lu-177 physical half-life ×1.053; 85.7 h ×1.100). The fast phase widens them: defaults without restriction ×0.75 to ×1.35; with the adopted 3 d, 2.32 to 3.69 mSv (×0.79 to ×1.26) for 2.93 mSv.

@@ -320,7 +320,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v65');
+    swVersion === 'nm-planner-v66');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -1388,7 +1388,7 @@ async function main() {
   }
 
   console.log();
-  console.log('Test 27: caregiver — bounds of the daily-average occupancy (v1.18.0)');
+  console.log('Test 27: caregiver — bounds of the daily-average occupancy (v1.18.0; audit A-06, A-07 in v1.18.1)');
   {
     const I = CG._internal;
     const mono = T => I.occupancyBounds(I.kinetics({ rate_1m_uSv_h: 10, discharge_h: 6, fast_end_h: 0, T_fast_h: null, T_slow_h: T }),
@@ -1416,16 +1416,39 @@ async function main() {
       w.occupancy && w.occupancy.kMin < 1 && w.occupancy.kMax > 1 && Math.abs(w.occupancy.kMax - b.kMax) < 1e-12 &&
       Math.abs(w.occupancy.low_mSv - w.occupancy.kMin * w.treatment_mSv) < 1e-12 &&
       Math.abs(w.treatment_mSv - CG.evaluate(wbInput()).treatment_mSv) < 1e-12);
-    // Rows with different days: three segments; the bound reproduces a direct per-interval sum
-    const d2 = (() => { const x = wbInput(); x.rows.day.days = 1.5; x.rows.sleep.days = 4; return x; })();
+    // Explicit timetables, independent of h/24 (audit 2026-10-22, A-06): in every 24 h
+    // interval each row's hours are one block, placed at the start, at the end or at
+    // random; the dose is the exact integral of the rate over the blocks
+    const blockDose = (x, r, place) => {
+      const k = r.kinetics, J = (a, b) => CG._internal.integralAfter(k, a) - CG._internal.integralAfter(k, b);
+      let D = 0;
+      for (let n = 0; n < 400; n++) {
+        const t0 = n * 86400;
+        const blocks = ['day', 'sleep'].map(key => { const row = x.rows[key], o = r.rows[key], during = n < row.days;
+          return { h: (during ? row.h_during : row.h_after) * 3600, f: during ? o.fDuring : o.fAfter }; }).filter(b => b.h > 0);
+        const used = blocks.reduce((s, b) => s + b.h, 0);
+        let s = place === 'start' ? t0 : place === 'end' ? t0 + 86400 - used : t0 + Math.random() * (86400 - used);
+        for (const b of blocks) { D += b.f * J(s, s + b.h); s += b.h; }
+      }
+      return D * x.cycles * 1000;
+    };
+    const d2 = (() => { const x = wbInput(); x.rows.day.days = 2; x.rows.sleep.days = 4;
+      Object.assign(x.rows.sleep, { h_during: 8, d_during: 1, h_after: 8, d_after: 0.1 }); return x; })();
     const r2 = CG.evaluate(d2);
-    const direct = (() => { const k = r2.kinetics, H = t => (t < k.tr ? k.A * Math.exp(-k.lf * t) : k.A * Math.exp(-k.lf * k.tr - k.ls * (t - k.tr)));
-      const f = t => ['day', 'sleep'].reduce((s, key) => { const row = d2.rows[key], o = r2.rows[key];
-        return s + (t < row.days * 86400 ? row.h_during * o.fDuring : row.h_after * o.fAfter) / 24; }, 0);
-      let hi = 0; for (let n = 0; n < 2000; n++) { let E = 0; for (let j = 0; j < 1440; j++) E += f(n * 86400 + (j + 0.5) * 60) * 60; hi += H(n * 86400) * E; }
-      return hi * d2.cycles * 1000; })();
-    check('rows with different restrictions (1.5 d / 4 d): upper bound equals a direct per-interval sum',
-      Math.abs(r2.occupancy.high_mSv - direct) < 1e-6 * direct);
+    const sched = ['start', 'end', 'random', 'random', 'random'].map(p => blockDose(d2, r2, p));
+    check(`explicit block timetables (restrictions 2 d / 4 d) lie within the bounds: ${sched.map(v => v.toFixed(3)).join(', ')} in [${r2.occupancy.low_mSv.toFixed(3)}, ${r2.occupancy.high_mSv.toFixed(3)}] mSv`,
+      sched.every(v => v >= r2.occupancy.low_mSv && v <= r2.occupancy.high_mSv) && sched[0] > r2.treatment_mSv && sched[1] < r2.treatment_mSv);
+    // A-06: a restriction that changes the contact and ends inside an interval gives no bounds
+    const a06 = (() => { const x = CG.defaultInput(); Object.assign(x, { rate_1m_uSv_h: 15, fast_end_h: 0, T_slow_h: 40.5, cycles: 1 });
+      Object.assign(x.rows.day, { days: 1.5, h_during: 8, d_during: 1, h_after: 0, d_after: null });
+      Object.assign(x.rows.sleep, { days: 1.5, h_during: 0, d_during: null, h_after: 0, d_after: null }); return CG.evaluate(x); })();
+    const same = (() => { const x = wbInput(); x.rows.day.days = 1.5; return CG.evaluate(x); })();   // the day row keeps its contact
+    check('A-06: 1.5 d with a change of contact → bounds not available, reason given; 1.5 d in a row whose contact does not change → bounds given',
+      a06.ready && a06.occupancy === null && /whole number of days/.test(a06.occupancyNote) && same.occupancy && same.occupancyNote === '');
+    // A-07: the cost does not grow with the days (geometric sums)
+    const big = (() => { const x = wbInput(); x.rows.day.days = 1e12; x.rows.sleep.days = 1e12; x.fast_end_h = 1e9; return x; })();
+    const t0 = Date.now(), rb = CG.evaluate(big), ms = Date.now() - t0;
+    check(`A-07: restrictions of 1e12 d and a fast phase of 1e9 h evaluate in ${ms} ms (< 200 ms)`, ms < 200 && rb.ready);
     // Days empty: the bounds refer to the dose with the adopted restriction
     const e = CG.evaluate(CG.defaultInput());
     check('days empty: bounds of the dose with the adopted restriction',

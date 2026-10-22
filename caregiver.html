@@ -201,7 +201,7 @@
       <!-- Bounds of the daily-average occupancy (informative; never change the dose) -->
       <p class="form-hint mt-1" id="occupancyBox">
         <span id="occupancyValue"></span>
-        <span>The dose shown uses the daily-average occupancy (h/24). The bounds hold for any timetable that keeps the declared hours of each period: in each 24 h interval from discharge the rate is taken at its start or at its end (Method). Whether the upper bound is compared with the criterion is an evaluation decision.</span>
+        <span>The dose shown uses the daily-average occupancy (h/24). The bounds hold for any timetable with the declared hours in every 24 h interval from discharge: in each interval the rate is taken at its start or at its end (Method). They need restrictions of whole days. Whether the upper bound is compared with the criterion is an evaluation decision.</span>
       </p>
 
       <h3 class="card-title mt-2">Inverse calculations (same restriction in both rows)</h3>
@@ -271,7 +271,7 @@
           dose with an indefinite restriction = cycles · f<sub>r</sub> · I<sub>∞</sub> (a floor if f<sub>r</sub> &lt; f<sub>n</sub>, an upper asymptote if f<sub>r</sub> &gt; f<sub>n</sub>)</li>
         <li>Maximum rate = Ḣ<sub>0</sub> · criterion / treatment dose (the dose is proportional to the rate).
           Minimum restriction: the C that solves cycles · [f<sub>r</sub> I<sub>∞</sub> + (f<sub>n</sub> − f<sub>r</sub>) I<sub>after</sub>(C)] = criterion, analytically in either phase</li>
-        <li>Daily-average occupancy bounds (informative): the rate decreases, so in each 24 h interval from discharge it lies between its values at the end and at the start of the interval. For any timetable with the declared hours of each period the dose lies between Σ Ḣ(end)·E and Σ Ḣ(start)·E, with E the hours of the interval weighted by the spatial factors. For one exponential the factors on the daily-average dose are x·exp(−x)/(1 − exp(−x)) and x/(1 − exp(−x)), x = λ·24 h.</li>
+        <li>Daily-average occupancy bounds (informative): the rate decreases, so in each 24 h interval from discharge it lies between its values at the end and at the start of the interval. For any timetable with the declared hours in every interval (restrictions of whole days) the dose lies between Σ Ḣ(end)·E and Σ Ḣ(start)·E, with E the hours of the interval weighted by the spatial factors. For one exponential the factors on the daily-average dose are x·exp(−x)/(1 − exp(−x)) and x/(1 − exp(−x)), x = λ·24 h.</li>
       </ul>
       <p>Integration in SI (Sv/s, s, Sv); the interface uses µSv/h, h, d and mSv.</p>
       <details class="mt-1">
@@ -752,8 +752,8 @@
     $('criterion').textContent = Number.isFinite(out.criterion.value) ? UTILS.num(out.criterion.value) : '—';
     $('criterionUnit').textContent = out.criterion.label ? `mSv — ${out.criterion.label}` : 'mSv';
     $('margin').textContent = f3(out.margin_mSv);
-    $('occupancyBox').classList.toggle('hidden', !out.occupancy);
-    $('occupancyValue').textContent = out.occupancy ? `Daily-average occupancy bounds of the treatment dose: ${occText(out.occupancy)}.` : '';
+    $('occupancyBox').classList.toggle('hidden', !out.occupancy && !out.occupancyNote);
+    $('occupancyValue').textContent = out.occupancy ? `Daily-average occupancy bounds of the treatment dose: ${occText(out.occupancy)}.` : out.occupancyNote;
 
     const inv = out.inverse;
     $('maxRate').textContent = f3(inv.maxRate_uSv_h);
@@ -873,7 +873,7 @@
           ['Dose per administration', `${f3(out.perCycle_mSv)} mSv`],
           ['Dose of the treatment', `${f3(out.treatment_mSv)} mSv`],
           ['Margin to the criterion', `${f3(out.margin_mSv)} mSv`],
-          ['Daily-average occupancy bounds of the treatment dose', out.occupancy ? occText(out.occupancy) : 'not available'],
+          ['Daily-average occupancy bounds of the treatment dose', out.occupancy ? occText(out.occupancy) : (out.occupancyNote || 'not available')],
         ] },
         { heading: 'Inverse calculations (same restriction in both rows)', rows: [
           ['Maximum rate at 1 m at discharge', `${f3(inv.maxRate_uSv_h)} µSv/h`],
@@ -931,6 +931,7 @@
     add('occupancy', 'Treatment dose, upper bound for any timetable', occR, occ && occ.high_mSv, 'mSv');
     add('occupancy', 'Lower bound / daily-average dose', occR, occ && occ.kMin, '');
     add('occupancy', 'Upper bound / daily-average dose', occR, occ && occ.kMax, '');
+    if (out.occupancyNote) add('occupancy', out.occupancyNote, '', '', '');
     add('inverse', 'Maximum rate at 1 m at discharge', '', inv.maxRate_uSv_h, 'uSv/h');
     add('inverse', indefText(inv), '', inv.floor_mSv, 'mSv');
     add('inverse', 'Minimum restriction', '', inv.minRestriction_d !== null ? inv.minRestriction_d : (CAREGIVER.INVERSE_TEXT[inv.minRestrictionCode] || ''), 'd');

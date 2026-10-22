@@ -208,12 +208,16 @@ const CAREGIVER = (() => {
   }
 
   /**
-   * Bounds of the daily-average occupancy (h/24) for ANY timetable that keeps
-   * the declared hours of each period. The rate falls monotonically, so in each
-   * 24 h interval from discharge it lies between its values at the end and at
-   * the start of the interval: the dose lies between Σ Ḣ(end)·E and Σ Ḣ(start)·E,
-   * E = ∫ f dt over the interval. For one exponential the ratios are
-   * x·e^−x/(1 − e^−x) and x/(1 − e^−x), x = λ·24 h. Informative only: it never
+   * Bounds of the daily-average occupancy (h/24) for ANY timetable with the
+   * declared hours in every 24 h interval from discharge. The rate falls
+   * monotonically, so in each interval it lies between its values at the end and
+   * at the start: the dose lies between Σ Ḣ(end)·E and Σ Ḣ(start)·E, E = ∫ f dt
+   * over the interval. For one exponential the ratios are x·e^−x/(1 − e^−x) and
+   * x/(1 − e^−x), x = λ·24 h. The occupancy changes (segs) must fall on whole
+   * intervals: in a split interval "h per day" does not fix the hours of each
+   * part (audit 2026-10-22, A-06); evaluate() gives no bounds then. Runs of whole
+   * intervals with one f and one exponential are summed as geometric series, so
+   * the cost does not grow with the days (A-07). Informative only: it never
    * changes the calculated dose (the port stays identical to the workbook).
    * @param segs [{until_s, f}] piecewise-constant weighted factor, last until = Infinity
    * @returns {{kMin:number,kMax:number}|null} null when the dose is zero
@@ -221,27 +225,38 @@ const CAREGIVER = (() => {
   function occupancyBounds(k, segs) {
     const W = S_PER_D;
     const rate = t => (t < k.tr ? k.A * Math.exp(-k.lf * t) : k.A * Math.exp(-k.lf * k.tr - k.ls * (t - k.tr)));
-    const equiv = (a, b) => segs.reduce((s, g, i) => {
-      const lo = Math.max(a, i ? segs[i - 1].until_s : 0), hi = Math.min(b, g.until_s);
-      return hi > lo ? s + g.f * (hi - lo) : s;
-    }, 0);
+    const fAt = t => segs.find(g => t < g.until_s).f;
     let avg = 0;
     segs.forEach((g, i) => {
       avg += g.f * (integralAfter(k, i ? segs[i - 1].until_s : 0) - (g.until_s === Infinity ? 0 : integralAfter(k, g.until_s)));
     });
     if (!(avg > 0)) return null;
-    // Whole intervals up to the end of the fast phase and the last breakpoint
-    const tEnd = Math.max(k.tr, segs.length > 1 ? segs[segs.length - 2].until_s : 0);
+    // Change points: occupancy (whole intervals) and end of the fast phase (any time)
+    const cuts = [...new Set([k.tr, ...segs.map(g => g.until_s)].filter(b => b > 0 && b < Infinity))].sort((a, b) => a - b);
     let hi = 0, lo = 0, t = 0;
-    for (; t < tEnd; t += W) {
-      const E = equiv(t, t + W);
-      hi += rate(t) * E;
-      lo += rate(t + W) * E;
+    for (;;) {
+      const next = cuts.find(b => b > t);
+      const lam = t < k.tr ? k.lf : k.ls, q = Math.exp(-lam * W);
+      if (!(q < 1)) return null;
+      const E = fAt(t) * W;
+      if (next === undefined) {                  // tail to infinity
+        hi += rate(t) * E / (1 - q);
+        lo += rate(t) * q * E / (1 - q);
+        break;
+      }
+      const m = Math.floor((next - t) / W);      // whole intervals before the next change
+      if (m >= 1) {
+        const g = -Math.expm1(m * Math.log(q)) / (1 - q);
+        hi += rate(t) * E * g;
+        lo += rate(t) * q * E * g;
+        t += m * W;
+      }
+      if (t < next) {                            // the interval holding the end of the fast phase (f constant)
+        hi += rate(t) * E;
+        lo += rate(t + W) * E;
+        t += W;
+      }
     }
-    // Then constant f and one exponential: geometric series
-    const q = Math.exp(-k.ls * W), E = segs[segs.length - 1].f * W;
-    hi += rate(t) * E / (1 - q);
-    lo += rate(t) * q * E / (1 - q);
     return { kMin: lo / avg, kMax: hi / avg };
   }
 
@@ -439,8 +454,14 @@ const CAREGIVER = (() => {
     }
 
     // Bounds of the daily-average occupancy: for the table when it gives a dose,
-    // otherwise for the adopted restriction (same days in both rows)
+    // otherwise for the adopted restriction (same days in both rows). Only when
+    // every change of contact falls on a whole day from discharge (A-06)
     out.occupancy = null;
+    out.occupancyNote = '';
+    const wholeDays = days => ['day', 'sleep'].every(key => {
+      const row = input.rows[key], f = R[key], d = days[key];
+      return row.h_during * f.fDuring === row.h_after * f.fAfter || Math.abs(d - Math.round(d)) <= 1e-9;
+    });
     const segsOf = cuts => {
       const at = t => ['day', 'sleep'].reduce((s, key) => {
         const row = input.rows[key], f = R[key], C = cuts[key];
@@ -453,11 +474,14 @@ const CAREGIVER = (() => {
       const b = occupancyBounds(k, segsOf(cuts));
       return b && { basis, ...b, low_mSv: b.kMin * dose, high_mSv: b.kMax * dose };
     };
+    const NOT_WHOLE = 'Not available: a restriction that changes the contact does not end at a whole number of days from discharge, and «hours per day» does not fix the hours of a split day.';
     if (out.ready && out.treatment_mSv > 0) {
-      out.occupancy = occ('table', { day: R.day.C_s, sleep: R.sleep.C_s }, out.treatment_mSv);
+      if (wholeDays({ day: day.days, sleep: sleep.days })) out.occupancy = occ('table', { day: R.day.C_s, sleep: R.sleep.C_s }, out.treatment_mSv);
+      else out.occupancyNote = NOT_WHOLE;
     } else if (out.tableReady && num(inv.adopted_d) && inv.doseAtAdopted_mSv > 0) {
       const C = inv.adopted_d * S_PER_D;
-      out.occupancy = occ('adopted', { day: C, sleep: C }, inv.doseAtAdopted_mSv);
+      if (wholeDays({ day: inv.adopted_d, sleep: inv.adopted_d })) out.occupancy = occ('adopted', { day: C, sleep: C }, inv.doseAtAdopted_mSv);
+      else out.occupancyNote = NOT_WHOLE;
     }
     return out;
   }

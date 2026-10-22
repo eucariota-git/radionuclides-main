@@ -282,6 +282,12 @@ async function main() {
         check('caregiver A16: occupancy bounds of the table dose shown, informative line visible',
           occ1 === 'Daily-average occupancy bounds of the treatment dose: 2.32 to 3.69 mSv (×0.79 to ×1.26).' &&
           !(await ev(`document.getElementById('occupancyBox').classList.contains('hidden')`)), occ1);
+        // A-06 (audit 2026-10-22): a restriction that changes the contact and ends inside a day → no bounds
+        await ev(`(() => { const e = document.getElementById('sleep_days'); e.value = '1.5'; e.dispatchEvent(new Event('input', { bubbles: true })); })()`); await sleep(200);
+        const occ2 = await text('#occupancyValue');
+        check('caregiver A-06: 1.5 d in the row whose contact changes → bounds not available, reason shown, dose still given',
+          /^Not available: a restriction that changes the contact does not end at a whole number of days/.test(occ2) && (await text('#treatment')) !== '—', occ2);
+        await ev(`(() => { const e = document.getElementById('sleep_days'); e.value = '3'; e.dispatchEvent(new Event('input', { bubbles: true })); })()`); await sleep(200);
         // A-01 (audit 2026-10-22): an input error must clear the row doses, which sit outside the result block
         const rowDoses = `[document.getElementById('day_dose').textContent, document.getElementById('sleep_dose').textContent, !document.getElementById('calcError').classList.contains('hidden')]`;
         await ev(`(() => { const e = document.getElementById('rate_1m_uSv_h'); e.value = 'oops'; e.dispatchEvent(new Event('input', { bubbles: true })); })()`); await sleep(200);
