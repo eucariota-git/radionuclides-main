@@ -1723,3 +1723,7 @@ kbd {
 
 /* A note that takes a whole row of the result grid (Decay without a time) */
 .result-grid-note { grid-column: 1 / -1; margin: 0; }
+
+/* Effluent: intermediate result columns, shown on demand (#btnIntermediate) */
+.col-int { display: none; }
+.show-intermediate .col-int { display: table-cell; }

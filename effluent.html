@@ -45,11 +45,8 @@
 
   <div class="alert alert-warning mb-1">
     <strong>Screening estimate, not a complete discharge assessment.</strong>
-    Within each scenario, doses are computed per nuclide and summed linearly. The two scenarios concern
-    <strong>different receptors and are never added together</strong>. The IS-28 Annex II II.A.4 sewer conditions
-    (per-nuclide concentration level, sum of fractions, annual activity limits) and mixture clearance
-    are evaluated separately. Inhalation uses dose coefficients for adult <em>members of the public</em>
-    (neither worker is an exposed worker of the licensee).
+    Doses are summed per nuclide within each scenario; the two scenarios concern
+    <strong>different receptors and are never added together</strong>. The IS-28 Annex II II.A.4 sewer conditions and mixture clearance are evaluated separately.
   </div>
 
   <!-- A. Source term -->
@@ -73,20 +70,14 @@
         <tbody id="sourceBody"></tbody>
       </table>
     </div>
-    <div class="alert alert-info mt-1">
-      A<sub>adm</sub> = patients × cycles × administered activity per cycle; all of it is assumed to be excreted.
-      The fraction excreted <strong>in hospital</strong> leaves through the facility's sewer connection — or, for a nuclide
-      controlled in <strong>decay tanks</strong>, only its share of the annual tank discharge (shared among the controlled
-      nuclides in proportion to the activity excreted into the tanks; no decay credit when their sum is below it).
-      The rest is excreted at home.
-      <strong>Scenario 1</strong> receives only the activity leaving the hospital.
-      <strong>Scenario 2</strong> receives the activity leaving the hospital plus the activity excreted at home by the
-      patients living in the STP catchment.
+    <div class="form-hint mt-1">
+      A<sub>adm</sub> = patients × cycles × administered activity per cycle, all of it excreted. The in-hospital fraction leaves through the facility (with decay tanks, only its share of the annual tank discharge) and reaches Scenarios 1 and 2; the rest is excreted at home and reaches only Scenario 2, in proportion to the catchment.
     </div>
     <div class="form-hint mt-1" id="tankStatus"></div>
     <ul class="text-sm mt-1" id="sourceWarnings"></ul>
     <details class="mt-1">
       <summary><strong>Sources and assumptions of the default source term</strong></summary>
+      <p class="text-sm mt-1" id="sourceModel"></p>
       <ul class="text-sm mt-1" id="sourceNotes"></ul>
     </details>
   </div>
@@ -109,11 +100,6 @@
   <div class="card mt-2">
     <h2 class="card-title"><span class="ico ico-factory" aria-hidden="true"></span> C. Scenario 2 — STP sludge process operator</h2>
     <div class="form-grid" id="s2Grid"></div>
-    <div class="form-hint mt-1">
-      Wet sludge production is plant-specific: PRTR-España
-      (<a href="https://prtr-es.miteco.gob.es/" target="_blank" rel="noopener">prtr-es.miteco.gob.es</a>),
-      waste code LER 19 08 05.
-    </div>
     <div class="form-grid mt-2">
       <div class="form-group">
         <label class="form-label" for="geometry">External coefficient geometry</label>
@@ -139,6 +125,9 @@
     <h2 class="card-title"><span class="ico ico-chart" aria-hidden="true"></span> Results</h2>
     <div id="calcError" class="alert alert-danger hidden" role="alert"></div>
     <div id="resultBlock">
+      <div class="d-flex gap-2 mb-1" data-no-print>
+        <button class="btn btn-secondary btn-sm" id="btnIntermediate" type="button" aria-pressed="false" aria-controls="s1Table s2Table">Show intermediate values</button>
+      </div>
 
       <h3 class="card-title">Scenario 1 — sewer system inspector</h3>
       <div class="overflow-x-auto">
@@ -147,10 +136,10 @@
             <tr>
               <th>Nuclide</th>
               <th class="text-right">E (mSv/y)</th>
-              <th class="text-right">DF (transit decay)</th>
-              <th class="text-right">C wastewater (Bq/m³ per GBq)</th>
-              <th class="text-right">C air (Bq/m³ per GBq)</th>
-              <th class="text-right" title="Dose per unit activity discharged in one year, under the parameters entered">FD (µSv/GBq)</th>
+              <th class="text-right col-int">DF (transit decay)</th>
+              <th class="text-right col-int">C wastewater (Bq/m³ per GBq)</th>
+              <th class="text-right col-int">C air (Bq/m³ per GBq)</th>
+              <th class="text-right col-int" title="Dose per unit activity discharged in one year, under the parameters entered">FD (µSv/GBq)</th>
               <th class="text-right" title="Activity leaving the hospital in one year">Leaving hospital (GBq/y)</th>
               <th class="text-right">External (mSv/y)</th>
               <th class="text-right">Inhalation (mSv/y)</th>
@@ -167,10 +156,10 @@
             <tr>
               <th>Nuclide</th>
               <th class="text-right">E (mSv/y)</th>
-              <th class="text-right">DF (transit decay)</th>
-              <th class="text-right">C dry sludge (Bq/kg per GBq)</th>
-              <th class="text-right">C wet sludge (Bq/m³ per GBq)</th>
-              <th class="text-right" title="Dose per unit activity reaching the plant in one year, under the parameters entered">FD (µSv/GBq)</th>
+              <th class="text-right col-int">DF (transit decay)</th>
+              <th class="text-right col-int">C dry sludge (Bq/kg per GBq)</th>
+              <th class="text-right col-int">C wet sludge (Bq/m³ per GBq)</th>
+              <th class="text-right col-int" title="Dose per unit activity reaching the plant in one year, under the parameters entered">FD (µSv/GBq)</th>
               <th class="text-right" title="Hospital discharge plus the activity excreted at home in the catchment">Activity reaching STP (GBq/y)</th>
               <th class="text-right">External (mSv/y)</th>
               <th class="text-right">Inhalation (mSv/y)</th>
@@ -256,6 +245,7 @@
       the public (RD 783/2001 Annex III table b), kept by the CSN Resolution of 3 April 2024; transcription: ICRP Publication 119 (2012),
       Table G.1), lung absorption type F (fast) or M (moderate). Half-lives are taken from the
       app database (Lu-177m, not a curated entry, from ICRP 107).</p>
+      <p id="s1GeomNote"></p>
     </div>
     </details>
   </div>
@@ -300,6 +290,8 @@
   }
 
   const PG = data.parameters;          // { common, s1, s2 }
+  // Scenario 1 limitation on screen; the full note (with the CSDA argument) is in Method and in the report
+  const S1_SHORT = 'Photon-only coefficients: bremsstrahlung from beta and positron emission is not included nor bounded — more severe for F-18 and I-131 than for Lu-177, least for Tc-99m.';
   const esc = UTILS.escapeHtml;
   const SCEN = ['common', 's1', 's2'];
   const GRID = { common: 'commonGrid', s1: 's1Grid', s2: 's2Grid' };
@@ -313,6 +305,20 @@
   }
 
   // ---- Build inputs from the data file ----
+  // Hints that only repeat the label are not shown on screen; the source of every
+  // parameter stays under «Sources and assumptions» and in the report (screen-text review 2026-10-30)
+  const HIDDEN_HINTS = new Set(['common.breathing_rate_m3_h', 's1.water_density_kg_m3', 's1.respirable_fraction', 's1.t_external_h_y', 's1.transit_h',
+    's2.wet_density_kg_m3', 's2.respirable_fraction', 's2.t_external_h_y']);
+  const SCREEN_HINTS = {
+    'common.dose_criterion_mSv_y': 'A value ≤ 0 means no comparison.',
+    's2.wet_sludge_t_per_y': p => `<span>${esc(p.hint)}</span> PRTR-España (<a href="https://prtr-es.miteco.gob.es/" target="_blank" rel="noopener">prtr-es.miteco.gob.es</a>), waste code LER 19 08 05.`,
+  };
+  const hintHtml = (s, key, p) => {
+    const k = `${s}.${key}`;
+    if (HIDDEN_HINTS.has(k)) return '';
+    const h = SCREEN_HINTS[k];
+    return `<div class="form-hint">${typeof h === 'function' ? h(p) : esc(h || p.hint || p.source)}</div>`;
+  };
   for (const s of SCEN) {
     document.getElementById(GRID[s]).innerHTML = Object.entries(PG[s]).map(([key, p]) => {
       // Values entered in scientific notation (1e-7) need a keyboard with "e"
@@ -320,7 +326,7 @@
       return `<div class="form-group">
         <label class="form-label" for="${s}_${key}">${esc(p.label)} (${esc(p.unit)})</label>
         <input type="text" inputmode="${mode}" autocomplete="off" spellcheck="false" class="form-input num-input" id="${s}_${key}" value="${UTILS.inputValue(p.value)}" title="${UTILS.safeAttr(p.label)}">
-        <div class="form-hint">${esc(p.hint || p.source)}</div>
+        ${hintHtml(s, key, p)}
       </div>`;
     }).join('');
   }
@@ -329,7 +335,9 @@
   const SCEN_NAME = { common: 'Common', s1: 'Scenario 1', s2: 'Scenario 2' };
   document.getElementById('paramSources').innerHTML = SCEN.map(s => Object.values(PG[s]).map(p =>
     `<li><strong>${esc(SCEN_NAME[s])} — ${esc(p.label)}</strong> (default ${esc(String(p.value))} ${esc(p.unit)}): ${esc(p.source)}</li>`).join('')).join('') +
-    `<li><strong>Facility presets</strong>: ${esc(data.facility_presets.source)}</li>`;
+    `<li><strong>Facility presets</strong>: ${esc(data.facility_presets.source)}</li>` +
+    ['L10', 'L45'].map(g => `<li><strong>${esc(data.geometries[g].label)}</strong>: ${esc(data.geometries[g].note)}</li>`).join('');
+  const GEO_RULE = 'The coefficient belongs to this model geometry; its use for a specific plant must be justified.';
   document.getElementById('adaptationNote').textContent = data.meta.adaptation_note;
 
   // Facility presets fill the water volume; any manual edit switches to Custom.
@@ -350,8 +358,8 @@
     render();
   });
   volInput.addEventListener('input', syncFacility);
-  document.getElementById('s1Warning').textContent =
-    `${data.scenario1_geometry.label}. ${data.scenario1_geometry.note}`;
+  document.getElementById('s1Warning').textContent = `${data.scenario1_geometry.label}. ${S1_SHORT}`;
+  document.getElementById('s1GeomNote').textContent = `${data.scenario1_geometry.label}. ${data.scenario1_geometry.note}`;
 
   document.getElementById('sourceBody').innerHTML = nuclides.map(({ nd }, i) => {
     const st = nd.source_term;
@@ -363,16 +371,14 @@
       <td class="sym">${esc(nd.id)}</td>
       <td>${cell('patients_per_y', st.patients_per_y)}</td>
       <td>${cell('cycles_per_patient', st.cycles_per_patient, st.cycles_locked ? 'disabled' : '')}</td>
-      <td>${cell('activity_per_cycle_GBq', st.activity_per_cycle_GBq)}<div class="form-hint">${esc(st.activity_label)}</div></td>
+      <td>${cell('activity_per_cycle_GBq', st.activity_per_cycle_GBq)}${st.activity_label === 'Administered activity per cycle' ? '' : `<div class="form-hint">${esc(st.activity_label)}</div>`}</td>
       <td>${cell('fraction_in_hospital', st.fraction_in_hospital)}</td>
       <td><input type="checkbox" id="st_${i}_controlled" ${st.controlled_default ? 'checked' : ''} aria-label="${UTILS.safeAttr(nd.id)} controlled in decay tanks"></td>
       <td class="num" id="st_${i}_A1">—</td>
       <td class="num" id="st_${i}_A2">—</td>
     </tr>`;
   }).join('');
-  // Warnings stay visible; provenance goes to the collapsible block (T30)
-  document.getElementById('sourceWarnings').innerHTML = nuclides.filter(({ nd }) => nd.source_term.activity_warning || nd.s2_note).map(({ nd }) =>
-    `<li><strong>${esc(nd.id)}</strong>: ${nd.source_term.activity_warning ? `<span style="color:var(--warning-text);">&#9888; ${esc(nd.source_term.activity_warning)}</span>` : ''}${nd.s2_note ? ' ' + esc(nd.s2_note) : ''}</li>`).join('');
+  document.getElementById('sourceModel').textContent = data.meta.source_term_model;
   document.getElementById('sourceNotes').innerHTML = nuclides.map(({ nd }) =>
     `<li><strong>${esc(nd.id)}</strong>: ${esc(nd.source_term.source)}</li>`).join('');
 
@@ -456,8 +462,14 @@
     document.getElementById('resultBlock').classList.remove('hidden');
     last = { input, out };
 
+    // Warnings stay visible, but only for the nuclides included (provenance goes to the collapsible block, T30)
+    document.getElementById('sourceWarnings').innerHTML = nuclides.filter(({ nd }, i) => input.nuclides[i].include && (nd.source_term.activity_warning || nd.s2_note)).map(({ nd }) =>
+      `<li><strong>${esc(nd.id)}</strong>: ${nd.source_term.activity_warning ? `<span style="color:var(--warning-text);">&#9888; ${esc(nd.source_term.activity_warning)}</span>` : ''}${nd.s2_note ? ' ' + esc(nd.s2_note) : ''}</li>`).join('');
+
+    // F8 — the size comparison of each geometry is provenance (Sources and assumptions); the hint keeps the rule
     const geo = input.geometry;
-    document.getElementById('geometryHint').textContent = data.geometries[geo].note;
+    const geoNote = data.geometries[geo].note;
+    document.getElementById('geometryHint').textContent = geoNote.endsWith(GEO_RULE) ? GEO_RULE : geoNote;
 
     nuclides.forEach(({ nd }, i) => {
       const r1 = out.s1.rows.find(r => r.id === nd.id);
@@ -472,15 +484,15 @@
             `${UTILS.num(src.tankLimit_GBq_y)} GBq/y discharged, shared in proportion (factor ${sci(src.tankFactor)}).`
           : `Decay tanks: ${sci(src.sumControlled_GBq_y)} GBq/y excreted into the tanks, below the ${UTILS.num(src.tankLimit_GBq_y)} GBq/y ` +
             'discharge — all of it is assumed discharged (no decay credit).')
-      : 'No included nuclide is controlled in decay tanks.';
+      : '';
 
     document.getElementById('s1Body').innerHTML = out.s1.rows.map(r => `<tr>
       <td class="sym">${esc(r.id)}</td>
       <td class="num"><strong>${sci(r.E_mSv_y)}</strong></td>
-      <td class="num">${fmtDF(r.DF)}</td>
-      <td class="num">${sci(r.per_GBq.C_water_Bq_m3)}</td>
-      <td class="num">${sci(r.per_GBq.C_air_Bq_m3)}</td>
-      <td class="num">${sci(r.per_GBq.FD_uSv)}</td>
+      <td class="num col-int">${fmtDF(r.DF)}</td>
+      <td class="num col-int">${sci(r.per_GBq.C_water_Bq_m3)}</td>
+      <td class="num col-int">${sci(r.per_GBq.C_air_Bq_m3)}</td>
+      <td class="num col-int">${sci(r.per_GBq.FD_uSv)}</td>
       <td class="num">${sci(r.A_GBq_y)}</td>
       <td class="num">${sci(r.E_ext_mSv_y)}</td>
       <td class="num">${sci(r.E_inh_mSv_y)}</td>
@@ -491,10 +503,10 @@
     document.getElementById('s2Body').innerHTML = out.s2.rows.map(r => `<tr>
       <td class="sym">${esc(r.id)}${r.partial ? ' <span class="text-sm" title="No external coefficient for Scenario 2">(partial)</span>' : ''}</td>
       <td class="num"><strong>${r.partial ? '≥ ' : ''}${sci(r.E_mSv_y)}</strong></td>
-      <td class="num">${fmtDF(r.DF)}</td>
-      <td class="num">${sci(r.per_GBq.C_dry_Bq_kg)}</td>
-      <td class="num">${sci(r.per_GBq.C_wet_Bq_m3)}</td>
-      <td class="num">${r.partial ? '≥ ' : ''}${sci(r.per_GBq.FD_uSv)}</td>
+      <td class="num col-int">${fmtDF(r.DF)}</td>
+      <td class="num col-int">${sci(r.per_GBq.C_dry_Bq_kg)}</td>
+      <td class="num col-int">${sci(r.per_GBq.C_wet_Bq_m3)}</td>
+      <td class="num col-int">${r.partial ? '≥ ' : ''}${sci(r.per_GBq.FD_uSv)}</td>
       <td class="num">${sci(r.A_GBq_y)}</td>
       <td class="num">${r.partial ? 'n/a — no coefficient (not zero)' : sci(r.E_ext_mSv_y)}</td>
       <td class="num">${sci(r.E_inh_mSv_y)}</td>
@@ -581,6 +593,13 @@
     el.addEventListener('change', render);
   });
 
+  // Intermediate columns (DF, concentrations, FD): hidden by default, they are in the report and the CSV
+  const btnInt = document.getElementById('btnIntermediate');
+  btnInt.addEventListener('click', () => {
+    const on = document.getElementById('resultBlock').classList.toggle('show-intermediate');
+    btnInt.setAttribute('aria-pressed', String(on));
+    btnInt.textContent = on ? 'Hide intermediate values' : 'Show intermediate values';
+  });
   document.getElementById('btnReset').addEventListener('click', () => {
     for (const s of SCEN) for (const key of Object.keys(PG[s])) document.getElementById(`${s}_${key}`).value = UTILS.inputValue(PG[s][key].value);
     nuclides.forEach(({ nd }, i) => {

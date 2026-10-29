@@ -320,7 +320,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v66');
+    swVersion === 'nm-planner-v67');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -547,7 +547,7 @@ async function main() {
         .every(h => about4.includes(`href="${h}"`) && about4.includes(`id="${h.slice(1)}"`)));
     check('user-facing strings carry no audit history, and long method notes are collapsible (T37)',
       !/audit 20\d\d/.test(JSON.stringify(require(path.join(ROOT, 'data/effluent-scenarios.json')))) &&
-      /<summary>Shielding method<\/summary>/.test(doseHtml) && /<summary class="card-title"[^>]*>Reference &amp; data notes/.test(read('index.html')));
+      /<summary>Shielding methods available<\/summary>/.test(doseHtml) && /<summary class="card-title"[^>]*>Reference &amp; data notes/.test(read('index.html')));
   }
   check('decay names the denominator as mass of material, never "vial weight" (copy audit T04)',
     /Mass of material being assessed/.test(decayHtml) && !/Vial \/ container weight|Vial_weight/.test(decayHtml) &&
@@ -1458,6 +1458,32 @@ async function main() {
       caregiverHtml.includes("['Daily-average occupancy bounds of the treatment dose'") &&
       caregiverHtml.includes("add('occupancy', 'Treatment dose, upper bound for any timetable'") &&
       read('js/i18n-es.js').includes('Daily-average occupancy bounds of the treatment dose'));
+  }
+
+  console.log('Test 28: screen-text review 2026-10-30 (repeated texts removed, warnings kept once)');
+  {
+    const effJson = JSON.parse(read('data/effluent-scenarios.json'));
+    check('Decay and Dose no longer say «Results update as you type» (the Guide says it)',
+      !/Results update as you type/.test(decayHtml) && !/Results update as you type/.test(doseHtml));
+    check('Dose: no Notes column (Γ is in the summary line); the shielding methods sit inside Shielding details',
+      !/<th>Notes<\/th>/.test(doseHtml) && !/data-label="Constant"/.test(doseHtml) &&
+      doseHtml.indexOf('<summary>Shielding methods available</summary>') > doseHtml.indexOf('id="shieldingInfo"') &&
+      doseHtml.indexOf('<summary>Shielding methods available</summary>') < doseHtml.indexOf('id="chartTitle"') &&
+      /may underestimate the skin dose of low-energy emitters\)<\/span>/.test(doseHtml));
+    check('Effluent: warnings rebuilt in render() for the included nuclides only; tank status empty without tanks',
+      /input\.nuclides\[i\]\.include && \(nd\.source_term\.activity_warning \|\| nd\.s2_note\)/.test(effluentHtml) &&
+      effluentHtml.indexOf("getElementById('sourceWarnings')") > effluentHtml.indexOf('function render()') &&
+      !/No included nuclide is controlled in decay tanks/.test(effluentHtml));
+    check('Effluent: hidden hints name existing parameters; the data file and the report keep every hint and the full Scenario 1 note',
+      [...effluentHtml.match(/HIDDEN_HINTS = new Set\(\[([^\]]+)\]/)[1].matchAll(/'(\w+)\.(\w+)'/g)].every(([, s, k]) => effJson.parameters[s] && effJson.parameters[s][k] && effJson.parameters[s][k].hint) &&
+      /data\.scenario1_geometry\.note,/.test(effluentHtml) && /id="s1GeomNote"/.test(effluentHtml));
+    check('Effluent: intermediate columns (DF, concentrations, FD) hidden by default and shown with a pressed-state button',
+      (effluentHtml.match(/class="text-right col-int"/g) || []).length === 8 && (effluentHtml.match(/class="num col-int"/g) || []).length === 8 &&
+      /id="btnIntermediate" type="button" aria-pressed="false"/.test(effluentHtml) &&
+      /\.col-int \{ display: none; \}/.test(read('css/style.css')) && /\.show-intermediate \.col-int \{ display: table-cell; \}/.test(read('css/style.css')));
+    check('Caregiver: the full inverse note stays in the report; the screen keeps the meaning of «Unattainable»',
+      /notes: \[data\.inverse_note,/.test(caregiverHtml) && /"Unattainable" = the criterion is not met however long the restriction lasts/.test(caregiverHtml) &&
+      !/Not used \(only for «Other criterion»\)/.test(caregiverHtml));
   }
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);

@@ -254,6 +254,16 @@ async function main() {
         check('effluent defaults: Scenario 1 total 0.0199 mSv/y', near(s1, 0.0199), s1);
         check('effluent defaults: Scenario 2 total 2.74 mSv/y', near(s2, 2.742), s2);
         check('effluent: E (mSv/y) is the second column', /E \(mSv\/y\)/.test(await text('#s1Table th:nth-child(2)')));
+        // Screen-text review 2026-10-30: notes of excluded nuclides hidden, intermediate columns on demand
+        const warn0 = await text('#sourceWarnings');
+        check('effluent: the F-18 note is not shown while F-18 is excluded; I-131 warning shown', !/F-18/.test(warn0) && /I-131/.test(warn0), warn0);
+        const f18 = await ev(`(() => { const i = EFFLUENT_DATA.nuclides.findIndex(n => n.id === 'F-18'); const c = document.getElementById('st_' + i + '_include');
+          c.checked = true; c.dispatchEvent(new Event('change', { bubbles: true })); return document.getElementById('sourceWarnings').textContent; })()`);
+        check('effluent: including F-18 shows its Scenario 2 note', /F-18:\s+No Scenario 2 coefficient/.test(f18), f18);
+        const colsOff = await ev(`getComputedStyle(document.querySelector('#s1Table th.col-int')).display`);
+        await ev(`document.getElementById('btnIntermediate').click()`);
+        const colsOn = await ev(`[getComputedStyle(document.querySelector('#s2Table td.col-int')).display, document.getElementById('btnIntermediate').getAttribute('aria-pressed')]`);
+        check('effluent: intermediate columns hidden by default, shown by the button (aria-pressed)', colsOff === 'none' && colsOn[0] === 'table-cell' && colsOn[1] === 'true', JSON.stringify([colsOff, colsOn]));
       }
     });
     await guard('Caregiver default case and A18', async () => {
@@ -458,7 +468,7 @@ async function main() {
       check('caregiver ES: the rows of a child scenario read «Contacto» and «Proximidad»', esRows.join('|') === 'Contacto|Proximidad', JSON.stringify(esRows));
       const esOcc = await ev(`document.getElementById('occupancyBox').textContent.replace(/\\s+/g, ' ').trim()`);
       check('caregiver ES: the occupancy bounds and their note are in Spanish', /^Cotas de la dosis del tratamiento por la ocupación promediada diaria: de \S+ a \S+ mSv \(×\S+ a ×\S+\)/.test(esOcc) &&
-        /La dosis mostrada usa la ocupación promediada diaria/.test(esOcc) && !/Daily-average|The dose shown/.test(esOcc), esOcc);
+        /Informativas \(Método\): nunca cambian la dosis/.test(esOcc) && !/Daily-average|Informative/.test(esOcc), esOcc);
       await shot('caregiver_scenario_es', '.card:has(#rowsTable)');
       await ev(`document.getElementById('langToggle').click()`); await sleep(300);
     });

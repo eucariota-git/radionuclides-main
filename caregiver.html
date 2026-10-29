@@ -45,9 +45,8 @@
 
   <div class="alert alert-warning mb-1">
     <strong>Screening estimate for one person and equal cycles.</strong>
-    The integral of the measured operational quantity is used as an estimator of external exposure; it is not
-    automatically the individual effective dose nor the fetal dose. Internal contamination, the dose before discharge
-    and other sources are not included. The criteria per category are <strong>evaluation criteria adopted by the
+    External exposure only, estimated with the measured operational quantity (not the individual effective or fetal dose;
+    internal contamination and the dose before discharge are not included). The criteria per category are <strong>evaluation criteria adopted by the
     department</strong>, not values fixed by regulation for this treatment.
   </div>
 
@@ -76,7 +75,7 @@
       <div class="form-group">
         <label class="form-label" for="fast_end_h">End of the fast phase after administration (h)</label>
         <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="fast_end_h" title="End of the fast phase after administration">
-        <div class="form-hint">24 h in Kurth et al. (2018) and Demir et al. (2016); 0 = no fast phase.</div>
+        <div class="form-hint">0 = no fast phase.</div>
       </div>
       <div class="form-group">
         <label class="form-label" for="T_fast_h">Fast effective half-life (h)</label>
@@ -201,7 +200,7 @@
       <!-- Bounds of the daily-average occupancy (informative; never change the dose) -->
       <p class="form-hint mt-1" id="occupancyBox">
         <span id="occupancyValue"></span>
-        <span>The dose shown uses the daily-average occupancy (h/24). The bounds hold for any timetable with the declared hours in every 24 h interval from discharge: in each interval the rate is taken at its start or at its end (Method). They need restrictions of whole days. Whether the upper bound is compared with the criterion is an evaluation decision.</span>
+        <span>Informative (Method): they never change the dose; comparing the upper bound with the criterion is an evaluation decision.</span>
       </p>
 
       <h3 class="card-title mt-2">Inverse calculations (same restriction in both rows)</h3>
@@ -223,10 +222,7 @@
       <p class="text-sm mt-1" id="inverseNote"></p>
 
       <h3 class="card-title mt-2">Treatment dose vs restriction</h3>
-      <p class="text-sm">Same restriction in both cohabitation rows, with the hours and distances of the table. The curve tends to the
-        dose with an indefinite restriction. With less contact during the restriction than after it, that value is a floor: below
-        it the dose can only be lowered by reducing contact during the restriction. With more contact during it, the curve rises
-        towards it (upper asymptote) and restricting only increases the dose.</p>
+      <p class="text-sm">Same restriction in both cohabitation rows, with the hours and distances of the table; the curve tends to the dose with an indefinite restriction (inverse table above).</p>
       <p class="form-hint" id="curveNote"></p>
       <div class="chart-wrap">
         <canvas id="curveChart" aria-label="Treatment dose versus restriction days" role="img"></canvas>
@@ -497,7 +493,7 @@
   $('profilesNote').textContent = data.profiles_note;
   $('refList').innerHTML = data.references.map(r => `<li>${esc(r)}</li>`).join('');
   $('originNote').textContent = data.meta.origin;
-  $('inverseNote').textContent = data.inverse_note;
+  $('inverseNote').textContent = '"Unattainable" = the criterion is not met however long the restriction lasts: contact during the restriction must be reduced.';
   $('ownNote').textContent = data.own_protocol_note;
   $('refCasesNote').textContent = data.reference_cases.note;
 
@@ -723,7 +719,7 @@
     $('T_fast_h').disabled = !tr;
     const isOther = input.category === 'other';
     $('manual_criterion_mSv').disabled = !isOther;
-    $('manualHint').textContent = isOther ? 'Required for «Other criterion».' : 'Not used (only for «Other criterion»).';
+    $('manualHint').textContent = isOther ? 'Required for «Other criterion».' : '';
     const cat = data.categories.find(c => c.key === input.category);
     $('categoryHint').innerHTML = cat
       ? `Basis: ${UTILS.escapeHtml(cat.basis_short)} — see <a href="#criteriaDetails" data-open-details="methodDetails criteriaDetails">Method › Criteria per category</a>.`
@@ -763,7 +759,9 @@
       : (inv.minRestrictionCode ? CAREGIVER.INVERSE_TEXT[inv.minRestrictionCode] : '—');
     $('adopted').textContent = inv.adopted_d !== null ? UTILS.num(inv.adopted_d) : '—';
     $('doseAdopted').textContent = f3(inv.doseAtAdopted_mSv);
-    $('adoptedNote').textContent = inv.adoptedNote;
+    // Without days the status box already says so: only the EXCEEDS warning is repeated here
+    $('adoptedNote').textContent = !out.noDays ? inv.adoptedNote
+      : inv.adoptedNote.endsWith(' — with this restriction the treatment dose EXCEEDS the criterion') ? 'With this restriction the treatment dose EXCEEDS the criterion' : '';
     $('btnApplyAdopted').disabled = inv.adopted_d === null;
     // Days not entered yet: the button is the suggested next step
     $('btnApplyAdopted').className = `btn btn-sm ${out.noDays && inv.adopted_d !== null ? 'btn-primary' : 'btn-secondary'}`;

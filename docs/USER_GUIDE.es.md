@@ -87,9 +87,9 @@ No hace falta instalación ni autenticación:
 
 **Uso**:
 1. **Término fuente**: marque los nucleidos; pacientes al año × ciclos × actividad administrada por ciclo, que se supone excretada en su totalidad; la fracción excretada en el hospital; *Depósitos* para los nucleidos retenidos en depósitos de decaimiento (entonces solo sale su parte del vertido anual de los depósitos). El escenario 1 recibe lo que sale del hospital; el escenario 2, además, la actividad excretada en el domicilio en la zona servida por la depuradora.
-2. Parámetros del **escenario 1** y del **escenario 2**: cada dato tiene una breve explicación y su fuente por defecto en *Fuentes e hipótesis*. Los datos de la planta (volumen de agua, producción de lodos según PRTR-España) son propios de cada emplazamiento.
+2. Parámetros del **escenario 1** y del **escenario 2**: una breve nota bajo los datos que la necesitan; todos los valores por defecto y su fuente están en *Fuentes e hipótesis*. Los datos de la planta (volumen de agua, producción de lodos según PRTR-España) son propios de cada emplazamiento.
 3. **Comunes**: tasa de respiración, vertido anual de los depósitos y un criterio de dosis **definido por el usuario** (no se le atribuye base reglamentaria).
-4. Los resultados se actualizan mientras escribe: dosis por nucleido y por escenario, con los coeficientes usados y un contraste orientativo con los factores de NUREG/CR-5814 y del IAEA SRS-19.
+4. Los resultados se actualizan mientras escribe: dosis por nucleido y por escenario (**Mostrar valores intermedios** añade el factor de decaimiento, las concentraciones y la dosis por GBq), con los coeficientes usados y un contraste orientativo con los factores de NUREG/CR-5814 y del IAEA SRS-19.
 
 **Limitaciones principales**:
 - Es un modelo de cribado: vertido anual dividido entre el volumen anual de agua o la producción de lodos, con decaimiento solo durante el tránsito.

@@ -133,8 +133,9 @@ Calculators recalculate live (Decay/Dose through `UI.onInputs`, Effluent/Caregiv
 - Audit reports are local only (`docs/AUDIT_*.md`, gitignored). When the user asks for an audit without file changes, deliver it in the chat.
 - Bash heredocs with backslashes or nested quotes break: write helper scripts to the scratchpad and run them, or use the Edit tool.
 
-## Status and pending (as of 2026-10-22, v1.18.1)
+## Status and pending (as of 2026-10-30, v1.19.0)
 
+- v1.19.0 (screen-text review: repeated texts removed or moved to the collapsibles, each regulatory warning kept once where the result is read; Effluent intermediate columns behind «Show intermediate values»; Effluent warnings only for included nuclides; reports and CSV unchanged) committed, not pushed nor packaged; new Spanish texts pending the author's review.
 - v1.18.0 (Caregiver: informative bounds of the daily-average occupancy h/24 — rate at the start / end of each 24 h interval from discharge, `out.occupancy`; never changes the dose; defaults without restriction ×0.75–×1.35; v1.18.1: only for restrictions of whole days (audit A-06) and geometric sums (A-07)) pushed (72067ff) and packaged; new Spanish texts pending the author's review.
 - v1.17.0–v1.17.4 (Caregiver: preset spread, Foro Table 3.B 1 cohabitation scenarios, restriction days empty by default, children 1 mSv, rows Contact / Proximity, header «Row», external audit 2026-10-22 A-01…A-05 fixed) pushed (7a960d7); new Spanish texts accepted by the author (2026-10-22).
 - Last package built: `dist/nm-radionuclide-planner-v1.18.1.zip` (SHA-256 0b175481…, commit 72067ff, pushed); file://, HTTP(S), PWA install and offline reload not yet checked for it.

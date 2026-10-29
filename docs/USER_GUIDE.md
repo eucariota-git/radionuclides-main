@@ -85,9 +85,9 @@ No installation or authentication is needed:
 
 **How to use**:
 1. **Source term**: tick the nuclides; patients/year × cycles × administered activity per cycle, all assumed excreted; the fraction excreted in hospital; *Tanks* for nuclides held in decay tanks (then only their share of the annual tank discharge leaves). Scenario 1 receives what leaves the hospital; Scenario 2 also the activity excreted at home in the STP catchment.
-2. **Scenario 1** and **Scenario 2** parameters: each input has a short explanation and its default source in *Sources and assumptions*. Plant data (water volume, sludge production from PRTR-España) are site-specific.
+2. **Scenario 1** and **Scenario 2** parameters: a short note under the inputs that need one; every default and its source are in *Sources and assumptions*. Plant data (water volume, sludge production from PRTR-España) are site-specific.
 3. **Common**: breathing rate, annual tank discharge and a **user-defined** dose criterion (no regulatory basis is attributed to it).
-4. Results update as you type: dose per nuclide and per scenario, with the coefficients used and an indicative cross-check against NUREG/CR-5814 and IAEA SRS-19 factors.
+4. Results update as you type: dose per nuclide and per scenario (**Show intermediate values** adds the decay factor, the concentrations and the dose per GBq), with the coefficients used and an indicative cross-check against NUREG/CR-5814 and IAEA SRS-19 factors.
 
 **Key limits**: screening model (annual discharge over annual water volume or sludge production, transit decay only); the external coefficients are own PHITS calculations valid only for their model geometries, photon-only in Scenario 1, and none covers the infinite slab of NUREG/CR-5814; F-18 has no Scenario 2 external coefficient, so that total is a partial sum (≥); the I-131 default of 0.8 GBq is the workbook's activity at discharge, not the administered activity — replace it. **Not a complete discharge assessment**: the IS-28 II.A.4 conditions and mixture clearance are evaluated separately.
 

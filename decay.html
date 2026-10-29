@@ -108,7 +108,6 @@
             <option value="kBq">kBq</option>
           </select>
         </div>
-        <div class="form-hint">Calculates time to reach this activity</div>
       </div>
       <div class="form-group">
         <label class="form-label" for="vialWeight">Mass of material being assessed <span class="text-muted">(optional)</span></label>
@@ -123,7 +122,6 @@
       </div>
     </div>
 
-    <p class="form-hint mt-1">Results update as you type.</p>
   </div>
 
   <div id="calcError" class="alert alert-danger mt-2 hidden" role="alert"></div>
@@ -1067,12 +1065,8 @@
           return (ex.rows.length > 1 ? `<p class="text-sm"><strong>${UTILS.escapeHtml(row.id)}${tag}</strong></p>` : '') + crit +
             (extra ? `<div class="form-hint">${extra}</div>` : '');
         }).join('');
-        html += `<div class="alert alert-warning mt-1" style="font-size:.82rem;">
-          Annex II A.1 of RD 1217/2024 sets <strong>separate</strong> exemption criteria: a) radioactive sources — total activity not above
-          column 3 of Table B (for several sources, &Sigma; A&#7522;/limit&#7522; &le; 1); b) materials in moderate quantity (&le; 1000 kg) — activity
-          per unit mass not above column 2; c) unlimited quantity — Table A1. <strong>Individual values for one nuclide</strong>; sums over sources or
-          mixtures are not evaluated. Exemption also requires the practice to be justified.
-        </div>`;
+        // a) and b) are labelled above; the full text of Annex II A.1 is in the report and the Properties notes
+        html += `<div class="form-hint mt-1">Separate criteria (Annex II A.1); for several sources &Sigma; A&#7522;/limit&#7522; &le; 1. Single-nuclide values: sums over sources and mixtures are not evaluated; exemption also requires a justified practice.</div>`;
       }
       exContent.innerHTML = html;
       exSec.classList.remove('hidden');

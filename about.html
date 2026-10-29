@@ -122,9 +122,9 @@
     <p><strong>How to use</strong>:</p>
     <ol>
       <li><strong>Source term</strong>: tick the nuclides; patients/year × cycles × administered activity per cycle, all assumed excreted; the fraction excreted in hospital; <em>Tanks</em> for nuclides held in decay tanks (then only their share of the annual tank discharge leaves). Scenario 1 receives what leaves the hospital; Scenario 2 also the activity excreted at home in the STP catchment.</li>
-      <li><strong>Scenario 1</strong> and <strong>Scenario 2</strong> parameters: each input has a short explanation and its default source in <em>Sources and assumptions</em>. Plant data (water volume, sludge production from PRTR-España) are site-specific.</li>
+      <li><strong>Scenario 1</strong> and <strong>Scenario 2</strong> parameters: a short note under the inputs that need one; every default and its source are in <em>Sources and assumptions</em>. Plant data (water volume, sludge production from PRTR-España) are site-specific.</li>
       <li><strong>Common</strong>: breathing rate, annual tank discharge and a <strong>user-defined</strong> dose criterion (no regulatory basis is attributed to it).</li>
-      <li>Results update as you type: dose per nuclide and per scenario, with the coefficients used and an indicative cross-check against NUREG/CR-5814 and IAEA SRS-19 factors.</li>
+      <li>Results update as you type: dose per nuclide and per scenario (<strong>Show intermediate values</strong> adds the decay factor, the concentrations and the dose per GBq), with the coefficients used and an indicative cross-check against NUREG/CR-5814 and IAEA SRS-19 factors.</li>
     </ol>
     <p><strong>Key limits</strong>: screening model (annual discharge over annual water volume or sludge production, transit decay only); the external coefficients are own PHITS calculations valid only for their model geometries, photon-only in Scenario 1, and none covers the infinite slab of NUREG/CR-5814; F-18 has no Scenario 2 external coefficient, so that total is a partial sum (≥); the I-131 default of 0.8 GBq is the workbook's activity at discharge, not the administered activity — replace it. <strong>Not a complete discharge assessment</strong>: the IS-28 II.A.4 conditions and mixture clearance are evaluated separately.</p>
     <p><strong>Example</strong> (defaults, Lu-177 and I-131 included, no decay tanks, 45 × 45 × 3 m geometry):</p>
@@ -303,9 +303,9 @@
     <p><strong>Uso</strong>:</p>
     <ol>
       <li><strong>Término fuente</strong>: marque los nucleidos; pacientes al año × ciclos × actividad administrada por ciclo, que se supone excretada en su totalidad; la fracción excretada en el hospital; <em>Depósitos</em> para los nucleidos retenidos en depósitos de decaimiento (entonces solo sale su parte del vertido anual de los depósitos). El escenario 1 recibe lo que sale del hospital; el escenario 2, además, la actividad excretada en el domicilio en la zona servida por la depuradora.</li>
-      <li>Parámetros del <strong>escenario 1</strong> y del <strong>escenario 2</strong>: cada dato tiene una breve explicación y su fuente por defecto en <em>Fuentes e hipótesis</em>. Los datos de la planta (volumen de agua, producción de lodos según PRTR-España) son propios de cada emplazamiento.</li>
+      <li>Parámetros del <strong>escenario 1</strong> y del <strong>escenario 2</strong>: una breve nota bajo los datos que la necesitan; todos los valores por defecto y su fuente están en <em>Fuentes e hipótesis</em>. Los datos de la planta (volumen de agua, producción de lodos según PRTR-España) son propios de cada emplazamiento.</li>
       <li><strong>Comunes</strong>: tasa de respiración, vertido anual de los depósitos y un criterio de dosis <strong>definido por el usuario</strong> (no se le atribuye base reglamentaria).</li>
-      <li>Los resultados se actualizan mientras escribe: dosis por nucleido y por escenario, con los coeficientes usados y un contraste orientativo con los factores de NUREG/CR-5814 y del IAEA SRS-19.</li>
+      <li>Los resultados se actualizan mientras escribe: dosis por nucleido y por escenario (<strong>Mostrar valores intermedios</strong> añade el factor de decaimiento, las concentraciones y la dosis por GBq), con los coeficientes usados y un contraste orientativo con los factores de NUREG/CR-5814 y del IAEA SRS-19.</li>
     </ol>
     <p><strong>Limitaciones principales</strong>:</p>
     <ul>

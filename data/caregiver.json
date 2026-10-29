@@ -1,7 +1,7 @@
 {
   "meta": {
-    "version": "1.8",
-    "date": "2026-10-22",
+    "version": "1.9",
+    "date": "2026-10-30",
     "description": "Caregiver / family-member external dose after discharge of a radionuclide-therapy patient: proximity profiles, evaluation criteria per category, references and model assumptions.",
     "origin": "Port of the author's workbook Dosis_acompanantes_simple_v2.1.xlsx (sheets Dosis, Curva and Comprobación)."
   },
@@ -11,7 +11,7 @@
     "I-131",
     "Other"
   ],
-  "kinetic_presets_note": "A preset fills the radiopharmaceutical, the end of the fast phase, the effective half-lives, the number of cycles and the proximity profile. It never changes the measured discharge rate, the discharge time, the category or the cohabitation table. Literature values describe a cohort, not the patient. Under each preset, «Spread in the source» gives the dispersion the source publishes, with its statistic named (mean ± SD, median with quartiles and range, or spread of literature values). It describes the cohort, not an interval for the patient: mean + 2 SD is only a reference high value. No SD is derived here from ranges or quartiles.",
+  "kinetic_presets_note": "Literature values describe a cohort, not the patient. Under each preset, «Spread in the source» gives the dispersion the source publishes, with its statistic named (mean ± SD, median with quartiles and range, or spread of literature values). It describes the cohort, not an interval for the patient: mean + 2 SD is only a reference high value. No SD is derived here from ranges or quartiles.",
   "kinetic_presets": [
     {
       "key": "psma_workbook",
