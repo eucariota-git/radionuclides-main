@@ -10,7 +10,8 @@
       "icrp107_rad_sha256": "530fde519dd062949e79439415ac7611b8b4e07ab78ce2913ffc61b5b23d4d5f",
       "icrp107_bet_sha256": "5749d7557dd22df6067c7c8d8c648ed24bf751a63ff14be42c051fe55e9dc9dd"
     },
-    "parser_version": "2.0 (fixed-width columns)"
+    "parser_version": "2.0 (fixed-width columns)",
+    "compiled_by": "José Ramón Sendón del Río (index built from the ICRP 107 files; data © ICRP, see LICENSE.TXT)"
   },
   "nuclides": [
     {

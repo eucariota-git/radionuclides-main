@@ -116,12 +116,11 @@
         </div>
       </div>
       <div class="form-group">
-        <label class="form-label" for="patientTx">Patient transmission <span class="text-muted">(optional)</span></label>
+        <label class="form-label" for="patientTx">Patient transmission <span class="text-muted">(optional)</span> <span class="hint-tip" tabindex="0" role="img" aria-label="Empty = no patient attenuation. No default: derive it for your geometry from a measurement or a published study." data-tooltip="Empty = no patient attenuation. No default: derive it for your geometry from a measurement or a published study."><span class="ico ico-info" aria-hidden="true"></span></span></label>
         <div class="d-flex gap-1">
           <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="patientTx" value="" placeholder="none" title="Patient transmission (%)">
           <span class="percent-symbol">%</span>
         </div>
-        <div class="form-hint" id="patientTxHint">Empty = no patient attenuation. No default: derive it for your geometry from a measurement or a published study.</div>
       </div>
     </div>
     <div id="hvlInfo" class="alert alert-info mt-2 hidden"></div>
@@ -152,12 +151,11 @@
         <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="nAdmin" value="1" title="Number of administrations">
       </div>
       <div class="form-group">
-        <label class="form-label" for="decayMode">Integrate physical decay during exposure?</label>
+        <label class="form-label" for="decayMode">Integrate physical decay during exposure? <span class="hint-tip" tabindex="0" role="img" aria-label="Affects only the integrated dose. A₀ is the activity at the start of each exposure, repeated for every administration." data-tooltip="Affects only the integrated dose. A₀ is the activity at the start of each exposure, repeated for every administration."><span class="ico ico-info" aria-hidden="true"></span></span></label>
         <select class="form-select" id="decayMode" title="Decay during the dose integral">
           <option value="with_decay" selected>Yes — integrate A(t) over the exposure</option>
           <option value="no_decay">No — constant activity for the dose integral</option>
         </select>
-        <div class="form-hint">Affects only the integrated dose. A&#8320; is the activity at the start of each exposure, repeated for every administration.</div>
       </div>
     </div>
   </div>
@@ -234,7 +232,7 @@
 <footer class="site-footer">
   NM Radionuclide Planner &mdash; For radiation protection estimation purposes.
   Verify against primary sources for regulatory submissions.
-  <br>Original application and code: &copy; 2026 Ramon Sendon &middot; EUPL-1.2 &middot; Third-party data: separate terms &mdash;
+  <br>Application, code and data compilation: &copy; 2026 José Ramón Sendón del Río &middot; EUPL-1.2 &middot; Third-party data: separate terms &mdash;
   <a href="about.html">About, guide &amp; licences</a>
 </footer>
 

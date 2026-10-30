@@ -85,7 +85,7 @@
     <!-- Manual elapsed time override -->
     <div class="form-grid mt-2">
       <div class="form-group">
-        <label class="form-label" for="elapsed">— or — Elapsed time</label>
+        <label class="form-label" for="elapsed">— or — Elapsed time <span class="hint-tip" tabindex="0" role="img" aria-label="When filled, this value is used and the target date is ignored" data-tooltip="When filled, this value is used and the target date is ignored"><span class="ico ico-info" aria-hidden="true"></span></span></label>
         <div class="d-flex gap-1">
           <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="elapsed" placeholder="e.g. 24" title="Elapsed time">
           <select class="form-select form-select-narrow" id="elapsedUnit" title="Unit" aria-label="Elapsed time unit">
@@ -95,7 +95,6 @@
             <option value="s">s</option>
           </select>
         </div>
-        <div class="form-hint">When filled, this value is used and the target date is ignored</div>
       </div>
       <div class="form-group">
         <label class="form-label" for="Atarget">Target Activity A<sub>target</sub> <span class="text-muted">(optional)</span></label>
@@ -110,7 +109,7 @@
         </div>
       </div>
       <div class="form-group">
-        <label class="form-label" for="vialWeight">Mass of material being assessed <span class="text-muted">(optional)</span></label>
+        <label class="form-label" for="vialWeight">Mass of material being assessed <span class="text-muted">(optional)</span> <span class="hint-tip" tabindex="0" role="img" aria-label="Mass that contains the entered activity (state whether it includes the container). Enables the Table A1 clearance and Table B (≤ 1000 kg) checks." data-tooltip="Mass that contains the entered activity (state whether it includes the container). Enables the Table A1 clearance and Table B (≤ 1000 kg) checks."><span class="ico ico-info" aria-hidden="true"></span></span></label>
         <div class="d-flex gap-1">
           <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="vialWeight" placeholder="e.g. 10" title="Mass of material being assessed">
           <select class="form-select form-select-medium" id="vialWeightUnit" title="Unit" aria-label="Mass unit">
@@ -118,7 +117,6 @@
             <option value="kg">kg</option>
           </select>
         </div>
-        <div class="form-hint">Mass that contains the entered activity (state whether it includes the container). Enables the Table&nbsp;A1 clearance and Table&nbsp;B (&le;&nbsp;1000&nbsp;kg) checks.</div>
       </div>
     </div>
 
@@ -183,7 +181,7 @@
 <footer class="site-footer">
   NM Radionuclide Planner &mdash; For radiation protection estimation purposes.
   Verify against primary sources for regulatory submissions.
-  <br>Original application and code: &copy; 2026 Ramon Sendon &middot; EUPL-1.2 &middot; Third-party data: separate terms &mdash;
+  <br>Application, code and data compilation: &copy; 2026 José Ramón Sendón del Río &middot; EUPL-1.2 &middot; Third-party data: separate terms &mdash;
   <a href="about.html">About, guide &amp; licences</a>
 </footer>
 

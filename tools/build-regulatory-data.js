@@ -176,6 +176,7 @@ const out = {
     id: 'regulatory',
     version: '1.0.0',
     built: '2026-10-03',
+    author: { name: 'José Ramón Sendón del Río', role: 'Transcription and verification of the regulatory tables' },
     sources: {
       annex_iv_csv_sha256: sha(F_ANNEX),
       progeny_csv_sha256: sha(F_PROG),

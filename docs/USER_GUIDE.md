@@ -18,6 +18,7 @@ No installation or authentication is needed:
 - **Reports and CSV**: Decay, Dose, Effluent and Caregiver have a **Report / PDF** button (inputs, results, method, sources, disclaimer and sign-off line; use the browser's "Save as PDF") and a CSV export in which every row repeats the application version, build, data version, export time (UTC) and the inputs needed to reproduce the result.
 - **Decimal point or comma**: every numeric field accepts either (`0.3` or `0,3`; also `1e-7`). A number with two separators or a thousands group (`1.000,5`, `1 000`) is rejected; a single separator followed by exactly three digits (`1.500`) is read as a decimal, and a note under the field says how it was read. The **1.5 / 1,5** button in the header chooses the separator of the displayed results, charts and reports — by default the one of your browser's language. CSV files always use the decimal point. Quantity names and references keep their usual form (H'(0.07), ANS-6.4.3).
 - **EN / ES** in the header shows the screens in Spanish (English by default). It changes only the displayed text: values, calculations, CSV files and the decimal setting do not change.
+- **Field help**: an ⓘ next to a label explains the field; it opens on hover, keyboard focus or tap. Warnings and rules that matter while you type stay visible under the field.
 - **Results update as you type** on the four calculators. An invalid entry is named in a red box under the form, the field is outlined, and the results are hidden until it is corrected — the report and the CSV always describe the inputs on screen.
 - Each page explains its method, sources and limits in its own *Method* and notes blocks (collapsed: click the title marked ▸ to open them); this guide — **Guide** in the menu — gives the purpose, the use and the key limits.
 
@@ -85,11 +86,11 @@ No installation or authentication is needed:
 
 **How to use**:
 1. **Source term**: tick the nuclides; patients/year × cycles × administered activity per cycle, all assumed excreted; the fraction excreted in hospital; *Tanks* for nuclides held in decay tanks (then only their share of the annual tank discharge leaves). Scenario 1 receives what leaves the hospital; Scenario 2 also the activity excreted at home in the STP catchment.
-2. **Scenario 1** and **Scenario 2** parameters: a short note under the inputs that need one; every default and its source are in *Sources and assumptions*. Plant data (water volume, sludge production from PRTR-España) are site-specific.
+2. **Scenario 1** and **Scenario 2** parameters: an ⓘ next to each input that needs an explanation; every default and its source are in *Sources and assumptions*. Plant data (water volume, sludge production from PRTR-España) are site-specific.
 3. **Common**: breathing rate, annual tank discharge and a **user-defined** dose criterion (no regulatory basis is attributed to it).
 4. Results update as you type: dose per nuclide and per scenario (**Show intermediate values** adds the decay factor, the concentrations and the dose per GBq), with the coefficients used and an indicative cross-check against NUREG/CR-5814 and IAEA SRS-19 factors.
 
-**Key limits**: screening model (annual discharge over annual water volume or sludge production, transit decay only); the external coefficients are own PHITS calculations valid only for their model geometries, photon-only in Scenario 1, and none covers the infinite slab of NUREG/CR-5814; F-18 has no Scenario 2 external coefficient, so that total is a partial sum (≥); the I-131 default of 0.8 GBq is the workbook's activity at discharge, not the administered activity — replace it. **Not a complete discharge assessment**: the IS-28 II.A.4 conditions and mixture clearance are evaluated separately.
+**Key limits**: screening model (annual discharge over annual water volume or sludge production, transit decay only); the external coefficients are PHITS calculations by José Ramón Sendón del Río, the author, valid only for their model geometries, photon-only in Scenario 1, and none covers the infinite slab of NUREG/CR-5814; F-18 has no Scenario 2 external coefficient, so that total is a partial sum (≥); the I-131 default of 0.8 GBq is the workbook's activity at discharge, not the administered activity — replace it. **Not a complete discharge assessment**: the IS-28 II.A.4 conditions and mixture clearance are evaluated separately.
 
 **Example** (defaults, Lu-177 and I-131 included, no decay tanks, 45 × 45 × 3 m geometry):
 - Scenario 1: Lu-177 1498.5 GBq/y → 0.0172 mSv/y; I-131 20 GBq/y → 0.0027 mSv/y; total 0.0199 mSv/y
@@ -100,7 +101,7 @@ No installation or authentication is needed:
 
 ### 5. Caregiver Dose after Discharge (`caregiver.html`)
 
-**Purpose**: external dose to one caregiver, relative or third party from a Lu-177 or I-131 therapy patient after discharge, with the maximum discharge rate and the minimum restriction period that meet a criterion. Port of the author's workbook *Dosis_acompanantes_simple_v2.1.xlsx*.
+**Purpose**: external dose to one caregiver, relative or third party from a Lu-177 or I-131 therapy patient after discharge, with the maximum discharge rate and the minimum restriction period that meet a criterion. Port of the workbook *Dosis_acompanantes_simple_v2.1.xlsx* by José Ramón Sendón del Río, the author of the application.
 
 **How to use**:
 1. Optional **kinetics preset** (Lu-177-PSMA-617, Lu-177-DOTATATE or I-131 NaI by indication, from the literature listed on the page): it fills the radiopharmaceutical, the fast phase, the effective half-lives, the cycles and the profile, never the measured rate or the cohabitation. Under «Kinetics presets and their sources», each preset shows the **spread its source publishes** — mean ± SD (Demir 2016, Kurth 2018), median with quartiles and range (Monserrat 2023) or the spread of the literature values (Gayol Vilorio 2025) — so that the extreme values you try are defensible; the Forum's I-131 values are fixed and have none.
@@ -184,13 +185,17 @@ Without a saved choice the app follows the light or dark setting of the device. 
 
 ---
 
+## Author
+
+**José Ramón Sendón del Río** — application and code; compilation, recalculation and verification of the data (curated database, regulatory tables, ICRP 107 index); the PHITS external dose-rate coefficients of the Effluent page; the caregiver workbook ported in Caregiver. The PHITS reports and reference workbooks are available from the author on request.
+
 ## Support & Feedback
 
-For issues, questions or feature requests, contact the person or organisation that supplied your copy of the application.
+For issues, questions or feature requests, contact the author or whoever supplied your copy of the application.
 
 ## Development tooling
 
-This application was developed with the assistance of AI coding tools — Anthropic **Claude Code** and OpenAI **Codex** — operated, reviewed and directed by the author, who remains the sole author and licensor of the original code. These tools hold no authorship, copyright or licence interest in the application; this statement is a voluntary transparency notice, not a licence obligation.
+This application was developed with the assistance of AI coding tools — Anthropic **Claude Code** and OpenAI **Codex** — operated, reviewed and directed by the author, José Ramón Sendón del Río, who remains the sole author and licensor of the original code. These tools hold no authorship, copyright or licence interest in the application; this statement is a voluntary transparency notice, not a licence obligation.
 
 Correctness does not rest on how the code was written: numerical data are taken from the cited sources (ICRP, NIST, NUREG/ANS, DDEP, BOE and the cited articles) — transcribed where the source tabulates them, computed from them where indicated (e.g. the operational Γ constants, the dose-weighted shielding spectra, the explicitly experimental Y-90 container estimates), with the status labelled per value — the calculation paths are checked by the automated test suites against external anchors, and adoption for professional use requires the independent human validation described in the acceptance sheet.
 

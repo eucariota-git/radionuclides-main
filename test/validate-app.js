@@ -260,7 +260,7 @@ async function main() {
     !/Dose rate constants: Cornejo/.test(`${decayHtml}\n${doseHtml}`));
   check('all public footers identify the original author and keep third-party scope separate',
     [indexHtml, decayHtml, doseHtml, effluentHtml, caregiverHtml, aboutHtml].every(html =>
-      /Original application and code: &copy; 2026 Ramon Sendon &middot; EUPL-1\.2 &middot; Third-party data: separate terms/.test(html)));
+      /Application, code and data compilation: &copy; 2026 José Ramón Sendón del Río &middot; EUPL-1\.2 &middot; Third-party data: separate terms/.test(html)));
   check('overflow-table tooltips no longer open upward outside the scrollport',
     !/tooltip-up/.test(indexHtml) && !/\.has-tooltip\.tooltip-up/.test(styleCss));
   check('tooltips use dedicated stable color tokens',
@@ -320,7 +320,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v68');
+    swVersion === 'nm-planner-v69');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -1478,7 +1478,7 @@ async function main() {
       [...effluentHtml.match(/HIDDEN_HINTS = new Set\(\[([^\]]+)\]/)[1].matchAll(/'(\w+)\.(\w+)'/g)].every(([, s, k]) => effJson.parameters[s] && effJson.parameters[s][k] && effJson.parameters[s][k].hint) &&
       /data\.scenario1_geometry\.note,/.test(effluentHtml) && /id="s1GeomNote"/.test(effluentHtml));
     check('Effluent: intermediate columns (DF, concentrations, FD) hidden by default and shown with a pressed-state button',
-      (effluentHtml.match(/class="text-right col-int"/g) || []).length === 8 && (effluentHtml.match(/class="num col-int"/g) || []).length === 8 &&
+      (effluentHtml.match(/<th class="[^"]*\bcol-int"/g) || []).length === 8 && (effluentHtml.match(/class="num col-int"/g) || []).length === 8 &&
       /id="btnIntermediate" type="button" aria-pressed="false"/.test(effluentHtml) &&
       /\.col-int \{ display: none; \}/.test(read('css/style.css')) && /\.show-intermediate \.col-int \{ display: table-cell; \}/.test(read('css/style.css')));
     check('Caregiver: the full inverse note stays in the report; the screen keeps the meaning of «Unattainable»',
@@ -1501,6 +1501,31 @@ async function main() {
     check('caregiver: criteria «adopted in this application»; PHITS reports named by date, version by SHA-256 only in the report and the CSV',
       /evaluation criteria adopted in this application<\/strong>/.test(caregiverHtml) &&
       !/reportRef/.test(effluentHtml) && /'k_report_SHA256_12'/.test(effluentHtml) && /SHA-256 \$\{shaOf\(nd\.k_ext\.s2\.report_file\)\}/.test(effluentHtml));
+  }
+
+  console.log('Test 30: authorship and ⓘ field help (v1.20.0)');
+  {
+    const AUTHOR = 'José Ramón Sendón del Río';
+    const shown = ['index.html', 'decay.html', 'dose.html', 'effluent.html', 'caregiver.html', 'about.html'];
+    check('the author is named in LICENSE, LICENSING, the notices, the README, the guides, every page footer and the report header',
+      ['LICENSE', 'LICENSING.md', 'THIRD_PARTY_NOTICES.md', 'README.md', 'docs/USER_GUIDE.md', 'docs/USER_GUIDE.es.md', ...shown].every(f => read(f).includes(AUTHOR)) &&
+      !/Ramon Sendon/.test(shown.map(read).join('')) && /APP_AUTHOR = 'José Ramón Sendón del Río'/.test(read('js/utils.js')) &&
+      /<tr><td>Author<\/td>/.test(read('js/report.js')));
+    const eff = JSON.parse(read('data/effluent-scenarios.json'));
+    const phits = [eff.coefficient_notes.k_s1, ...eff.nuclides.flatMap(n => [n.k_ext.s1.source, n.k_ext.s2 && n.k_ext.s2.source]).filter(Boolean), ...eff.references.filter(r => /PHITS/.test(r))];
+    check('every PHITS coefficient source names its author; no unnamed «Own PHITS» left',
+      phits.length >= 10 && phits.every(t => t.includes(AUTHOR)) && !/Own PHITS|own PHITS/.test(JSON.stringify(eff)) && !/own PHITS/.test(effluentHtml));
+    check('every data file carries its author or compiler',
+      JSON.parse(read('data/nuclides.json')).notes.author.includes(AUTHOR) && JSON.parse(read('data/regulatory.json')).meta.author.name === AUTHOR &&
+      JSON.parse(read('data/caregiver.json')).meta.author.name === AUTHOR && eff.meta.author.name === AUTHOR &&
+      /"compiled_by": "José Ramón Sendón del Río/.test(read('data/icrp107-index.json')) &&
+      /author: \{ name: 'José Ramón Sendón del Río'/.test(read('tools/build-regulatory-data.js')) && /compiled_by: 'José Ramón Sendón del Río/.test(read('tools/parse-icrp107.js')));
+    const tips = [decayHtml, doseHtml, effluentHtml, caregiverHtml].join('\n').match(/<span class="hint-tip" tabindex="0" role="img" aria-label="([^"]*)" data-tooltip="([^"]*)">/g) || [];
+    check(`ⓘ field help: ${tips.length} static icons with the same text in aria-label and data-tooltip; the old visible hints are gone`,
+      tips.length >= 9 && tips.every(t => { const m = /aria-label="([^"]*)" data-tooltip="([^"]*)"/.exec(t); return m[1] === m[2] && m[1].length > 5; }) &&
+      !/<div class="form-hint">When filled, this value is used/.test(decayHtml) && !/id="patientTxHint"/.test(doseHtml) && !/id="facilityHint"/.test(effluentHtml) &&
+      /function hintTip\(text\)/.test(read('js/ui.js')) && /UI\.hintTip\(/.test(effluentHtml) && /\.hint-tip::after \{/.test(read('css/style.css')) &&
+      !/<th[^>]* title="/.test(effluentHtml) && !/\balert\(/.test(read('index.html')));
   }
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);

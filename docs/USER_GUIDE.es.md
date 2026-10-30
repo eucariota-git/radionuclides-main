@@ -20,6 +20,7 @@ No hace falta instalación ni autenticación:
 - **Informes y CSV**: Decaimiento, Dosis, Efluentes y Acompañantes tienen un botón **Informe / PDF** (datos de entrada, resultados, método, fuentes, advertencia y línea de firma; use «Guardar como PDF» del navegador) y una exportación CSV en la que cada fila repite la versión de la aplicación, el build, la versión de los datos, la hora de exportación (UTC) y los datos de entrada necesarios para reproducir el resultado.
 - **Punto o coma decimal**: todos los campos numéricos admiten los dos (`0.3` o `0,3`; también `1e-7`). Se rechaza un número con dos separadores o con separador de millares (`1.000,5`, `1 000`); un único separador seguido de exactamente tres cifras (`1.500`) se lee como decimal, y una nota bajo el campo dice cómo se ha leído. El botón **1.5 / 1,5** de la cabecera elige el separador de los resultados, gráficas e informes que se muestran; por defecto, el del idioma del navegador. Los archivos CSV usan siempre el punto decimal. Los nombres de magnitudes y las referencias conservan su forma habitual.
 - **EN / ES**, en la cabecera, muestra las pantallas en español (por defecto, en inglés). Solo cambia el texto mostrado: los valores, los cálculos, los archivos CSV y el separador decimal no cambian. Los informes salen en el idioma de la pantalla; los CSV, siempre en inglés.
+- **Ayuda de los campos**: un ⓘ junto a la etiqueta explica el campo; se abre al pasar el ratón, con el teclado o al tocarlo. Los avisos y las reglas que importan mientras escribe siguen visibles bajo el campo.
 - **Los resultados se actualizan mientras escribe** en las cuatro calculadoras. Un dato no válido se nombra en un recuadro rojo bajo el formulario, el campo se resalta y los resultados se ocultan hasta que se corrige: el informe y el CSV describen siempre los datos que hay en pantalla.
 - Cada página explica su método, fuentes y limitaciones en sus propios bloques *Método* y de notas (plegados: pulse el título marcado con ▸ para abrirlos); esta guía —**Guía** en el menú— da la finalidad, el uso y las limitaciones principales.
 
@@ -87,13 +88,13 @@ No hace falta instalación ni autenticación:
 
 **Uso**:
 1. **Término fuente**: marque los nucleidos; pacientes al año × ciclos × actividad administrada por ciclo, que se supone excretada en su totalidad; la fracción excretada en el hospital; *Depósitos* para los nucleidos retenidos en depósitos de decaimiento (entonces solo sale su parte del vertido anual de los depósitos). El escenario 1 recibe lo que sale del hospital; el escenario 2, además, la actividad excretada en el domicilio en la zona servida por la depuradora.
-2. Parámetros del **escenario 1** y del **escenario 2**: una breve nota bajo los datos que la necesitan; todos los valores por defecto y su fuente están en *Fuentes e hipótesis*. Los datos de la planta (volumen de agua, producción de lodos según PRTR-España) son propios de cada emplazamiento.
+2. Parámetros del **escenario 1** y del **escenario 2**: un ⓘ junto a cada dato que necesita explicación; todos los valores por defecto y su fuente están en *Fuentes e hipótesis*. Los datos de la planta (volumen de agua, producción de lodos según PRTR-España) son propios de cada emplazamiento.
 3. **Comunes**: tasa de respiración, vertido anual de los depósitos y un criterio de dosis **definido por el usuario** (no se le atribuye base reglamentaria).
 4. Los resultados se actualizan mientras escribe: dosis por nucleido y por escenario (**Mostrar valores intermedios** añade el factor de decaimiento, las concentraciones y la dosis por GBq), con los coeficientes usados y un contraste orientativo con los factores de NUREG/CR-5814 y del IAEA SRS-19.
 
 **Limitaciones principales**:
 - Es un modelo de cribado: vertido anual dividido entre el volumen anual de agua o la producción de lodos, con decaimiento solo durante el tránsito.
-- Los coeficientes externos son cálculos PHITS propios, válidos solo para sus geometrías de modelo y solo de fotones en el escenario 1. Ninguno cubre la lámina infinita de NUREG/CR-5814.
+- Los coeficientes externos son cálculos PHITS de José Ramón Sendón del Río, el autor, válidos solo para sus geometrías de modelo y solo de fotones en el escenario 1. Ninguno cubre la lámina infinita de NUREG/CR-5814.
 - El F-18 no tiene coeficiente externo para el escenario 2, de modo que ese total es una suma parcial (≥).
 - El valor por defecto de 0,8 GBq de I-131 es la actividad en el alta del libro de cálculo, no la actividad administrada: sustitúyalo.
 - **No es una evaluación completa del vertido**: las condiciones del apartado II.A.4 de la IS-28 y la desclasificación de mezclas se evalúan aparte.
@@ -107,7 +108,7 @@ No hace falta instalación ni autenticación:
 
 ### 5. Dosis a acompañantes tras el alta (`caregiver.html`)
 
-**Finalidad**: dosis externa a una persona cuidadora, familiar o tercera persona debida a un paciente tratado con Lu-177 o I-131 tras el alta, con la tasa máxima en el alta y el periodo mínimo de restricción que cumplen un criterio. Adaptación del libro de cálculo del autor *Dosis_acompanantes_simple_v2.1.xlsx*.
+**Finalidad**: dosis externa a una persona cuidadora, familiar o tercera persona debida a un paciente tratado con Lu-177 o I-131 tras el alta, con la tasa máxima en el alta y el periodo mínimo de restricción que cumplen un criterio. Adaptación del libro de cálculo *Dosis_acompanantes_simple_v2.1.xlsx* de José Ramón Sendón del Río, autor de la aplicación.
 
 **Uso**:
 1. **Cinética predefinida** opcional (Lu-177-PSMA-617, Lu-177-DOTATATE o I-131 NaI según la indicación, de la bibliografía citada en la página): rellena el radiofármaco, la fase rápida, los periodos efectivos, los ciclos y el perfil, nunca la tasa medida ni la convivencia. En «Cinéticas predefinidas y sus fuentes», cada una muestra la **dispersión que publica su fuente** —media ± DE (Demir 2016, Kurth 2018), mediana con cuartiles y extremos (Monserrat 2023) o la dispersión de los valores de la literatura (Gayol Vilorio 2025)— para que los valores extremos que pruebe sean defendibles; los valores del Foro para I-131 son fijos y no la tienen.
@@ -213,13 +214,17 @@ Si no se ha guardado ninguna elección, la aplicación sigue el modo claro u osc
 
 ---
 
+## Autor
+
+**José Ramón Sendón del Río** — aplicación y código; recopilación, recálculo y verificación de los datos (base de datos revisada, tablas reglamentarias, índice de ICRP 107); los coeficientes PHITS de tasa de dosis externa de la página de efluentes; el libro de cálculo de acompañantes adaptado en Caregiver. Los informes PHITS y los libros de referencia están disponibles a petición al autor.
+
 ## Soporte y comentarios
 
-Para incidencias, preguntas o peticiones de mejora, diríjase a la persona u organización que le suministró su copia de la aplicación.
+Para incidencias, preguntas o peticiones de mejora, diríjase al autor o a quien le suministró su copia de la aplicación.
 
 ## Herramientas de desarrollo
 
-Esta aplicación se ha desarrollado con la ayuda de herramientas de programación con IA —Anthropic **Claude Code** y OpenAI **Codex**— manejadas, revisadas y dirigidas por el autor, que sigue siendo el único autor y licenciante del código original. Estas herramientas no tienen ninguna autoría, derecho de autor ni interés de licencia sobre la aplicación; esta declaración es un aviso voluntario de transparencia, no una obligación de la licencia.
+Esta aplicación se ha desarrollado con la ayuda de herramientas de programación con IA —Anthropic **Claude Code** y OpenAI **Codex**— manejadas, revisadas y dirigidas por el autor, José Ramón Sendón del Río, que sigue siendo el único autor y licenciante del código original. Estas herramientas no tienen ninguna autoría, derecho de autor ni interés de licencia sobre la aplicación; esta declaración es un aviso voluntario de transparencia, no una obligación de la licencia.
 
 La corrección no depende de cómo se escribió el código:
 - **Datos numéricos**: se toman de las fuentes citadas (ICRP, NIST, NUREG/ANS, DDEP, BOE y los artículos citados). Se transcriben donde la fuente los tabula y se calculan a partir de ellas donde se indica (por ejemplo, las constantes Γ operacionales, los espectros de blindaje ponderados por dosis y las estimaciones de contenedor del Y-90, explícitamente experimentales). Cada valor indica su estado.

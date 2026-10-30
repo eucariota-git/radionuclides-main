@@ -3,6 +3,7 @@ const NUCLIDE_DATA = {
   "version": "1.4",
   "reference": "Cornejo Díaz N., Brosed Serreta A., Ruiz Manzano P. Constantes de tasa de kerma en aire y de tasa de equivalente de dosis ambiental de algunos radionucleidos utilizados en aplicaciones médicas. Radioprotección (SEPR), Nº 83, pp. 39–42, octubre 2015.",
   "notes": {
+    "author": "José Ramón Sendón del Río — compilation, recalculation and verification of the curated database",
     "delta_threshold_keV": 20,
     "yield_threshold_percent": 0.01,
     "gamma_Kair_units": "μGy·h⁻¹·GBq⁻¹·m²",

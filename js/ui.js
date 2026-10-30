@@ -24,6 +24,12 @@ if (typeof Chart !== 'undefined') {
 const UI = (() => {
   // A link into a collapsed <details> (e.g. "see Method › Criteria per category")
   // opens the listed sections before the browser scrolls to the target.
+  // An ⓘ field help inside a <label>: a click or tap shows its text instead of
+  // moving the focus to the field
+  document.addEventListener('click', e => {
+    const tip = e.target.closest && e.target.closest('.hint-tip');
+    if (tip) { e.preventDefault(); tip.focus(); }
+  });
   document.addEventListener('click', e => {
     const a = e.target.closest && e.target.closest('a[data-open-details]');
     if (!a) return;
@@ -32,6 +38,13 @@ const UI = (() => {
       if (d && d.tagName === 'DETAILS') d.open = true;
     }
   });
+
+  // Field help as an ⓘ icon: the text goes in data-tooltip and aria-label (both
+  // translated by the Spanish overlay); shown on hover, focus or tap
+  function hintTip(text) {
+    const t = String(text).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return `<span class="hint-tip" tabindex="0" role="img" aria-label="${t}" data-tooltip="${t}"><span class="ico ico-info" aria-hidden="true"></span></span>`;
+  }
 
   /* --- Dark Mode ---
    * An explicit choice (button or Alt+D) is stored and wins. Without one, the
@@ -419,6 +432,7 @@ const UI = (() => {
     initDecimal,
     initLanguage,
     refreshNumberHints,
+    hintTip,
     initPrint,
     initKeyboard,
     showFatalError,

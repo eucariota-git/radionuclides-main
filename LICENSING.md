@@ -6,7 +6,7 @@ original project material and third-party material.
 
 ## Original project material
 
-Copyright © 2026 Ramon Sendon.
+Copyright © 2026 José Ramón Sendón del Río.
 
 The original application code, maintenance tools, tests and original project
 documentation are licensed under the **European Union Public Licence, version

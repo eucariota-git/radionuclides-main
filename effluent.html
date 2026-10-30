@@ -60,11 +60,11 @@
             <th>Nuclide</th>
             <th>Patients / y</th>
             <th>Cycles / patient</th>
-            <th title="Administered activity per cycle">A admin. / cycle (GBq)</th>
-            <th title="Fraction of the administered activity excreted in hospital">In-hospital fraction</th>
-            <th title="Controlled in hospital decay tanks">Tanks</th>
-            <th class="text-right" title="Activity leaving the hospital — Scenario 1">Sc. 1 (GBq/y)</th>
-            <th class="text-right" title="Activity reaching the STP — Scenario 2">Sc. 2 (GBq/y)</th>
+            <th class="has-tooltip" tabindex="0" aria-label="Administered activity per cycle" data-tooltip="Administered activity per cycle">A admin. / cycle (GBq)</th>
+            <th class="has-tooltip" tabindex="0" aria-label="Fraction of the administered activity excreted in hospital" data-tooltip="Fraction of the administered activity excreted in hospital">In-hospital fraction</th>
+            <th class="has-tooltip" tabindex="0" aria-label="Controlled in hospital decay tanks" data-tooltip="Controlled in hospital decay tanks">Tanks</th>
+            <th class="has-tooltip text-right" tabindex="0" aria-label="Activity leaving the hospital — Scenario 1" data-tooltip="Activity leaving the hospital — Scenario 1">Sc. 1 (GBq/y)</th>
+            <th class="has-tooltip text-right" tabindex="0" aria-label="Activity reaching the STP — Scenario 2" data-tooltip="Activity reaching the STP — Scenario 2">Sc. 2 (GBq/y)</th>
           </tr>
         </thead>
         <tbody id="sourceBody"></tbody>
@@ -87,9 +87,8 @@
     <h2 class="card-title"><span class="ico ico-pipe" aria-hidden="true"></span> B. Scenario 1 — sewer system inspector</h2>
     <div class="form-grid">
       <div class="form-group">
-        <label class="form-label" for="facility">Facility type</label>
+        <label class="form-label" for="facility">Facility type <span class="hint-tip" tabindex="0" role="img" aria-label="Generic annual water volumes; use the licensee's figure when available." data-tooltip="Generic annual water volumes; use the licensee's figure when available."><span class="ico ico-info" aria-hidden="true"></span></span></label>
         <select class="form-select" id="facility" title="Facility type"></select>
-        <div class="form-hint" id="facilityHint"></div>
       </div>
     </div>
     <div class="form-grid mt-1" id="s1Grid"></div>
@@ -139,8 +138,8 @@
               <th class="text-right col-int">DF (transit decay)</th>
               <th class="text-right col-int">C wastewater (Bq/m³ per GBq)</th>
               <th class="text-right col-int">C air (Bq/m³ per GBq)</th>
-              <th class="text-right col-int" title="Dose per unit activity discharged in one year, under the parameters entered">FD (µSv/GBq)</th>
-              <th class="text-right" title="Activity leaving the hospital in one year">Leaving hospital (GBq/y)</th>
+              <th class="has-tooltip text-right col-int" tabindex="0" aria-label="Dose per unit activity discharged in one year, under the parameters entered" data-tooltip="Dose per unit activity discharged in one year, under the parameters entered">FD (µSv/GBq)</th>
+              <th class="has-tooltip text-right" tabindex="0" aria-label="Activity leaving the hospital in one year" data-tooltip="Activity leaving the hospital in one year">Leaving hospital (GBq/y)</th>
               <th class="text-right">External (mSv/y)</th>
               <th class="text-right">Inhalation (mSv/y)</th>
             </tr>
@@ -159,8 +158,8 @@
               <th class="text-right col-int">DF (transit decay)</th>
               <th class="text-right col-int">C dry sludge (Bq/kg per GBq)</th>
               <th class="text-right col-int">C wet sludge (Bq/m³ per GBq)</th>
-              <th class="text-right col-int" title="Dose per unit activity reaching the plant in one year, under the parameters entered">FD (µSv/GBq)</th>
-              <th class="text-right" title="Hospital discharge plus the activity excreted at home in the catchment">Activity reaching STP (GBq/y)</th>
+              <th class="has-tooltip text-right col-int" tabindex="0" aria-label="Dose per unit activity reaching the plant in one year, under the parameters entered" data-tooltip="Dose per unit activity reaching the plant in one year, under the parameters entered">FD (µSv/GBq)</th>
+              <th class="has-tooltip text-right" tabindex="0" aria-label="Hospital discharge plus the activity excreted at home in the catchment" data-tooltip="Hospital discharge plus the activity excreted at home in the catchment">Activity reaching STP (GBq/y)</th>
               <th class="text-right">External (mSv/y)</th>
               <th class="text-right">Inhalation (mSv/y)</th>
             </tr>
@@ -195,7 +194,7 @@
                 <th class="text-right">k Sc. 2 ((nSv/h)/(Bq/m³))</th>
                 <th>Relative Monte Carlo standard uncertainty (coverage factor 1) / envelope</th>
                 <th class="text-right">e(inh) (Sv/Bq)</th>
-                <th title="Lung absorption type — F: fast; M: moderate absorption">Type (F/M)</th>
+                <th class="has-tooltip" tabindex="0" aria-label="Lung absorption type — F: fast; M: moderate absorption" data-tooltip="Lung absorption type — F: fast; M: moderate absorption">Type (F/M)</th>
               </tr>
             </thead>
             <tbody id="coeffBody"></tbody>
@@ -238,7 +237,7 @@
       screening assumption — a continuous discharge does not by itself demonstrate mixing or steady state.
       f<sub>sludge</sub> is the retained fraction as entered (default: 100%).
       k<sub>1</sub> and k<sub>2</sub> are effective-dose-rate coefficients (ICRP Publication 116 (2010), ROT)
-      calculated with PHITS for the geometry of each scenario — they are <strong>not</strong> point-source Γ
+      calculated with PHITS by José Ramón Sendón del Río for the geometry of each scenario — they are <strong>not</strong> point-source Γ
       constants and only apply to that geometry.</p>
       <p>Algorithms and defaults are adapted from the reference workbooks of Scenario 2 (Lu-177) and <em>Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx</em> (Scenario 1). <span id="adaptationNote"></span> Inhalation coefficients are those for adult members of
       the public (RD 783/2001 Annex III table b), kept by the CSN Resolution of 3 April 2024; transcription: ICRP Publication 119 (2012),
@@ -254,7 +253,7 @@
 <footer class="site-footer">
   NM Radionuclide Planner &mdash; For radiation protection estimation purposes.
   Verify against primary sources for regulatory submissions.
-  <br>Original application and code: &copy; 2026 Ramon Sendon &middot; EUPL-1.2 &middot; Third-party data: separate terms &mdash;
+  <br>Application, code and data compilation: &copy; 2026 José Ramón Sendón del Río &middot; EUPL-1.2 &middot; Third-party data: separate terms &mdash;
   <a href="about.html">About, guide &amp; licences</a>
 </footer>
 
@@ -312,22 +311,24 @@
     's2.wet_density_kg_m3', 's2.respirable_fraction', 's2.t_external_h_y']);
   const SCREEN_HINTS = {
     'common.dose_criterion_mSv_y': 'A value ≤ 0 means no comparison.',
-    's2.wet_sludge_t_per_y': p => `<span>${esc(p.hint)}</span> PRTR-España (<a href="https://prtr-es.miteco.gob.es/" target="_blank" rel="noopener">prtr-es.miteco.gob.es</a>), waste code LER 19 08 05.`,
+    's2.wet_sludge_t_per_y': () => `PRTR-España (<a href="https://prtr-es.miteco.gob.es/" target="_blank" rel="noopener">prtr-es.miteco.gob.es</a>), waste code LER 19 08 05.`,
   };
-  const hintHtml = (s, key, p) => {
+  // Explanations go in an ⓘ next to the label; only a link stays visible under the field
+  const tipHtml = (s, key, p) => {
     const k = `${s}.${key}`;
     if (HIDDEN_HINTS.has(k)) return '';
     const h = SCREEN_HINTS[k];
-    return `<div class="form-hint">${typeof h === 'function' ? h(p) : esc(h || p.hint || p.source)}</div>`;
+    return UI.hintTip(typeof h === 'string' ? h : (p.hint || p.source));
   };
+  const linkHtml = (s, key) => (typeof SCREEN_HINTS[`${s}.${key}`] === 'function' ? `<div class="form-hint">${SCREEN_HINTS[`${s}.${key}`]()}</div>` : '');
   for (const s of SCEN) {
     document.getElementById(GRID[s]).innerHTML = Object.entries(PG[s]).map(([key, p]) => {
       // Values entered in scientific notation (1e-7) need a keyboard with "e"
       const mode = p.value !== 0 && Math.abs(p.value) < 1e-3 ? 'text' : 'decimal';
       return `<div class="form-group">
-        <label class="form-label" for="${s}_${key}">${esc(p.label)} (${esc(p.unit)})</label>
+        <label class="form-label" for="${s}_${key}">${esc(p.label)} (${esc(p.unit)}) ${tipHtml(s, key, p)}</label>
         <input type="text" inputmode="${mode}" autocomplete="off" spellcheck="false" class="form-input num-input" id="${s}_${key}" value="${UTILS.inputValue(p.value)}" title="${UTILS.safeAttr(p.label)}">
-        ${hintHtml(s, key, p)}
+        ${linkHtml(s, key)}
       </div>`;
     }).join('');
   }
@@ -353,7 +354,6 @@
     facSel.value = match || 'custom';
   };
   syncFacility();
-  document.getElementById('facilityHint').textContent = 'Generic annual water volumes; use the licensee\'s figure when available.';
   facSel.addEventListener('change', () => {
     if (facSel.value !== 'custom') volInput.value = UTILS.inputValue(presets[facSel.value].water_volume_m3_y);
     render();
@@ -632,7 +632,7 @@
       title: 'Liquid Effluent — Sewer and STP Workers (NUREG/CR-5814 Scenarios 1 and 2)',
       headerRows: [
         ['Nuclides', out.s1.rows.map(r => r.id).join(', ') || 'none'],
-        ['Data status', `effluent-scenarios.json v${data.meta.version} (${data.meta.date}). External coefficients from own PHITS calculations, not from a published table.`],
+        ['Data status', `effluent-scenarios.json v${data.meta.version} (${data.meta.date}). External coefficients from PHITS calculations by ${UTILS.APP_AUTHOR}, not from a published table.`],
       ],
       sections: [
         { heading: 'Source term', rows: input.nuclides.map(n => [n.id, n.include

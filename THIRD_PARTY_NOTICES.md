@@ -16,7 +16,7 @@ They are **not** variants of the same file, and neither supersedes the other:
 
 | File | Covers | Terms |
 |------|--------|-------|
-| [`LICENSE`](LICENSE) | the original application **code** | EUPL-1.2 only — © 2026 Ramon Sendon |
+| [`LICENSE`](LICENSE) | the original application **code** | EUPL-1.2 only — © 2026 José Ramón Sendón del Río |
 | [`LICENSE.TXT`](LICENSE.TXT) | the **ICRP-07 decay data** and its derivatives (`data/icrp107-index.json`, `data/icrp107-data.js`, the photon-derived values in `data/nuclides.json` and `data/nuclides-data.js`) | ICRP-07 — educational / research / not-for-profit only |
 
 **The `LICENSE.TXT` filename is mandated, not a stylistic choice.** The ICRP-07
@@ -150,8 +150,8 @@ Files: `data/effluent-scenarios.json`, `data/effluent-scenarios-data.js`.
   NUREG/CR-5814 / PNL-7892 (1992), U.S. NRC; and IAEA Safety Reports Series
   No. 19 (2001), © IAEA. Numeric values cited with attribution; neither report
   is included in the distribution package.
-- External dose-rate coefficients k for both scenarios: own PHITS
-  calculations by the project author (not third-party data).
+- External dose-rate coefficients k for both scenarios: PHITS calculations by
+  José Ramón Sendón del Río, author of the application (not third-party data).
 
 ### Caregiver page — proximity factors, kinetic presets and criteria
 Files: `data/caregiver.json`, `data/caregiver-data.js`. Numeric values cited
@@ -172,8 +172,8 @@ the articles is included in the distribution package.
   Vilorio et al., *Rev. Fís. Méd.* 26(2) (2025), and Foro CSN-SEPR-SEFM (2011),
   «Criterios de alta de pacientes … tratamientos metabólicos con 131I». No
   licence is stated in either document; numeric values cited with attribution.
-- Default case, model and evaluation criteria per category: the author's
-  workbook *Dosis_acompanantes_simple_v2.1.xlsx* (own work; the criteria are
+- Default case, model and evaluation criteria per category: the workbook
+  *Dosis_acompanantes_simple_v2.1.xlsx* by José Ramón Sendón del Río (own work; the criteria are
   evaluation criteria adopted in this application, citing RD 601/2019, RD 1029/2022 and the documents above).
 
 ### RD 1217/2024 Annex IV and RD 783/2001 Annex III — regulatory values

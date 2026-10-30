@@ -1,10 +1,12 @@
 # NM Radionuclide Planner
 
-Web application for nuclear medicine radionuclide properties, decay calculations, and external dose estimation for radiation workers.
+Web application for nuclear medicine radionuclide properties, decay calculations, external dose estimation, liquid-effluent screening (sewer and STP workers) and caregiver dose after the discharge of a therapy patient.
 
 **Local use:** keep the distribution folder intact and open `index.html`, or serve the folder locally and open its `localhost` address.
 
 Target users: medical physicists and radiation protection specialists.
+
+**Author:** José Ramón Sendón del Río — application and code, compilation and verification of the data, and the PHITS coefficients of the Effluent page.
 
 ---
 
@@ -24,8 +26,9 @@ Target users: medical physicists and radiation protection specialists.
 
 ### Decay calculator (`decay.html`)
 - A(t) = A₀ · e^(−λt) with interactive Chart.js v4.4.0 curve (loaded locally, no CDN dependency)
-- Supports MBq, GBq, mCi, Ci
+- Supports MBq, GBq, mCi, Ci, kBq; time as reference and target date/time or as an elapsed time
 - Time to target activity
+- Optional mass of the material: single-nuclide RD 1217/2024 Table A1 clearance and Table B exemption checks (criteria a and b of Annex II A.1 separately)
 
 ### Dose estimator (`dose.html`)
 - **Dose rate at user-selected distance** (primary output) with 1 m reference column
@@ -34,13 +37,12 @@ Target users: medical physicists and radiation protection specialists.
 - Shielding: lead, elemental iron, and concrete (normal-weight and light-weight)
 - **Archer broad-beam method** (Monte Carlo, Oumano et al. 2025; transmission of dose at 1 cm depth in tissue, applied to both operational quantities as an approximation) for Tc-99m, F-18, I-131, Lu-177 behind lead or concrete
 - **Spectrum-weighted narrow beam** (dose-weighted sum over ICRP 107 photon lines, NIST XCOM) for all other nuclides — accounts for beam hardening of multi-line emitters; the spectrum is stored for curated nuclides and built dynamically for ICRP 107 extended entries (`PHYSICS.buildShieldingSpectrum`); single-line narrow beam is the internal fallback when no spectrum is available
-- **📄 Report / PDF** — printable calculation report with timestamp, database version, inputs, results, method, data sources and disclaimer (also in the Decay calculator)
+- **Report / PDF** — printable calculation report with timestamp, application version and author, database version, inputs, results, method, data sources and disclaimer (in all four calculators)
 - Cumulative dose with radioactive decay integration
 - **Annual dose limit comparison** (RD 1029/2022 / EURATOM 2013/59):
   - Effective dose: 20 mSv/y worker, 1 mSv/y public
-  - Extremities: 500 mSv/y
-  - **Lens of eye:** Both conditions must be satisfied: 50 mSv/y max annual AND 100 mSv over any consecutive 5-year period (current regime since 22 Jun 2024)
-  - Crystal lens calculation with both limits displayed
+  - Skin and extremities: 500 mSv/y
+  - **Lens of eye:** Both conditions must be satisfied: 50 mSv/y max annual AND 100 mSv over any consecutive 5-year period (current regime since 22 Jun 2024); both are shown
 - CSV export includes dose rates at both selected distance and 1 m reference
 
 ### Regulatory values (all nuclides)
@@ -49,16 +51,16 @@ Target users: medical physicists and radiation protection specialists.
 - Adult public ingestion coefficients from RD 783/2001 Annex III table a) (kept in force by the CSN Resolution of 3 April 2024; numerical transcription ICRP 119 F.1) and the IS-28 individual discharge level for every nuclide with a coefficient
 
 ### Liquid effluent — sewer and STP workers (`effluent.html`)
-- Screening doses from patient excreta for two NUREG/CR-5814 receptors, reported separately and never added together: **Scenario 1**, sewer system inspector (immersion in the facility's wastewater + aerosol inhalation), and **Scenario 2**, STP sludge process operator (dewatered sludge + resuspended dust; IAEA SRS-19 §4.9 / §6.6 screening philosophy)
-- **Lu-177, I-131, Lu-177m, Tc-99m and F-18**: own PHITS effective-dose-rate coefficients (ICRP 116 ROT) for the geometry of each scenario + ICRP 119 Table G.1 adult-public inhalation coefficients; F-18 has no Scenario 2 coefficient
-- Algorithms and defaults reproduce the reference workbooks; per-scenario linear sum over nuclides against a user-defined criterion
+- Screening doses from patient excreta for two NUREG/CR-5814 receptors, reported separately and never added together: **Scenario 1**, sewer system inspector (external exposure above the facility's wastewater + aerosol inhalation), and **Scenario 2**, STP sludge process operator (dewatered sludge + resuspended dust; IAEA SRS-19 §4.9 / §6.6 screening philosophy)
+- **Lu-177, I-131, Lu-177m, Tc-99m and F-18**: PHITS effective-dose-rate coefficients calculated by José Ramón Sendón del Río (ICRP 116 ROT) for the geometry of each scenario + ICRP 119 Table G.1 adult-public inhalation coefficients; F-18 has no Scenario 2 coefficient
+- Algorithms and defaults adapted from the reference workbooks (the workbook's I-131 shortcut is replaced by the explicit model and kept only as a cross-check); per-scenario linear sum over nuclides against a user-defined criterion; intermediate values (decay factor, concentrations, dose per GBq) on demand
 - Not a complete discharge assessment: the IS-28 Annex II II.A.4 conditions and mixture clearance are evaluated separately
-- Indicative cross-check against NUREG/CR-5814 Tables A.21 and B.7 and IAEA SRS-19 Table I–IV; 📄 Report / PDF and CSV export
+- Indicative cross-check against NUREG/CR-5814 Tables A.21 and B.7 and IAEA SRS-19 Table I–IV; Report / PDF and CSV export
 
 ### Caregiver dose after discharge (`caregiver.html`)
 - External dose to one caregiver, family member or third party from a Lu-177 or I-131 therapy patient, from the rate measured at 1 m at discharge, two consecutive effective half-lives, day-time and sleeping cohabitation during and after a restriction, and equal cycles (port of the workbook *Dosis_acompanantes_simple_v2.1.xlsx*)
 - Proximity profiles: DOTATATE measured (Monserrat Fuertes et al. 2023), I-131 / Lu-177 approximate (contact = factor of 0.4 m; inverse square), or own measurements
-- Inverse calculations: maximum discharge rate, minimum and adopted restriction, floor with an indefinite restriction; dose-vs-restriction curve; self-check against the workbook v6 reference cases; 📄 Report / PDF and CSV export
+- Inverse calculations: maximum discharge rate, minimum and adopted restriction, dose with an indefinite restriction (a floor, or an upper asymptote when there is more contact during the restriction than after it); dose-vs-restriction curve; informative bounds of the daily-average occupancy; self-check against the workbook v6 reference cases; Report / PDF and CSV export
 - Criteria per category (3 / 5 / 1 / 0.3 mSv) are evaluation criteria adopted in this application, not regulatory values for this treatment
 
 ### Extended database — ICRP 107 (`index.html`)
@@ -66,7 +68,7 @@ Target users: medical physicists and radiation protection specialists.
 - **"Search in ICRP 107" button** appears when a nuclide is not found in the main database
 - Automatically calculates Γ^H\*(10) and Γ^H'(0.07) from ICRP 107 photon emissions, including annihilation quanta where present (E ≥ 20 keV, yield ≥ 0.01%)
 - **Short-lived progeny in equilibrium** is included by default (descendants with T½ ≤ 1/10 of the parent's and ≤ 30 d, at the Bateman ratio — e.g. Ge-68 → Ga-68, Sn-113 → In-113m); Properties shows both values (marked «+») and Dose offers «parent only» for a freshly separated source
-- Displays photon spectrum (energy, yield, type) with **max photon energy** for H'(0.07) assessment
+- Detail panel with the photon spectrum as a chart and a line table (energy, yield, type), β E<sub>max</sub> and the regulatory values
 - Constants computed from ICRP 107 are cross-checked against the published Cornejo (2015) values by the automated test suite (`node test/validate-constants.js`)
 - Parser metadata: SHA256 hashes of source ICRP-107 files stored in JSON for audit trail
 - See `references/icrp107/README.md` for detailed documentation on ICRP 107 integration
@@ -163,7 +165,7 @@ Works on desktop and mobile browsers. Loads from `file://`, `content://` (Androi
 ```
 index.html              Properties page (with ICRP 107 extended search)
 decay.html              Decay calculator
-dose.html               Dose estimator (with Y-90 Zanzonico, distance-aware output)
+dose.html               Dose estimator (point source, shielding, experimental Y-90 bremsstrahlung scenario)
 effluent.html           Liquid effluent screening — NUREG/CR-5814 Scenarios 1 (sewer) and 2 (STP sludge)
 caregiver.html          Caregiver dose after discharge of a therapy patient
 about.html              In-app guide, licensing and third-party notices
@@ -176,8 +178,8 @@ js/data.js              PHYSICS module — ICRP 74 A.21 conversion table (consta
 js/physics.js           CALC module — decay, dose, Archer/narrow-beam transmission
 js/db.js                DB module — nuclide database management
 js/nuclide-id.js        Shared canonicalization of radionuclide identifiers and aliases
-js/icrp107-loader.js    ICRP107 module — extended DB search, dose calculation, max photon energy
-js/ui.js                UI module — dark mode, print, keyboard, history
+js/icrp107-loader.js    ICRP107 module — extended DB search, Γ, progeny in equilibrium
+js/ui.js                UI module — dark mode, print, keyboard, field help (ⓘ), input errors, chart theme
 js/utils.js             Formatting, escaping, dates and CSV helpers
 js/report.js            Printable traceable calculation reports
 js/effluent.js          EFFLUENT module — Scenario 1/2 data loading, unit conversion and cross-checks
@@ -227,7 +229,7 @@ docs/                   Acceptance and audit/remediation material
 ## Development tooling
 
 Developed with the assistance of AI coding tools (Anthropic **Claude Code** and OpenAI
-**Codex**), operated and reviewed by the author, who remains the sole author and
+**Codex**), operated and reviewed by the author, José Ramón Sendón del Río, who remains the sole author and
 licensor of the original code. The tools hold no authorship or licence interest; this
 is a voluntary transparency notice. Verification rests on primary sources, the
 automated test suites and the independent human acceptance test — not on how the code
@@ -239,7 +241,7 @@ was typed.
 
 | Part | Terms | File |
 |------|-------|------|
-| Original application **code** (HTML/CSS/JS, tools, tests) | [EUPL-1.2 only](LICENSE) — © 2026 Ramon Sendon | `LICENSE` + `LICENSING.md` |
+| Original application **code** (HTML/CSS/JS, tools, tests) | [EUPL-1.2 only](LICENSE) — © 2026 José Ramón Sendón del Río | `LICENSE` + `LICENSING.md` |
 | Bundled **data** (ICRP 107, ICRU/NIST/NUREG tables, …) | Separate terms; some data is limited to educational/research/not-for-profit use | `LICENSE.TXT` + notices |
 
 > `LICENSE` and `LICENSE.TXT` are **two different licences**, not variants of one

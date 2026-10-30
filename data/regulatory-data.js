@@ -4,6 +4,10 @@ const REGULATORY_DATA = {
     "id": "regulatory",
     "version": "1.0.0",
     "built": "2026-10-03",
+    "author": {
+      "name": "José Ramón Sendón del Río",
+      "role": "Transcription and verification of the regulatory tables"
+    },
     "sources": {
       "annex_iv_csv_sha256": "0f4adfcb9c6a10dd8b0b392aa43ee02d0cadbd44df07eb9f0a7db5b5bacd705f",
       "progeny_csv_sha256": "2fa4c18b9385d2327b5884628e31dbaac93c68d93c5dcb4d6298751f57c54771",

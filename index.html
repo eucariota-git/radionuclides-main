@@ -132,7 +132,7 @@
 <footer class="site-footer">
   NM Radionuclide Planner &mdash; For radiation protection estimation purposes.
   Verify against primary sources for regulatory submissions.
-  <br>Original application and code: &copy; 2026 Ramon Sendon &middot; EUPL-1.2 &middot; Third-party data: separate terms &mdash;
+  <br>Application, code and data compilation: &copy; 2026 José Ramón Sendón del Río &middot; EUPL-1.2 &middot; Third-party data: separate terms &mdash;
   <a href="about.html">About, guide &amp; licences</a>
 </footer>
 
@@ -642,7 +642,9 @@
   // Search in ICRP 107 database
   function searchIcrp107() {
     if (!ICRP107 || !ICRP107.isReady()) {
-      alert('ICRP 107 database is not loaded. Please try again in a moment.');
+      // Said in the table: no blocking dialog (project rule)
+      document.getElementById('nuclideBody').innerHTML =
+        '<tr><td colspan="11" class="text-muted text-sm" style="padding:1rem;">The ICRP 107 database is not loaded yet. Please try again in a moment.</td></tr>';
       return;
     }
 

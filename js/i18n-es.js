@@ -164,8 +164,8 @@ const I18N_ES = {
     'close list': 'cerrar la lista',
     'NM Radionuclide Planner — For radiation protection estimation purposes. Verify against primary sources for regulatory submissions.':
       'NM Radionuclide Planner — Para estimaciones de protección radiológica. Verifique con las fuentes primarias antes de cualquier presentación reglamentaria.',
-    'Original application and code: © 2026 Ramon Sendon · EUPL-1.2 · Third-party data: separate terms —':
-      'Aplicación y código originales: © 2026 Ramon Sendon · EUPL-1.2 · Datos de terceros: condiciones propias —',
+    'Application, code and data compilation: © 2026 José Ramón Sendón del Río · EUPL-1.2 · Third-party data: separate terms —':
+      'Aplicación, código y recopilación de datos: © 2026 José Ramón Sendón del Río · EUPL-1.2 · Datos de terceros: condiciones propias —',
     'About, guide & licences': 'Acerca de, guía y licencias',
 
     // ================= About (about.html) =================
@@ -176,8 +176,8 @@ const I18N_ES = {
     'User guidance, licence terms and third-party attributions available directly in the app.':
       'Guía de uso, condiciones de licencia y atribuciones de terceros, disponibles directamente en la aplicación.',
     'On this page': 'En esta página',
-    'Original application and code: © 2026 Ramon Sendon · EUPL-1.2 · Third-party data: separate terms — About, guide & licences':
-      'Aplicación y código originales: © 2026 Ramon Sendon · EUPL-1.2 · Datos de terceros: condiciones propias — Acerca de, guía y licencias',
+    'Application, code and data compilation: © 2026 José Ramón Sendón del Río · EUPL-1.2 · Third-party data: separate terms — About, guide & licences':
+      'Aplicación, código y recopilación de datos: © 2026 José Ramón Sendón del Río · EUPL-1.2 · Datos de terceros: condiciones propias — Acerca de, guía y licencias',
 
     // Quantity names (decimal comma in Spanish, RD 1029/2022 Annex I)
     "H'(0.07)": "H'(0,07)",
@@ -247,6 +247,7 @@ const I18N_ES = {
     'See details': 'Ver detalle',
     'No results in main database.': 'Sin resultados en la base de datos principal.',
     'Search in ICRP 107': 'Buscar en ICRP 107',
+    'The ICRP 107 database is not loaded yet. Please try again in a moment.': 'La base de datos de ICRP 107 aún no se ha cargado. Inténtelo de nuevo en un momento.',
     'Sources, method and limits of the values': 'Fuentes, método y límites de los valores',
     '↻ Open in Decay Calculator': '↻ Abrir en la calculadora de decaimiento',
     '🔆 Open in Dose Estimator': '🔆 Abrir en el estimador de dosis',
@@ -440,6 +441,7 @@ const I18N_ES = {
     'Decay Calculation': 'Cálculo de decaimiento',
     'Generated': 'Generado',
     'Application': 'Aplicación',
+    'Author': 'Autor',
     'Database': 'Base de datos',
     'Half-life source': 'Fuente del periodo de semidesintegración',
     'Data status': 'Estado de los datos',
@@ -807,8 +809,8 @@ const I18N_ES = {
     'No decay during the exposure year is applied. The concentration is the annual discharge divided by the annual water volume (Scenario 1) or by the annual sludge production (Scenario 2), with transit decay only; this is a screening assumption — a continuous discharge does not by itself demonstrate mixing or steady state. f':
       'No se aplica decaimiento durante el año de exposición. La concentración es el vertido anual dividido por el volumen anual de agua (escenario 1) o por la producción anual de lodo (escenario 2), solo con decaimiento en tránsito; es una hipótesis de cribado: un vertido continuo no demuestra por sí solo la mezcla ni el estado estacionario. f',
     'is the retained fraction as entered (default: 100%). k': 'es la fracción retenida introducida (por defecto: 100 %). k',
-    'are effective-dose-rate coefficients (ICRP Publication 116 (2010), ROT) calculated with PHITS for the geometry of each scenario — they are':
-      'son coeficientes de tasa de dosis efectiva (ICRP Publication 116 (2010), ROT) calculados con PHITS para la geometría de cada escenario;',
+    'are effective-dose-rate coefficients (ICRP Publication 116 (2010), ROT) calculated with PHITS by José Ramón Sendón del Río for the geometry of each scenario — they are':
+      'son coeficientes de tasa de dosis efectiva (ICRP Publication 116 (2010), ROT) calculados con PHITS por José Ramón Sendón del Río para la geometría de cada escenario;',
     'point-source Γ constants and only apply to that geometry.': 'constantes Γ de fuente puntual y solo se aplican a esa geometría.',
     'Algorithms and defaults are adapted from the reference workbooks of Scenario 2 (Lu-177) and': 'Los algoritmos y los valores por defecto se adaptan de los libros de referencia del escenario 2 (Lu-177) y',
     '(Scenario 1).': '(escenario 1).',
@@ -1213,8 +1215,8 @@ const I18N_ES = {
     'Screening estimate of the external dose to one person from a discharged radionuclide-therapy patient, for radiation protection planning. The criteria per category are evaluation criteria adopted in this application, not values fixed by regulation for this treatment. Literature factors are not an individual validation of the patient. Results must be reviewed by a qualified radiation protection expert before use. Generated by NM Radionuclide Planner, an open-source reference tool provided without warranty of any kind.':
       'Estimación de cribado de la dosis externa a una persona debida a un paciente dado de alta tras una terapia con radionucleidos, para la planificación de la protección radiológica. Los criterios por categoría son criterios de evaluación adoptados en esta aplicación, no valores fijados por la normativa para este tratamiento. Los factores de la literatura no son una validación individual del paciente. Los resultados deben ser revisados por un experto cualificado en protección radiológica antes de su uso. Generado por NM Radionuclide Planner, herramienta de referencia de código abierto proporcionada sin garantía de ningún tipo.',
     // Caregiver data texts (data/caregiver.json)
-    "Port of the author's workbook Dosis_acompanantes_simple_v2.1.xlsx (sheets Dosis, Curva and Comprobación).":
-      "Adaptación del libro del autor Dosis_acompanantes_simple_v2.1.xlsx (hojas Dosis, Curva y Comprobación).",
+    "Port of the workbook Dosis_acompanantes_simple_v2.1.xlsx by José Ramón Sendón del Río (sheets Dosis, Curva and Comprobación).":
+      "Adaptación del libro Dosis_acompanantes_simple_v2.1.xlsx de José Ramón Sendón del Río (hojas Dosis, Curva y Comprobación).",
     "Literature values describe a cohort, not the patient. Under each preset, «Spread in the source» gives the dispersion the source publishes, with its statistic named (mean ± SD, median with quartiles and range, or spread of literature values). It describes the cohort, not an interval for the patient: mean + 2 SD is only a reference high value. No SD is derived here from ranges or quartiles.":
       "Los valores de la literatura describen una cohorte, no al paciente. Bajo cada cinética, «Dispersión en la fuente» da la dispersión que publica la fuente, con el estadístico indicado (media ± DE, mediana con cuartiles y extremos, o dispersión de los valores de la literatura). Describe la cohorte, no un intervalo para el paciente: media + 2 DE es solo un valor alto de referencia. Aquí no se deduce ninguna DE a partir de intervalos o cuartiles.",
     "Evaluation criteria adopted in this application, not values fixed by regulation for this treatment. Scope: one person, the whole treatment (all cycles together) — the ICRP «episode» (the duration of a given release after therapy) is applied to the complete treatment, which is the more restrictive reading. Carers are people who, outside their occupation, knowingly and voluntarily help in the care of the patient (RD 601/2019, art. 7.1); children and pregnant women are assessed with the public category. The criterion only changes the comparison and the inverse calculations, never the calculated dose.":
@@ -1710,9 +1712,11 @@ const I18N_ES = {
     [/^\(nSv\/h\)\/\(Bq\/m³\)\. ([\s\S]+)$/, (m, rest) => '(nSv/h)/(Bq/m³). ' + esText(rest)],
     [/^"(.+)" must be (a number|greater than 0)$/, (m, f, w) => `«${esText(f)}» ${w === 'a number' ? 'debe ser un número' : 'debe ser mayor que 0'}`],
     [/^(\S+): fraction excreted in hospital must be ≤ 1$/, '$1: la fracción excretada en el hospital debe ser ≤ 1'],
+    // Report header: author row (UTILS.APP_AUTHOR)
+    [/^(.+) \(application and data compilation\)$/, '$1 (aplicación y recopilación de datos)'],
     // Effluent report
-    [/^effluent-scenarios\.json (v\S+) \((.+)\)\. External coefficients from own PHITS calculations, not from a published table\.$/,
-      'effluent-scenarios.json $1 ($2). Coeficientes externos de cálculos PHITS propios, no de una tabla publicada.'],
+    [/^effluent-scenarios\.json (v\S+) \((.+)\)\. External coefficients from PHITS calculations by (.+), not from a published table\.$/,
+      'effluent-scenarios.json $1 ($2). Coeficientes externos de cálculos PHITS de $3, no de una tabla publicada.'],
     [/^A_adm = ([\s\S]+)$/, m => m.replace(' patients/y × ', ' pacientes/a × ').replace(' cycles × ', ' ciclos × ').split(' GBq/y').join(' GBq/a')
       .replace('; excreted in hospital ', '; excretado en el hospital ').replace(' into decay tanks', ' a depósitos de decaimiento')
       .replace('; leaves hospital ', '; sale del hospital ').replace(' (Scenario 1)', ' (escenario 1)').replace('; at home ', '; en el domicilio ')

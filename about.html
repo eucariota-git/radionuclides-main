@@ -64,6 +64,7 @@
       <li><strong>Reports and CSV</strong>: Decay, Dose, Effluent and Caregiver have a <strong>Report / PDF</strong> button (inputs, results, method, sources, disclaimer and sign-off line; use the browser's "Save as PDF") and a CSV export in which every row repeats the application version, build, data version, export time (UTC) and the inputs needed to reproduce the result.</li>
       <li><strong>Decimal point or comma</strong>: every numeric field accepts either (<code>0.3</code> or <code>0,3</code>; also <code>1e-7</code>). A number with two separators or a thousands group (<code>1.000,5</code>, <code>1 000</code>) is rejected; a single separator followed by exactly three digits (<code>1.500</code>) is read as a decimal, and a note under the field says how it was read. The <strong>1.5 / 1,5</strong> button in the header chooses the separator of the displayed results, charts and reports — by default the one of your browser's language. CSV files always use the decimal point. Quantity names and references keep their usual form (H'(0.07), ANS-6.4.3).</li>
       <li><strong>EN / ES</strong> in the header shows the screens in Spanish (English by default). It changes only the displayed text: values, calculations, CSV files and the decimal setting do not change.</li>
+      <li><strong>Field help</strong>: an ⓘ next to a label explains the field; it opens on hover, keyboard focus or tap. Warnings and rules that matter while you type stay visible under the field.</li>
       <li><strong>Results update as you type</strong> on the four calculators. An invalid entry is named in a red box under the form, the field is outlined, and the results are hidden until it is corrected — the report and the CSV always describe the inputs on screen.</li>
       <li>Each page explains its method, sources and limits in its own <em>Method</em> and notes blocks (collapsed: click the title marked ▸ to open them); this guide — <strong>Guide</strong> in the menu — gives the purpose, the use and the key limits.</li>
     </ul>
@@ -122,11 +123,11 @@
     <p><strong>How to use</strong>:</p>
     <ol>
       <li><strong>Source term</strong>: tick the nuclides; patients/year × cycles × administered activity per cycle, all assumed excreted; the fraction excreted in hospital; <em>Tanks</em> for nuclides held in decay tanks (then only their share of the annual tank discharge leaves). Scenario 1 receives what leaves the hospital; Scenario 2 also the activity excreted at home in the STP catchment.</li>
-      <li><strong>Scenario 1</strong> and <strong>Scenario 2</strong> parameters: a short note under the inputs that need one; every default and its source are in <em>Sources and assumptions</em>. Plant data (water volume, sludge production from PRTR-España) are site-specific.</li>
+      <li><strong>Scenario 1</strong> and <strong>Scenario 2</strong> parameters: an ⓘ next to each input that needs an explanation; every default and its source are in <em>Sources and assumptions</em>. Plant data (water volume, sludge production from PRTR-España) are site-specific.</li>
       <li><strong>Common</strong>: breathing rate, annual tank discharge and a <strong>user-defined</strong> dose criterion (no regulatory basis is attributed to it).</li>
       <li>Results update as you type: dose per nuclide and per scenario (<strong>Show intermediate values</strong> adds the decay factor, the concentrations and the dose per GBq), with the coefficients used and an indicative cross-check against NUREG/CR-5814 and IAEA SRS-19 factors.</li>
     </ol>
-    <p><strong>Key limits</strong>: screening model (annual discharge over annual water volume or sludge production, transit decay only); the external coefficients are own PHITS calculations valid only for their model geometries, photon-only in Scenario 1, and none covers the infinite slab of NUREG/CR-5814; F-18 has no Scenario 2 external coefficient, so that total is a partial sum (≥); the I-131 default of 0.8 GBq is the workbook's activity at discharge, not the administered activity — replace it. <strong>Not a complete discharge assessment</strong>: the IS-28 II.A.4 conditions and mixture clearance are evaluated separately.</p>
+    <p><strong>Key limits</strong>: screening model (annual discharge over annual water volume or sludge production, transit decay only); the external coefficients are PHITS calculations by José Ramón Sendón del Río, the author, valid only for their model geometries, photon-only in Scenario 1, and none covers the infinite slab of NUREG/CR-5814; F-18 has no Scenario 2 external coefficient, so that total is a partial sum (≥); the I-131 default of 0.8 GBq is the workbook's activity at discharge, not the administered activity — replace it. <strong>Not a complete discharge assessment</strong>: the IS-28 II.A.4 conditions and mixture clearance are evaluated separately.</p>
     <p><strong>Example</strong> (defaults, Lu-177 and I-131 included, no decay tanks, 45 × 45 × 3 m geometry):</p>
     <ul>
       <li>Scenario 1: Lu-177 1498.5 GBq/y → 0.0172 mSv/y; I-131 20 GBq/y → 0.0027 mSv/y; total 0.0199 mSv/y</li>
@@ -136,7 +137,7 @@
 
     <hr>
     <h4>5. Caregiver Dose after Discharge (<code>caregiver.html</code>)</h4>
-    <p><strong>Purpose</strong>: external dose to one caregiver, relative or third party from a Lu-177 or I-131 therapy patient after discharge, with the maximum discharge rate and the minimum restriction period that meet a criterion. Port of the author's workbook <em>Dosis_acompanantes_simple_v2.1.xlsx</em>.</p>
+    <p><strong>Purpose</strong>: external dose to one caregiver, relative or third party from a Lu-177 or I-131 therapy patient after discharge, with the maximum discharge rate and the minimum restriction period that meet a criterion. Port of the workbook <em>Dosis_acompanantes_simple_v2.1.xlsx</em> by José Ramón Sendón del Río, the author of the application.</p>
     <p><strong>How to use</strong>:</p>
     <ol>
       <li>Optional <strong>kinetics preset</strong> (Lu-177-PSMA-617, Lu-177-DOTATATE or I-131 NaI by indication, from the literature listed on the page): it fills the radiopharmaceutical, the fast phase, the effective half-lives, the cycles and the profile, never the measured rate or the cohabitation. Under «Kinetics presets and their sources», each preset shows the <strong>spread its source publishes</strong> — mean ± SD (Demir 2016, Kurth 2018), median with quartiles and range (Monserrat 2023) or the spread of the literature values (Gayol Vilorio 2025) — so that the extreme values you try are defensible; the Forum's I-131 values are fixed and have none.</li>
@@ -213,10 +214,12 @@
     </ul>
 
     <hr>
+    <h3 id="guide-author">Author</h3>
+    <p><strong>José Ramón Sendón del Río</strong> — application and code; compilation, recalculation and verification of the data (curated database, regulatory tables, ICRP 107 index); the PHITS external dose-rate coefficients of the Effluent page; the caregiver workbook ported in Caregiver. The PHITS reports and reference workbooks are available from the author on request.</p>
     <h3 id="guide-support-and-feedback">Support &amp; Feedback</h3>
-    <p>For issues, questions or feature requests, contact the person or organisation that supplied your copy of the application.</p>
+    <p>For issues, questions or feature requests, contact the author or whoever supplied your copy of the application.</p>
     <h3 id="guide-development-tooling">Development tooling</h3>
-    <p>This application was developed with the assistance of AI coding tools — Anthropic <strong>Claude Code</strong> and OpenAI <strong>Codex</strong> — operated, reviewed and directed by the author, who remains the sole author and licensor of the original code. These tools hold no authorship, copyright or licence interest in the application; this statement is a voluntary transparency notice, not a licence obligation.</p>
+    <p>This application was developed with the assistance of AI coding tools — Anthropic <strong>Claude Code</strong> and OpenAI <strong>Codex</strong> — operated, reviewed and directed by the author, José Ramón Sendón del Río, who remains the sole author and licensor of the original code. These tools hold no authorship, copyright or licence interest in the application; this statement is a voluntary transparency notice, not a licence obligation.</p>
     <p>Correctness does not rest on how the code was written: numerical data are taken from the cited sources (ICRP, NIST, NUREG/ANS, DDEP, BOE and the cited articles) — transcribed where the source tabulates them, computed from them where indicated (e.g. the operational Γ constants, the dose-weighted shielding spectra, the explicitly experimental Y-90 container estimates), with the status labelled per value — the calculation paths are checked by the automated test suites against external anchors, and adoption for professional use requires the independent human validation described in the acceptance sheet.</p>
 
     <hr>
@@ -245,6 +248,7 @@
       <li><strong>Informes y CSV</strong>: Decaimiento, Dosis, Efluentes y Acompañantes tienen un botón <strong>Informe / PDF</strong> (datos de entrada, resultados, método, fuentes, advertencia y línea de firma; use «Guardar como PDF» del navegador) y una exportación CSV en la que cada fila repite la versión de la aplicación, el build, la versión de los datos, la hora de exportación (UTC) y los datos de entrada necesarios para reproducir el resultado.</li>
       <li><strong>Punto o coma decimal</strong>: todos los campos numéricos admiten los dos (<code>0.3</code> o <code>0,3</code>; también <code>1e-7</code>). Se rechaza un número con dos separadores o con separador de millares (<code>1.000,5</code>, <code>1 000</code>); un único separador seguido de exactamente tres cifras (<code>1.500</code>) se lee como decimal, y una nota bajo el campo dice cómo se ha leído. El botón <strong>1.5 / 1,5</strong> de la cabecera elige el separador de los resultados, gráficas e informes que se muestran; por defecto, el del idioma del navegador. Los archivos CSV usan siempre el punto decimal. Los nombres de magnitudes y las referencias conservan su forma habitual.</li>
       <li><strong>EN / ES</strong>, en la cabecera, muestra las pantallas en español (por defecto, en inglés). Solo cambia el texto mostrado: los valores, los cálculos, los archivos CSV y el separador decimal no cambian. Los informes salen en el idioma de la pantalla; los CSV, siempre en inglés.</li>
+      <li><strong>Ayuda de los campos</strong>: un ⓘ junto a la etiqueta explica el campo; se abre al pasar el ratón, con el teclado o al tocarlo. Los avisos y las reglas que importan mientras escribe siguen visibles bajo el campo.</li>
       <li><strong>Los resultados se actualizan mientras escribe</strong> en las cuatro calculadoras. Un dato no válido se nombra en un recuadro rojo bajo el formulario, el campo se resalta y los resultados se ocultan hasta que se corrige: el informe y el CSV describen siempre los datos que hay en pantalla.</li>
       <li>Cada página explica su método, fuentes y limitaciones en sus propios bloques <em>Método</em> y de notas (plegados: pulse el título marcado con ▸ para abrirlos); esta guía —<strong>Guía</strong> en el menú— da la finalidad, el uso y las limitaciones principales.</li>
     </ul>
@@ -303,14 +307,14 @@
     <p><strong>Uso</strong>:</p>
     <ol>
       <li><strong>Término fuente</strong>: marque los nucleidos; pacientes al año × ciclos × actividad administrada por ciclo, que se supone excretada en su totalidad; la fracción excretada en el hospital; <em>Depósitos</em> para los nucleidos retenidos en depósitos de decaimiento (entonces solo sale su parte del vertido anual de los depósitos). El escenario 1 recibe lo que sale del hospital; el escenario 2, además, la actividad excretada en el domicilio en la zona servida por la depuradora.</li>
-      <li>Parámetros del <strong>escenario 1</strong> y del <strong>escenario 2</strong>: una breve nota bajo los datos que la necesitan; todos los valores por defecto y su fuente están en <em>Fuentes e hipótesis</em>. Los datos de la planta (volumen de agua, producción de lodos según PRTR-España) son propios de cada emplazamiento.</li>
+      <li>Parámetros del <strong>escenario 1</strong> y del <strong>escenario 2</strong>: un ⓘ junto a cada dato que necesita explicación; todos los valores por defecto y su fuente están en <em>Fuentes e hipótesis</em>. Los datos de la planta (volumen de agua, producción de lodos según PRTR-España) son propios de cada emplazamiento.</li>
       <li><strong>Comunes</strong>: tasa de respiración, vertido anual de los depósitos y un criterio de dosis <strong>definido por el usuario</strong> (no se le atribuye base reglamentaria).</li>
       <li>Los resultados se actualizan mientras escribe: dosis por nucleido y por escenario (<strong>Mostrar valores intermedios</strong> añade el factor de decaimiento, las concentraciones y la dosis por GBq), con los coeficientes usados y un contraste orientativo con los factores de NUREG/CR-5814 y del IAEA SRS-19.</li>
     </ol>
     <p><strong>Limitaciones principales</strong>:</p>
     <ul>
       <li>Es un modelo de cribado: vertido anual dividido entre el volumen anual de agua o la producción de lodos, con decaimiento solo durante el tránsito.</li>
-      <li>Los coeficientes externos son cálculos PHITS propios, válidos solo para sus geometrías de modelo y solo de fotones en el escenario 1. Ninguno cubre la lámina infinita de NUREG/CR-5814.</li>
+      <li>Los coeficientes externos son cálculos PHITS de José Ramón Sendón del Río, el autor, válidos solo para sus geometrías de modelo y solo de fotones en el escenario 1. Ninguno cubre la lámina infinita de NUREG/CR-5814.</li>
       <li>El F-18 no tiene coeficiente externo para el escenario 2, de modo que ese total es una suma parcial (≥).</li>
       <li>El valor por defecto de 0,8 GBq de I-131 es la actividad en el alta del libro de cálculo, no la actividad administrada: sustitúyalo.</li>
       <li><strong>No es una evaluación completa del vertido</strong>: las condiciones del apartado II.A.4 de la IS-28 y la desclasificación de mezclas se evalúan aparte.</li>
@@ -324,7 +328,7 @@
 
     <hr>
     <h4>5. Dosis a acompañantes tras el alta (<code>caregiver.html</code>)</h4>
-    <p><strong>Finalidad</strong>: dosis externa a una persona cuidadora, familiar o tercera persona debida a un paciente tratado con Lu-177 o I-131 tras el alta, con la tasa máxima en el alta y el periodo mínimo de restricción que cumplen un criterio. Adaptación del libro de cálculo del autor <em>Dosis_acompanantes_simple_v2.1.xlsx</em>.</p>
+    <p><strong>Finalidad</strong>: dosis externa a una persona cuidadora, familiar o tercera persona debida a un paciente tratado con Lu-177 o I-131 tras el alta, con la tasa máxima en el alta y el periodo mínimo de restricción que cumplen un criterio. Adaptación del libro de cálculo <em>Dosis_acompanantes_simple_v2.1.xlsx</em> de José Ramón Sendón del Río, autor de la aplicación.</p>
     <p><strong>Uso</strong>:</p>
     <ol>
       <li><strong>Cinética predefinida</strong> opcional (Lu-177-PSMA-617, Lu-177-DOTATATE o I-131 NaI según la indicación, de la bibliografía citada en la página): rellena el radiofármaco, la fase rápida, los periodos efectivos, los ciclos y el perfil, nunca la tasa medida ni la convivencia. En «Cinéticas predefinidas y sus fuentes», cada una muestra la <strong>dispersión que publica su fuente</strong> —media ± DE (Demir 2016, Kurth 2018), mediana con cuartiles y extremos (Monserrat 2023) o la dispersión de los valores de la literatura (Gayol Vilorio 2025)— para que los valores extremos que pruebe sean defendibles; los valores del Foro para I-131 son fijos y no la tienen.</li>
@@ -435,10 +439,12 @@
     </ul>
 
     <hr>
+    <h3 id="guia-autor">Autor</h3>
+    <p><strong>José Ramón Sendón del Río</strong> — aplicación y código; recopilación, recálculo y verificación de los datos (base de datos revisada, tablas reglamentarias, índice de ICRP 107); los coeficientes PHITS de tasa de dosis externa de la página de efluentes; el libro de cálculo de acompañantes adaptado en Caregiver. Los informes PHITS y los libros de referencia están disponibles a petición al autor.</p>
     <h3 id="guia-soporte-y-comentarios">Soporte y comentarios</h3>
-    <p>Para incidencias, preguntas o peticiones de mejora, diríjase a la persona u organización que le suministró su copia de la aplicación.</p>
+    <p>Para incidencias, preguntas o peticiones de mejora, diríjase al autor o a quien le suministró su copia de la aplicación.</p>
     <h3 id="guia-herramientas-de-desarrollo">Herramientas de desarrollo</h3>
-    <p>Esta aplicación se ha desarrollado con la ayuda de herramientas de programación con IA —Anthropic <strong>Claude Code</strong> y OpenAI <strong>Codex</strong>— manejadas, revisadas y dirigidas por el autor, que sigue siendo el único autor y licenciante del código original. Estas herramientas no tienen ninguna autoría, derecho de autor ni interés de licencia sobre la aplicación; esta declaración es un aviso voluntario de transparencia, no una obligación de la licencia.</p>
+    <p>Esta aplicación se ha desarrollado con la ayuda de herramientas de programación con IA —Anthropic <strong>Claude Code</strong> y OpenAI <strong>Codex</strong>— manejadas, revisadas y dirigidas por el autor, José Ramón Sendón del Río, que sigue siendo el único autor y licenciante del código original. Estas herramientas no tienen ninguna autoría, derecho de autor ni interés de licencia sobre la aplicación; esta declaración es un aviso voluntario de transparencia, no una obligación de la licencia.</p>
     <p>La corrección no depende de cómo se escribió el código:</p>
     <ul>
       <li><strong>Datos numéricos</strong>: se toman de las fuentes citadas (ICRP, NIST, NUREG/ANS, DDEP, BOE y los artículos citados). Se transcriben donde la fuente los tabula y se calculan a partir de ellas donde se indica (por ejemplo, las constantes Γ operacionales, los espectros de blindaje ponderados por dosis y las estimaciones de contenedor del Y-90, explícitamente experimentales). Cada valor indica su estado.</li>
@@ -477,7 +483,7 @@
     <p>Version-control metadata, including a hidden <code>.git</code> directory, is development infrastructure rather than part of the application and must be excluded from copies supplied to end users.</p>
 
     <h3 id="license-code">Original project material — EUPL-1.2 only</h3>
-    <pre class="legal-text">Copyright (c) 2026 Ramon Sendon
+    <pre class="legal-text">Copyright (c) 2026 José Ramón Sendón del Río
 Licensed under the EUPL, version 1.2 only (EUPL-1.2).
 
 The scope of this licence within this mixed-licence distribution is defined in
@@ -821,7 +827,7 @@ FUTURE UPDATES, ENHANCEMENTS, OR MODIFICATIONS TO THE SOFTWARE.</pre>
       <table class="about-table">
         <thead><tr><th>File</th><th>Covers</th><th>Terms</th></tr></thead>
         <tbody>
-          <tr><td><a href="#license-code"><code>LICENSE</code></a></td><td>the original application <strong>code</strong></td><td>EUPL-1.2 only — © 2026 Ramon Sendon</td></tr>
+          <tr><td><a href="#license-code"><code>LICENSE</code></a></td><td>the original application <strong>code</strong></td><td>EUPL-1.2 only — © 2026 José Ramón Sendón del Río</td></tr>
           <tr><td><a href="#license-data"><code>LICENSE.TXT</code></a></td><td>the <strong>ICRP-07 decay data</strong> and its derivatives (<code>data/icrp107-index.json</code>, <code>data/icrp107-data.js</code>, the photon-derived values in <code>data/nuclides.json</code> and <code>data/nuclides-data.js</code>)</td><td>ICRP-07 — educational / research / not-for-profit only</td></tr>
         </tbody>
       </table>
@@ -884,7 +890,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     <ul>
       <li>Inhalation dose coefficients for Lu-177, Lu-177m, I-131, Tc-99m and F-18 (adult members of the public): ICRP Publication 119 (2012), Table G.1, © ICRP. Five numeric values cited with attribution; the publication is not redistributed.</li>
       <li>Model structure and default parameter values (sludge density, dust loading, respirable fraction, exposure times, transit time) and the GENII factors of Table A.21 used in the indicative cross-check: Kennedy W.E. Jr. et al., NUREG/CR-5814 / PNL-7892 (1992), U.S. NRC; and IAEA Safety Reports Series No. 19 (2001), © IAEA. Numeric values cited with attribution; neither report is included in the distribution package.</li>
-      <li>External dose-rate coefficients k for both scenarios: own PHITS calculations by the project author (not third-party data).</li>
+      <li>External dose-rate coefficients k for both scenarios: PHITS calculations by José Ramón Sendón del Río, author of the application (not third-party data).</li>
     </ul>
 
     <h4>Caregiver page — proximity factors, kinetic presets and criteria</h4>
@@ -894,7 +900,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
       <li>Mean effective half-life 40.5 h (Lu-177-PSMA-617): Kurth et al., <em>EJNMMI Research</em> 8:32 (2018) — © The Author(s), licensed <strong>CC BY 4.0</strong>. Changes: numeric value transcribed.</li>
       <li>Mean dose rates at 1 m (15 and 7 µSv/h at 6 and 24 h) from which the fast half-life 16.4 h is consistent: Demir et al., <em>J. Radiol. Prot.</em> 36 (2016), © 2016 IOP Publishing Ltd. Two numeric values cited with attribution.</li>
       <li>Effective half-lives, cycles and the contact-at-0.4 m approximation: Gayol Vilorio et al., <em>Rev. Fís. Méd.</em> 26(2) (2025), and Foro CSN-SEPR-SEFM (2011), «Criterios de alta de pacientes … tratamientos metabólicos con 131I». No licence is stated in either document; numeric values cited with attribution.</li>
-      <li>Default case, model and evaluation criteria per category: the author's workbook <em>Dosis_acompanantes_simple_v2.1.xlsx</em> (own work; the criteria are evaluation criteria adopted in this application, citing RD 601/2019, RD 1029/2022 and the documents above).</li>
+      <li>Default case, model and evaluation criteria per category: the workbook <em>Dosis_acompanantes_simple_v2.1.xlsx</em> by José Ramón Sendón del Río (own work; the criteria are evaluation criteria adopted in this application, citing RD 601/2019, RD 1029/2022 and the documents above).</li>
     </ul>
 
     <h4>RD 1217/2024 Annex IV and RD 783/2001 Annex III — regulatory values</h4>
@@ -931,7 +937,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 <footer class="site-footer">
   NM Radionuclide Planner &mdash; For radiation protection estimation purposes.
   Verify against primary sources for regulatory submissions.
-  <br>Original application and code: &copy; 2026 Ramon Sendon &middot; EUPL-1.2 &middot; Third-party data: separate terms &mdash;
+  <br>Application, code and data compilation: &copy; 2026 José Ramón Sendón del Río &middot; EUPL-1.2 &middot; Third-party data: separate terms &mdash;
   About, guide &amp; licences
 </footer>
 

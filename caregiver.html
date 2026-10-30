@@ -54,14 +54,13 @@
     <h2 class="card-title"><span class="ico ico-user" aria-hidden="true"></span> A. Case data</h2>
     <div class="form-grid">
       <div class="form-group">
-        <label class="form-label" for="preset">Kinetics preset</label>
+        <label class="form-label" for="preset">Kinetics preset <span class="hint-tip" tabindex="0" role="img" aria-label="Fills radiopharmaceutical, fast phase, half-lives, cycles and profile. See the sources below." data-tooltip="Fills radiopharmaceutical, fast phase, half-lives, cycles and profile. See the sources below."><span class="ico ico-info" aria-hidden="true"></span></span></label>
         <select class="form-select" id="preset" title="Kinetics preset"></select>
         <div class="form-hint" id="presetHint"></div>
       </div>
       <div class="form-group">
-        <label class="form-label" for="radiopharmaceutical">Radiopharmaceutical</label>
+        <label class="form-label" for="radiopharmaceutical">Radiopharmaceutical <span class="hint-tip" tabindex="0" role="img" aria-label="Used only to warn when the proximity profile does not match it." data-tooltip="Used only to warn when the proximity profile does not match it."><span class="ico ico-info" aria-hidden="true"></span></span></label>
         <select class="form-select" id="radiopharmaceutical" title="Radiopharmaceutical"></select>
-        <div class="form-hint">Used only to warn when the proximity profile does not match it.</div>
       </div>
       <div class="form-group">
         <label class="form-label" for="rate_1m_uSv_h">Dose rate measured at 1 m at discharge (µSv/h)</label>
@@ -72,9 +71,8 @@
         <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="discharge_h" title="Discharge time after administration">
       </div>
       <div class="form-group">
-        <label class="form-label" for="fast_end_h">End of the fast phase after administration (h)</label>
+        <label class="form-label" for="fast_end_h">End of the fast phase after administration (h) <span class="hint-tip" tabindex="0" role="img" aria-label="0 = no fast phase." data-tooltip="0 = no fast phase."><span class="ico ico-info" aria-hidden="true"></span></span></label>
         <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="fast_end_h" title="End of the fast phase after administration">
-        <div class="form-hint">0 = no fast phase.</div>
       </div>
       <div class="form-group">
         <label class="form-label" for="T_fast_h">Fast effective half-life (h)</label>
@@ -100,9 +98,8 @@
         <div class="form-hint" id="manualHint"></div>
       </div>
       <div class="form-group">
-        <label class="form-label" for="spc_min_restriction_d">Minimum restriction of the product information (d, optional)</label>
+        <label class="form-label" for="spc_min_restriction_d">Minimum restriction of the product information (d, optional) <span class="hint-tip" tabindex="0" role="img" aria-label="Lower bound for the adopted restriction." data-tooltip="Lower bound for the adopted restriction."><span class="ico ico-info" aria-hidden="true"></span></span></label>
         <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="spc_min_restriction_d" title="Minimum restriction of the product information">
-        <div class="form-hint">Lower bound for the adopted restriction.</div>
       </div>
       <div class="form-group">
         <label class="form-label" for="profile">Proximity profile</label>
@@ -151,7 +148,7 @@
         <thead>
           <tr>
             <th>Row</th>
-            <th title="Restriction days counted from discharge">Restriction (d from discharge)</th>
+            <th class="has-tooltip" tabindex="0" aria-label="Restriction days counted from discharge" data-tooltip="Restriction days counted from discharge">Restriction (d from discharge)</th>
             <th>During (h/d)</th>
             <th>During (m)</th>
             <th>After (h/d)</th>
@@ -321,7 +318,7 @@
 <footer class="site-footer">
   NM Radionuclide Planner &mdash; For radiation protection estimation purposes.
   Verify against primary sources for regulatory submissions.
-  <br>Original application and code: &copy; 2026 Ramon Sendon &middot; EUPL-1.2 &middot; Third-party data: separate terms &mdash;
+  <br>Application, code and data compilation: &copy; 2026 José Ramón Sendón del Río &middot; EUPL-1.2 &middot; Third-party data: separate terms &mdash;
   <a href="about.html">About, guide &amp; licences</a>
 </footer>
 
@@ -372,8 +369,8 @@
     `<div class="mt-1"><em>Spread in the source:</em></div><ul>${spreadItems(p).map(t => `<li>${esc(t)}</li>`).join('')}</ul></li>`).join('');
   const presetHint = () => {
     const p = PRESETS.find(q => q.key === $('preset').value);
-    $('presetHint').textContent = p ? 'Fills radiopharmaceutical, fast phase, half-lives, cycles and profile. See the sources below.'
-      : 'Values entered by hand. Choose a preset to fill the kinetics from the literature.';
+    // What a preset fills is in the ⓘ of the label; only the hand-entered state is said here
+    $('presetHint').textContent = p ? '' : 'Values entered by hand. Choose a preset to fill the kinetics from the literature.';
   };
   function applyPreset(key) {
     const p = PRESETS.find(q => q.key === key);

@@ -1,8 +1,9 @@
 {
   "meta": {
     "id": "effluent-scenarios",
-    "version": "2.4.0",
+    "version": "2.5.0",
     "date": "2026-10-30",
+    "author": { "name": "José Ramón Sendón del Río", "role": "Data compilation, PHITS external coefficients and verification" },
     "title": "Liquid effluent to sewer — NUREG/CR-5814 Scenarios No. 1 (sewer inspector) and No. 2 (STP sludge process operator)",
     "description": "Screening doses to two workers who are members of the public with respect to the licensee: (1) a sewer system inspector exposed to the facility's wastewater in the interceptor — external irradiation from wastewater (water slab; receptor 1 m above its surface) plus aerosol inhalation; (2) a sewage-treatment-plant (EDAR) operator of sludge dewatering equipment — external exposure to dewatered sludge plus inhalation of resuspended dry sludge. Scenario 1 adapts NUREG/CR-5814 §5.2.1 as the workbook 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx' (sheet Escenario-1); Scenario 2 adapts NUREG/CR-5814 §5.2.2 as the Scenario 2 reference workbook for Lu-177 (sheet Escenario-2). Screening philosophy of IAEA SRS-19 §4.9 and §6.6.",
     "units_note": "Values in this file are in the display units stated in each 'unit' field; the CALC functions work in SI and EFFLUENT.evaluate converts.",
@@ -249,7 +250,7 @@
           "value": 0.000002295,
           "u_rel": 0.002,
           "report_id": "PHITS Scenario 1 report, 2026-08-20",
-          "source": "Own PHITS 3.33 calculation: 'Escenario 1 del NUREG/CR-5814 · Lu-177, Lu-177m, Tc-99m, I-131 y F-18', 2026-08-20, Table 7. Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); photon transport only. Uncertainty: relative Monte Carlo standard uncertainty (coverage factor 1).",
+          "source": "PHITS 3.33 calculation by José Ramón Sendón del Río: 'Escenario 1 del NUREG/CR-5814 · Lu-177, Lu-177m, Tc-99m, I-131 y F-18', 2026-08-20, Table 7. Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); photon transport only. Uncertainty: relative Monte Carlo standard uncertainty (coverage factor 1).",
           "report_file": {
             "file": "informe_esc1_5nuc.md",
             "sha256": "417eb31f2d6fe19dd3534355b5b6fbe6b40a56d7e932cc777924459dcdb83591",
@@ -271,7 +272,7 @@
             "envelope_pos": null,
             "report_id": "PHITS Scenario 2 report (Lu-177, Lu-177m), 2026-07-30 × f45 = 1.4560 (coefficient B)"
           },
-          "source": "Own PHITS calculation: 'Coeficientes de tasa de dosis efectiva externa para Lu-177 y Lu-177m en el escenario 2 de NUREG/CR-5814' (author's report, 2026-07-30, §7.2; available on request). Uncertainties are relative Monte Carlo standard uncertainties (coverage factor 1). The report does not state a one-sided secondary-electron envelope.",
+          "source": "PHITS calculation by José Ramón Sendón del Río: 'Coeficientes de tasa de dosis efectiva externa para Lu-177 y Lu-177m en el escenario 2 de NUREG/CR-5814' (report of 2026-07-30, §7.2; available from the author on request). Uncertainties are relative Monte Carlo standard uncertainties (coverage factor 1). The report does not state a one-sided secondary-electron envelope.",
           "report_file": {
             "file": "informe_coeficientes_lu_escenario2.md",
             "sha256": "64d60f8d2339746e0f07842bce4a6f636a142aeb132a692e4c6fd70f5f279387"
@@ -305,7 +306,7 @@
           "value": 0.00002709,
           "u_rel": 0.004,
           "report_id": "PHITS Scenario 1 report, 2026-08-20",
-          "source": "Own PHITS 3.33 calculation: 'Escenario 1 del NUREG/CR-5814 · Lu-177, Lu-177m, Tc-99m, I-131 y F-18', 2026-08-20, Table 7. Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); photon transport only. Uncertainty: relative Monte Carlo standard uncertainty (coverage factor 1).",
+          "source": "PHITS 3.33 calculation by José Ramón Sendón del Río: 'Escenario 1 del NUREG/CR-5814 · Lu-177, Lu-177m, Tc-99m, I-131 y F-18', 2026-08-20, Table 7. Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); photon transport only. Uncertainty: relative Monte Carlo standard uncertainty (coverage factor 1).",
           "report_file": {
             "file": "informe_esc1_5nuc.md",
             "sha256": "417eb31f2d6fe19dd3534355b5b6fbe6b40a56d7e932cc777924459dcdb83591",
@@ -327,7 +328,7 @@
             "envelope_pos": 0.0082268,
             "report_id": "PHITS Scenario 2 report (I-131), 2026-08-23, §X.5"
           },
-          "source": "Xe-131m excluded (open pool). Own PHITS 3.330 calculation: 'Informe de resultados del I-131 en el escenario 2 de NUREG/CR-5814' (author's report, 2026-08-23; available on request). Uncertainties are relative Monte Carlo standard uncertainties (coverage factor 1); the envelope is a separate one-sided model bound for bremsstrahlung and direct beta, not added to the central value.",
+          "source": "Xe-131m excluded (open pool). PHITS 3.330 calculation by José Ramón Sendón del Río: 'Informe de resultados del I-131 en el escenario 2 de NUREG/CR-5814' (report of 2026-08-23; available from the author on request). Uncertainties are relative Monte Carlo standard uncertainties (coverage factor 1); the envelope is a separate one-sided model bound for bremsstrahlung and direct beta, not added to the central value.",
           "report_file": {
             "file": "informe_resultados_i131.md",
             "sha256": "a40000ba57a19e0a1c17c3388f465346a14b7058af7302e37c6b272b92210707"
@@ -385,7 +386,7 @@
           "value": 0.0000681,
           "u_rel": 0.0046,
           "report_id": "PHITS Scenario 1 report, 2026-08-20",
-          "source": "Own PHITS 3.33 calculation: 'Escenario 1 del NUREG/CR-5814 · Lu-177, Lu-177m, Tc-99m, I-131 y F-18', 2026-08-20, Table 7. Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); photon transport only. Uncertainty: relative Monte Carlo standard uncertainty (coverage factor 1).",
+          "source": "PHITS 3.33 calculation by José Ramón Sendón del Río: 'Escenario 1 del NUREG/CR-5814 · Lu-177, Lu-177m, Tc-99m, I-131 y F-18', 2026-08-20, Table 7. Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); photon transport only. Uncertainty: relative Monte Carlo standard uncertainty (coverage factor 1).",
           "report_file": {
             "file": "informe_esc1_5nuc.md",
             "sha256": "417eb31f2d6fe19dd3534355b5b6fbe6b40a56d7e932cc777924459dcdb83591",
@@ -407,7 +408,7 @@
             "envelope_pos": null,
             "report_id": "PHITS Scenario 2 report (Lu-177, Lu-177m), 2026-07-30 × f45 = 1.4349 (coefficient B)"
           },
-          "source": "Own PHITS calculation: 'Coeficientes de tasa de dosis efectiva externa para Lu-177 y Lu-177m en el escenario 2 de NUREG/CR-5814' (author's report, 2026-07-30, §7.2; available on request). Uncertainties are relative Monte Carlo standard uncertainties (coverage factor 1).",
+          "source": "PHITS calculation by José Ramón Sendón del Río: 'Coeficientes de tasa de dosis efectiva externa para Lu-177 y Lu-177m en el escenario 2 de NUREG/CR-5814' (report of 2026-07-30, §7.2; available from the author on request). Uncertainties are relative Monte Carlo standard uncertainties (coverage factor 1).",
           "report_file": {
             "file": "informe_coeficientes_lu_escenario2.md",
             "sha256": "64d60f8d2339746e0f07842bce4a6f636a142aeb132a692e4c6fd70f5f279387"
@@ -443,7 +444,7 @@
           "value": 0.000008306,
           "u_rel": 0.00364,
           "report_id": "PHITS Scenario 1 report, 2026-08-20",
-          "source": "Own PHITS 3.33 calculation: 'Escenario 1 del NUREG/CR-5814 · Lu-177, Lu-177m, Tc-99m, I-131 y F-18', 2026-08-20, Table 7. Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); photon transport only. Uncertainty: relative Monte Carlo standard uncertainty (coverage factor 1).",
+          "source": "PHITS 3.33 calculation by José Ramón Sendón del Río: 'Escenario 1 del NUREG/CR-5814 · Lu-177, Lu-177m, Tc-99m, I-131 y F-18', 2026-08-20, Table 7. Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); photon transport only. Uncertainty: relative Monte Carlo standard uncertainty (coverage factor 1).",
           "report_file": {
             "file": "informe_esc1_5nuc.md",
             "sha256": "417eb31f2d6fe19dd3534355b5b6fbe6b40a56d7e932cc777924459dcdb83591",
@@ -465,7 +466,7 @@
             "envelope_pos": null,
             "report_id": "PHITS Scenario 2 report (Tc-99m)"
           },
-          "source": "Own PHITS calculation for Scenario 2 of NUREG/CR-5814, L10 and L45 geometries (author's report on Tc-99m; available on request). Uncertainties are relative Monte Carlo standard uncertainties (coverage factor 1).",
+          "source": "PHITS calculation by José Ramón Sendón del Río for Scenario 2 of NUREG/CR-5814, L10 and L45 geometries (Tc-99m report; available from the author on request). Uncertainties are relative Monte Carlo standard uncertainties (coverage factor 1).",
           "report_file": {
             "file": "informe_resultados_tc99m.md",
             "sha256": "6eef353fcf859826e05e954a6d489a9f243fb982485be73d385c9d7e1f8c22e1"
@@ -504,7 +505,7 @@
           "value": 0.00007197,
           "u_rel": 0.0013,
           "report_id": "PHITS Scenario 1 report, 2026-08-20",
-          "source": "Own PHITS 3.33 calculation: 'Escenario 1 del NUREG/CR-5814 · Lu-177, Lu-177m, Tc-99m, I-131 y F-18', 2026-08-20, Table 7. Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); photon transport only. Uncertainty: relative Monte Carlo standard uncertainty (coverage factor 1).",
+          "source": "PHITS 3.33 calculation by José Ramón Sendón del Río: 'Escenario 1 del NUREG/CR-5814 · Lu-177, Lu-177m, Tc-99m, I-131 y F-18', 2026-08-20, Table 7. Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); photon transport only. Uncertainty: relative Monte Carlo standard uncertainty (coverage factor 1).",
           "report_file": {
             "file": "informe_esc1_5nuc.md",
             "sha256": "417eb31f2d6fe19dd3534355b5b6fbe6b40a56d7e932cc777924459dcdb83591",
@@ -544,14 +545,14 @@
     "IAEA Safety Reports Series No. 19 (2001) — Generic Models for Use in Assessing the Impact of Discharges of Radioactive Substances to the Environment, §4.9 and §6.6.",
     "ICRP Publication 119 (2012) — Compendium of Dose Coefficients based on ICRP Publication 60, Table G.1 (inhalation, members of the public).",
     "ICRP Publication 116 (2010) — Conversion Coefficients for Radiological Protection Quantities for External Radiation Exposures (ROT geometry), with ICRP Publication 129 (2015) corrigenda.",
-    "Own PHITS calculations of the Scenario 2 external coefficients for Lu-177 and Lu-177m (2026-07-30), I-131 (2026-08-23) and Tc-99m — author's reports, available on request.",
-    "Own PHITS calculations of the Scenario 1 external coefficients for Lu-177, Lu-177m, Tc-99m, I-131 and F-18 (2026-08-20).",
+    "PHITS calculations by José Ramón Sendón del Río of the Scenario 2 external coefficients for Lu-177 and Lu-177m (2026-07-30), I-131 (2026-08-23) and Tc-99m — reports available from the author on request.",
+    "PHITS calculations by José Ramón Sendón del Río of the Scenario 1 external coefficients for Lu-177, Lu-177m, Tc-99m, I-131 and F-18 (2026-08-20).",
     "Workbooks of Scenario 2 for Lu-177 and 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx' (Scenario 1) — reference implementations of the algorithms."
   ],
   "nureg_table_A21_note": "NUREG/CR-5814 Table A.21 (pp. A.54–A.56), 'Modified external dose factors for GENII, Sv/yr per Bq/m3 (8-Aug-90)': column 'SEWER MAINT 1.0 m' (Scenario 1) and 'STP WKR 0.15 m' (Scenario 2). Converted with 1 y = 8766 h, the convention that reproduces Table B.7. GENII-1990 effective dose equivalent (ICRP 26/30 era) and NUREG geometries (Table A.20); Lu-177 and Lu-177m are not tabulated. Indicative comparison only; the differences have not been investigated.",
-  "phits_reports_note": "The PHITS reports are the author's own documents, available on request; the report and the CSV identify the exact version of each by the first 12 characters of its SHA-256 (2026-10-03).",
+  "phits_reports_note": "The PHITS reports are documents of José Ramón Sendón del Río, available from the author on request; the report and the CSV identify the exact version of each by the first 12 characters of its SHA-256 (2026-10-03).",
   "coefficient_notes": {
-    "k_s1": "Own PHITS 3.33 calculation: 'Escenario 1 del NUREG/CR-5814 · Lu-177, Lu-177m, Tc-99m, I-131 y F-18', 2026-08-20, Table 7. Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); photon transport only. Uncertainty: relative Monte Carlo standard uncertainty (coverage factor 1).",
+    "k_s1": "PHITS 3.33 calculation by José Ramón Sendón del Río: 'Escenario 1 del NUREG/CR-5814 · Lu-177, Lu-177m, Tc-99m, I-131 y F-18', 2026-08-20, Table 7. Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); photon transport only. Uncertainty: relative Monte Carlo standard uncertainty (coverage factor 1).",
     "k_s2_quantity": "Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); receptor 2 m above the centre of a uniform 3 m deep source of water-equivalent sludge (1.2 g/cm³).",
     "e_inh_basis": "RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by RD 1029/2022 and the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1)."
   }

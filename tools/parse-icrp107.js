@@ -507,6 +507,7 @@ function main() {
         icrp107_bet_sha256: betSha256,
       },
       parser_version: '2.0 (fixed-width columns)',
+      compiled_by: 'José Ramón Sendón del Río (index built from the ICRP 107 files; data © ICRP, see LICENSE.TXT)',
     },
     nuclides: nucledesArray,
   };

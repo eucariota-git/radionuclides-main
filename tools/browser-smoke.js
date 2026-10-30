@@ -266,6 +266,31 @@ async function main() {
         check('effluent: intermediate columns hidden by default, shown by the button (aria-pressed)', colsOff === 'none' && colsOn[0] === 'table-cell' && colsOn[1] === 'true', JSON.stringify([colsOff, colsOn]));
       }
     });
+    await guard('Field help ⓘ (v1.20.0)', async () => {
+      // Hidden until focused or tapped; the box spans the form group, inside a 390 px screen; translated in Spanish
+      // :focus needs a focused page, which a headless tab is not unless emulated
+      await send('Emulation.setFocusEmulationEnabled', { enabled: true });
+      const TAP = `(() => { const t = document.querySelector('.hint-tip'); window.__tipBefore = getComputedStyle(t, '::after').visibility; t.click(); })()`;
+      const TIP = `(() => { const t = document.querySelector('.hint-tip');
+        const g = t.closest('.form-label').getBoundingClientRect();
+        return { n: document.querySelectorAll('.hint-tip').length, before: window.__tipBefore, after: getComputedStyle(t, '::after').visibility,
+          focused: document.activeElement === t, inside: g.left >= 0 && g.right <= innerWidth,
+          text: getComputedStyle(t, '::after').content, aria: t.getAttribute('aria-label') }; })()`;
+      for (const [pg, w] of [['decay.html?id=Lu-177', 390], ['dose.html?id=Lu-177', 390], ['effluent.html', 390], ['caregiver.html', 1280]]) {
+        await open(pg, w);
+        await ev(TAP); await sleep(300);
+        const r = await ev(TIP);
+        check(`${pg} @${w}: ⓘ help hidden until tapped, then shown with focus kept on the icon, inside the screen`,
+          r.n > 0 && r.before === 'hidden' && r.after === 'visible' && r.focused && r.inside && r.text.length > 10, JSON.stringify(r));
+        await shot(`hint_tip_${pg.split('.')[0]}_${w}`, '.card');
+      }
+      await open('effluent.html', 390);
+      await ev(`document.getElementById('langToggle').click()`); await sleep(400);
+      await ev(TAP); await sleep(300);
+      const es = await ev(TIP);
+      check('effluent ES: the ⓘ help text and its accessible name are in Spanish', /^"?Volúmenes anuales genéricos/.test(es.text) && /^Volúmenes anuales genéricos/.test(es.aria), JSON.stringify(es));
+      await ev(`document.getElementById('langToggle').click()`); await sleep(300);
+    });
     await guard('Caregiver default case and A18', async () => {
       // Caregiver default case (acceptance A16) and the impossible common restriction (A18)
       await open('caregiver.html', 1280);

@@ -1,9 +1,10 @@
 {
   "meta": {
-    "version": "1.10",
+    "version": "1.11",
     "date": "2026-10-30",
+    "author": { "name": "José Ramón Sendón del Río", "role": "Application, data compilation and verification" },
     "description": "Caregiver / family-member external dose after discharge of a radionuclide-therapy patient: proximity profiles, evaluation criteria per category, references and model assumptions.",
-    "origin": "Port of the author's workbook Dosis_acompanantes_simple_v2.1.xlsx (sheets Dosis, Curva and Comprobación)."
+    "origin": "Port of the workbook Dosis_acompanantes_simple_v2.1.xlsx by José Ramón Sendón del Río (sheets Dosis, Curva and Comprobación)."
   },
   "radiopharmaceuticals": [
     "Lu-177-PSMA-617",
