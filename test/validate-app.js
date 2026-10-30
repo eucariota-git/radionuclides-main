@@ -320,7 +320,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v69');
+    swVersion === 'nm-planner-v70');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -501,7 +501,7 @@ async function main() {
     const params = Object.values(eff.parameters).flatMap(g => Object.values(g));
     check('effluent: every parameter has a short hint; provenance is listed apart (T30)',
       params.length === 22 && params.every(q => typeof q.hint === 'string' && q.hint.length > 10 && !/cell [A-Z]\d/.test(q.hint)) &&
-      /p\.hint \|\| p\.source/.test(effluentHtml) && /id="paramSources"/.test(effluentHtml) && /id="sourceWarnings"/.test(effluentHtml));
+      /p\.hint \|\| p\.source/.test(effluentHtml) && /id="paramSources"/.test(effluentHtml) && /id="sourceNotes"/.test(effluentHtml));
     check('effluent: receptor, geometries and retained fraction are described as modelled (T26-T28)',
       !/external immersion/.test(effluentHtml + JSON.stringify(eff)) && !/[Uu]p to \d+ m²|Covers real Spanish/.test(JSON.stringify(eff.geometries)) &&
       /^Model geometry: 10 × 10 × 3 m/.test(eff.geometries.L10.label) && /^Model geometry: 45 × 45 × 3 m/.test(eff.geometries.L45.label) &&
@@ -1470,9 +1470,10 @@ async function main() {
       doseHtml.indexOf('<summary>Shielding methods available</summary>') > doseHtml.indexOf('id="shieldingInfo"') &&
       doseHtml.indexOf('<summary>Shielding methods available</summary>') < doseHtml.indexOf('id="chartTitle"') &&
       /may underestimate the skin dose of low-energy emitters\)<\/span>/.test(doseHtml));
-    check('Effluent: warnings rebuilt in render() for the included nuclides only; tank status empty without tanks',
-      /input\.nuclides\[i\]\.include && \(nd\.source_term\.activity_warning \|\| nd\.s2_note\)/.test(effluentHtml) &&
-      effluentHtml.indexOf("getElementById('sourceWarnings')") > effluentHtml.indexOf('function render()') &&
+    // v1.20.1: the source-term warnings head the collapsible sources; each nuclide has its ⓘ (amber for I-131)
+    check('Effluent: source-term warnings head «Sources and assumptions»; per-nuclide ⓘ; tank status empty without tanks',
+      !/id="sourceWarnings"/.test(effluentHtml) && /nd\.source_term\.activity_warning \|\| nd\.s2_note\)\.map/.test(effluentHtml) &&
+      /const nuclideTip = st =>/.test(effluentHtml) && /hint-tip in-cell\$\{st\.activity_warning \? ' warn' : ''\}/.test(effluentHtml) &&
       !/No included nuclide is controlled in decay tanks/.test(effluentHtml));
     check('Effluent: hidden hints name existing parameters; the data file and the report keep every hint and the full Scenario 1 note',
       [...effluentHtml.match(/HIDDEN_HINTS = new Set\(\[([^\]]+)\]/)[1].matchAll(/'(\w+)\.(\w+)'/g)].every(([, s, k]) => effJson.parameters[s] && effJson.parameters[s][k] && effJson.parameters[s][k].hint) &&
@@ -1526,6 +1527,25 @@ async function main() {
       !/<div class="form-hint">When filled, this value is used/.test(decayHtml) && !/id="patientTxHint"/.test(doseHtml) && !/id="facilityHint"/.test(effluentHtml) &&
       /function hintTip\(text\)/.test(read('js/ui.js')) && /UI\.hintTip\(/.test(effluentHtml) && /\.hint-tip::after \{/.test(read('css/style.css')) &&
       !/<th[^>]* title="/.test(effluentHtml) && !/\balert\(/.test(read('index.html')));
+  }
+
+  console.log('Test 31: second screen-text review (v1.20.1)');
+  {
+    const cg = JSON.parse(read('data/caregiver.json'));
+    check('Dose: the point-source note only below 0.25 m; the limits cited once, in the comparison box',
+      /<div class="form-hint" id="distHint"><\/div>/.test(doseHtml) && !/Limits: RD 1029\/2022 art\. 11/.test(doseHtml) &&
+      /compared with the annual limits of RD 1029\/2022 \(arts\. 11 and 15\)/.test(doseHtml));
+    check('Effluent: one-line warning; «never added together» by the totals and in Method; IS-28 in Method; no A_adm note on screen',
+      /<strong>Screening estimate, not a complete discharge assessment\.<\/strong>\n  <\/div>/.test(effluentHtml) &&
+      /The two scenarios concern different receptors: their totals are never added together\./.test(effluentHtml) &&
+      /Not a complete discharge assessment: the IS-28 Annex II II\.A\.4 sewer conditions/.test(effluentHtml) && !/A<sub>adm<\/sub> = patients/.test(effluentHtml));
+    check('Caregiver: «not effective or fetal dose» moved to Method › Assumptions; «not regulatory values» kept in the criteria note and the report',
+      !/fetal/.test(caregiverHtml.slice(0, caregiverHtml.indexOf('A. Case data'))) && cg.assumptions.some(a => /not automatically the individual effective dose nor the fetal dose/.test(a)) &&
+      /not values fixed by regulation/.test(cg.criteria_note) && /not values fixed by regulation for this treatment/.test(caregiverHtml));
+    check('Caregiver: category basis and profile distances in ⓘ (UI.setHintTip); Method link visible; table rules in an ⓘ on «During (h/d)»',
+      /UI\.setHintTip\(\$\('categoryTip'\)/.test(caregiverHtml) && /UI\.setHintTip\(\$\('profileTip'\)/.test(caregiverHtml) &&
+      /'See <a href="#criteriaDetails"/.test(caregiverHtml) && !/id="profileHint"/.test(caregiverHtml) &&
+      /<th>During \(h\/d\) <span class="hint-tip in-cell"/.test(caregiverHtml) && /function setHintTip\(el, text\)/.test(read('js/ui.js')));
   }
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);

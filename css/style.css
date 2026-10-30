@@ -1748,3 +1748,8 @@ kbd {
 }
 .hint-tip:hover::after, .hint-tip:focus::after { opacity: 1; visibility: visible; }
 @media print { .hint-tip { display: none; } }
+/* ⓘ inside a table cell (Effluent source term): the box opens above the icon, with
+   its own width, because the scrolling table would clip it below the last rows */
+td:has(> .hint-tip.in-cell) { position: relative; }
+.hint-tip.in-cell::after { top: auto; bottom: calc(100% - .2rem); right: auto; width: 16rem; }
+.hint-tip.warn { color: var(--warning-text); }

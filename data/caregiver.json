@@ -1,6 +1,6 @@
 {
   "meta": {
-    "version": "1.11",
+    "version": "1.12",
     "date": "2026-10-30",
     "author": { "name": "José Ramón Sendón del Río", "role": "Application, data compilation and verification" },
     "description": "Caregiver / family-member external dose after discharge of a radionuclide-therapy patient: proximity profiles, evaluation criteria per category, references and model assumptions.",
@@ -392,6 +392,7 @@
     60
   ],
   "assumptions": [
+    "Quantity: the integral of the measured operational quantity estimates the external exposure of the person; it is not automatically the individual effective dose nor the fetal dose. Internal contamination, the dose before discharge and other sources are not included.",
     "Time model: two consecutive, continuous exponentials. At the end of the fast phase the rate reached is kept. It is not a simultaneous sum of components.",
     "Occupancy h/24 is a daily average, not an exact timetable. Because the rate decreases, the dose of any timetable with the declared hours in every 24 h interval from discharge lies within the bounds given under the results (rate at the start or at the end of each interval); they are given only for restrictions of whole days. Close contact early in each interval makes the average underestimate the dose; the error repeats every day and does not cancel. The bounds widen as the half-life shortens, so they are widest in the fast phase and with an early discharge. Single trips and contacts concentrated during the fast phase still require a specific time-resolved assessment. For the period without restrictions, Foro CSN-SEPR-SEFM (2011), Annex 3.A, eqs. (4) and (7), takes the rate at the start of each day, i.e. the upper bound.",
     "Spatial factors are taken as constant in both phases. Body redistribution can change them: justify their use for the time of discharge and the case.",

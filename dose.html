@@ -78,7 +78,7 @@
             <option value="cm">cm</option>
           </select>
         </div>
-        <div class="form-hint" id="distHint">Point-source approximation (1/d&#178;)</div>
+        <div class="form-hint" id="distHint"></div>
       </div>
       <div class="form-group hidden" id="progenyGroup">
         <label class="form-label" for="progenyMode">Short-lived progeny</label>
@@ -222,9 +222,6 @@
     <!-- Dose limit comparison -->
     <h3 class="card-title">Annual dose limit comparison</h3>
     <div id="limitComparison"></div>
-    <p class="form-hint mt-1">
-      Limits: RD 1029/2022 art. 11 (exposed workers; lens-of-the-eye regime since 22 June 2024) and art. 15 (public). Regulatory limits, not design targets.
-    </p>
   </div>
 
 </main>
@@ -528,7 +525,7 @@
       hint.textContent = 'Short distance: check the point-source approximation (real source/shield size matters at a few cm)';
       hint.style.color = 'var(--warning)';
     } else {
-      hint.textContent = 'Point-source approximation (1/d²)';
+      hint.textContent = '';   // the point-source model is stated in the subtitle and the results note
       hint.style.color = '';
     }
   }
@@ -1495,7 +1492,7 @@
 
     document.getElementById('limitComparison').innerHTML = `
       <div class="alert alert-info text-sm">
-        <strong>Indicative screening only</strong> — area-monitoring estimates compared with RD 1029/2022 annual limits; they do not establish compliance.
+        <strong>Indicative screening only</strong> — area-monitoring estimates compared with the annual limits of RD 1029/2022 (arts. 11 and 15); they do not establish compliance.
         <br>Annual dose from ${nAdmin} administration${nAdmin !== 1 ? 's' : ''}/y &times; ${UTILS.fmt(t_h)} h/admin:
         <br><br>
         <strong>Effective dose</strong> (screened with H*(10)): ${CALC.formatDose(annualDoseWB).display}/y

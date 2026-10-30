@@ -133,8 +133,9 @@ Calculators recalculate live (Decay/Dose through `UI.onInputs`, Effluent/Caregiv
 - Audit reports are local only (`docs/AUDIT_*.md`, gitignored). When the user asks for an audit without file changes, deliver it in the chat.
 - Bash heredocs with backslashes or nested quotes break: write helper scripts to the scratchpad and run them, or use the Edit tool.
 
-## Status and pending (as of 2026-10-30, v1.20.0)
+## Status and pending (as of 2026-10-30, v1.20.1)
 
+- v1.20.1 (second screen-text review on the author's comments: Dose point-source note and limits footer; Effluent one-line warning, per-nuclide ⓘ, warnings in «Sources and assumptions»; Caregiver warning trimmed with the fetal-dose statement moved to Assumptions, category/profile ⓘ, table rules ⓘ) committed, not pushed nor packaged.
 - v1.20.0 (author José Ramón Sendón del Río named in licence, footers, report header `UTILS.APP_AUTHOR`, guides, data files and every PHITS source; ⓘ field help `UI.hintTip` / `.hint-tip`; README aligned) committed, not pushed nor packaged; new Spanish texts pending the author's review.
 - v1.19.1 (neutral texts: criteria «adopted in this application», no case-file workbook name, PHITS reports named by date with the SHA-256 prefix only in report/CSV, ICRP permission status updated; Test 29 guards it) committed, not pushed nor packaged.
 - v1.19.0 (screen-text review: repeated texts removed or moved to the collapsibles, each regulatory warning kept once where the result is read; Effluent intermediate columns behind «Show intermediate values»; Effluent warnings only for included nuclides; reports and CSV unchanged) committed, not pushed nor packaged; new Spanish texts pending the author's review.

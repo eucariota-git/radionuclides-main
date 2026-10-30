@@ -45,8 +45,6 @@
 
   <div class="alert alert-warning mb-1">
     <strong>Screening estimate, not a complete discharge assessment.</strong>
-    Doses are summed per nuclide within each scenario; the two scenarios concern
-    <strong>different receptors and are never added together</strong>. The IS-28 Annex II II.A.4 sewer conditions and mixture clearance are evaluated separately.
   </div>
 
   <!-- A. Source term -->
@@ -70,11 +68,7 @@
         <tbody id="sourceBody"></tbody>
       </table>
     </div>
-    <div class="form-hint mt-1">
-      A<sub>adm</sub> = patients × cycles × administered activity per cycle, all of it excreted. The in-hospital fraction leaves through the facility (with decay tanks, only its share of the annual tank discharge) and reaches Scenarios 1 and 2; the rest is excreted at home and reaches only Scenario 2, in proportion to the catchment.
-    </div>
     <div class="form-hint mt-1" id="tankStatus"></div>
-    <ul class="text-sm mt-1" id="sourceWarnings"></ul>
     <details class="mt-1">
       <summary><strong>Sources and assumptions of the default source term</strong></summary>
       <p class="text-sm mt-1" id="sourceModel"></p>
@@ -168,7 +162,8 @@
         </table>
       </div>
 
-      <div class="result-grid mt-2">
+      <p class="form-hint mt-2">The two scenarios concern different receptors: their totals are never added together.</p>
+      <div class="result-grid mt-1">
         <div class="result-box" id="s1Box">
           <div class="result-label">Scenario 1 — total E (included nuclides)</div>
           <div class="result-value" id="s1Total">—</div>
@@ -239,6 +234,7 @@
       k<sub>1</sub> and k<sub>2</sub> are effective-dose-rate coefficients (ICRP Publication 116 (2010), ROT)
       calculated with PHITS by José Ramón Sendón del Río for the geometry of each scenario — they are <strong>not</strong> point-source Γ
       constants and only apply to that geometry.</p>
+      <p>Doses are summed per nuclide within each scenario; the two scenarios concern different receptors and are never added together. Not a complete discharge assessment: the IS-28 Annex II II.A.4 sewer conditions (per-nuclide concentration level, sum of fractions, annual activity limits) and mixture clearance are evaluated separately.</p>
       <p>Algorithms and defaults are adapted from the reference workbooks of Scenario 2 (Lu-177) and <em>Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx</em> (Scenario 1). <span id="adaptationNote"></span> Inhalation coefficients are those for adult members of
       the public (RD 783/2001 Annex III table b), kept by the CSN Resolution of 3 April 2024; transcription: ICRP Publication 119 (2012),
       Table G.1), lung absorption type F (fast) or M (moderate). Half-lives are taken from the
@@ -362,6 +358,8 @@
   document.getElementById('s1Warning').textContent = `${data.scenario1_geometry.label}. ${S1_SHORT}`;
   document.getElementById('s1GeomNote').textContent = `${data.scenario1_geometry.label}. ${data.scenario1_geometry.note}`;
 
+  // What the activity field holds, per nuclide, in an ⓘ (in amber when the default is not an administered activity, I-131)
+  const nuclideTip = st => UI.hintTip(st.activity_label).replace('class="hint-tip"', `class="hint-tip in-cell${st.activity_warning ? ' warn' : ''}"`);
   document.getElementById('sourceBody').innerHTML = nuclides.map(({ nd }, i) => {
     const st = nd.source_term;
     const cell = (field, val, extra = '') =>
@@ -369,10 +367,10 @@
         aria-label="${UTILS.safeAttr(nd.id + ' ' + field.replace(/_/g, ' '))}" title="${UTILS.safeAttr(nd.id)}">`;
     return `<tr>
       <td><input type="checkbox" id="st_${i}_include" ${nd.include_default ? 'checked' : ''} aria-label="Include ${UTILS.safeAttr(nd.id)}"></td>
-      <td class="sym">${esc(nd.id)}</td>
+      <td class="sym">${esc(nd.id)}${st.activity_label === 'Administered activity per cycle' ? '' : nuclideTip(st)}</td>
       <td>${cell('patients_per_y', st.patients_per_y)}</td>
       <td>${cell('cycles_per_patient', st.cycles_per_patient, st.cycles_locked ? 'disabled' : '')}</td>
-      <td>${cell('activity_per_cycle_GBq', st.activity_per_cycle_GBq)}${st.activity_label === 'Administered activity per cycle' ? '' : `<div class="form-hint">${esc(st.activity_label)}</div>`}</td>
+      <td>${cell('activity_per_cycle_GBq', st.activity_per_cycle_GBq)}</td>
       <td>${cell('fraction_in_hospital', st.fraction_in_hospital)}</td>
       <td><input type="checkbox" id="st_${i}_controlled" ${st.controlled_default ? 'checked' : ''} aria-label="${UTILS.safeAttr(nd.id)} controlled in decay tanks"></td>
       <td class="num" id="st_${i}_A1">—</td>
@@ -380,8 +378,11 @@
     </tr>`;
   }).join('');
   document.getElementById('sourceModel').textContent = data.meta.source_term_model;
-  document.getElementById('sourceNotes').innerHTML = nuclides.map(({ nd }) =>
-    `<li><strong>${esc(nd.id)}</strong>: ${esc(nd.source_term.source)}</li>`).join('');
+  // Warnings first (I-131 default, F-18 without a Scenario 2 coefficient), then the source of each default
+  document.getElementById('sourceNotes').innerHTML =
+    nuclides.filter(({ nd }) => nd.source_term.activity_warning || nd.s2_note).map(({ nd }) =>
+      `<li><strong>${esc(nd.id)}</strong>: ${nd.source_term.activity_warning ? `<span style="color:var(--warning-text);">&#9888; ${esc(nd.source_term.activity_warning)}</span>` : esc(nd.s2_note)}</li>`).join('') +
+    nuclides.map(({ nd }) => `<li><strong>${esc(nd.id)}</strong>: ${esc(nd.source_term.source)}</li>`).join('');
 
   const geoSel = document.getElementById('geometry');
   geoSel.innerHTML = ['L10', 'L45'].map(g =>
@@ -462,10 +463,6 @@
     inputErr.clear();
     document.getElementById('resultBlock').classList.remove('hidden');
     last = { input, out };
-
-    // Warnings stay visible, but only for the nuclides included (provenance goes to the collapsible block, T30)
-    document.getElementById('sourceWarnings').innerHTML = nuclides.filter(({ nd }, i) => input.nuclides[i].include && (nd.source_term.activity_warning || nd.s2_note)).map(({ nd }) =>
-      `<li><strong>${esc(nd.id)}</strong>: ${nd.source_term.activity_warning ? `<span style="color:var(--warning-text);">&#9888; ${esc(nd.source_term.activity_warning)}</span>` : ''}${nd.s2_note ? ' ' + esc(nd.s2_note) : ''}</li>`).join('');
 
     // F8 — the size comparison of each geometry is provenance (Sources and assumptions); the hint keeps the rule
     const geo = input.geometry;

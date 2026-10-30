@@ -5,8 +5,8 @@ const UTILS = (() => {
   // two different code versions never produce indistinguishable reports
   // (audit 2026-07-16, H-07). APP_BUILD must equal CACHE_VERSION in sw.js —
   // update both together; validate-app.js enforces the match.
-  const APP_VERSION = '1.20.0';
-  const APP_BUILD = 'nm-planner-v69';
+  const APP_VERSION = '1.20.1';
+  const APP_BUILD = 'nm-planner-v70';
   // Author of the application, the data compilation and the Effluent PHITS coefficients
   const APP_AUTHOR = 'José Ramón Sendón del Río';
 

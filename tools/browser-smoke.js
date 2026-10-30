@@ -254,12 +254,14 @@ async function main() {
         check('effluent defaults: Scenario 1 total 0.0199 mSv/y', near(s1, 0.0199), s1);
         check('effluent defaults: Scenario 2 total 2.74 mSv/y', near(s2, 2.742), s2);
         check('effluent: E (mSv/y) is the second column', /E \(mSv\/y\)/.test(await text('#s1Table th:nth-child(2)')));
-        // Screen-text review 2026-10-30: notes of excluded nuclides hidden, intermediate columns on demand
-        const warn0 = await text('#sourceWarnings');
-        check('effluent: the F-18 note is not shown while F-18 is excluded; I-131 warning shown', !/F-18/.test(warn0) && /I-131/.test(warn0), warn0);
-        const f18 = await ev(`(() => { const i = EFFLUENT_DATA.nuclides.findIndex(n => n.id === 'F-18'); const c = document.getElementById('st_' + i + '_include');
-          c.checked = true; c.dispatchEvent(new Event('change', { bubbles: true })); return document.getElementById('sourceWarnings').textContent; })()`);
-        check('effluent: including F-18 shows its Scenario 2 note', /F-18:\s+No Scenario 2 coefficient/.test(f18), f18);
+        // v1.20.1: no visible source-term notes; per-nuclide ⓘ (amber for I-131); warnings head the collapsible sources
+        const st = await ev(`(() => { const rows = [...document.querySelectorAll('#sourceBody tr')];
+          const tip = id => { const r = rows.find(tr => tr.querySelector('.sym').textContent.startsWith(id)); const t = r && r.querySelector('.hint-tip'); return t ? t.className : ''; };
+          return { notesUnder: document.querySelectorAll('#sourceBody .form-hint').length, lu: tip('Lu-177'), i131: tip('I-131'), f18: tip('F-18'),
+            notes: document.getElementById('sourceNotes').textContent, warnList: !!document.getElementById('sourceWarnings') }; })()`);
+        check('effluent: per-nuclide ⓘ (I-131 in amber, none for Lu-177), no notes under the fields, warnings in «Sources and assumptions»',
+          st.notesUnder === 0 && st.lu === '' && /\bwarn\b/.test(st.i131) && /in-cell/.test(st.f18) && !st.warnList &&
+          /I-131:\s*⚠ The 0\.8 GBq default/.test(st.notes) && /F-18:\s*No Scenario 2 coefficient/.test(st.notes), JSON.stringify(st).slice(0, 300));
         const colsOff = await ev(`getComputedStyle(document.querySelector('#s1Table th.col-int')).display`);
         await ev(`document.getElementById('btnIntermediate').click()`);
         const colsOn = await ev(`[getComputedStyle(document.querySelector('#s2Table td.col-int')).display, document.getElementById('btnIntermediate').getAttribute('aria-pressed')]`);
@@ -270,8 +272,8 @@ async function main() {
       // Hidden until focused or tapped; the box spans the form group, inside a 390 px screen; translated in Spanish
       // :focus needs a focused page, which a headless tab is not unless emulated
       await send('Emulation.setFocusEmulationEnabled', { enabled: true });
-      const TAP = `(() => { const t = document.querySelector('.hint-tip'); window.__tipBefore = getComputedStyle(t, '::after').visibility; t.click(); })()`;
-      const TIP = `(() => { const t = document.querySelector('.hint-tip');
+      const TAP = `(() => { const t = document.querySelector('.form-label .hint-tip'); window.__tipBefore = getComputedStyle(t, '::after').visibility; t.click(); })()`;
+      const TIP = `(() => { const t = document.querySelector('.form-label .hint-tip');
         const g = t.closest('.form-label').getBoundingClientRect();
         return { n: document.querySelectorAll('.hint-tip').length, before: window.__tipBefore, after: getComputedStyle(t, '::after').visibility,
           focused: document.activeElement === t, inside: g.left >= 0 && g.right <= innerWidth,

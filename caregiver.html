@@ -45,8 +45,7 @@
 
   <div class="alert alert-warning mb-1">
     <strong>Screening estimate for one person and equal cycles.</strong>
-    External exposure only, estimated with the measured operational quantity (not the individual effective or fetal dose;
-    internal contamination and the dose before discharge are not included). The criteria per category are <strong>evaluation criteria adopted in this application</strong> («Other criterion» sets your own), not values fixed by regulation for this treatment.
+    External exposure, estimated with the measured operational quantity. The criteria per category are <strong>evaluation criteria adopted in this application</strong> («Other criterion» sets your own).
   </div>
 
   <!-- A. Case data -->
@@ -88,7 +87,7 @@
         <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="cycles" title="Number of equal cycles">
       </div>
       <div class="form-group">
-        <label class="form-label" for="category">Category of the exposed person</label>
+        <label class="form-label" for="category">Category of the exposed person <span class="hint-tip hidden" id="categoryTip" tabindex="0" role="img" aria-label="" data-tooltip=""><span class="ico ico-info" aria-hidden="true"></span></span></label>
         <select class="form-select" id="category" title="Category of the exposed person"></select>
         <div class="form-hint" id="categoryHint"></div>
       </div>
@@ -102,9 +101,8 @@
         <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="spc_min_restriction_d" title="Minimum restriction of the product information">
       </div>
       <div class="form-group">
-        <label class="form-label" for="profile">Proximity profile</label>
+        <label class="form-label" for="profile">Proximity profile <span class="hint-tip hidden" id="profileTip" tabindex="0" role="img" aria-label="" data-tooltip=""><span class="ico ico-info" aria-hidden="true"></span></span></label>
         <select class="form-select" id="profile" title="Proximity profile"></select>
-        <div class="form-hint" id="profileHint"></div>
       </div>
     </div>
 
@@ -149,7 +147,7 @@
           <tr>
             <th>Row</th>
             <th class="has-tooltip" tabindex="0" aria-label="Restriction days counted from discharge" data-tooltip="Restriction days counted from discharge">Restriction (d from discharge)</th>
-            <th>During (h/d)</th>
+            <th>During (h/d) <span class="hint-tip in-cell" tabindex="0" role="img" aria-label="Hours of the two rows are mutually exclusive; 0 h = no contact (distance may be left empty); 0.1 m = contact." data-tooltip="Hours of the two rows are mutually exclusive; 0 h = no contact (distance may be left empty); 0.1 m = contact."><span class="ico ico-info" aria-hidden="true"></span></span></th>
             <th>During (m)</th>
             <th>After (h/d)</th>
             <th>After (m)</th>
@@ -159,8 +157,6 @@
         <tbody id="rowsBody"></tbody>
       </table>
     </div>
-    <!-- Input rules only; the calculation assumptions are in Method › Assumptions (user review 2026-10-22) -->
-    <div class="form-hint mt-1">Hours of the two rows are mutually exclusive; 0 h = no contact (distance may be left empty); 0.1 m = contact.</div>
   </div>
 
   <!-- Results -->
@@ -711,16 +707,18 @@
 
     // Input-dependent hints
     const tr = input.fast_end_h > input.discharge_h;
-    $('T_fast_hint').textContent = tr ? 'Required: discharge precedes the end of the fast phase.' : 'Not used: discharge is at or after the end of the fast phase.';
+    // Said only when the field is switched off, to explain why
+    $('T_fast_hint').textContent = tr ? '' : 'Not used: discharge is at or after the end of the fast phase.';
     $('T_fast_h').disabled = !tr;
     const isOther = input.category === 'other';
     $('manual_criterion_mSv').disabled = !isOther;
     $('manualHint').textContent = isOther ? 'Required for «Other criterion».' : '';
     const cat = data.categories.find(c => c.key === input.category);
+    UI.setHintTip($('categoryTip'), cat ? `Basis: ${cat.basis_short}` : '');
     $('categoryHint').innerHTML = cat
-      ? `Basis: ${UTILS.escapeHtml(cat.basis_short)} — see <a href="#criteriaDetails" data-open-details="methodDetails criteriaDetails">Method › Criteria per category</a>.`
+      ? 'See <a href="#criteriaDetails" data-open-details="methodDetails criteriaDetails">Method › Criteria per category</a>.'
       : '';
-    $('profileHint').textContent = data.profiles[input.profile] ? data.profiles[input.profile].distances_note : '';
+    UI.setHintTip($('profileTip'), data.profiles[input.profile] ? data.profiles[input.profile].distances_note : '');
     $('ownBlock').classList.toggle('hidden', input.profile !== 'own');
     $('own_fixed_rate').textContent = Number.isFinite(input.rate_1m_uSv_h) ? UTILS.num(input.rate_1m_uSv_h) : '—';
     input.own_measurements.forEach((m, i) => {

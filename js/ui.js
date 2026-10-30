@@ -46,6 +46,14 @@ const UI = (() => {
     return `<span class="hint-tip" tabindex="0" role="img" aria-label="${t}" data-tooltip="${t}"><span class="ico ico-info" aria-hidden="true"></span></span>`;
   }
 
+  // Dynamic ⓘ: same text in data-tooltip and aria-label; hidden when there is none
+  function setHintTip(el, text) {
+    if (!el) return;
+    el.setAttribute('data-tooltip', text || '');
+    el.setAttribute('aria-label', text || '');
+    el.classList.toggle('hidden', !text);
+  }
+
   /* --- Dark Mode ---
    * An explicit choice (button or Alt+D) is stored and wins. Without one, the
    * page follows the operating-system preference, also when it changes while
@@ -433,6 +441,7 @@ const UI = (() => {
     initLanguage,
     refreshNumberHints,
     hintTip,
+    setHintTip,
     initPrint,
     initKeyboard,
     showFatalError,

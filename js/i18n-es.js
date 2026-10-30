@@ -500,7 +500,6 @@ const I18N_ES = {
     'Distance d': 'Distancia d',
     'Distance': 'Distancia',
     'Distance unit': 'Unidad de distancia',
-    'Point-source approximation (1/d²)': 'Aproximación de fuente puntual (1/d²)',
     'Short distance: check the point-source approximation (real source/shield size matters at a few cm)':
       'Distancia corta: compruebe la aproximación de fuente puntual (a pocos cm importa el tamaño real de la fuente y del blindaje)',
     'Include (equilibrium)': 'Incluir (equilibrio)',
@@ -595,8 +594,8 @@ const I18N_ES = {
     'Dose-equivalent rate (μSv/h)': 'Tasa de equivalente de dosis (μSv/h)',
     'Annual dose limit comparison': 'Comparación con los límites anuales de dosis',
     'Indicative screening only': 'Solo cribado orientativo',
-    '— area-monitoring estimates compared with RD 1029/2022 annual limits; they do not establish compliance.':
-      '— estimaciones de vigilancia de áreas comparadas con los límites anuales del RD 1029/2022; no demuestran el cumplimiento.',
+    '— area-monitoring estimates compared with the annual limits of RD 1029/2022 (arts. 11 and 15); they do not establish compliance.':
+      '— estimaciones de vigilancia de áreas comparadas con los límites anuales del RD 1029/2022 (arts. 11 y 15); no demuestran el cumplimiento.',
     'Effective dose': 'Dosis efectiva',
     'of 20 mSv/y worker limit |': 'del límite de 20 mSv/a de los trabajadores expuestos |',
     'of 1 mSv/y public limit': 'del límite de 1 mSv/a de los miembros del público',
@@ -608,8 +607,6 @@ const I18N_ES = {
     'projected assuming this same annual dose during 5 years': 'proyectado suponiendo esta misma dosis anual durante 5 años',
     'Skin / extremities': 'Piel / extremidades',
     'of 500 mSv/y limit': 'del límite de 500 mSv/a',
-    'Limits: RD 1029/2022 art. 11 (exposed workers; lens-of-the-eye regime since 22 June 2024) and art. 15 (public). Regulatory limits, not design targets.':
-      'Límites: RD 1029/2022, art. 11 (trabajadores expuestos; régimen del cristalino desde el 22 de junio de 2024) y art. 15 (público). Límites reglamentarios, no objetivos de diseño.',
     'Enter an exposure time > 0 to see the annual limit comparison.': 'Introduzca un tiempo de exposición > 0 para ver la comparación con los límites anuales.',
     // Y-90
     'Y-90 experimental bremsstrahlung scenario': 'Escenario experimental de radiación de frenado de Y-90',
@@ -717,11 +714,6 @@ const I18N_ES = {
     ', sewage-treatment-plant (STP / EDAR) sludge operator (dewatered sludge + resuspended dust). Model and sources under':
       ', trabajador de planta depuradora que manipula lodos (lodo deshidratado + polvo resuspendido). Modelo y fuentes en',
     'Screening estimate, not a complete discharge assessment.': 'Estimación de cribado, no una evaluación completa del vertido.',
-    'Doses are summed per nuclide within each scenario; the two scenarios concern':
-      'Dentro de cada escenario, las dosis se suman por nucleido; los dos escenarios corresponden a',
-    'different receptors and are never added together': 'receptores distintos y nunca se suman',
-    '. The IS-28 Annex II II.A.4 sewer conditions and mixture clearance are evaluated separately.':
-      '. Las condiciones de la IS-28, anexo II, II.A.4, para el alcantarillado y la desclasificación de mezclas se evalúan aparte.',
     'A. Source term': 'A. Término fuente',
     'Include': 'Incluir',
     'Patients / y': 'Pacientes / a',
@@ -734,8 +726,6 @@ const I18N_ES = {
     'Activity leaving the hospital — Scenario 1': 'Actividad que sale del hospital — escenario 1',
     'Activity reaching the STP — Scenario 2': 'Actividad que llega a la depuradora — escenario 2',
     'excluded': 'excluido',
-    '= patients × cycles × administered activity per cycle, all of it excreted. The in-hospital fraction leaves through the facility (with decay tanks, only its share of the annual tank discharge) and reaches Scenarios 1 and 2; the rest is excreted at home and reaches only Scenario 2, in proportion to the catchment.':
-      '= pacientes × ciclos × actividad administrada por ciclo, que se excreta toda. La fracción excretada en el hospital sale por la instalación (con depósitos de decaimiento, solo su parte del vertido anual de los depósitos) y llega a los escenarios 1 y 2; el resto se excreta en el domicilio y llega solo al escenario 2, en proporción a la zona servida.',
     'A_adm = patients × cycles × administered activity per cycle; e_hosp = A_adm × fraction excreted in hospital. Activity leaving the hospital: e_hosp, or, for nuclides controlled in decay tanks, e_hosp × min(1, L / Σ e_hosp of controlled nuclides) with L the annual tank discharge (no decay credit when Σ e_hosp < L). Scenario 1: activity leaving the hospital. Scenario 2: activity leaving the hospital + A_adm × (1 − fraction in hospital) × catchment fraction (all administered activity assumed excreted).':
       'A_adm = pacientes × ciclos × actividad administrada por ciclo; e_hosp = A_adm × fracción excretada en el hospital. Actividad que sale del hospital: e_hosp o, para los nucleidos controlados en depósitos de decaimiento, e_hosp × min(1, L / Σ e_hosp de los nucleidos controlados), con L el vertido anual de los depósitos (sin crédito por decaimiento cuando Σ e_hosp < L). Escenario 1: actividad que sale del hospital. Escenario 2: actividad que sale del hospital + A_adm × (1 − fracción en el hospital) × fracción de la zona servida (se supone excretada toda la actividad administrada).',
     'Sources and assumptions of the default source term': 'Fuentes e hipótesis del término fuente por defecto',
@@ -812,6 +802,9 @@ const I18N_ES = {
     'are effective-dose-rate coefficients (ICRP Publication 116 (2010), ROT) calculated with PHITS by José Ramón Sendón del Río for the geometry of each scenario — they are':
       'son coeficientes de tasa de dosis efectiva (ICRP Publication 116 (2010), ROT) calculados con PHITS por José Ramón Sendón del Río para la geometría de cada escenario;',
     'point-source Γ constants and only apply to that geometry.': 'constantes Γ de fuente puntual y solo se aplican a esa geometría.',
+    'The two scenarios concern different receptors: their totals are never added together.': 'Los dos escenarios corresponden a receptores distintos: sus totales nunca se suman.',
+    'Doses are summed per nuclide within each scenario; the two scenarios concern different receptors and are never added together. Not a complete discharge assessment: the IS-28 Annex II II.A.4 sewer conditions (per-nuclide concentration level, sum of fractions, annual activity limits) and mixture clearance are evaluated separately.':
+      'Dentro de cada escenario, las dosis se suman por nucleido; los dos escenarios corresponden a receptores distintos y nunca se suman. No es una evaluación completa del vertido: las condiciones de la IS-28, anexo II, II.A.4, para el alcantarillado (nivel de concentración por nucleido, suma de las fracciones, límites anuales de actividad) y la desclasificación de mezclas se evalúan aparte.',
     'Algorithms and defaults are adapted from the reference workbooks of Scenario 2 (Lu-177) and': 'Los algoritmos y los valores por defecto se adaptan de los libros de referencia del escenario 2 (Lu-177) y',
     '(Scenario 1).': '(escenario 1).',
     'Inhalation coefficients are those for adult members of the public (RD 783/2001 Annex III table b), kept by the CSN Resolution of 3 April 2024; transcription: ICRP Publication 119 (2012), Table G.1), lung absorption type F (fast) or M (moderate). Half-lives are taken from the app database (Lu-177m, not a curated entry, from ICRP 107).':
@@ -1017,10 +1010,10 @@ const I18N_ES = {
     'External dose to one caregiver, relative or third party from a Lu-177 or I-131 therapy patient after discharge, with the maximum discharge rate and the minimum restriction period that meet the selected criterion.':
       'Dosis externa a una persona cuidadora, familiar o tercera persona debida a un paciente tratado con Lu-177 o I-131 tras el alta, con la tasa máxima en el alta y el periodo mínimo de restricción que cumplen el criterio seleccionado.',
     'Screening estimate for one person and equal cycles.': 'Estimación de cribado para una persona y ciclos iguales.',
-    'External exposure only, estimated with the measured operational quantity (not the individual effective or fetal dose; internal contamination and the dose before discharge are not included). The criteria per category are':
-      'Solo exposición externa, estimada con la magnitud operacional medida (no es la dosis efectiva individual ni la dosis fetal; no se incluyen la contaminación interna ni la dosis antes del alta). Los criterios por categoría son',
+    'External exposure, estimated with the measured operational quantity. The criteria per category are':
+      'Exposición externa, estimada con la magnitud operacional medida. Los criterios por categoría son',
     'evaluation criteria adopted in this application': 'criterios de evaluación adoptados en esta aplicación',
-    '(«Other criterion» sets your own), not values fixed by regulation for this treatment.': '(con «Otro criterio» se fija uno propio), no valores fijados por la normativa para este tratamiento.',
+    '(«Other criterion» sets your own).': '(con «Otro criterio» se fija uno propio).',
     ', not values fixed by regulation for this treatment.': ', no valores fijados por la normativa para este tratamiento.',
     'A. Case data': 'A. Datos del caso',
     'Kinetics preset': 'Cinética predefinida',
@@ -1037,7 +1030,6 @@ const I18N_ES = {
     '0 = no fast phase.': '0 = sin fase rápida.',
     'Fast effective half-life (h)': 'Periodo efectivo rápido (h)',
     'Fast effective half-life': 'Periodo efectivo rápido',
-    'Required: discharge precedes the end of the fast phase.': 'Necesario: el alta es anterior al final de la fase rápida.',
     'Not used: discharge is at or after the end of the fast phase.': 'No se usa: el alta coincide con el final de la fase rápida o es posterior.',
     'Slow effective half-life (h)': 'Periodo efectivo lento (h)',
     'Slow effective half-life': 'Periodo efectivo lento',
@@ -1177,6 +1169,8 @@ const I18N_ES = {
       "Días de restricción no introducidos: la restricción mínima y la adoptada no dependen de ellos. Introduzca los días, o use la restricción adoptada, para obtener la dosis de la tabla y la tasa máxima.",
     '"Unattainable" = the criterion is not met however long the restriction lasts: contact during the restriction must be reduced.':
       '«Inalcanzable» = el criterio no se cumple por larga que sea la restricción: hay que reducir el contacto durante la restricción.',
+    "Quantity: the integral of the measured operational quantity estimates the external exposure of the person; it is not automatically the individual effective dose nor the fetal dose. Internal contamination, the dose before discharge and other sources are not included.":
+      "Magnitud: la integral de la magnitud operacional medida estima la exposición externa de la persona; no es automáticamente la dosis efectiva individual ni la dosis fetal. No se incluyen la contaminación interna, la dosis antes del alta ni otras fuentes.",
     'With this restriction the treatment dose EXCEEDS the criterion': 'Con esta restricción la dosis del tratamiento SUPERA el criterio',
     "Restriction days not entered in the cohabitation table":
       "Días de restricción no introducidos en la tabla de convivencia",
@@ -1738,7 +1732,7 @@ const I18N_ES = {
 
     // ---- Caregiver ----
     [/^(.+) — ((?:[\d.,]+) mSv)$/, (m, label, v) => { const t = esText(label); return t === label ? m : `${t} — ${v}`; }],
-    [/^Basis: (.+) — see$/, (m, b) => `Base: ${esText(b)} — véase`],
+    [/^Basis: (.+)$/, (m, b) => `Base: ${esText(b)}`],
     [/^— (fast phase until (.+?) h, T fast (.+?) h|single exponential), T slow (.+?) h, (\d+) cycle\(s\), profile (.+?)\. ([\s\S]+)$/, (m, ph, end, tf, ts, n, prof, src) =>
       `— ${ph.startsWith('single') ? 'una sola exponencial' : `fase rápida hasta ${end} h, T rápida ${tf} h`}, T lenta ${ts} h, ${n} ciclo(s), perfil ${esText(prof)}. ${esText(src)}`],
     [/^Own measurement (\d+) (distance \(m\)|rate \(µSv\/h\))$/, (m, n, w) => `Medida propia ${n}: ${w.startsWith('distance') ? 'distancia (m)' : 'tasa (µSv/h)'}`],
