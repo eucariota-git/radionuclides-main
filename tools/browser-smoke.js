@@ -246,13 +246,25 @@ async function main() {
       check('dose Lu-177 1 GBq at 0.3 m: H*(10) rate 69.8 µSv/h', /69\.8/.test(await text('#resultsBody')));
     });
     await guard('Effluent defaults', async () => {
-      // Effluent defaults: Scenario 1 0.0199 mSv/y, Scenario 2 2.74 mSv/y (acceptance A11/A12)
+      // Effluent defaults (v1.22.0: I-131 has no default activity and is not included):
+      // Lu-177 only, Scenario 1 0.01718 mSv/y, Scenario 2 2.376 mSv/y. With I-131 included
+      // and 0.8 GBq entered: 0.0199 / 2.74 mSv/y (acceptance A11/A12)
       await open('effluent.html', 1280);
       {
-        const s1 = await text('#s1Total'), s2 = await text('#s2Total');
         const near = (txt, ref) => Math.abs(parseFloat(txt) / ref - 1) < 0.005;   // ±0.5 %, display rounding
-        check('effluent defaults: Scenario 1 total 0.0199 mSv/y', near(s1, 0.0199), s1);
-        check('effluent defaults: Scenario 2 total 2.74 mSv/y', near(s2, 2.742), s2);
+        let s1 = await text('#s1Total'), s2 = await text('#s2Total');
+        check('effluent defaults (Lu-177 only): Scenario 1 total 0.01718 mSv/y', near(s1, 0.01718), s1);
+        check('effluent defaults (Lu-177 only): Scenario 2 total 2.376 mSv/y', near(s2, 2.376), s2);
+        const i = await ev(`[...document.querySelectorAll('#sourceBody tr')].findIndex(tr => tr.querySelector('.sym').textContent.startsWith('I-131'))`);
+        await ev(`(() => { const c = document.getElementById('st_${i}_include'); c.checked = true; c.dispatchEvent(new Event('change', { bubbles: true })); })()`);
+        await sleep(400);
+        const empty = await ev(`({ err: document.getElementById('calcError').textContent, inv: document.getElementById('st_${i}_activity_per_cycle_GBq').getAttribute('aria-invalid') })`);
+        check('effluent: I-131 included with no activity → field error, no results', /I-131: enter the administered activity per treatment/.test(empty.err) && empty.inv === 'true', JSON.stringify(empty));
+        await ev(`(() => { const e = document.getElementById('st_${i}_activity_per_cycle_GBq'); e.value = '0.8'; e.dispatchEvent(new Event('input', { bubbles: true })); })()`);
+        await sleep(400);
+        s1 = await text('#s1Total'); s2 = await text('#s2Total');
+        check('effluent: with I-131 0.8 GBq entered, Scenario 1 total 0.0199 mSv/y', near(s1, 0.0199), s1);
+        check('effluent: with I-131 0.8 GBq entered, Scenario 2 total 2.74 mSv/y', near(s2, 2.742), s2);
         check('effluent: E (mSv/y) is the second column', /E \(mSv\/y\)/.test(await text('#s1Table th:nth-child(2)')));
         // v1.20.1: no visible source-term notes; per-nuclide ⓘ (amber for I-131); warnings head the collapsible sources
         const st = await ev(`(() => { const rows = [...document.querySelectorAll('#sourceBody tr')];
@@ -261,7 +273,7 @@ async function main() {
             notes: document.getElementById('sourceNotes').textContent, warnList: !!document.getElementById('sourceWarnings') }; })()`);
         check('effluent: per-nuclide ⓘ (I-131 in amber, none for Lu-177), no notes under the fields, warnings in «Sources and assumptions»',
           st.notesUnder === 0 && st.lu === '' && /\bwarn\b/.test(st.i131) && /in-cell/.test(st.f18) && !st.warnList &&
-          /I-131:\s*⚠ The 0\.8 GBq default/.test(st.notes) && /F-18:\s*No Scenario 2 coefficient/.test(st.notes), JSON.stringify(st).slice(0, 300));
+          /I-131:\s*⚠ No default activity: enter the administered activity/.test(st.notes) && /F-18:\s*No Scenario 2 coefficient/.test(st.notes), JSON.stringify(st).slice(0, 300));
         const colsOff = await ev(`getComputedStyle(document.querySelector('#s1Table th.col-int')).display`);
         await ev(`document.getElementById('btnIntermediate').click()`);
         const colsOn = await ev(`[getComputedStyle(document.querySelector('#s2Table td.col-int')).display, document.getElementById('btnIntermediate').getAttribute('aria-pressed')]`);
@@ -585,7 +597,8 @@ async function main() {
       };
       const rate = () => text('#resultsBody');
       // quantity NAMES keep the point of the English text: H'(0.07), 0.07 mm
-      const quantityNamesOut = t => t.replace(/H'\(0\.07\)|Hp\(0\.07\)|0\.07 mm/g, '');
+      // quantity names and legal references (art. 11.2.a) keep their usual form
+      const quantityNamesOut = t => t.replace(/H'\(0\.07\)|Hp\(0\.07\)|0\.07 mm|art\. \d+\.\d+\.[a-z]/g, '');
       // Input: a comma and a point give the same result, whatever the browser language
       // (a type="number" field read "0,3" as 3 in an English browser)
       for (const [locale, typed] of [['en-US', '0,3'], ['en-US', '0.3'], ['es-ES', '0,3'], ['es-ES', '0.3']]) {
@@ -786,6 +799,16 @@ async function main() {
       check('caregiver: cycles 1.5 and criterion −1 marked aria-invalid; summary shows «?» and «—»',
         cg.cyc === 'true' && cg.crit === 'true' && /\? cycle/.test(cg.unit) && cg.shown === '—', JSON.stringify(cg));
       await pageChecks('caregiver invalid ranges');
+    });
+    await guard('Review of another AI (v1.22.0): Dose limits and Y-90', async () => {
+      await open('dose.html?id=Lu-177', 1280);
+      const lim = (await text('#limitComparison')).replace(/\s+/g, ' ');
+      check('dose: lens limits labelled «exposed workers», public lens and skin compared',
+        /Exposed workers \(art\. 11\.2\.a\)/.test(lim) && /of 50 mSv in one year \(exposed workers\)/.test(lim) && /of 15 mSv\/y public limit/.test(lim), lim.slice(0, 300));
+      await open('dose.html?id=Y-90', 1280);
+      const y = (await ev('document.querySelector("main").innerText')).replace(/\s+/g, ' ');
+      check('dose Y-90: the container values are presented as hypothetical', /hypothetical container values/.test(y) && !/container-dependent estimates/.test(y), y.slice(0, 200));
+      await pageChecks('dose Y-90 hypothetical');
     });
     await guard('Version in the footer (v1.21.0)', async () => {
       for (const pg of ['index.html', 'decay.html?id=Lu-177', 'dose.html?id=Lu-177', 'effluent.html', 'caregiver.html', 'about.html']) {

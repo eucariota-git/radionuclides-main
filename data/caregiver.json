@@ -1,6 +1,6 @@
 {
   "meta": {
-    "version": "1.12",
+    "version": "1.13",
     "date": "2026-10-30",
     "author": { "name": "José Ramón Sendón del Río", "role": "Application, data compilation and verification" },
     "description": "Caregiver / family-member external dose after discharge of a radionuclide-therapy patient: proximity profiles, evaluation criteria per category, references and model assumptions.",
@@ -409,7 +409,7 @@
   "references": [
     "[1] Monserrat Fuertes et al. (2023). Individualisation of radiation protection recommendations for patients treated with [177Lu]Lu-DOTA-TATE. EJNMMI Physics 10:50. https://doi.org/10.1186/s40658-023-00570-7 — proximity factors (medians of measurements at 0.1, 0.5 and 1 m) and DOTATATE kinetics.",
     "[2] Foro CSN-SEPR-SEFM (2011). Criterios de alta de pacientes y medidas para la protección radiológica del público después de tratamientos metabólicos con I-131 — contact taken at 0.4 m, I-131 kinetics, 3 mSv and 0.3 mSv criteria.",
-    "[3] Gayol Vilorio et al. (2025). Periodo de restricciones tras el alta en terapia con 177Lu-DOTATATE y 177Lu-PSMA-617. Rev. Fís. Méd. 26(2):27–36 — Lu-177 kinetics, contact at 0.4 m, 5 mSv over 60 years.",
+    "[3] Gayol Vilorio et al. (2025). Cálculo del periodo de restricciones tras el alta radiológica de pacientes sometidos a terapia metabólica con [177Lu]Lu-DOTA-TATE y [177Lu]Lu-PSMA-617. Rev. Fís. Méd. 26(2):27–36 — Lu-177 kinetics, contact at 0.4 m, 5 mSv over 60 years.",
     "[4] Demir et al. (2016). Evaluation of radiation safety in 177Lu-PSMA therapy and outpatient treatment protocol. J. Radiol. Prot. 36(2):269. https://doi.org/10.1088/0952-4746/36/2/269 — dose rates at 1 m (PSMA fast phase).",
     "[5] Kurth et al. (2018). External radiation exposure, excretion and effective half-life in 177Lu-PSMA-targeted therapies. EJNMMI Research 8:32 — slow effective half-life; fast phase ending at 24 h.",
     "[6] ICRP Publication 94 (2004). Release of patients after therapy with unsealed radionuclides — 5 mSv per episode for relatives and caregivers; public limit for infants, children and casual visitors.",

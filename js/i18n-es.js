@@ -209,17 +209,17 @@ const I18N_ES = {
     'Curated entries: modality. Extended results: origin of the record (ICRP 107, or regulatory tables only) — they have no modality classification.':
       'Entradas revisadas: modalidad. Resultados ampliados: origen del registro (ICRP 107 o solo tablas reglamentarias); no tienen clasificación por modalidad.',
     'Modality / origin': 'Modalidad / origen',
-    'Gamma K-air. Air kerma rate constant at 1 metre from 1 GBq, in microgray per hour per GBq per square metre.':
-      'Gamma K-aire. Constante de tasa de kerma en aire a 1 metro de 1 GBq, en microgray por hora por GBq por metro cuadrado.',
+    'Gamma K-air. Air kerma rate constant at 1 metre from 1 GBq, in microgray square metre per hour per GBq.':
+      'Gamma K-aire. Constante de tasa de kerma en aire a 1 metro de 1 GBq, en microgray metro cuadrado por hora y GBq.',
     'Air-kerma rate at 1 m from a 1 GBq point source, without attenuation. See the Γ source column for provenance.':
       'Tasa de kerma en aire a 1 m de una fuente puntual de 1 GBq, sin atenuación. La procedencia figura en la columna «Fuente de Γ».',
     'K-air': 'K-aire',
-    'Gamma H star 10. Ambient dose equivalent rate constant for area monitoring and effective-dose estimation, in microsievert per hour per GBq per square metre.':
-      'Gamma H asterisco 10. Constante de tasa de equivalente de dosis ambiental, para la vigilancia radiológica de áreas y la estimación de la dosis efectiva, en microsievert por hora por GBq por metro cuadrado.',
+    'Gamma H star 10. Ambient dose equivalent rate constant for area monitoring and effective-dose estimation, in microsievert square metre per hour per GBq.':
+      'Gamma H asterisco 10. Constante de tasa de equivalente de dosis ambiental, para la vigilancia radiológica de áreas y la estimación de la dosis efectiva, en microsievert metro cuadrado por hora y GBq.',
     'Ambient dose equivalent rate constant (area monitoring; estimator of effective dose). ICRP 74 Table A.21 coefficients.':
       'Constante de tasa de equivalente de dosis ambiental (vigilancia radiológica de áreas; estimador de la dosis efectiva). Coeficientes de la tabla A.21 de ICRP 74.',
-    'Gamma H prime 0.07. Directional dose equivalent rate constant for area monitoring and skin or extremity indication, in microsievert per hour per GBq per square metre.':
-      'Gamma H prima 0,07. Constante de tasa de equivalente de dosis direccional, para la vigilancia radiológica de áreas y como indicador para piel o extremidades, en microsievert por hora por GBq por metro cuadrado.',
+    'Gamma H prime 0.07. Directional dose equivalent rate constant for area monitoring and skin or extremity indication, in microsievert square metre per hour per GBq.':
+      'Gamma H prima 0,07. Constante de tasa de equivalente de dosis direccional, para la vigilancia radiológica de áreas y como indicador para piel o extremidades, en microsievert metro cuadrado por hora y GBq.',
     'Directional dose equivalent rate constant at 0.07 mm depth (area monitoring; skin/extremity indicator).':
       'Constante de tasa de equivalente de dosis direccional a 0,07 mm de profundidad (vigilancia radiológica de áreas; indicador para piel y extremidades).',
     'Representative energy: Nominal energy, for orientation only: the calculations use the full line spectrum, not this value.':
@@ -260,8 +260,8 @@ const I18N_ES = {
     'Reference & data notes — sources, method and limits of the values above':
       'Notas de referencia y de datos: fuentes, método y límites de los valores anteriores',
     '32 nuclides:': '32 nucleidos:',
-    "Cornejo et al. (2015) provides published comparison values, and its air-kerma constants are the ones shown in the K-air column. H*(10) and H'(0.07) are recalculated using the stated nuclear data (ICRP 107, 2008) and conversion coefficients (ICRP 74, 1996, Table A.21); where they differ from the published values, the difference has not been reconciled.":
-      "Cornejo et al. (2015) aporta valores publicados de comparación, y sus constantes de kerma en aire son las que se muestran en la columna K-aire. H*(10) y H'(0,07) se recalculan con los datos nucleares indicados (ICRP 107, 2008) y los coeficientes de conversión (ICRP 74, 1996, tabla A.21); donde difieren de los valores publicados, la diferencia no se ha conciliado.",
+    "Cornejo et al. (2015) provides published comparison values, and its air-kerma constants are the ones shown in the K-air column. H*(10) and H'(0.07) are recalculated using the stated nuclear data (ICRP 107, 2008) and conversion coefficients (ICRP 74, 1996, Table A.21), except the H*(10) of Cs-137 and Mo-99+Tc-99m, which keep the published value; 24 of the 32 H*(10) values lie within ±2 % of the published ones, those two included. Where they differ, the difference has not been reconciled.":
+      "Cornejo et al. (2015) aporta valores publicados de comparación, y sus constantes de kerma en aire son las que se muestran en la columna K-aire. H*(10) y H'(0,07) se recalculan con los datos nucleares indicados (ICRP 107, 2008) y los coeficientes de conversión (ICRP 74, 1996, tabla A.21), salvo el H*(10) del Cs-137 y del Mo-99+Tc-99m, que conservan el valor publicado; 24 de los 32 valores de H*(10) quedan dentro de ±2 % de los publicados, esos dos incluidos. Donde difieren, la diferencia no se ha conciliado.",
     'Ga-68, Zr-89, Cu-67, Tb-161, Ho-166, Ra-223 and Ac-225:': 'Ga-68, Zr-89, Cu-67, Tb-161, Ho-166, Ra-223 y Ac-225:',
     'no published comparison; calculated in the same way. For the two alpha-therapy chains (Ra-223, Ac-225) the constants':
       'sin comparación publicada; calculados del mismo modo. Para las dos cadenas de terapia alfa (Ra-223, Ac-225) las constantes',
@@ -269,8 +269,8 @@ const I18N_ES = {
       'suponen toda la progenie retenida en la fuente y en equilibrio secular',
     '— check it for the actual source (preparation time, loss of gaseous progeny).':
       '— compruébelo para la fuente real (tiempo desde la preparación, pérdida de progenie gaseosa).',
-    'predominantly a β⁻ emitter with no photon line passing the filter; photon dose-rate constants are not applicable on this page. Dose offers a separate, explicitly experimental container-dependent bremsstrahlung scenario; direct beta dose is not calculated.':
-      'emisor predominantemente β⁻ sin ninguna línea de fotones que pase el filtro; las constantes de tasa de dosis de fotones no son aplicables en esta página. La página Dosis ofrece aparte un escenario de radiación de frenado (bremsstrahlung), explícitamente experimental y dependiente del contenedor; la dosis beta directa no se calcula.',
+    'predominantly a β⁻ emitter with no photon line passing the filter; photon dose-rate constants are not applicable on this page. Dose offers a separate, explicitly experimental bremsstrahlung scenario with hypothetical container values; direct beta dose is not calculated.':
+      'emisor predominantemente β⁻ sin ninguna línea de fotones que pase el filtro; las constantes de tasa de dosis de fotones no son aplicables en esta página. La página Dosis ofrece aparte un escenario de radiación de frenado (bremsstrahlung), explícitamente experimental y con valores hipotéticos de contenedor; la dosis beta directa no se calcula.',
     "are both AREA-monitoring operational quantities and are always shown side by side: H*(10) estimates effective dose, H'(0.07) indicates skin/extremity dose. Neither bounds the other (H*(10) is":
       "son ambas magnitudes operacionales de vigilancia radiológica de ÁREAS y se muestran siempre juntas: H*(10) estima la dosis efectiva y H'(0,07) indica la dosis en piel y extremidades. Ninguna acota a la otra (H*(10)",
     'always the higher figure — for Pd-103 the stored Γ': 'es siempre la cifra más alta: para el Pd-103, la Γ',
@@ -331,8 +331,8 @@ const I18N_ES = {
     'Bq/L · IS-28 II.A.4 individual level': 'Bq/L · nivel individual IS-28 II.A.4',
     '⚠ This nuclide is from the ICRP 107 extended database. Photon emissions are available from ICRP Publication 107 (2008). Constants have NOT been manually validated. For clinical/regulatory use, verify against primary sources.':
       '⚠ Este nucleido procede de la base ampliada de ICRP 107. Las emisiones de fotones proceden de la publicación 107 de ICRP (2008). Las constantes NO se han validado manualmente. Para uso clínico o reglamentario, verifíquelas con las fuentes primarias.',
-    'Predominantly β⁻ emitter with no photon line passing the filter: photon dose-rate constants are not applicable, and direct beta dose is not calculated by this app. The Dose page provides a separate experimental bremsstrahlung scenario whose estimates depend on container material; they are not primary-source container constants and must not be used for regulatory conclusions.':
-      'Emisor predominantemente β⁻ sin ninguna línea de fotones que pase el filtro: las constantes de tasa de dosis de fotones no son aplicables y esta app no calcula la dosis beta directa. La página Dosis ofrece aparte un escenario experimental de radiación de frenado (bremsstrahlung) cuyas estimaciones dependen del material del contenedor; no son constantes de contenedor de fuente primaria y no deben usarse para conclusiones reglamentarias.',
+    'Predominantly β⁻ emitter with no photon line passing the filter: photon dose-rate constants are not applicable, and direct beta dose is not calculated by this app. The Dose page provides a separate experimental bremsstrahlung scenario with hypothetical container values; they have no primary source or documented derivation and must not be used for regulatory conclusions.':
+      'Emisor predominantemente β⁻ sin ninguna línea de fotones que pase el filtro: las constantes de tasa de dosis de fotones no son aplicables y esta app no calcula la dosis beta directa. La página Dosis ofrece aparte un escenario experimental de radiación de frenado (bremsstrahlung) con valores hipotéticos de contenedor; no tienen fuente primaria ni derivación documentada y no deben usarse para conclusiones reglamentarias.',
     'None': 'Ninguna',
     'Regulatory values only': 'Solo valores reglamentarios',
     'No adult public ingestion coefficient tabulated under this identifier (e.g. noble gases)':
@@ -612,9 +612,9 @@ const I18N_ES = {
     'of 1 mSv/y public limit': 'del límite de 1 mSv/a de los miembros del público',
     'Lens of eye': 'Cristalino',
     '(screened with H*(10) — the actual assessment requires Hp(3) and the dosimetric history):': '(cribado con H*(10); la evaluación real requiere Hp(3) y el historial dosimétrico):',
-    'Both RD 1029/2022 conditions must be satisfied:': 'Deben cumplirse las dos condiciones del RD 1029/2022:',
-    'of 50 mSv/y max annual |': 'de la dosis máxima de 50 mSv en un único año oficial |',
-    'of 100 mSv per consecutive 5-year period,': 'de 100 mSv a lo largo de cinco años oficiales consecutivos,',
+    'Exposed workers (art. 11.2.a) — both conditions must be satisfied:': 'Trabajadores expuestos (art. 11.2.a): deben cumplirse las dos condiciones:',
+    'of 50 mSv in one year (exposed workers) |': 'de la dosis máxima de 50 mSv en un único año oficial (trabajadores expuestos) |',
+    'of 100 mSv in 5 consecutive years (exposed workers),': 'de 100 mSv a lo largo de cinco años oficiales consecutivos (trabajadores expuestos),',
     'projected assuming this same annual dose during 5 years': 'proyectado suponiendo esta misma dosis anual durante 5 años',
     'Skin / extremities': 'Piel / extremidades',
     'of 15 mSv/y public limit': 'del límite de 15 mSv/a de los miembros del público',
@@ -623,8 +623,8 @@ const I18N_ES = {
     'Enter an exposure time > 0 to see the annual limit comparison.': 'Introduzca un tiempo de exposición > 0 para ver la comparación con los límites anuales.',
     // Y-90
     'Y-90 experimental bremsstrahlung scenario': 'Escenario experimental de radiación de frenado de Y-90',
-    '(bremsstrahlung component only — direct beta dose is excluded; container-dependent estimates; Zanzonico et al. 1999 provides the formalism, not these constants)':
-      '(solo la componente de radiación de frenado — se excluye la dosis beta directa; estimaciones dependientes del contenedor; Zanzonico et al. 1999 aporta el formalismo, no estas constantes)',
+    '(bremsstrahlung component only — direct beta dose is excluded; hypothetical container values with no documented derivation; Zanzonico et al. 1999 provides the formalism, not these constants)':
+      '(solo la componente de radiación de frenado — se excluye la dosis beta directa; valores hipotéticos de contenedor sin derivación documentada; Zanzonico et al. 1999 aporta el formalismo, no estas constantes)',
     'Y-90 Bremsstrahlung Container:': 'Contenedor de Y-90 (radiación de frenado):',
     'No container': 'Sin contenedor',
     'PMMA (acrylic)': 'PMMA (acrílico)',
@@ -635,14 +635,14 @@ const I18N_ES = {
     'Concrete LW': 'Hormigón ligero',
     'Confirm the actual container geometry with measurements or a primary source.': 'Confirme la geometría real del contenedor con medidas o con una fuente primaria.',
     'Experimental scenario — no regulatory screening for Y-90.': 'Escenario experimental: no se hace cribado reglamentario para el Y-90.',
-    'The container bremsstrahlung constants are estimates with no primary source: Zanzonico et al. (1999) tabulate constants for soft tissue and bone, not for PMMA / Pb / W container geometries. They are shown to compare containers against each other, and must not be read as a dose assessment or compared with RD 1029/2022 limits. Obtain measured or primary-sourced constants before any regulatory or design use.':
-      'Las constantes de radiación de frenado del contenedor son estimaciones sin fuente primaria: Zanzonico et al. (1999) tabulan constantes para tejido blando y hueso, no para geometrías de contenedor de PMMA / Pb / W. Se muestran para comparar los contenedores entre sí y no deben leerse como una evaluación de dosis ni compararse con los límites del RD 1029/2022. Obtenga constantes medidas o de fuente primaria antes de cualquier uso reglamentario o de diseño.',
+    'The container bremsstrahlung constants are hypothetical values with no primary source, no documented derivation (geometry, wall thickness) and no measurement: Zanzonico et al. (1999) tabulate constants for soft tissue and bone, not for PMMA / Pb / W container geometries. They are shown to compare containers against each other, and must not be read as a dose assessment or compared with RD 1029/2022 limits. Obtain measured or primary-sourced constants before any regulatory or design use.':
+      'Las constantes de radiación de frenado del contenedor son valores hipotéticos sin fuente primaria, sin derivación documentada (geometría, espesor de pared) y sin medida: Zanzonico et al. (1999) tabulan constantes para tejido blando y hueso, no para geometrías de contenedor de PMMA / Pb / W. Se muestran para comparar los contenedores entre sí y no deben leerse como una evaluación de dosis ni compararse con los límites del RD 1029/2022. Obtenga constantes medidas o de fuente primaria antes de cualquier uso reglamentario o de diseño.',
     'Enter an exposure time > 0 to see the annual scenario dose.': 'Introduzca un tiempo de exposición > 0 para ver la dosis anual del escenario.',
     'Experimental bremsstrahlung component only; direct beta dose is excluded': 'Solo la componente experimental de radiación de frenado; se excluye la dosis beta directa',
-    '. The dose shown above is a container-dependent scenario inspired by the Zanzonico et al. formalism (J Nucl Med 40(6):1024–1028, 1999). That publication does not tabulate these container constants; do not use them for design or regulatory conclusions without geometry-specific evidence. The H\'(0.07) figure is not a complete skin/extremity assessment.':
-      ". La dosis mostrada arriba es un escenario dependiente del contenedor inspirado en el formalismo de Zanzonico et al. (J Nucl Med 40(6):1024–1028, 1999). Esa publicación no tabula estas constantes de contenedor; no las use para conclusiones de diseño o reglamentarias sin evidencias específicas de la geometría. El valor de H'(0,07) no es una evaluación completa de piel y extremidades.",
-    ". Container estimate (methodology after Zanzonico et al. 1999); container values are estimates, not tabulated in that publication. The H'(0.07) figure is NOT a complete skin/extremity assessment: direct beta/electron irradiation is not calculated.":
-      ". Estimación de contenedor (metodología según Zanzonico et al. 1999); los valores de contenedor son estimaciones, no tabuladas en esa publicación. El valor de H'(0,07) NO es una evaluación completa de piel y extremidades: no se calcula la irradiación beta/electrónica directa.",
+    '. The dose shown above is a container-dependent scenario inspired by the Zanzonico et al. formalism (J Nucl Med 40(6):1024–1028, 1999). That publication does not tabulate these container constants, which are hypothetical values with no documented derivation or measurement; do not use them for design or regulatory conclusions without geometry-specific evidence. The H\'(0.07) figure is not a complete skin/extremity assessment.':
+      ". La dosis mostrada arriba es un escenario dependiente del contenedor inspirado en el formalismo de Zanzonico et al. (J Nucl Med 40(6):1024–1028, 1999). Esa publicación no tabula estas constantes de contenedor, que son valores hipotéticos sin derivación documentada ni medida; no las use para conclusiones de diseño o reglamentarias sin evidencias específicas de la geometría. El valor de H'(0,07) no es una evaluación completa de piel y extremidades.",
+    ". Hypothetical container values (formalism after Zanzonico et al. 1999), with no documented derivation or measurement and not tabulated in that publication. The H'(0.07) figure is NOT a complete skin/extremity assessment: direct beta/electron irradiation is not calculated.":
+      ". Valores hipotéticos de contenedor (formalismo según Zanzonico et al. 1999), sin derivación documentada ni medida y no tabulados en esa publicación. El valor de H'(0,07) NO es una evaluación completa de piel y extremidades: no se calcula la irradiación beta/electrónica directa.",
     // No photon line
     'No photon dose estimate with the selected filter.': 'Sin estimación de dosis de fotones con el filtro seleccionado.',
     'electron capture': 'captura electrónica',
@@ -676,15 +676,15 @@ const I18N_ES = {
       'Entrada revisada calculada con datos de fotones de ICRP 107 y coeficientes de la tabla A.21 de ICRP 74 — esta app no registra ninguna comparación publicada',
     'ICRP 107 extended entry — constants computed from the ICRP 107 photon spectrum, NOT manually validated against a published constant':
       'Entrada ampliada de ICRP 107 — constantes calculadas a partir del espectro de fotones de ICRP 107, NO validadas manualmente frente a una constante publicada',
-    'ESTIMATE, no primary source — container bremsstrahlung constants follow the Zanzonico et al. (1999) methodology, but that publication tabulates soft tissue and bone only, not these container geometries. Not validated; no regulatory verdict is issued for this nuclide':
-      'ESTIMACIÓN sin fuente primaria — las constantes de radiación de frenado del contenedor siguen la metodología de Zanzonico et al. (1999), pero esa publicación solo tabula tejido blando y hueso, no estas geometrías de contenedor. Sin validar; no se emite veredicto reglamentario para este nucleido',
-    'Not applicable — predominantly β⁻ emitter with no photon line passing the filter; see the experimental container-dependent bremsstrahlung scenario in Dose (direct beta dose is not calculated)':
-      'No aplicable — emisor predominantemente β⁻ sin ninguna línea de fotones que pase el filtro; véase el escenario experimental de radiación de frenado dependiente del contenedor en Dosis (no se calcula la dosis beta directa)',
+    'HYPOTHETICAL VALUES, no primary source or documented derivation — container bremsstrahlung constants follow the Zanzonico et al. (1999) methodology, but that publication tabulates soft tissue and bone only, not these container geometries. Not validated; no regulatory verdict is issued for this nuclide':
+      'VALORES HIPOTÉTICOS, sin fuente primaria ni derivación documentada — las constantes de radiación de frenado del contenedor siguen la metodología de Zanzonico et al. (1999), pero esa publicación solo tabula tejido blando y hueso, no estas geometrías de contenedor. Sin validar; no se emite veredicto reglamentario para este nucleido',
+    'Not applicable — predominantly β⁻ emitter with no photon line passing the filter; see the experimental bremsstrahlung scenario with hypothetical container values in Dose (direct beta dose is not calculated)':
+      'No aplicable — emisor predominantemente β⁻ sin ninguna línea de fotones que pase el filtro; véase el escenario experimental de radiación de frenado con valores hipotéticos de contenedor en Dosis (no se calcula la dosis beta directa)',
     'none': 'ninguno',
     'Model validity': 'Validez del modelo',
     'No shielding': 'Sin blindaje',
     'Within the tabulated attenuation and build-up ranges': 'Dentro de los intervalos tabulados de atenuación y acumulación',
-    'Experimental container estimates; validity not established; no regulatory assessment': 'Estimaciones experimentales de contenedor; validez no establecida; sin evaluación reglamentaria',
+    'Experimental scenario with hypothetical container values (no documented derivation or measurement); validity not established; no regulatory assessment': 'Escenario experimental con valores hipotéticos de contenedor (sin derivación documentada ni medida); validez no establecida; sin evaluación reglamentaria',
     'Administrations per year': 'Administraciones por año',
     'Decay during exposure': 'Decaimiento durante la exposición',
     'integrated A(t)': 'A(t) integrada',
@@ -716,8 +716,8 @@ const I18N_ES = {
     "ICRP Publication 74 (1996), Table A.21 — conversion coefficients h*(10), h'(0.07,0°) per unit fluence.": "ICRP Publication 74 (1996), Table A.21 — coeficientes de conversión h*(10), h'(0,07,0°) por unidad de fluencia.",
     'Trubey D.K. (1991) NUREG/CR-5740 / ORNL/RSIC-49/R1 — ANSI/ANS-6.4.3 exposure buildup factors (Table 3).': 'Trubey D.K. (1991) NUREG/CR-5740 / ORNL/RSIC-49/R1 — factores de acumulación de exposición ANSI/ANS-6.4.3 (tabla 3).',
     'Oumano et al. (2025) J Appl Clin Med Phys — Archer broad-beam shielding parameters.': 'Oumano et al. (2025) J Appl Clin Med Phys — parámetros de blindaje de haz amplio de Archer.',
-    'Zanzonico et al. (1999) J Nucl Med 40(6):1024–1028 — bremsstrahlung dose-rate methodology (the container constants used here are estimates, not tabulated in that publication).':
-      'Zanzonico et al. (1999) J Nucl Med 40(6):1024–1028 — metodología de tasa de dosis de radiación de frenado (las constantes de contenedor usadas aquí son estimaciones, no tabuladas en esa publicación).',
+    'Zanzonico et al. (1999) J Nucl Med 40(6):1024–1028 — bremsstrahlung dose-rate methodology (the container constants used here are hypothetical values, not tabulated in that publication).':
+      'Zanzonico et al. (1999) J Nucl Med 40(6):1024–1028 — metodología de tasa de dosis de radiación de frenado (las constantes de contenedor usadas aquí son valores hipotéticos, no tabulados en esa publicación).',
     'ICRP 107 (calculated)': 'ICRP 107 (calculado)',
     'ICRP 107 (no photon emission above the 20 keV / 0.01% filter)': 'ICRP 107 (sin emisión de fotones por encima del filtro de 20 keV / 0,01 %)',
 
@@ -825,8 +825,8 @@ const I18N_ES = {
       'Dentro de cada escenario, las dosis se suman por nucleido; los dos escenarios corresponden a receptores distintos y nunca se suman. No es una evaluación completa del vertido: las condiciones de la IS-28, anexo II, II.A.4, para el alcantarillado (nivel de concentración por nucleido, suma de las fracciones, límites anuales de actividad) y la desclasificación de mezclas se evalúan aparte.',
     'Algorithms and defaults are adapted from the reference workbooks of Scenario 2 (Lu-177) and': 'Los algoritmos y los valores por defecto se adaptan de los libros de referencia del escenario 2 (Lu-177) y',
     '(Scenario 1).': '(escenario 1).',
-    'Inhalation coefficients are those for adult members of the public (RD 783/2001 Annex III table b), kept by the CSN Resolution of 3 April 2024; transcription: ICRP Publication 119 (2012), Table G.1), lung absorption type F (fast) or M (moderate). Half-lives are taken from the app database (Lu-177m, not a curated entry, from ICRP 107).':
-      'Los coeficientes de inhalación son los de adultos miembros del público (RD 783/2001, anexo III, tabla b), mantenidos por la Resolución del CSN de 3 de abril de 2024; transcripción: ICRP Publication 119 (2012), tabla G.1), con absorción pulmonar de tipo F (rápida) o M (moderada). Los periodos de semidesintegración se toman de la base de datos de la app (el Lu-177m, que no es una entrada revisada, de ICRP 107).',
+    'Inhalation coefficients are those for adult members of the public (RD 783/2001 Annex III table b), kept by the CSN Resolution of 3 April 2024; transcription: ICRP Publication 119 (2012), Table G.1), lung absorption type F (fast) or M (moderate). They apply to an inhaled particulate aerosol of AMAD 1 µm (ICRP 119), not to gases or vapours (e.g. elemental iodine vapour). Half-lives are taken from the app database (Lu-177m, not a curated entry, from ICRP 107).':
+      'Los coeficientes de inhalación son los de adultos miembros del público (RD 783/2001, anexo III, tabla b), mantenidos por la Resolución del CSN de 3 de abril de 2024; transcripción: ICRP Publication 119 (2012), tabla G.1), con absorción pulmonar de tipo F (rápida) o M (moderada). Se aplican a un aerosol de partículas inhalado de AMAD 1 µm (ICRP 119), no a gases ni vapores (p. ej., vapor de yodo elemental). Los periodos de semidesintegración se toman de la base de datos de la app (el Lu-177m, que no es una entrada revisada, de ICRP 107).',
     'The entered values are outside the representable range': 'Los valores introducidos están fuera del intervalo representable',
     'Annual discharge from decay tanks must be a finite number ≥ 0': 'El vertido anual de los depósitos de decaimiento debe ser un número finito ≥ 0',
     'Catchment fraction must be between 0 and 100 %': 'La fracción de la zona servida debe estar entre 0 y 100 %',
@@ -851,8 +851,8 @@ const I18N_ES = {
       'Modelo de cribado del escenario 2: fracción retenida introducida (por defecto: 100 %) de la actividad que llega a la planta, en un año de lodo (IAEA SRS-19 (2001) §4.9, caso b; NUREG/CR-5814 (1992) §5.1). Vertido anual / producción anual de lodo, solo con decaimiento en tránsito; sin decaimiento durante el año de exposición.',
     'Not a complete discharge assessment: IS-28 Annex II II.A.4 conditions and mixture clearance are evaluated separately.':
       'No es una evaluación completa del vertido: las condiciones de la IS-28, anexo II, II.A.4, y la desclasificación de mezclas se evalúan aparte.',
-    'Inhalation dose coefficients for adult members of the public: RD 783/2001 Annex III table b), kept by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1). Absorption type F: fast; M: moderate.':
-      'Coeficientes de dosis por inhalación de adultos miembros del público: RD 783/2001, anexo III, tabla b), mantenidos por la Resolución del CSN de 3 de abril de 2024 (transcripción numérica: ICRP Publication 119 (2012), tabla G.1). Tipo de absorción F: rápida; M: moderada.',
+    'Inhalation dose coefficients for adult members of the public: RD 783/2001 Annex III table b), kept by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1). Absorption type F: fast; M: moderate. They apply to an inhaled particulate aerosol of AMAD 1 µm (ICRP 119), not to gases or vapours (e.g. elemental iodine vapour).':
+      'Coeficientes de dosis por inhalación de adultos miembros del público: RD 783/2001, anexo III, tabla b), mantenidos por la Resolución del CSN de 3 de abril de 2024 (transcripción numérica: ICRP Publication 119 (2012), tabla G.1). Tipo de absorción F: rápida; M: moderada. Se aplican a un aerosol de partículas inhalado de AMAD 1 µm (ICRP 119), no a gases ni vapores (p. ej., vapor de yodo elemental).',
     'The criterion is user-defined; the app attributes no regulatory basis to it.': 'El criterio lo define el usuario; la app no le atribuye base reglamentaria.',
     'Generic screening estimate of the doses to a sewer system inspector and to a sewage-treatment-plant sludge operator, for radiation protection planning. The external coefficients apply only to the declared geometries. Results must be reviewed by a qualified radiation protection expert before regulatory use. Generated by NM Radionuclide Planner, an open-source reference tool provided without warranty of any kind.':
       'Estimación genérica de cribado de las dosis a un trabajador de la red de alcantarillado y a un trabajador de planta depuradora que manipula lodos, para la planificación de la protección radiológica. Los coeficientes externos solo se aplican a las geometrías declaradas. Los resultados deben ser revisados por un experto cualificado en protección radiológica antes de cualquier uso reglamentario. Generado por NM Radionuclide Planner, herramienta de referencia de código abierto proporcionada sin garantía de ningún tipo.',
@@ -993,18 +993,18 @@ const I18N_ES = {
       "NUREG/CR-5814 §5.2.1 y tabla A.20. Los coeficientes son solo de fotones: no incluyen la radiación de frenado de la emisión beta y de positrones, que no se ha acotado para esta geometría (el alcance CSDA en aire de un electrón de 0,5 MeV supera la distancia de 1 m). La limitación es mayor para el F-18 y el I-131 que para el Lu-177, y menor para el Tc-99m.",
     "Administered activity per cycle":
       "Actividad administrada por ciclo",
-    "Activity per treatment at hospital discharge (default of the reference workbook), NOT the administered activity":
-      "Actividad por tratamiento en el alta hospitalaria (valor por defecto del libro de referencia), NO la actividad administrada",
+    "Administered activity per treatment: enter the facility's value. For reference, patients usually leave hospital with less than 0.8 GBq (informative; the reference workbook's 0.8 GBq was that activity at discharge, not the administered activity)":
+      "Actividad administrada por tratamiento: introduzca el valor de la instalación. Como referencia, los pacientes suelen salir del hospital con menos de 0,8 GBq (dato informativo; los 0,8 GBq del libro de referencia eran esa actividad al alta, no la actividad administrada)",
     "Lu-177m impurity per cycle":
       "Impureza de Lu-177m por ciclo",
     "Administered activity per study":
       "Actividad administrada por estudio",
     "Workbook defaults (cells D9, D11, D12); fraction excreted in hospital = 1 − 0.55 (workbook f_san, cell D14). Site-specific.":
       "Valores por defecto del libro (celdas D9, D11, D12); fracción excretada en el hospital = 1 − 0,55 (f_san del libro, celda D14). Propio del emplazamiento.",
-    "Workbook I-131 estimate (cells G6, G56): 0.8 GBq per patient, half of it excreted at home; the fraction excreted in hospital is 1 − 0.5. One treatment per patient is an assumption of this scenario, not a clinical rule. Site-specific.":
-      "Estimación del libro para el I-131 (celdas G6, G56): 0,8 GBq por paciente, la mitad excretada en el domicilio; la fracción excretada en el hospital es 1 − 0,5. Un tratamiento por paciente es una hipótesis de este escenario, no una regla clínica. Propio del emplazamiento.",
-    "The 0.8 GBq default is the activity with which patients leave hospital in the reference workbook (cells G6, G56), entered here in the administered-activity field: the in-hospital excretion of the administered activity is therefore not represented by this default. Replace it with the administered activity and an in-hospital fraction justified for the facility.":
-      "El valor por defecto de 0,8 GBq es la actividad con la que los pacientes salen del hospital en el libro de referencia (celdas G6, G56), introducida aquí en el campo de actividad administrada: por tanto, este valor no representa la excreción en el hospital de la actividad administrada. Sustitúyalo por la actividad administrada y una fracción en el hospital justificada para la instalación.",
+    "No default administered activity: the reference workbook's 0.8 GBq per patient (cells G6, G56) is the activity at discharge, not the administered activity. Fraction excreted in hospital 0.5 = workbook value; one treatment per patient is an assumption of this scenario, not a clinical rule. Site-specific.":
+      "Sin actividad administrada por defecto: los 0,8 GBq por paciente del libro de referencia (celdas G6, G56) son la actividad al alta, no la actividad administrada. Fracción excretada en el hospital 0,5 = valor del libro; un tratamiento por paciente es una hipótesis de este escenario, no una regla clínica. Propio del emplazamiento.",
+    "No default activity: enter the administered activity per treatment and an in-hospital fraction justified for the facility. The reference workbook's 0.8 GBq is the activity at discharge (patients usually leave hospital with less; informative), not the administered activity.":
+      "Sin actividad por defecto: introduzca la actividad administrada por tratamiento y una fracción en el hospital justificada para la instalación. Los 0,8 GBq del libro de referencia son la actividad al alta (los pacientes suelen salir del hospital con menos; dato informativo), no la actividad administrada.",
     "NUREG/CR-5814 Table B.7: I-131, 3 d decay, 3.9E-2 rem/y for 1 Ci/y (≈ 10.5 µSv/GBq), external dose from the GENII-1990 'STP WKR' factor (effective dose equivalent, ICRP 26/30 era) for a 1 m deep infinite slab at 2 m. Rescaled to the user plant by dry sludge mass and solids fraction.":
       "NUREG/CR-5814, tabla B.7: I-131, 3 d de decaimiento, 3,9E-2 rem/a por 1 Ci/a (≈ 10,5 µSv/GBq), dosis externa con el factor 'STP WKR' de GENII-1990 (equivalente de dosis efectiva, época de ICRP 26/30) para una lámina infinita de 1 m de espesor a 2 m. Reescalada a la planta del usuario por la masa de lodo seco y la fracción de sólidos.",
     "IAEA SRS-19 (2001) Table I–IV: 400 t/y dry sludge, no transit decay, 2000 h/y. Annex I uses an occupancy of 0.288 where 2000/8760 = 0.228, so the factor may be 26 % high. Indicative only.":
@@ -1741,6 +1741,8 @@ const I18N_ES = {
     [/^(\S+): fraction excreted in hospital must be ≤ 1$/, '$1: la fracción excretada en el hospital debe ser ≤ 1'],
     // Report header: author row (UTILS.APP_AUTHOR)
     [/^(.+) \(application and data compilation\)$/, '$1 (aplicación y recopilación de datos)'],
+    // Effluent: a nuclide included without administered activity (I-131 has no default)
+    [/^(\S+): enter the administered activity per treatment \(no default value\)$/, '$1: introduzca la actividad administrada por tratamiento (no hay valor por defecto)'],
     // Effluent report
     [/^effluent-scenarios\.json (v\S+) \((.+)\)\. External coefficients from PHITS calculations by (.+), not from a published table\.$/,
       'effluent-scenarios.json $1 ($2). Coeficientes externos de cálculos PHITS de $3, no de una tabla publicada.'],

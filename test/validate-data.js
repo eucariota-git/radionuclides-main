@@ -495,6 +495,7 @@ console.log();
   const DB_CONTENT_SHA256 = {
     '1.4': '221265852fa6bd75665ac131dce52b5d537c9568ef0a5baf4c10c41c47c0c3c4',
     '1.5': 'a49c9976066c5ae880b5adbba25ff1a464c3cb7e9a2581ec5fa41a8414318d9c',
+    '1.6': '025e199a463fd99c5a6c407c1e5a31ac2397b8538b49c6347abac37e9d5245b1',
   };
   const actual = require('crypto').createHash('sha256').update(JSON.stringify(nuclides)).digest('hex');
   totalTests++;

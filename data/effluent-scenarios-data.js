@@ -2,7 +2,7 @@
 const EFFLUENT_DATA = {
   "meta": {
     "id": "effluent-scenarios",
-    "version": "2.5.1",
+    "version": "2.6.0",
     "date": "2026-10-30",
     "author": {
       "name": "José Ramón Sendón del Río",
@@ -287,7 +287,7 @@ const EFFLUENT_DATA = {
         "value": 1.1e-9,
         "unit": "Sv/Bq",
         "type": "M",
-        "source": "RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by RD 1029/2022 and the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1), absorption type M (lutetium is tabulated for types M and S only).",
+        "source": "RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by RD 1029/2022 and the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1), absorption type M (lutetium is tabulated for types M and S only). Inhaled particulate aerosol, AMAD 1 µm (ICRP 119); not applicable to gases or vapours.",
         "type_note": "type M (lutetium is tabulated for types M and S only)"
       },
       "source_term": {
@@ -303,7 +303,7 @@ const EFFLUENT_DATA = {
     },
     {
       "id": "I-131",
-      "include_default": true,
+      "include_default": false,
       "k_ext": {
         "unit": "(nSv/h)/(Bq/m³)",
         "s1": {
@@ -343,19 +343,19 @@ const EFFLUENT_DATA = {
         "value": 7.4e-9,
         "unit": "Sv/Bq",
         "type": "F",
-        "source": "RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by RD 1029/2022 and the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1), absorption type F (types M and S give 2.4E-9 and 1.6E-9 Sv/Bq; F is the most conservative and the type used by IAEA SRS-19 Table XVI).",
+        "source": "RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by RD 1029/2022 and the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1), absorption type F (types M and S give 2.4E-9 and 1.6E-9 Sv/Bq; F is the most conservative and the type used by IAEA SRS-19 Table XVI). Inhaled particulate aerosol, AMAD 1 µm (ICRP 119); not applicable to gases or vapours.",
         "type_note": "type F (types M and S give 2.4E-9 and 1.6E-9 Sv/Bq; F is the most conservative and the type used by IAEA SRS-19 Table XVI)"
       },
       "source_term": {
         "patients_per_y": 50,
         "cycles_per_patient": 1,
         "cycles_locked": true,
-        "activity_per_cycle_GBq": 0.8,
-        "activity_label": "Activity per treatment at hospital discharge (default of the reference workbook), NOT the administered activity",
-        "source": "Workbook I-131 estimate (cells G6, G56): 0.8 GBq per patient, half of it excreted at home; the fraction excreted in hospital is 1 − 0.5. One treatment per patient is an assumption of this scenario, not a clinical rule. Site-specific.",
+        "activity_per_cycle_GBq": null,
+        "activity_label": "Administered activity per treatment: enter the facility's value. For reference, patients usually leave hospital with less than 0.8 GBq (informative; the reference workbook's 0.8 GBq was that activity at discharge, not the administered activity)",
+        "source": "No default administered activity: the reference workbook's 0.8 GBq per patient (cells G6, G56) is the activity at discharge, not the administered activity. Fraction excreted in hospital 0.5 = workbook value; one treatment per patient is an assumption of this scenario, not a clinical rule. Site-specific.",
         "fraction_in_hospital": 0.5,
         "controlled_default": false,
-        "activity_warning": "The 0.8 GBq default is the activity with which patients leave hospital in the reference workbook (cells G6, G56), entered here in the administered-activity field: the in-hospital excretion of the administered activity is therefore not represented by this default. Replace it with the administered activity and an in-hospital fraction justified for the facility."
+        "activity_warning": "No default activity: enter the administered activity per treatment and an in-hospital fraction justified for the facility. The reference workbook's 0.8 GBq is the activity at discharge (patients usually leave hospital with less; informative), not the administered activity."
       },
       "cross_checks": {
         "nureg_table_B7": {
@@ -423,7 +423,7 @@ const EFFLUENT_DATA = {
         "value": 1.3e-8,
         "unit": "Sv/Bq",
         "type": "M",
-        "source": "RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by RD 1029/2022 and the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1), absorption type M (lutetium is tabulated for types M and S only).",
+        "source": "RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by RD 1029/2022 and the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1), absorption type M (lutetium is tabulated for types M and S only). Inhaled particulate aerosol, AMAD 1 µm (ICRP 119); not applicable to gases or vapours.",
         "type_note": "type M (lutetium is tabulated for types M and S only)"
       },
       "source_term": {
@@ -481,7 +481,7 @@ const EFFLUENT_DATA = {
         "value": 1.9e-11,
         "unit": "Sv/Bq",
         "type": "M",
-        "source": "RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by RD 1029/2022 and the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1), absorption type M (workbook choice; types F and S give 1.2E-11 and 2.0E-11 Sv/Bq).",
+        "source": "RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by RD 1029/2022 and the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1), absorption type M (workbook choice; types F and S give 1.2E-11 and 2.0E-11 Sv/Bq). Inhaled particulate aerosol, AMAD 1 µm (ICRP 119); not applicable to gases or vapours.",
         "type_note": "type M (workbook choice; types F and S give 1.2E-11 and 2.0E-11 Sv/Bq)"
       },
       "source_term": {
@@ -523,7 +523,7 @@ const EFFLUENT_DATA = {
         "value": 5.6e-11,
         "unit": "Sv/Bq",
         "type": "M",
-        "source": "RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by RD 1029/2022 and the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1), absorption type M (workbook choice; types F and S give 2.8E-11 and 5.9E-11 Sv/Bq).",
+        "source": "RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by RD 1029/2022 and the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1), absorption type M (workbook choice; types F and S give 2.8E-11 and 5.9E-11 Sv/Bq). Inhaled particulate aerosol, AMAD 1 µm (ICRP 119); not applicable to gases or vapours.",
         "type_note": "type M (workbook choice; types F and S give 2.8E-11 and 5.9E-11 Sv/Bq)"
       },
       "source_term": {

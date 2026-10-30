@@ -237,7 +237,7 @@
       <p>Doses are summed per nuclide within each scenario; the two scenarios concern different receptors and are never added together. Not a complete discharge assessment: the IS-28 Annex II II.A.4 sewer conditions (per-nuclide concentration level, sum of fractions, annual activity limits) and mixture clearance are evaluated separately.</p>
       <p>Algorithms and defaults are adapted from the reference workbooks of Scenario 2 (Lu-177) and <em>Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx</em> (Scenario 1). <span id="adaptationNote"></span> Inhalation coefficients are those for adult members of
       the public (RD 783/2001 Annex III table b), kept by the CSN Resolution of 3 April 2024; transcription: ICRP Publication 119 (2012),
-      Table G.1), lung absorption type F (fast) or M (moderate). Half-lives are taken from the
+      Table G.1), lung absorption type F (fast) or M (moderate). They apply to an inhaled particulate aerosol of AMAD 1 µm (ICRP 119), not to gases or vapours (e.g. elemental iodine vapour). Half-lives are taken from the
       app database (Lu-177m, not a curated entry, from ICRP 107).</p>
       <p id="s1GeomNote"></p>
     </div>
@@ -396,6 +396,15 @@
     if (!Number.isFinite(v)) throw Object.assign(new RangeError(`"${el.title || el.id}" must be a number`), { field: el.id });
     return v;
   }
+  // Administered activity: may be left empty for a nuclide that is not included
+  // (I-131 has no default since v1.22.0); required once the nuclide is included
+  function readActivity(el, included, id) {
+    if (el.value.trim() === '') {
+      if (!included) return null;
+      throw Object.assign(new RangeError(`${id}: enter the administered activity per treatment (no default value)`), { field: el.id });
+    }
+    return readNumber(el);
+  }
 
   function readInputs() {
     const geometry = geoSel.value;
@@ -414,7 +423,7 @@
       half_life_s: T,
       patients_per_y: readNumber(document.getElementById(`st_${i}_patients_per_y`)),
       cycles_per_patient: nd.source_term.cycles_locked ? 1 : readNumber(document.getElementById(`st_${i}_cycles_per_patient`)),
-      activity_per_cycle_GBq: readNumber(document.getElementById(`st_${i}_activity_per_cycle_GBq`)),
+      activity_per_cycle_GBq: readActivity(document.getElementById(`st_${i}_activity_per_cycle_GBq`), document.getElementById(`st_${i}_include`).checked, nd.id),
       fraction_in_hospital: readNumber(document.getElementById(`st_${i}_fraction_in_hospital`)),
       k1_nSv_h_per_Bq_m3: nd.k_ext.s1.value,
       k2_nSv_h_per_Bq_m3: nd.k_ext.s2 ? nd.k_ext.s2[geometry].value : null,
@@ -660,7 +669,7 @@
         'All administered activity is assumed to be excreted. Scenario 1 receives the activity leaving the hospital (excreted in hospital, or the share of the decay-tank discharge for controlled nuclides), diluted in the facility\'s annual water volume. Scenario 2 receives that activity plus the activity excreted at home by the patients living in the STP catchment.',
         'Scenario 2 screening model: retained fraction as entered (default: 100%) of the activity reaching the plant, in one year of sludge (IAEA SRS-19 (2001) §4.9 case b; NUREG/CR-5814 (1992) §5.1). Annual discharge / annual sludge production, with transit decay only; no decay during the exposure year.',
         'Not a complete discharge assessment: IS-28 Annex II II.A.4 conditions and mixture clearance are evaluated separately.',
-        'Inhalation dose coefficients for adult members of the public: RD 783/2001 Annex III table b), kept by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1). Absorption type F: fast; M: moderate.',
+        'Inhalation dose coefficients for adult members of the public: RD 783/2001 Annex III table b), kept by the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1). Absorption type F: fast; M: moderate. They apply to an inhaled particulate aerosol of AMAD 1 µm (ICRP 119), not to gases or vapours (e.g. elemental iodine vapour).',
         data.scenario1_geometry.note,
         data.geometries.infinite_slab_warning,
         'The criterion is user-defined; the app attributes no regulatory basis to it.',
@@ -688,7 +697,7 @@
       'External_pathway', 'k_nSv_h_per_Bq_m3', 'k_report_SHA256_12', 'e_inh_Sv_per_Bq', 'Scenario_complete', 'Missing_pathways',
       'Criterion_mSv_per_y', 'Fraction_of_criterion', 'Geometry_Sc2', 'Assumptions'];
     const assumptions = SCEN.map(sc => Object.keys(PG[sc]).map(k => `${sc}.${k}=${input[sc][k]}`).join('; ')).join('; ') + '; ' +
-      input.nuclides.map(n => `${n.id}: include=${n.include}, T½=${n.half_life_s} s, ${n.patients_per_y} pat × ${n.cycles_per_patient} cyc × ${n.activity_per_cycle_GBq} GBq, f_hosp=${n.fraction_in_hospital}, tanks=${n.controlled}`).join('; ');
+      input.nuclides.map(n => `${n.id}: include=${n.include}, T½=${n.half_life_s} s, ${n.patients_per_y} pat × ${n.cycles_per_patient} cyc × ${n.activity_per_cycle_GBq ?? ''} GBq, f_hosp=${n.fraction_in_hospital}, tanks=${n.controlled}`).join('; ');
     const common = [UTILS.APP_VERSION, UTILS.APP_BUILD, meta.version || '', data.meta.version, exportedUtc];
     const rows = [head];
     for (const [sc, res] of [['1', out.s1], ['2', out.s2]]) {

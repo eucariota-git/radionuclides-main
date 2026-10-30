@@ -795,6 +795,9 @@ console.log('TEST 13: Effluent Scenarios 1 and 2 (CALC.sewerInspectorScenario1, 
   const defaults = geo => {
     const inp = EFF.defaultInput(ED, halfLife, geo);
     inp.nuclides.forEach(n => { n.include = true; });
+    // I-131 has no default administered activity since v1.22.0: these cases use
+    // 0.8 GBq per treatment as a TEST input (the former workbook value)
+    inp.nuclides.find(n => n.id === 'I-131').activity_per_cycle_GBq = 0.8;
     return inp;
   };
   const l45 = EFF.evaluate(defaults('L45')), l10 = EFF.evaluate(defaults('L10'));
@@ -802,7 +805,7 @@ console.log('TEST 13: Effluent Scenarios 1 and 2 (CALC.sewerInspectorScenario1, 
   // Source term (v1.4.1): A_adm = patients × cycles × administered activity;
   // in-hospital fraction leaves through the facility (Scenario 1 and 2); the rest
   // is excreted at home and reaches the STP × catchment (Scenario 2 only).
-  // Defaults: Lu-177 75 × 6 × 7.4 GBq, f_hosp 0.45; I-131 50 × 1 × 0.8 GBq, f_hosp 0.5;
+  // Defaults: Lu-177 75 × 6 × 7.4 GBq, f_hosp 0.45; I-131 50 × 1 × 0.8 GBq (test input), f_hosp 0.5;
   // catchment 40 %; no nuclide in decay tanks. Expected activities computed by hand;
   // doses = activity × the per-GBq factors verified above (Sc. 2 FD unchanged).
   test('app Sc.1 Lu-177 leaves hospital = 3330 × 0.45 = 1498.5 GBq/y', row(l45.s1, 'Lu-177').A_GBq_y, 1498.5, 1e-9);

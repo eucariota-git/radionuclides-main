@@ -40,11 +40,12 @@ The ICRP 107 data is used as an **extended database** for nuclides not included 
 
 ### Processing Pipeline
 
-1. **Parser** (`tools/parse-icrp107.js`) — Reads NDX/RAD files and generates `data/icrp107-index.json` plus `data/icrp107-data.js`
+1. **Parser** (`tools/parse-icrp107.js`) — Reads the NDX, RAD and BET files and generates `data/icrp107-index.json` plus `data/icrp107-data.js`
    - Converts half-lives to seconds
    - Extracts photon emissions (G, X rays, and annihilation quanta; excludes beta, alpha, electrons)
    - Applies Cornejo filter: E ≥ 20 keV, yield ≥ 0.01%
-   - Result: nuclides with at least one photon meeting criteria
+   - Result: all 1252 nuclides of the NDX file, 1163 of them with at least one photon meeting the criteria
+   - BET: the endpoint of each β block (`e_max_beta_MeV`, the last energy of the block) and the β yield per decay (`beta_yield_per_decay`); the spectra themselves are not stored
 
 2. **Browser Loader** (`js/icrp107-loader.js`) — Loads the embedded JS data when available, with JSON `fetch()` fallback
    - Provides search by ID or name
@@ -53,7 +54,8 @@ The ICRP 107 data is used as an **extended database** for nuclides not included 
 
 3. **Properties Page** (`index.html`) — Extended search with on-demand dose calculation
    - Main search first queries `data/nuclides.json` (40 curated nuclides)
-   - If no match found, shows "Search in ICRP 107" button
+   - If there is no match, the ICRP 107 index is searched automatically (plus identifiers that exist only in the regulatory tables); the "Search in ICRP 107" button remains as a fallback when the index is not ready
+   - Short-lived progeny in equilibrium is included by default (descendants with T½ ≤ 1/10 of the parent's and ≤ 30 d, at the Bateman ratio); Dose offers «parent only"
    - When ICRP 107 result is selected:
      - Displays half-life, decay modes, photon spectrum (filtered)
      - **Automatically calculates** Γ^H*(10) and Γ^H'(0.07) from photon emissions
@@ -73,17 +75,12 @@ where:
 
 Constants calculated from ICRP 107 are **informational only**. They are NOT manually validated and should not be used for clinical or regulatory submissions without independent verification.
 
-### Validation Against Published Values
+### Comparison with published values vs regression checks
 
-The automated test suite (`node test/validate-constants.js`) compares constants calculated from ICRP 107 photons against published values from Cornejo et al. (2015) for key nuclides:
+Two different kinds of check — do not read one as the other:
 
-- **F-18** — Published: 166 μSv·h⁻¹·GBq⁻¹·m² (Good agreement expected)
-- **Tc-99m** — Published: 21.7 μSv·h⁻¹·GBq⁻¹·m² (Good agreement expected)
-- **I-131** — Published: 65.7 μSv·h⁻¹·GBq⁻¹·m² (Good agreement expected)
-- **Lu-177** — Published: 6.0 μSv·h⁻¹·GBq⁻¹·m² (Good agreement expected)
-- **Ga-68** — Published: 157 μSv·h⁻¹·GBq⁻¹·m² (**Special case**: β⁺ emitter)
-
-Deviations < 5% indicate good agreement; 5–15% suggest acceptable approximation; > 15% warrant investigation.
+- **Published values** (`test/validate-data.js`, Test 2b): `cornejo_validation` must hold the values printed in Cornejo et al. (2015), Table III, for the 32 nuclides it publishes (e.g. F-18 166, Tc-99m 21.7, I-131 65.7, Lu-177 6.0 μSv·h⁻¹·GBq⁻¹·m²) — a transcription check. The app shows the deviation of each recalculated constant from them; no test requires agreement, and the differences are reported, not reconciled. Ga-68 is **not** in Cornejo's table: it has no published comparison value.
+- **Regression** (`test/validate-constants.js`): Γ recomputed from the ICRP 107 index is compared with the project's own previously computed values (e.g. I-125 35.52, against Cornejo's published 35.3). It detects unintended changes in the code or the data; it does not validate the values against a publication.
 
 #### Positron Emitters
 
@@ -95,7 +92,7 @@ Beta-plus emitters include positron annihilation quanta when present in `ICRP-07
 - **Photon energies**: In keV; 1 decimal place precision
 - **Yields**: Percent per decay; 4 decimal place precision
 - **Decay modes**: Limited; NDX parsing captures daughters and branching fractions where available
-- **Beta spectra**: Available in BET file (111K lines); NOT parsed in phase 1
+- **Beta spectra**: the BET file (111K lines) is parsed for the β endpoint and β yield of each nuclide; the spectral shapes are not stored
 - **Calculators**: `decay.html` and `dose.html` accept both curated database and ICRP 107 entries via `resolveNuclide()` and `ICRP107.calcConstants()`; the Properties page provides extended search across all 1,252 nuclides.
 
 ## License & Redistribution

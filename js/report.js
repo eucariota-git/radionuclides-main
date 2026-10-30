@@ -65,7 +65,7 @@ const REPORT = (() => {
    */
   function validationStatus(n) {
     if (n.id === 'Y-90') {
-      return 'ESTIMATE, no primary source — container bremsstrahlung constants follow the Zanzonico et al. (1999) methodology, but that publication tabulates soft tissue and bone only, not these container geometries. Not validated; no regulatory verdict is issued for this nuclide';
+      return 'HYPOTHETICAL VALUES, no primary source or documented derivation — container bremsstrahlung constants follow the Zanzonico et al. (1999) methodology, but that publication tabulates soft tissue and bone only, not these container geometries. Not validated; no regulatory verdict is issued for this nuclide';
     }
     if (n._icrp107) {
       return 'ICRP 107 extended entry — constants computed from the ICRP 107 photon spectrum, NOT manually validated against a published constant';

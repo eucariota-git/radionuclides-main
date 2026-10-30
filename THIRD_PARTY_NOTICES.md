@@ -22,14 +22,13 @@ They are **not** variants of the same file, and neither supersedes the other:
 **The `LICENSE.TXT` filename is mandated, not a stylistic choice.** The ICRP-07
 grant is conditional on "the file LICENSE.TXT containing the above copyright
 notices […] appear[ing] in all copies, modifications, and distributions", so it
-cannot be renamed, moved into a `LICENSES/` directory, or folded into this file
-without breaking the licence under which the data is redistributed.
+cannot be renamed or folded into this file without breaking the licence under
+which the data is redistributed. Keeping it at the root, next to `LICENSE`, is a
+packaging choice of this project, not a requirement of the notice.
 
-The two names differing only by extension is a known hazard: on case-insensitive
-filesystems and in some licence detectors and packagers one may shadow or be
-mistaken for the other, which would make the distribution look single-licensed.
-If you redistribute this project, ship **both** files, `LICENSING.md` and this
-notice. Neither the code licence nor the data licence covers what the other one
+The two similar names may be confused by licence detectors and packagers, which
+would make the distribution look single-licensed. If you redistribute this
+project, ship **both** files, `LICENSING.md` and this notice. Neither the code licence nor the data licence covers what the other one
 does.
 
 ---

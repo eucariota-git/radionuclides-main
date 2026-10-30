@@ -674,7 +674,7 @@
   // validity: Y-90 container constants and the Archer fits are never range-checked
   // by the app (copy audit 2026-10-03, T03).
   function shieldingValidity(r) {
-    if (r.isY90) return 'Experimental container estimates; validity not established; no regulatory assessment';
+    if (r.isY90) return 'Experimental scenario with hypothetical container values (no documented derivation or measurement); validity not established; no regulatory assessment';
     if (r.shieldWarnings && r.shieldWarnings.length)
       return 'OUT OF VALIDATED RANGE — ' + r.shieldWarnings.join('; ') + '. Treat the shielding result as an extrapolation';
     if (r.method === 'archer') return 'Published fit; applicability range not checked by the app';
@@ -707,7 +707,7 @@
       narrow_beam: 'Single-line narrow-beam attenuation with point-isotropic exposure build-up (ANSI/ANS-6.4.3 reference data; NIST XCOM attenuation).',
     }[r.method] || '';
     const notes = methodText ? [methodText] : [];
-    if (r.isY90) notes.push(Y90_SCOPE + ". Container estimate (methodology after Zanzonico et al. 1999); container values are estimates, not tabulated in that publication. The H'(0.07) figure is NOT a complete skin/extremity assessment: direct beta/electron irradiation is not calculated.");
+    if (r.isY90) notes.push(Y90_SCOPE + ". Hypothetical container values (formalism after Zanzonico et al. 1999), with no documented derivation or measurement and not tabulated in that publication. The H'(0.07) figure is NOT a complete skin/extremity assessment: direct beta/electron irradiation is not calculated.");
     if (!r.useH007) notes.push("No H'(0.07) constant for this nuclide/energy — the H'(0.07) row shows the H*(10) value instead (may underestimate the skin dose of low-energy emitters).");
     notes.push('H*(10) and H\'(0.07) are area-monitoring quantities. These operational-quantity estimates do not establish compliance. Apply the dose-assessment and monitoring methods required for the exposure situation. ' +
       (r.isY90 ? 'No limit screening is made for this experimental scenario.' : 'The limit screening in this report is indicative only.'));
@@ -722,7 +722,7 @@
     // 1029/2022 is not cited for it either.
     const sources = [];
     if (r.isY90) {
-      sources.push('Zanzonico et al. (1999) J Nucl Med 40(6):1024–1028 — bremsstrahlung dose-rate methodology (the container constants used here are estimates, not tabulated in that publication).');
+      sources.push('Zanzonico et al. (1999) J Nucl Med 40(6):1024–1028 — bremsstrahlung dose-rate methodology (the container constants used here are hypothetical values, not tabulated in that publication).');
     } else {
       sources.push('ICRP Publication 74 (1996), Table A.21 — conversion coefficients h*(10), h\'(0.07,0°) per unit fluence.');
       // Cornejo applies to curated entries only (published comparison values),
@@ -809,7 +809,7 @@
       A0raw, A0unit, Number(A0_GBq.toPrecision(6)), distRaw, distUnit, Number(d_m.toPrecision(6)),
       t_h, nAdmin, withDecay === undefined ? '' : withDecay ? 'integrated A(t)' : 'no (constant activity for the dose integral)',
       isY90 ? `Y-90 bremsstrahlung container: ${containerName || '—'}` : mat && mat !== 'none' ? `${mat}, ${thick} cm` : 'none',
-      isY90 ? 'Y-90 container estimate' : (method || ''),
+      isY90 ? 'Y-90 hypothetical container values' : (method || ''),
       validity,
       patientTx !== undefined && patientTx < 1 ? patientTx : 1];
     const rows = [head,
@@ -1051,7 +1051,7 @@
           <tr style="background:var(--warning-100);">
             <td colspan="5">
               <strong>Y-90 experimental bremsstrahlung scenario</strong>
-              <span class="text-sm text-muted">(bremsstrahlung component only — direct beta dose is excluded; container-dependent estimates; Zanzonico et al. 1999 provides the formalism, not these constants)</span>
+              <span class="text-sm text-muted">(bremsstrahlung component only — direct beta dose is excluded; hypothetical container values with no documented derivation; Zanzonico et al. 1999 provides the formalism, not these constants)</span>
               ${containerHTML}
               ${pbWarning}
               <div style="margin-top:1rem;">
@@ -1133,7 +1133,7 @@
                 : `has &beta;&#8315; as its only recorded decay mode; no photon line passes the app's filter.`)
             : `has no photon emission above the selection filter (decay: ${UTILS.escapeHtml(decayModeText || 'see ICRP 107')}).`}</strong><br>
           ${n.id === 'Y-90'
-            ? Y90_SCOPE + '. The dose shown above is a container-dependent scenario inspired by the Zanzonico et al. formalism (J Nucl Med 40(6):1024–1028, 1999). That publication does not tabulate these container constants; do not use them for design or regulatory conclusions without geometry-specific evidence. The H\'(0.07) figure is not a complete skin/extremity assessment.'
+            ? Y90_SCOPE + '. The dose shown above is a container-dependent scenario inspired by the Zanzonico et al. formalism (J Nucl Med 40(6):1024–1028, 1999). That publication does not tabulate these container constants, which are hypothetical values with no documented derivation or measurement; do not use them for design or regulatory conclusions without geometry-specific evidence. The H\'(0.07) figure is not a complete skin/extremity assessment.'
             : isPureBetaMinus
               ? 'Direct beta/electron dose (skin, extremities) and bremsstrahlung are not calculated here; assess them for the actual source and container. Zanzonico et al. (J Nucl Med 40(6), 1999) describe a bremsstrahlung methodology.'
               : 'No external photon dose is estimated by this app. Assess the hazard according to the actual decay mode shown above — a β− bremsstrahlung scenario does not apply.'}
@@ -1166,7 +1166,7 @@
         document.getElementById('limitComparison').innerHTML = `
           <div class="alert alert-warning text-sm">
             <strong>Experimental scenario — no regulatory screening for Y-90.</strong>
-            The container bremsstrahlung constants are estimates with no primary source:
+            The container bremsstrahlung constants are hypothetical values with no primary source, no documented derivation (geometry, wall thickness) and no measurement:
             Zanzonico et al. (1999) tabulate constants for soft tissue and bone, not for
             PMMA / Pb / W container geometries. They are shown to compare containers
             against each other, and must not be read as a dose assessment or compared
@@ -1501,9 +1501,9 @@
         &nbsp;|&nbsp; ${pct(annualDoseWB, 1)} of 1 mSv/y public limit
         <br>
         <strong>Lens of eye</strong> (screened with H*(10) — the actual assessment requires Hp(3) and the dosimetric history):
-        <br><em style="font-size:0.9em;">Both RD 1029/2022 conditions must be satisfied:</em>
-        &nbsp;— ${pct(annualDoseWB, 50)} of 50 mSv/y max annual
-        &nbsp;|&nbsp; ${pct(annualDoseWB * 5, 100)} of 100 mSv per consecutive 5-year period, <em style="font-size:0.9em;">projected assuming this same annual dose during 5 years</em>
+        <br><em style="font-size:0.9em;">Exposed workers (art. 11.2.a) — both conditions must be satisfied:</em>
+        &nbsp;— ${pct(annualDoseWB, 50)} of 50 mSv in one year (exposed workers)
+        &nbsp;|&nbsp; ${pct(annualDoseWB * 5, 100)} of 100 mSv in 5 consecutive years (exposed workers), <em style="font-size:0.9em;">projected assuming this same annual dose during 5 years</em>
         &nbsp;|&nbsp; ${pct(annualDoseWB, 15)} of 15 mSv/y public limit
         <br>
         <strong>Skin / extremities</strong> (screened with ${useH007 ? "H'(0.07)" : "H*(10) — no &#915;<sup>H'(0.07)</sup> constant for this nuclide; may underestimate the skin dose of low-energy emitters"}): ${CALC.formatDose(annualDoseExt).display}/y

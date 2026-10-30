@@ -4,6 +4,17 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
+### v1.22.0 — review of another AI's analysis (16 points, each checked against the sources)
+- **Dose** (1, 2): the lens limits read «exposed workers» (art. 11.2.a) and the guide separates workers (art. 11) from members of the public (art. 15: 1 mSv/y, lens 15 mSv/y, skin 50 mSv/y). The accessible names of the Γ columns read the unit as «square metre per hour per GBq».
+- **Effluent** (3, 4): the inhalation coefficients state AMAD 1 µm (ICRP 119), not applicable to gases or vapours (Method, report, data). **I-131 has no default administered activity** and is not included by default: the workbook's 0.8 GBq was the activity at discharge, so the source term was not represented; the field asks for the facility's value, notes for reference that patients usually leave hospital with less than 0.8 GBq, and an empty field is an error only when I-131 is included (closes T06). `effluent-scenarios.json` 2.6.0. The default example is now Lu-177 only (0.01718 / 2.376 mSv/y); with I-131 and 0.8 GBq entered the former 0.0199 / 2.74 mSv/y.
+- **Y-90** (5, 10): the container bremsstrahlung constants are labelled **hypothetical values** — no documented derivation (geometry, wall thickness) or measurement — on screen, report, CSV, README and guides; the numbers are unchanged. «No photon line passes the app's filter» instead of «no photon line».
+- **Γ provenance** (6, 7): the Γ^H*(10) of Cs-137 and Mo-99+Tc-99m keep the published value; 24 of the 32 lie within ±2 % of Cornejo (the guides said 23); «due to updated nuclear data» removed (cause not established). `references/icrp107/README.md` updated (no published Ga-68 value, BET parsed, automatic search, published-value check vs regression); `validate-constants.js` declared a regression check.
+- **Caregiver** (8, 9, 15): the category warning refers to the category adopted in this application (children: public criterion at every age), not to the Forum; Demir's ± presumed mean ± SD; Spanish button label in the Spanish guide; RD 601/2019 (arts. 6.2 and 7.2) in the references; full title of Gayol Vilorio et al. (2025) (`caregiver.json` 1.13).
+- **Licences and development** (11, 12, 13): distribution to third parties waits for the ICRP permission (DEVELOPMENT, README); LICENSE.TXT keeps its name, its place at the root is a packaging choice, and the case-insensitivity claim is removed (notices and About); the package smoke test runs from the repository with `--base` pointing at the extracted copy.
+- **Data** (14): Cr-51 modality «other» (non-imaging tracer), `nuclides.json` v1.6.
+- **Updates** (16): the guides say a reload serves the update once it has been downloaded and installed, and to check the footer version.
+- Test 35; browser-smoke cases (Effluent defaults and I-131, Dose limits, Y-90).
+
 ### v1.21.0 — version shown in the footer
 - The footer of every page ends with the application version (`· v1.21.0`), written from `UTILS.APP_VERSION` by `UI.initVersion()` into an empty `.app-version` span (`translate="no"`), so it always matches the code that is running, also when the service worker serves a cached copy; after an update the second load shows the new number.
 - Version numbering: 1.x until the first release distributable to third parties (ICRP permission obtained and acceptance test completed on that version), which becomes 2.0 (`docs/DEVELOPMENT.md` § Release routine).

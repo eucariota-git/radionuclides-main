@@ -320,7 +320,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v73');
+    swVersion === 'nm-planner-v74');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -399,7 +399,7 @@ async function main() {
   check('dose: one validity state feeds report and CSV; Y-90 and Archer never export "within range" (copy audit T03)',
     /function shieldingValidity\(r\)/.test(doseHtml) &&
     (doseHtml.match(/lastCalcResult\.validity = shieldingValidity\(lastCalcResult\)/g) || []).length === 2 &&
-    /Experimental container estimates; validity not established; no regulatory assessment/.test(doseHtml) &&
+    /Experimental scenario with hypothetical container values \(no documented derivation or measurement\); validity not established; no regulatory assessment/.test(doseHtml) &&
     /Published fit; applicability range not checked by the app/.test(doseHtml) &&
     !/'within range'/.test(doseHtml) && !/its own published validity range/.test(doseHtml));
   {
@@ -407,7 +407,7 @@ async function main() {
     const src = doseHtml.match(/function shieldingValidity\(r\) \{[\s\S]*?\r?\n  \}/)[0];
     const f = new Function(src + '; return shieldingValidity;')();
     check('dose: shieldingValidity() returns the specific state for Y-90, Archer, warnings and unshielded',
-      /^Experimental container/.test(f({ isY90: true, shieldWarnings: [] })) &&
+      /^Experimental scenario with hypothetical container values/.test(f({ isY90: true, shieldWarnings: [] })) &&
       /^Published fit/.test(f({ method: 'archer', shieldWarnings: [] })) &&
       /^OUT OF VALIDATED RANGE/.test(f({ method: 'narrow_beam_spectrum', shieldWarnings: ['x'] })) &&
       f({ method: 'unshielded' }) === 'No shielding' &&
@@ -1565,9 +1565,9 @@ async function main() {
       /Exemption ≤ 1000 kg, CSN value/.test(indexHtml) && /b\.status === 'csn'/.test(indexHtml) &&
       /const col = k => \(ex\.status === 'csn' \? 'CSN value' : `column \$\{k\}`\);/.test(decayHtml) &&
       (decayHtml.match(/\$\{col\([23]\)\}/g) || []).length === 7 && !/column [23]\$\{tag\}/.test(decayHtml) && /CSN Resolution 2025-06-16, not Table B/.test(decayHtml));
-    check('O-2 / O-3: e(g) note «kept in force»; f1 is the «> 1 y» column; I-131 ⓘ names the discharge activity',
+    check('O-2 / O-3: e(g) note «kept in force»; f1 is the «> 1 y» column; I-131 ⓘ asks for the administered activity (v1.22.0: no default)',
       /Annex III table a\), kept in force/.test(indexHtml) && reg.ingestion_public_adult.rows.every(r => 'f1_over_1y' in r && !('f1' in r)) &&
-      /f1 \(> 1 y\)/.test(indexHtml) && /Activity per treatment at hospital discharge \(default of the reference workbook\)/.test(read('data/effluent-scenarios.json')));
+      /f1 \(> 1 y\)/.test(indexHtml) && /Administered activity per treatment: enter the facility's value\. For reference, patients usually leave hospital with less than 0\.8 GBq/.test(read('data/effluent-scenarios.json')));
   }
 
   console.log('Test 33: audit 2026-10-30 (second), A-1…A-8 (v1.20.3)');
@@ -1589,7 +1589,7 @@ async function main() {
       /los valores incluyen el gamma de 661,7 keV/.test(es('Γ source — K-air, H*: Cornejo (2015); H′: x. Cornejo et al. — Values include ¹³⁷ᵐBa 661.7 keV gamma in secular equilibrium') || ''));
     check('A-2: no source text of the database cites an internal audit; nuclides.json v1.5 (values unchanged)',
       nucs.every(n => !/\baudit\b|R-0\d/.test([n.gamma_H007_source, n.gamma_Kair_source, n.source, n.half_life_source].filter(Boolean).join(' '))) &&
-      JSON.parse(read('data/nuclides.json')).version === '1.5' && nucs.find(n => n.id === 'Cs-137').gamma_H007 === 92.27);
+      parseFloat(JSON.parse(read('data/nuclides.json')).version) >= 1.5 && nucs.find(n => n.id === 'Cs-137').gamma_H007 === 92.27);
     check('A-3: the notices and their About copy cite the CSN Resolution of 16 June 2025 (art. 13 LPI)',
       [read('THIRD_PARTY_NOTICES.md'), aboutHtml].every(t => /Resolution of the\s+Consejo de Seguridad Nuclear of 16 June 2025/.test(t) && /csn_exemption/.test(t)));
     check('A-4: the Decay report writes regulatory values with fmtSig, the «at t» parts only for t > 0, and a CSN wording of the exemption note',
@@ -1622,6 +1622,43 @@ async function main() {
       /function initVersion\(\) \{[\s\S]{0,200}'· v' \+ UTILS\.APP_VERSION/.test(uiJs) && /\n    initVersion,\n/.test(uiJs));
     check('the version policy is recorded: 1.x until the first release distributable to third parties, then 2.0',
       /until the first release that may be distributed to third\s+parties/.test(read('docs/DEVELOPMENT.md')) && /Which version am I using\?/.test(read('docs/USER_GUIDE.md')));
+  }
+
+  console.log('Test 35: review of another AI\'s analysis, points 1–16 (v1.22.0)');
+  {
+    const eff = JSON.parse(read('data/effluent-scenarios.json'));
+    const i131 = eff.nuclides.find(n => n.id === 'I-131');
+    const nucs = JSON.parse(read('data/nuclides.json'));
+    const g = read('docs/USER_GUIDE.md'), ge = read('docs/USER_GUIDE.es.md');
+    check('1/2: worker and public limits named apart (art. 11 / art. 15); Γ aria-labels read «square metre per hour per GBq»',
+      /Exposed workers \(art\. 11\.2\.a\) — both conditions must be satisfied/.test(doseHtml) && /of 50 mSv in one year \(exposed workers\)/.test(doseHtml) &&
+      /of 100 mSv in 5 consecutive years \(exposed workers\)/.test(doseHtml) && /\*\*members of the public\*\* \(art\. 15\): 1 mSv\/y effective, lens of the eye 15 mSv\/y, skin 50 mSv\/y/.test(g) &&
+      /\*\*miembros del público\*\* \(art\. 15\)/.test(ge) && !/per GBq per square metre/.test(indexHtml) && (indexHtml.match(/square metre per hour per GBq/g) || []).length === 3);
+    check('3/4: inhalation coefficients declare AMAD 1 µm; I-131 has no default activity, is not included, and an empty field is an error only when included',
+      eff.nuclides.every(n => /AMAD 1 µm \(ICRP 119\); not applicable to gases or vapours/.test(n.e_inh.source)) && /AMAD 1 µm \(ICRP 119\), not to gases or vapours/.test(effluentHtml) &&
+      i131.source_term.activity_per_cycle_GBq === null && i131.include_default === false && /usually leave hospital with less than 0\.8 GBq/.test(i131.source_term.activity_label) &&
+      /function readActivity\(el, included, id\)/.test(effluentHtml) && /if \(!included\) return null;/.test(effluentHtml) && eff.meta.version === '2.6.0');
+    check('5/10: the Y-90 container values are «hypothetical» on screen, report, CSV and docs; «no photon line passes the filter»',
+      /hypothetical container values/.test(doseHtml) && /HYPOTHETICAL VALUES, no primary source or documented derivation/.test(read('js/report.js')) &&
+      /'Y-90 hypothetical container values'/.test(doseHtml) && /HYPOTHETICAL, NOT TRACEABLE/.test(read('js/data.js')) && /hypothetical container values/.test(read('README.md')) &&
+      !/Experimental container estimates|container values are estimates|ESTIMATE, no primary source/.test(doseHtml + read('js/report.js')) &&
+      /no photon line passes the app's filter/.test(g) && /ninguna línea fotónica supera el filtro de la aplicación/.test(ge) && !/El Y-90 no tiene constantes fotónicas\./.test(ge));
+    check('6/7: Γ provenance — Cs-137 and Mo-99+Tc-99m keep the published H*(10), 24 of 32 within ±2 %; no «due to updated nuclear data»; constants test declared a regression check',
+      /except the H\*\(10\) of Cs-137 and Mo-99\+Tc-99m, which keep the published value; 24 of the 32/.test(indexHtml) && /24 of the 32 Γ\^H\\\*\(10\) lie within ±2 %/.test(g) &&
+      /24 de las 32 Γ\^H\\\*\(10\)/.test(ge) && !/23 of the 32|23 de los 32/.test(g + ge) && !/due to updated nuclear data/.test(read('README.md')) &&
+      /Regression checks of the nuclide constants/.test(read('test/validate-constants.js')) &&
+      (() => { const c = nucs.nuclides.filter(n => n.cornejo_validation && n.cornejo_validation.gamma_H10_Cornejo != null);
+        return c.length === 32 && c.filter(n => Math.abs(n.gamma_H10 / n.cornejo_validation.gamma_H10_Cornejo - 1) <= 0.02).length === 24; })());
+    check('8/9/15/16: «adopted in this application» (not «the Forum does not assign»); Demir ± presumed; Spanish button label; RD 601/2019 and the full Gayol Vilorio title; conditional update note',
+      !/the Forum does not assign|que el Foro no asigna/.test(g + ge) && /other than the one adopted in this application for that scenario/.test(g) &&
+      /presumed for Demir 2016/.test(g) && /presunta en Demir 2016/.test(ge) && !/Use the adopted restriction in the table/.test(ge) && /Usar la restricción adoptada en la tabla/.test(ge) &&
+      [g, ge].every(t => /Real Decreto 601\/2019/.test(t) && /Cálculo del periodo de restricciones tras el alta radiológica de pacientes sometidos a terapia metabólica/.test(t)) &&
+      /until the update has been downloaded and installed/.test(g) && /hasta que la actualización se haya descargado e instalado/.test(ge));
+    check('11/12/13/14: distribution waits for the ICRP permission; LICENSE.TXT may live outside the root (packaging choice); package smoke run from the repository with --base; Cr-51 «other»',
+      /distribution to third\s+parties also waits for the ICRP reuse permission/.test(read('docs/DEVELOPMENT.md')) &&
+      [read('THIRD_PARTY_NOTICES.md'), aboutHtml].every(t => /is a\s+packaging choice of this project/.test(t) && !/moved into a/.test(t) && !/case-insensitive/.test(t)) &&
+      /From the source repository \(the package does not contain `tools\/`\)/.test(read('docs/DEVELOPMENT.md')) &&
+      nucs.nuclides.find(n => n.id === 'Cr-51').modality === 'other' && nucs.version === '1.6');
   }
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);

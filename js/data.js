@@ -539,11 +539,13 @@ const PHYSICS = (() => {
       .sort((a, b) => a[0] - b[0]);
   }
 
-  // Y-90 bremsstrahlung container ESTIMATES — NOT TRACEABLE TO A PRIMARY SOURCE.
-  // Methodology after Zanzonico et al., J Nucl Med 40(6):1024-1028, 1999, which
-  // tabulates specific bremsstrahlung constants for soft tissue and bone only —
-  // NOT for these container geometries. The values below are estimates, and no
-  // measurement or primary reference backs them.
+  // Y-90 bremsstrahlung container values — HYPOTHETICAL, NOT TRACEABLE TO A
+  // PRIMARY SOURCE. Formalism after Zanzonico et al., J Nucl Med 40(6):1024-1028,
+  // 1999, which tabulates specific bremsstrahlung constants for soft tissue and
+  // bone only — NOT for these container geometries. No derivation (geometry,
+  // wall thickness, method) is documented and no measurement backs them: they
+  // are hypothetical values for comparing containers, not estimates that can be
+  // verified.
   //
   // Consequently dose.html presents Y-90 as an EXPERIMENTAL SCENARIO: it shows
   // the numbers but issues no regulatory verdict and does not label them as

@@ -2,7 +2,11 @@
 
 /**
  * validate-constants.js
- * Automated validation of nuclide constants against reference values
+ * Regression checks of the nuclide constants: Γ recomputed from the ICRP 107
+ * index against the values the project computed before (REFERENCE_VALUES), plus
+ * structural checks. These references are the project's own recalculations, NOT
+ * published values (e.g. I-125 35.52 against Cornejo's 35.3): the comparison
+ * with Cornejo et al. (2015) Table III is made in test/validate-data.js.
  * Run with: node test/validate-constants.js
  */
 

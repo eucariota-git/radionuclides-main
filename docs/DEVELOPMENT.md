@@ -289,6 +289,13 @@ any commercial redistribution of the complete package would additionally
 require permission from ICRP and a review of the NIST SRD terms — neither of
 which is on file.
 
+The non-commercial purpose is not enough on its own: distribution to third
+parties also waits for the ICRP reuse permission requested on 2026-10-15 for
+ICRP 74 Table A.21, the ICRP 119 Table G.1 coefficients and the Table F.1
+chemical-form labels (or for a documented basis for that reuse), as stated in
+`THIRD_PARTY_NOTICES.md` › Status / permissions. The first release distributable
+to third parties becomes version 2.0.
+
 ### Local or static hosting
 No build step. Serve the distribution folder with any local or remote static
 web server, or open it directly via `file://`.
@@ -365,8 +372,11 @@ violated; step 5 remains manual.
    `PACKAGE-INFO.txt` records the source commit, epoch and compression
    toolchain needed to reproduce it.
 4. Re-run the four test suites from the extracted folder (`node test/…`).
-5. Run `node tools/browser-smoke.js` (Chrome/Edge headless over `file://`, or
-   `--base http://localhost:8000/`): six pages at 1280 and 390 px, console
+5. From the source repository (the package does not contain `tools/`), run
+   `node tools/browser-smoke.js --base <URL of the extracted copy>` — its
+   `file:///…/` URL, or the extracted folder served over HTTP, e.g.
+   `--base http://localhost:8000/` (without `--base` the script checks the
+   working tree, not the package): six pages at 1280 and 390 px, console
    errors, horizontal overflow, Chart.js axes and points, key values and the
    dark-mode toggle. Then open via HTTP(S) by hand to check PWA install and
    offline reload, which the script does not cover.
