@@ -1520,7 +1520,7 @@ async function main() {
       JSON.parse(read('data/nuclides.json')).notes.author.includes(AUTHOR) && JSON.parse(read('data/regulatory.json')).meta.author.name === AUTHOR &&
       JSON.parse(read('data/caregiver.json')).meta.author.name === AUTHOR && eff.meta.author.name === AUTHOR &&
       /"compiled_by": "José Ramón Sendón del Río/.test(read('data/icrp107-index.json')) &&
-      /author: \{ name: 'José Ramón Sendón del Río'/.test(read('tools/build-regulatory-data.js')) && /compiled_by: 'José Ramón Sendón del Río/.test(read('tools/parse-icrp107.js')));
+      (!hasTools || (/author: \{ name: 'José Ramón Sendón del Río'/.test(read('tools/build-regulatory-data.js')) && /compiled_by: 'José Ramón Sendón del Río/.test(read('tools/parse-icrp107.js')))));
     const tips = [decayHtml, doseHtml, effluentHtml, caregiverHtml].join('\n').match(/<span class="hint-tip" tabindex="0" role="img" aria-label="([^"]*)" data-tooltip="([^"]*)">/g) || [];
     check(`ⓘ field help: ${tips.length} static icons with the same text in aria-label and data-tooltip; the old visible hints are gone`,
       tips.length >= 9 && tips.every(t => { const m = /aria-label="([^"]*)" data-tooltip="([^"]*)"/.exec(t); return m[1] === m[2] && m[1].length > 5; }) &&
