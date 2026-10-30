@@ -174,7 +174,7 @@ the articles is included in the distribution package.
   licence is stated in either document; numeric values cited with attribution.
 - Default case, model and evaluation criteria per category: the author's
   workbook *Dosis_acompanantes_simple_v2.1.xlsx* (own work; the criteria are
-  department criteria citing RD 601/2019, RD 1029/2022 and the documents above).
+  evaluation criteria adopted in this application, citing RD 601/2019, RD 1029/2022 and the documents above).
 
 ### RD 1217/2024 Annex IV and RD 783/2001 Annex III — regulatory values
 Files: `data/regulatory.json`, `data/regulatory-data.js`.
@@ -218,9 +218,9 @@ reference, not the article.
   two columns), the five inhalation coefficients of ICRP Publication 119 (2012)
   Table G.1 and the chemical-form labels of its Table F.1 are © ICRP and are used
   with attribution. Attribution and a not-for-profit purpose are not a
-  permission: as of 2026-10-04 no reuse permission has been requested from ICRP.
-  It must be obtained, or the basis for the reuse documented, before the package
-  is distributed outside the author's organisation.
+  permission: reuse permission was requested from ICRP on 2026-10-15 and is
+  pending. It must be obtained, or the basis for the reuse documented, before the
+  package is distributed to third parties.
 - **Legal provisions.** The adult ingestion coefficients are the values of
   RD 783/2001 Annex III, and Tables A1 and B those of RD 1217/2024 Annex IV,
   both published in the BOE (art. 13 LPI); ICRP 119 Table F.1 is the numerical

@@ -70,8 +70,7 @@ const esEffRow = s => esPerYear(s)
 // Report identifiers with English words around them (Effluent coefficients)
 const esReport = s => s
   .replace(/\(coefficient ([AB])\)/, '(coeficiente $1)')
-  .replace(/^Tc-99m Scenario 2 report /, 'informe del escenario 2 del Tc-99m ')
-  .replace('(air domain accepted with DEV-05)', '(dominio de aire aceptado con DEV-05)');
+  .replace(/^PHITS Scenario ([12]) report/, 'informe PHITS del escenario $1');
 
 // Provenance labels built from fixed pieces (Γ source column and notes)
 const esSource = s => [
@@ -811,8 +810,7 @@ const I18N_ES = {
     'are effective-dose-rate coefficients (ICRP Publication 116 (2010), ROT) calculated with PHITS for the geometry of each scenario — they are':
       'son coeficientes de tasa de dosis efectiva (ICRP Publication 116 (2010), ROT) calculados con PHITS para la geometría de cada escenario;',
     'point-source Γ constants and only apply to that geometry.': 'constantes Γ de fuente puntual y solo se aplican a esa geometría.',
-    'Algorithms and defaults are adapted from the reference workbooks': 'Los algoritmos y los valores por defecto se adaptan de los libros de referencia',
-    '(Scenario 2) and': '(escenario 2) y',
+    'Algorithms and defaults are adapted from the reference workbooks of Scenario 2 (Lu-177) and': 'Los algoritmos y los valores por defecto se adaptan de los libros de referencia del escenario 2 (Lu-177) y',
     '(Scenario 1).': '(escenario 1).',
     'Inhalation coefficients are those for adult members of the public (RD 783/2001 Annex III table b), kept by the CSN Resolution of 3 April 2024; transcription: ICRP Publication 119 (2012), Table G.1), lung absorption type F (fast) or M (moderate). Half-lives are taken from the app database (Lu-177m, not a curated entry, from ICRP 107).':
       'Los coeficientes de inhalación son los de adultos miembros del público (RD 783/2001, anexo III, tabla b), mantenidos por la Resolución del CSN de 3 de abril de 2024; transcripción: ICRP Publication 119 (2012), tabla G.1), con absorción pulmonar de tipo F (rápida) o M (moderada). Los periodos de semidesintegración se toman de la base de datos de la app (el Lu-177m, que no es una entrada revisada, de ICRP 107).',
@@ -972,8 +970,8 @@ const I18N_ES = {
       "Geometría del modelo: masa de lodo de 45 × 45 × 3 m (2025 m²); receptor a 2 m sobre el centro",
     "Comparable in size to a sludge press / hopper (3–6 m, NUREG/CR-5814 §5.2.2), a 100 m² biosolids pile (ISCORS 2004-03 §4.7.3) and drying beds 3.0–3.7 m wide (NUREG/CR-6289). The coefficient belongs to this model geometry; its use for a specific plant must be justified.":
       "De tamaño comparable a una prensa de lodos / tolva (3–6 m, NUREG/CR-5814 §5.2.2), a una pila de biosólidos de 100 m² (ISCORS 2004-03 §4.7.3) y a eras de secado de 3,0–3,7 m de anchura (NUREG/CR-6289). El coeficiente corresponde a esta geometría del modelo; su uso para una planta concreta debe justificarse.",
-    "Default. The largest sludge element found in the Spanish plants reviewed is 616 m² (EDAR Sur de Madrid). The coefficient belongs to this model geometry; its use for a specific plant must be justified.":
-      "Por defecto. El mayor elemento de lodo encontrado en las plantas españolas revisadas mide 616 m² (EDAR Sur de Madrid). El coeficiente corresponde a esta geometría del modelo; su uso para una planta concreta debe justificarse.",
+    "Default. The largest sludge element found in published data for Spanish plants is 616 m² (EDAR Sur de Madrid). The coefficient belongs to this model geometry; its use for a specific plant must be justified.":
+      "Por defecto. El mayor elemento de lodo encontrado en los datos publicados de plantas españolas mide 616 m² (EDAR Sur de Madrid). El coeficiente corresponde a esta geometría del modelo; su uso para una planta concreta debe justificarse.",
     "NUREG/CR-5814 prescribes an infinite slab; no released coefficient covers it. For Lu-177 the PHITS study measured that the 45 × 45 m coefficient captures 73–75 % of the infinite slab (10 × 10 m: ≈ 51 %). No equivalent measurement exists for I-131.":
       "NUREG/CR-5814 prescribe una lámina infinita; ningún coeficiente publicado la cubre. Para el Lu-177, el estudio PHITS midió que el coeficiente de 45 × 45 m recoge el 73–75 % de la lámina infinita (10 × 10 m: ≈ 51 %). No existe una medida equivalente para el I-131.",
     "Water slab 600 × 200 × 50 cm (6 m³), receptor 1 m above the centre of its surface":
@@ -1019,7 +1017,8 @@ const I18N_ES = {
     'Screening estimate for one person and equal cycles.': 'Estimación de cribado para una persona y ciclos iguales.',
     'External exposure only, estimated with the measured operational quantity (not the individual effective or fetal dose; internal contamination and the dose before discharge are not included). The criteria per category are':
       'Solo exposición externa, estimada con la magnitud operacional medida (no es la dosis efectiva individual ni la dosis fetal; no se incluyen la contaminación interna ni la dosis antes del alta). Los criterios por categoría son',
-    'evaluation criteria adopted by the department': 'criterios de evaluación adoptados por el servicio',
+    'evaluation criteria adopted in this application': 'criterios de evaluación adoptados en esta aplicación',
+    '(«Other criterion» sets your own), not values fixed by regulation for this treatment.': '(con «Otro criterio» se fija uno propio), no valores fijados por la normativa para este tratamiento.',
     ', not values fixed by regulation for this treatment.': ', no valores fijados por la normativa para este tratamiento.',
     'A. Case data': 'A. Datos del caso',
     'Kinetics preset': 'Cinética predefinida',
@@ -1211,15 +1210,15 @@ const I18N_ES = {
     'Adopted restriction': 'Restricción adoptada',
     'Self-check': 'Autocomprobación',
     'Overall': 'Global',
-    'Screening estimate of the external dose to one person from a discharged radionuclide-therapy patient, for radiation protection planning. The criteria per category are evaluation criteria adopted by the department, not values fixed by regulation for this treatment. Literature factors are not an individual validation of the patient. Results must be reviewed by a qualified radiation protection expert before use. Generated by NM Radionuclide Planner, an open-source reference tool provided without warranty of any kind.':
-      'Estimación de cribado de la dosis externa a una persona debida a un paciente dado de alta tras una terapia con radionucleidos, para la planificación de la protección radiológica. Los criterios por categoría son criterios de evaluación adoptados por el servicio, no valores fijados por la normativa para este tratamiento. Los factores de la literatura no son una validación individual del paciente. Los resultados deben ser revisados por un experto cualificado en protección radiológica antes de su uso. Generado por NM Radionuclide Planner, herramienta de referencia de código abierto proporcionada sin garantía de ningún tipo.',
+    'Screening estimate of the external dose to one person from a discharged radionuclide-therapy patient, for radiation protection planning. The criteria per category are evaluation criteria adopted in this application, not values fixed by regulation for this treatment. Literature factors are not an individual validation of the patient. Results must be reviewed by a qualified radiation protection expert before use. Generated by NM Radionuclide Planner, an open-source reference tool provided without warranty of any kind.':
+      'Estimación de cribado de la dosis externa a una persona debida a un paciente dado de alta tras una terapia con radionucleidos, para la planificación de la protección radiológica. Los criterios por categoría son criterios de evaluación adoptados en esta aplicación, no valores fijados por la normativa para este tratamiento. Los factores de la literatura no son una validación individual del paciente. Los resultados deben ser revisados por un experto cualificado en protección radiológica antes de su uso. Generado por NM Radionuclide Planner, herramienta de referencia de código abierto proporcionada sin garantía de ningún tipo.',
     // Caregiver data texts (data/caregiver.json)
     "Port of the author's workbook Dosis_acompanantes_simple_v2.1.xlsx (sheets Dosis, Curva and Comprobación).":
       "Adaptación del libro del autor Dosis_acompanantes_simple_v2.1.xlsx (hojas Dosis, Curva y Comprobación).",
     "Literature values describe a cohort, not the patient. Under each preset, «Spread in the source» gives the dispersion the source publishes, with its statistic named (mean ± SD, median with quartiles and range, or spread of literature values). It describes the cohort, not an interval for the patient: mean + 2 SD is only a reference high value. No SD is derived here from ranges or quartiles.":
       "Los valores de la literatura describen una cohorte, no al paciente. Bajo cada cinética, «Dispersión en la fuente» da la dispersión que publica la fuente, con el estadístico indicado (media ± DE, mediana con cuartiles y extremos, o dispersión de los valores de la literatura). Describe la cohorte, no un intervalo para el paciente: media + 2 DE es solo un valor alto de referencia. Aquí no se deduce ninguna DE a partir de intervalos o cuartiles.",
-    "Evaluation criteria adopted by the department, not values fixed by regulation for this treatment. Scope: one person, the whole treatment (all cycles together) — the ICRP «episode» (the duration of a given release after therapy) is applied to the complete treatment, which is the more restrictive reading. Carers are people who, outside their occupation, knowingly and voluntarily help in the care of the patient (RD 601/2019, art. 7.1); children and pregnant women are assessed with the public category. The criterion only changes the comparison and the inverse calculations, never the calculated dose.":
-      "Criterios de evaluación adoptados por el servicio, no valores fijados por la normativa para este tratamiento. Alcance: una persona, el tratamiento completo (todos los ciclos juntos); el «episodio» de ICRP (la duración de una liberación concreta tras la terapia) se aplica al tratamiento completo, que es la lectura más restrictiva. Las personas cuidadoras son las que, fuera de su ocupación, ayudan consciente y voluntariamente en la atención del paciente (RD 601/2019, art. 7.1); los niños y las embarazadas se evalúan con la categoría de público. El criterio solo cambia la comparación y los cálculos inversos, nunca la dosis calculada.",
+    "Evaluation criteria adopted in this application, not values fixed by regulation for this treatment. Scope: one person, the whole treatment (all cycles together) — the ICRP «episode» (the duration of a given release after therapy) is applied to the complete treatment, which is the more restrictive reading. Carers are people who, outside their occupation, knowingly and voluntarily help in the care of the patient (RD 601/2019, art. 7.1); children and pregnant women are assessed with the public category. The criterion only changes the comparison and the inverse calculations, never the calculated dose.":
+      "Criterios de evaluación adoptados en esta aplicación, no valores fijados por la normativa para este tratamiento. Alcance: una persona, el tratamiento completo (todos los ciclos juntos); el «episodio» de ICRP (la duración de una liberación concreta tras la terapia) se aplica al tratamiento completo, que es la lectura más restrictiva. Las personas cuidadoras son las que, fuera de su ocupación, ayudan consciente y voluntariamente en la atención del paciente (RD 601/2019, art. 7.1); los niños y las embarazadas se evalúan con la categoría de público. El criterio solo cambia la comparación y los cálculos inversos, nunca la dosis calculada.",
     "Maximum rate: the discharge rate that exactly exhausts the criterion with the restrictions of the table (the dose is proportional to the rate). Minimum restriction: days that exhaust the criterion applying the same duration to both rows; \"Unattainable\" = not met however long it lasts: contact during the restriction must be reduced. To apply it, enter the adopted restriction in the days column of the cohabitation table.":
       "Tasa máxima: la tasa en el alta que agota exactamente el criterio con las restricciones de la tabla (la dosis es proporcional a la tasa). Restricción mínima: días que agotan el criterio aplicando la misma duración a las dos filas; «Inalcanzable» = no se cumple por larga que sea: hay que reducir el contacto durante la restricción. Para aplicarla, introduzca la restricción adoptada en la columna de días de la tabla de convivencia.",
     "Own-measurement protocol to record: radiopharmaceutical, distance reference, posture, orientation and time of measurement.":
@@ -1332,8 +1331,8 @@ const I18N_ES = {
       "No convivir en el mismo domicilio: introduzca 0 h durante la restricción en las dos filas.",
     "4 × 25 min = 1.667 h. Not living in the same home: enter 0 h during the restriction in both rows.":
       "4 × 25 min = 1,667 h. No convivir en el mismo domicilio: introduzca 0 h durante la restricción en las dos filas.",
-    "Children of any age: public criterion (1 mSv), a department decision. Table 2 of the Forum gives 3 mSv over 10 years, but its own Tables 3.B 3 and 3.B 4 are closer to 1 mSv for this column.":
-      "Niños de cualquier edad: criterio del público (1 mSv), decisión del servicio. La tabla 2 del Foro da 3 mSv a partir de 10 años, pero sus propias tablas 3.B 3 y 3.B 4 se aproximan más a 1 mSv en esta columna.",
+    "Children of any age: public criterion (1 mSv), a choice of this application. Table 2 of the Forum gives 3 mSv over 10 years, but its own Tables 3.B 3 and 3.B 4 are closer to 1 mSv for this column.":
+      "Niños de cualquier edad: criterio del público (1 mSv), opción de esta aplicación. La tabla 2 del Foro da 3 mSv a partir de 10 años, pero sus propias tablas 3.B 3 y 3.B 4 se aproximan más a 1 mSv en esta columna.",
     "A pregnant co-worker is assessed individually (distances and times): use the free scenario.":
       "Una compañera embarazada se valora de forma particularizada (distancias y tiempos): use el escenario libre.",
     "Criterion for the children cared for: the Forum applies the co-worker constraint (0.3 mSv), which is below the public one.":
@@ -1701,7 +1700,7 @@ const I18N_ES = {
       `mSv/a — ${al ? 'al menos el ' : ''}${p} % del criterio${ex ? ' — LO SUPERA' : ''}${part ? part.replace(' — PARTIAL SUM, missing: ', ' — SUMA PARCIAL, falta: ').replace(/ external$/, ' externa') : ''}`],
     [/^Criterion: (.+) mSv\/y, user-defined — the app attributes no regulatory basis to it\.$/, 'Criterio: $1 mSv/a, definido por el usuario; la app no le atribuye base reglamentaria.'],
     [/^Sc\. 1: ([\s\S]+)$/, m => m.replace(/Sc\. /g, 'Esc. ').replace('Sc. 2: no coefficient', 'Esc. 2: sin coeficiente').replace('Esc. 2: no coefficient', 'Esc. 2: sin coeficiente').replace('one-sided model envelope', 'envolvente unilateral del modelo')],
-    [/^(P20P21-G9-FINAL-1\.0\.0[\s\S]*|Tc-99m Scenario 2 report [\s\S]*|INF-I131-S2-RESULTADOS-1\.1\.0, §X\.5 \(air domain accepted with DEV-05\))$/, m => esReport(m)],
+    [/^(PHITS Scenario [12] report[\s\S]*)$/, m => esReport(m)],
     [/^This model \((L10|L45)\)$/, 'Este modelo ($1)'],
     [/^([\d.,]+) µSv\/GBq at the NUREG reference plant, scaled by dry sludge mass, solids fraction, density, transit decay, t$/,
       '$1 µSv/GBq en la planta de referencia del NUREG, escalado por la masa de lodo seco, la fracción de sólidos, la densidad, el decaimiento en tránsito, t'],

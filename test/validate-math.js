@@ -701,7 +701,7 @@ console.log('TEST 13: Effluent Scenarios 1 and 2 (CALC.sewerInspectorScenario1, 
 {
   const S_PER_D = 86400, S_PER_H = 3600;
   const kSI = k_nSv_h => k_nSv_h * 1e-9 / S_PER_H;
-  // Workbook defaults (IRA-xxxx_Lu-177_dosis_en_escenario2_v1.xlsx, sheet Escenario-2).
+  // Workbook defaults (Lu-177 Scenario 2 reference workbook, sheet Escenario-2).
   const base = {
     transit_s: 3 * S_PER_D, wet_sludge_kg_per_y: 5090e3, solids_fraction: 0.25,
     wet_density_kg_m3: 1200, dust_kg_m3: 1e-7, respirable_fraction: 0.2, sludge_fraction: 1,

@@ -1,6 +1,6 @@
 {
   "meta": {
-    "version": "1.9",
+    "version": "1.10",
     "date": "2026-10-30",
     "description": "Caregiver / family-member external dose after discharge of a radionuclide-therapy patient: proximity profiles, evaluation criteria per category, references and model assumptions.",
     "origin": "Port of the author's workbook Dosis_acompanantes_simple_v2.1.xlsx (sheets Dosis, Curva and Comprobación)."
@@ -358,7 +358,7 @@
       "basis_short": "value entered"
     }
   ],
-  "criteria_note": "Evaluation criteria adopted by the department, not values fixed by regulation for this treatment. Scope: one person, the whole treatment (all cycles together) — the ICRP «episode» (the duration of a given release after therapy) is applied to the complete treatment, which is the more restrictive reading. Carers are people who, outside their occupation, knowingly and voluntarily help in the care of the patient (RD 601/2019, art. 7.1); children and pregnant women are assessed with the public category. The criterion only changes the comparison and the inverse calculations, never the calculated dose.",
+  "criteria_note": "Evaluation criteria adopted in this application, not values fixed by regulation for this treatment. Scope: one person, the whole treatment (all cycles together) — the ICRP «episode» (the duration of a given release after therapy) is applied to the complete treatment, which is the more restrictive reading. Carers are people who, outside their occupation, knowingly and voluntarily help in the care of the patient (RD 601/2019, art. 7.1); children and pregnant women are assessed with the public category. The criterion only changes the comparison and the inverse calculations, never the calculated dose.",
   "curve_days": [
     0,
     1,
@@ -687,7 +687,7 @@
           "d_after": 1
         }
       },
-      "note": "Children of any age: public criterion (1 mSv), a department decision. Table 2 of the Forum gives 3 mSv over 10 years, but its own Tables 3.B 3 and 3.B 4 are closer to 1 mSv for this column."
+      "note": "Children of any age: public criterion (1 mSv), a choice of this application. Table 2 of the Forum gives 3 mSv over 10 years, but its own Tables 3.B 3 and 3.B 4 are closer to 1 mSv for this column."
     },
     {
       "key": "coworker",

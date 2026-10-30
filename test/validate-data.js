@@ -378,7 +378,7 @@ console.log('TEST: Effluent Scenario 1 and 2 coefficients vs their sources');
     test(`${id} NUREG Table A.21 STP WKR = ${stp}`, a.stp_wkr_Sv_y_per_Bq_m3, stp, 0);
     test(`${id} NUREG Table A.21 SEWER MAINT = ${sewer}`, a.sewer_maint_Sv_y_per_Bq_m3, sewer, 0);
   }
-  // Defaults equal the reference workbooks (Scenario 2: IRA-xxxx...v1.xlsx;
+  // Defaults equal the reference workbooks (Scenario 2: Lu-177 Scenario 2 reference workbook;
   // Scenario 1: 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx').
   const P = eff.parameters;
   const DEFAULTS = {

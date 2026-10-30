@@ -335,7 +335,7 @@ const CAREGIVER = (() => {
       out.warnings.push('Discharge after the end of the fast phase: the discharge rate must already be measured in the slow phase.');
     }
     // Cohabitation scenario and a category the application does not adopt for it
-    // (children: public criterion at any age, a department decision — not the
+    // (children: public criterion at any age, a choice of this application — not the
     // Forum's Table 2): a warning, not a block; the manual criterion is never questioned
     const sc = (data.cohabitation_scenarios || []).find(s => s.key === input.scenario);
     const cat = data.categories.find(c => c.key === input.category);

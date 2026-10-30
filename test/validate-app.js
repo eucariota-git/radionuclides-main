@@ -320,7 +320,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v67');
+    swVersion === 'nm-planner-v68');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -589,7 +589,7 @@ async function main() {
       })());
     check('notices state the ICRP 74 / ICRP 119 permission status apart from the ICRP-07 licence (A04)',
       [notices, about5].every(t => /No permission on file\./.test(t) &&
-        /no reuse permission has been requested from ICRP/.test(t) && /That licence covers the decay data package only/.test(t)));
+        /reuse permission was requested from ICRP on 2026-10-15 and is\s+pending/.test(t) && /That licence covers the decay data package only/.test(t)));
     check('notices do not claim that references/ travels in the distribution package (A05)',
       [notices, about5].every(t => !/article itself is\s+redistributed unmodified/.test(t) &&
         /distribution\s+package contains only the transcribed parameters/.test(t) &&
@@ -1484,6 +1484,23 @@ async function main() {
     check('Caregiver: the full inverse note stays in the report; the screen keeps the meaning of «Unattainable»',
       /notes: \[data\.inverse_note,/.test(caregiverHtml) && /"Unattainable" = the criterion is not met however long the restriction lasts/.test(caregiverHtml) &&
       !/Not used \(only for «Other criterion»\)/.test(caregiverHtml));
+  }
+
+  console.log('Test 29: distributable texts name no institution and no internal document (v1.19.1)');
+  {
+    // Shown texts must suit any professional: no «department», no case-file or internal report codes
+    const files = ['index.html', 'decay.html', 'dose.html', 'effluent.html', 'caregiver.html', 'about.html', 'README.md', 'THIRD_PARTY_NOTICES.md',
+      'docs/USER_GUIDE.md', 'docs/USER_GUIDE.es.md', 'docs/ACCEPTANCE_TEST.md', 'docs/I18N_GLOSSARY_ES.md',
+      ...fs.readdirSync(path.join(ROOT, 'js')).filter(f => f.endsWith('.js') && f !== 'chart.umd.min.js').map(f => `js/${f}`),
+      ...fs.readdirSync(path.join(ROOT, 'data')).filter(f => /\.(json|js)$/.test(f)).map(f => `data/${f}`)]
+      .filter(f => fs.existsSync(path.join(ROOT, f)));
+    const BAD = [/\bdepartment\b/i, /(?:por el|del|decisión del) servicio\b/, /IRA-xxxx/, /author's organisation/, /plants reviewed/,
+      /P20P21|INF-I131|DEV-0\d/, /approved 20\d\d/];
+    const hits = files.flatMap(f => BAD.filter(re => re.test(read(f))).map(re => `${f}: ${re.source}`));
+    check(`no institutional or internal-document wording in ${files.length} distributable files`, hits.length === 0, hits.slice(0, 5).join(' | '));
+    check('caregiver: criteria «adopted in this application»; PHITS reports named by date, version by SHA-256 only in the report and the CSV',
+      /evaluation criteria adopted in this application<\/strong>/.test(caregiverHtml) &&
+      !/reportRef/.test(effluentHtml) && /'k_report_SHA256_12'/.test(effluentHtml) && /SHA-256 \$\{shaOf\(nd\.k_ext\.s2\.report_file\)\}/.test(effluentHtml));
   }
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);

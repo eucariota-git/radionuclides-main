@@ -4,6 +4,12 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
+### v1.19.1 — neutral texts for any professional
+- Caregiver: the criteria per category are «evaluation criteria adopted in this application» («Other criterion» sets your own) instead of «adopted by the department»; the children's criterion is «a choice of this application». Same wording in the report, the data notes (`caregiver.json` v1.10), the guides, the README and the notices.
+- Effluent: the Scenario 2 reference workbook is no longer named by its case-file style name; the PHITS coefficients cite the author's report by nuclide and date («available on request»), without internal report codes, deviation codes or «approved». The exact report version (first 12 characters of its SHA-256) moves from the screen to the report and to a new CSV column `k_report_SHA256_12`. Geometry note: «found in published data for Spanish plants». `effluent-scenarios.json` 2.4.0.
+- Notices: ICRP permission status updated (requested 2026-10-15, pending); «distributed to third parties» instead of «outside the author's organisation».
+- Test 29 checks that no distributable file contains institutional or internal-document wording.
+
 ### v1.19.0 — screen texts: repeated information removed, warnings kept once
 Review of the text shown on each page against the Guide, the page's own collapsible notes and the field labels. A regulatory warning stays visible once, where the result is read; repetitions go to the collapsible blocks or are removed. Reports and CSV files are unchanged.
 - **Properties**: the table footer is a link that opens the reference notes; the «Rep. energy» tooltip is one sentence; the detail panel no longer repeats the generic Γ source text, the Table B criteria (already in the panel and the notes) or the IS-28 caveat (already under the value). The ingestion note appears only when several chemical forms are tabulated.

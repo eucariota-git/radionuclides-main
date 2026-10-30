@@ -388,7 +388,7 @@ const CALC = (() => {
    *   E_ext  [Sv/y]  = C_wet · k · t_ext · f_geom
    *   E_inh  [Sv/y]  = C_air · BR · t_inh · e_inh
    * with DF = exp(−λ·t_transit). Algorithm reproduced from the reference
-   * workbook IRA-xxxx_Lu-177_dosis_en_escenario2_v1.xlsx (sheet Escenario-2).
+   * workbook of Scenario 2 for Lu-177 (sheet Escenario-2).
    *
    * No decay during the exposure year is modelled. Dividing the annual discharge
    * by the annual sludge production is a screening assumption; a continuous

@@ -59,7 +59,7 @@ Target users: medical physicists and radiation protection specialists.
 - External dose to one caregiver, family member or third party from a Lu-177 or I-131 therapy patient, from the rate measured at 1 m at discharge, two consecutive effective half-lives, day-time and sleeping cohabitation during and after a restriction, and equal cycles (port of the workbook *Dosis_acompanantes_simple_v2.1.xlsx*)
 - Proximity profiles: DOTATATE measured (Monserrat Fuertes et al. 2023), I-131 / Lu-177 approximate (contact = factor of 0.4 m; inverse square), or own measurements
 - Inverse calculations: maximum discharge rate, minimum and adopted restriction, floor with an indefinite restriction; dose-vs-restriction curve; self-check against the workbook v6 reference cases; 📄 Report / PDF and CSV export
-- Criteria per category (3 / 5 / 1 / 0.3 mSv) are evaluation criteria adopted by the department, not regulatory values for this treatment
+- Criteria per category (3 / 5 / 1 / 0.3 mSv) are evaluation criteria adopted in this application, not regulatory values for this treatment
 
 ### Extended database — ICRP 107 (`index.html`)
 - Main database contains 40 curated radionuclides. For any other nuclide, the Properties page offers fallback search in **ICRP Publication 107** (1252 nuclides)

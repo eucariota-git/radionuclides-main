@@ -240,8 +240,7 @@
       k<sub>1</sub> and k<sub>2</sub> are effective-dose-rate coefficients (ICRP Publication 116 (2010), ROT)
       calculated with PHITS for the geometry of each scenario — they are <strong>not</strong> point-source Γ
       constants and only apply to that geometry.</p>
-      <p>Algorithms and defaults are adapted from the reference workbooks <em>IRA-xxxx_Lu-177_dosis_en_escenario2_v1.xlsx</em>
-      (Scenario 2) and <em>Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx</em> (Scenario 1). <span id="adaptationNote"></span> Inhalation coefficients are those for adult members of
+      <p>Algorithms and defaults are adapted from the reference workbooks of Scenario 2 (Lu-177) and <em>Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx</em> (Scenario 1). <span id="adaptationNote"></span> Inhalation coefficients are those for adult members of
       the public (RD 783/2001 Annex III table b), kept by the CSN Resolution of 3 April 2024; transcription: ICRP Publication 119 (2012),
       Table G.1), lung absorption type F (fast) or M (moderate). Half-lives are taken from the
       app database (Lu-177m, not a curated entry, from ICRP 107).</p>
@@ -290,6 +289,8 @@
   }
 
   const PG = data.parameters;          // { common, s1, s2 }
+  // Version of the PHITS report behind a coefficient: first 12 characters of its SHA-256 (report and CSV only)
+  const shaOf = rf => (rf && rf.sha256 ? rf.sha256.slice(0, 12) : '');
   // Scenario 1 limitation on screen; the full note (with the CSDA argument) is in Method and in the report
   const S1_SHORT = 'Photon-only coefficients: bremsstrahlung from beta and positron emission is not included nor bounded — more severe for F-18 and I-131 than for Lu-177, least for Tc-99m.';
   const esc = UTILS.escapeHtml;
@@ -547,14 +548,13 @@
       </tr>`;
     }).join('');
     // Shared statements once; per nuclide only what differs (copy audit 2026-10-14)
-    const reportRef = rf => (rf ? ` [report ${esc(rf.file)}, SHA-256 ${esc(rf.sha256.slice(0, 12))}…]` : '');
     const CN = data.coefficient_notes;
     document.getElementById('coeffSources').innerHTML =
-      `<li><strong>All nuclides</strong> — k Sc. 1: ${esc(CN.k_s1)}${reportRef(nuclides[0].nd.k_ext.s1.report_file)}
+      `<li><strong>All nuclides</strong> — k Sc. 1: ${esc(CN.k_s1)}
         k Sc. 2: ${esc(CN.k_s2_quantity)} e(inh): ${esc(CN.e_inh_basis)}</li>` +
       nuclides.map(({ nd }) =>
         `<li><strong>${esc(nd.id)}</strong> — ` +
-        (nd.k_ext.s2 ? `k Sc. 2: ${esc(nd.k_ext.s2.source)}${reportRef(nd.k_ext.s2.report_file)} ` : 'k Sc. 2: not calculated. ') +
+        (nd.k_ext.s2 ? `k Sc. 2: ${esc(nd.k_ext.s2.source)} ` : 'k Sc. 2: not calculated. ') +
         `e(inh): absorption ${esc(nd.e_inh.type_note)}. Half-life: ${esc(nd.half_life_source || (DB.getById(nd.id) || {}).half_life_source || 'app database')}</li>`).join('');
 
     const ccHtml = nuclides.map(({ nd, T }) => {
@@ -650,8 +650,8 @@
         { heading: 'Common parameters', rows: paramRows(input, 'common') },
         { heading: 'Coefficients', rows: nuclides.flatMap(({ nd, T }) => [
           [`${nd.id} half-life`, `${UTILS.dec((T / 86400).toFixed(3))} d — ${nd.half_life_source || (DB.getById(nd.id) || {}).half_life_source || 'app database'}`],
-          [`${nd.id} k Scenario 1`, `${UTILS.dec(nd.k_ext.s1.value.toExponential(4))} (nSv/h)/(Bq/m³), u = ${UTILS.dec((nd.k_ext.s1.u_rel * 100).toFixed(2))} %`],
-          [`${nd.id} k Scenario 2 (${geo})`, nd.k_ext.s2 ? `${UTILS.dec(nd.k_ext.s2[geo].value.toExponential(4))} (nSv/h)/(Bq/m³), u = ${UTILS.dec((nd.k_ext.s2[geo].u_rel * 100).toFixed(2))} % — ${nd.k_ext.s2[geo].report_id}` : 'no coefficient'],
+          [`${nd.id} k Scenario 1`, `${UTILS.dec(nd.k_ext.s1.value.toExponential(4))} (nSv/h)/(Bq/m³), u = ${UTILS.dec((nd.k_ext.s1.u_rel * 100).toFixed(2))} % — ${nd.k_ext.s1.report_id}, SHA-256 ${shaOf(nd.k_ext.s1.report_file)}…`],
+          [`${nd.id} k Scenario 2 (${geo})`, nd.k_ext.s2 ? `${UTILS.dec(nd.k_ext.s2[geo].value.toExponential(4))} (nSv/h)/(Bq/m³), u = ${UTILS.dec((nd.k_ext.s2[geo].u_rel * 100).toFixed(2))} % — ${nd.k_ext.s2[geo].report_id}, SHA-256 ${shaOf(nd.k_ext.s2.report_file)}…` : 'no coefficient'],
           [`${nd.id} e(inh)`, `${UTILS.dec(nd.e_inh.value.toExponential(1))} Sv/Bq, type ${nd.e_inh.type}`],
         ]) },
         { heading: 'Scenario 1 — sewer system inspector', rows: scenarioRows(out.s1, r => `; C wastewater ${sci(r.per_GBq.C_water_Bq_m3)} Bq/m³ per GBq`) },
@@ -687,7 +687,7 @@
       'Scenario', 'Row_type', 'Nuclide', 'Activity_to_sewer_GBq_per_y', 'DF',
       'C_medium_per_GBq', 'C_medium_unit', 'C_air_Bq_per_m3_per_GBq',
       'D_ext_uSv_per_GBq', 'D_inh_uSv_per_GBq', 'FD_uSv_per_GBq', 'E_ext_mSv_per_y', 'E_inh_mSv_per_y', 'E_mSv_per_y',
-      'External_pathway', 'k_nSv_h_per_Bq_m3', 'e_inh_Sv_per_Bq', 'Scenario_complete', 'Missing_pathways',
+      'External_pathway', 'k_nSv_h_per_Bq_m3', 'k_report_SHA256_12', 'e_inh_Sv_per_Bq', 'Scenario_complete', 'Missing_pathways',
       'Criterion_mSv_per_y', 'Fraction_of_criterion', 'Geometry_Sc2', 'Assumptions'];
     const assumptions = SCEN.map(sc => Object.keys(PG[sc]).map(k => `${sc}.${k}=${input[sc][k]}`).join('; ')).join('; ') + '; ' +
       input.nuclides.map(n => `${n.id}: include=${n.include}, T½=${n.half_life_s} s, ${n.patients_per_y} pat × ${n.cycles_per_patient} cyc × ${n.activity_per_cycle_GBq} GBq, f_hosp=${n.fraction_in_hospital}, tanks=${n.controlled}`).join('; ');
@@ -703,10 +703,12 @@
           p6(r.per_GBq.C_air_Bq_m3), p6(r.per_GBq.D_ext_uSv), p6(r.per_GBq.D_inh_uSv), p6(r.per_GBq.FD_uSv),
           p6(r.E_ext_mSv_y), p6(r.E_inh_mSv_y), p6(r.E_mSv_y),
           r.partial ? 'not available' : 'computed',
-          p6(sc === '1' ? n.k1_nSv_h_per_Bq_m3 : n.k2_nSv_h_per_Bq_m3), p6(n.e_inh_Sv_per_Bq), ...tail]);
+          p6(sc === '1' ? n.k1_nSv_h_per_Bq_m3 : n.k2_nSv_h_per_Bq_m3),
+          (nd => (sc === '1' ? shaOf(nd.k_ext.s1.report_file) : nd.k_ext.s2 ? shaOf(nd.k_ext.s2.report_file) : ''))(data.nuclides.find(x => x.id === r.id)),
+          p6(n.e_inh_Sv_per_Bq), ...tail]);
       }
       rows.push([...common, sc, res.complete ? 'scenario total' : 'scenario PARTIAL sum', '', '', '', '', '', '', '', '', '', '', '',
-        p6(res.total_mSv_y), '', '', '', ...tail]);
+        p6(res.total_mSv_y), '', '', '', '', ...tail]);
     }
     const csv = rows.map(r => r.map(v => {
       const str = String(v);

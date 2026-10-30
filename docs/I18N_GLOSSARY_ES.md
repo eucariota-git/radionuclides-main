@@ -124,7 +124,7 @@ Revisado por el usuario el 15-10-2026: se aceptan los términos propuestos con d
 
 ## Lo que no se traduce
 
-- Referencias bibliográficas, títulos de publicaciones e identificadores de informe o norma: ICRP 107, ANS-6.4.3, NUREG/CR-5814 §5.2.1, P20P21-G9-FINAL-1.0.0. Van en elementos con `translate="no"`.
+- Referencias bibliográficas, títulos de publicaciones e identificadores de informe o norma: ICRP 107, ANS-6.4.3, NUREG/CR-5814 §5.2.1. Van en elementos con `translate="no"`.
 - Símbolos y unidades SI, salvo «/y» → «/a».
 - Las cabeceras y los valores de los CSV.
 - Los textos de licencia.

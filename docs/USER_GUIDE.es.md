@@ -119,7 +119,7 @@ No hace falta instalación ni autenticación:
    - la curva de dosis frente a la restricción;
    - una autocomprobación.
 
-**Criterios por categoría**: se aplican por tratamiento, con todos los ciclos juntos. Son criterios del servicio, no valores fijados por la normativa para este tratamiento: el RD 601/2019 exige restricciones de dosis para las personas cuidadoras, pero no fija ningún valor.
+**Criterios por categoría**: se aplican por tratamiento, con todos los ciclos juntos. Son criterios de evaluación adoptados en esta aplicación, no valores fijados por la normativa para este tratamiento: el RD 601/2019 exige restricciones de dosis para las personas cuidadoras, pero no fija ningún valor.
 - Persona cuidadora ≤ 60 años: 3 mSv (EC RP 97, Foro 2011).
 - Persona cuidadora > 60 años: 5 mSv (ICRP 103 párr. 351, ICRP 94, IAEA SSG-46).
 - Público: 1 mSv (art. 15 del RD 1029/2022).
