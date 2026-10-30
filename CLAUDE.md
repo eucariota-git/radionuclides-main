@@ -137,8 +137,8 @@ Calculators recalculate live (Decay/Dose through `UI.onInputs`, Effluent/Caregiv
 
 ## Status and pending (as of 2026-10-30, v1.20.3)
 
-- v1.20.3 (second full audit 2026-10-30, A-1…A-8: Spanish leftovers in Decay/Properties, no internal-audit citations in data texts (nuclides.json v1.5), CSN 2025 resolution in the notices, Decay report formatting, Caregiver out-of-range fields marked (`CAREGIVER.invalidFields`), chart aria-labels, public lens/skin limits in Dose; Test 33; README, LICENSING, notices and About texts reviewed) committed, not pushed nor packaged.
-- Everything up to v1.20.2 is pushed and packaged: `dist/nm-radionuclide-planner-v1.20.2.zip` (SHA-256 130b864a…, commit e5add5d); file://, HTTP, PWA install and offline reload (with and without ?id=) checked headless on 2026-10-30. Details per version in `docs/CHANGELOG.md`.
+- v1.20.3 (second full audit 2026-10-30, A-1…A-8: Spanish leftovers in Decay/Properties, no internal-audit citations in data texts (nuclides.json v1.5), CSN 2025 resolution in the notices, Decay report formatting, Caregiver out-of-range fields marked (`CAREGIVER.invalidFields`), chart aria-labels, public lens/skin limits in Dose; Test 33; README, LICENSING, notices and About texts reviewed) pushed and packaged: `dist/nm-radionuclide-planner-v1.20.3.zip` (SHA-256 85b001f1…, commit cce5367); file://, HTTP, PWA install and offline reload (with and without ?id=) checked headless on 2026-10-30.
+- Every earlier version is pushed and included in that package. Details per version in `docs/CHANGELOG.md`.
 - Spanish screens (v1.16.0+): English stays the default. Pending the author's review of the Spanish texts added in v1.16 (`docs/I18N_GLOSSARY_ES.md` items marked D or P, acceptance row B15) and in v1.18.0–v1.20.3; the v1.17 Caregiver texts were accepted (2026-10-22).
 - Pending decisions: saving and reopening a case (`UI.saveHistory`/`loadHistory` exist but are unused); a results summary near the top of Effluent.
 - Deferred by the user (2026-10-30): RP 122 Part 1 clearance values for nuclides not in Table A1 — assessment and plan in the project memory (`rp122-clearance-plan.md`).
