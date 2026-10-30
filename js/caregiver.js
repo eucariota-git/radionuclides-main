@@ -171,6 +171,30 @@ const CAREGIVER = (() => {
 
   const ROW_NAME = { day: 'Day-time', sleep: 'Sleeping' };
 
+  /** Fields holding a value outside the ranges checked by generalStatus and
+   *  rowStatus, for the page to mark them (aria-invalid). Missing values are
+   *  not listed: the status already asks for them. */
+  function invalidFields(input) {
+    const out = [];
+    const bad = (id, cond) => { if (cond) out.push(id); };
+    const { rate_1m_uSv_h: R, discharge_h: tA, fast_end_h: tF, T_fast_h: Tf, T_slow_h: Ts, cycles: N } = input;
+    bad('rate_1m_uSv_h', num(R) && R < 0);
+    bad('discharge_h', num(tA) && tA < 0);
+    bad('fast_end_h', num(tF) && tF < 0);
+    bad('T_slow_h', num(Ts) && Ts <= 0);
+    bad('cycles', num(N) && (N < 1 || N !== Math.trunc(N)));
+    const spc = input.spc_min_restriction_d;
+    bad('spc_min_restriction_d', spc !== null && spc !== undefined && !(num(spc) && spc >= 0));
+    if (num(tA) && num(tF) && tF > tA) bad('T_fast_h', num(Tf) && (Tf <= 0 || (num(Ts) && Ts > 0 && Tf > Ts)));
+    if (input.category === 'other') bad('manual_criterion_mSv', num(input.manual_criterion_mSv) && input.manual_criterion_mSv <= 0);
+    for (const k of ['day', 'sleep']) {
+      const r = input.rows[k];
+      bad(`${k}_days`, num(r.days) && r.days < 0);
+      for (const f of ['h_during', 'h_after']) bad(`${k}_${f}`, num(r[f]) && (r[f] < 0 || r[f] > 24));
+    }
+    return out;
+  }
+
   /** B32/B33: validation of one cohabitation row. Returns null when ready.
    *  The page may pass the row's current name (cohabitation scenario) as row.label. */
   function rowStatus(key, row, fDuring, fAfter, daysOptional = false) {
@@ -589,7 +613,7 @@ const CAREGIVER = (() => {
   }
 
   return {
-    load, getData, setData, evaluate, curve, selfCheck, defaultInput, profilePoints,
+    load, getData, setData, evaluate, curve, selfCheck, defaultInput, profilePoints, invalidFields,
     INVERSE_TEXT,
     // exposed for the test suite
     _internal: { kinetics, integralBefore, integralAfter, spatialFactor, maxHoursPerDay, hourModel, occupancyBounds },

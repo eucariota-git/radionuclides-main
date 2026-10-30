@@ -82,7 +82,13 @@ const esSource = s => [
   [', incl. progeny', ', incl. progenie'],
   ['source not recorded', 'fuente no registrada'],
   ['K-air', 'K-aire'],
+  ['Values include ¹³⁷ᵐBa 661.7 keV gamma in secular equilibrium', 'los valores incluyen el gamma de 661,7 keV del ¹³⁷ᵐBa en equilibrio secular'],
 ].reduce((t, [en, es]) => t.split(en).join(es), s);
+
+// The four source inconsistencies of RD 1217/2024 Annex IV kept as printed (data/regulatory.json)
+const esBoe = s => s
+  .replace(/^the progeny list includes (\S+) but its Table (A1|B) row carries no note \(([ab])\)\.$/, 'la lista de progenie incluye $1, pero su fila de la tabla $2 no lleva la nota ($3).')
+  .replace(/^the row is marked \(a\) but the progeny list has no entry for (\S+)\.$/, 'la fila lleva la nota (a), pero la lista de progenie no tiene ninguna entrada para $1.');
 
 const I18N_ES = {
   scoped: {
@@ -484,6 +490,8 @@ const I18N_ES = {
     'Note': 'Nota',
     'Exemption: Annex II A.1 criteria a) total activity (column 3) and b) activity per unit mass for ≤ 1000 kg (column 2) are separate criteria, shown for one nuclide; sums over several sources or mixtures are not evaluated.':
       'Exención: los criterios del anexo II A.1 a) actividad total (columna 3) y b) actividad por unidad de masa para ≤ 1000 kg (columna 2) son criterios distintos, mostrados para un nucleido; no se evalúan sumas de varias fuentes ni mezclas.',
+    'Exemption: the CSN values (Annex II A.3.a) of a) total activity and b) activity per unit mass for ≤ 1000 kg are separate criteria, as in Table B, shown for one nuclide; sums over several sources or mixtures are not evaluated.':
+      'Exención: los valores del CSN (anexo II A.3.a) de a) actividad total y b) actividad por unidad de masa para ≤ 1000 kg son criterios distintos, como en la tabla B, mostrados para un nucleido; no se evalúan sumas de varias fuentes ni mezclas.',
     'Exponential decay of an isolated nuclide, A(t) = A₀·e^(−λt), with the half-life stated in the header. Dates and times are local times of the device that produced the report.':
       'Decaimiento exponencial de un nucleido aislado, A(t) = A₀·e^(−λt), con el periodo de semidesintegración indicado en la cabecera. Las fechas y horas son las locales del dispositivo que generó el informe.',
     'ICRP 107 extended entry: decay data not manually validated. Verify against primary sources before regulatory use.':
@@ -609,7 +617,9 @@ const I18N_ES = {
     'of 100 mSv per consecutive 5-year period,': 'de 100 mSv a lo largo de cinco años oficiales consecutivos,',
     'projected assuming this same annual dose during 5 years': 'proyectado suponiendo esta misma dosis anual durante 5 años',
     'Skin / extremities': 'Piel / extremidades',
-    'of 500 mSv/y limit': 'del límite de 500 mSv/a',
+    'of 15 mSv/y public limit': 'del límite de 15 mSv/a de los miembros del público',
+    'of 500 mSv/y worker limit (skin and extremities) |': 'del límite de 500 mSv/a de los trabajadores expuestos (piel y extremidades) |',
+    'of 50 mSv/y public limit (skin)': 'del límite de 50 mSv/a de los miembros del público (piel)',
     'Enter an exposure time > 0 to see the annual limit comparison.': 'Introduzca un tiempo de exposición > 0 para ver la comparación con los límites anuales.',
     // Y-90
     'Y-90 experimental bremsstrahlung scenario': 'Escenario experimental de radiación de frenado de Y-90',
@@ -681,6 +691,11 @@ const I18N_ES = {
     'no (constant activity for the dose integral)': 'no (actividad constante en la integral de dosis)',
     'Dose rate constants': 'Constantes de tasa de dosis',
     'Progeny in the constants': 'Progenie en las constantes',
+    'Decay curve: activity, or activity per unit mass when a mass is entered, against time': 'Curva de decaimiento: actividad, o actividad por unidad de masa si se introduce una masa, frente al tiempo',
+    'Dose rate against distance from the source': 'Tasa de dosis frente a la distancia a la fuente',
+    'Assess generator effluents as a mixture of Mo-99 and Tc-99m components.': 'Evalúe los efluentes del generador como una mezcla de los componentes Mo-99 y Tc-99m.',
+    "Calculated by this project: ICRP 107 (2008) photon data incl. the equilibrium progeny, ICRP 74 (1996) Table A.21. Cornejo et al. (2015) publish no H'(0.07) for this entry.":
+      "Calculada en este proyecto: datos de fotones de ICRP 107 (2008), incl. la progenie en equilibrio, e ICRP 74 (1996), tabla A.21. Cornejo et al. (2015) no publican H'(0,07) para esta entrada.",
     'none (no short-lived progeny under the app criterion)': 'ninguna (sin progenie de periodo corto según el criterio de la app)',
     'H*(10) rate at d, t = 0': 'Tasa de H*(10) a d, t = 0',
     'H*(10) rate at d, after physical decay over the exposure': 'Tasa de H*(10) a d, tras el decaimiento físico durante la exposición',
@@ -1508,6 +1523,14 @@ const I18N_ES = {
     [/^1 nuclide$/, '1 nucleido'],
     [/^(?:K-air|H\*\/H′)[\s\S]*ICRP 107 \(2008\) \+ ICRP 74 \(1996\), A\.21[\s\S]*$/, m => esSource(m)],
     [/^Γ source — ([\s\S]+)$/, (m, rest) => 'Fuente de Γ — ' + esSource(rest)],
+    [/^Γ H'\(0\.07\): ([\s\S]+)$/, (m, rest) => "Γ H'(0,07): " + esText(rest)],
+    [/^recalculated \(ICRP 107 \(2008\) photon data, ICRP 74 \(1996\) Table A\.21\) differs (\S+)% from the published Cornejo et al\. \(2015\) value \((.+) μSv·h⁻¹·GBq⁻¹·m²\)\.$/,
+      'recalculada (datos de fotones de ICRP 107 (2008), ICRP 74 (1996), tabla A.21): difiere un $1 % del valor publicado por Cornejo et al. (2015) ($2 μSv·h⁻¹·GBq⁻¹·m²).'],
+    [/^No combined photon spectrum is shown for this composite entry; see its components \((.+)\)\.$/,
+      'No se muestra un espectro de fotones combinado para esta entrada compuesta; véanse sus componentes ($1).'],
+    // Decay, Table B row notes (one element per piece)
+    [/^Progeny: (.+)$/, 'Progenie: $1'],
+    [/^⚠ As printed in the BOE: ([\s\S]+)$/, (m, rest) => '⚠ Tal como figura en el BOE: ' + esBoe(rest)],
     [/^Recalculated using the stated nuclear data and conversion coefficients; difference not reconciled: ([+−-]?[\d.,]+)% from the published Cornejo et al\. \(2015\) value \(([^)]+)\)$/,
       'Recalculada con los datos nucleares y coeficientes de conversión indicados; diferencia no conciliada: $1 % respecto del valor publicado por Cornejo et al. (2015) ($2)'],
     [/^Includes the short-lived progeny in equilibrium: (.+)$/, 'Incluye la progenie de periodo corto en equilibrio: $1'],
@@ -1538,7 +1561,7 @@ const I18N_ES = {
       (m, forms) => `Ingestión de adulto e(g), formas tabuladas: ${forms}. La más restrictiva determina el nivel de vertido mostrado.`],
     [/^Table (A1|B) (\S+)((?: \([a-z0-9]\))?): ([\s\S]+?)(?: Progeny: ([\s\S]+)\.)?$/, (m, tb, id, note, text, prog) =>
       `Tabla ${tb} ${id}${note}: ${esText(text)}${prog ? ` Progenie: ${prog}.` : ''}`],
-    [/^⚠ Table (A1|B) (\S+): As printed in the BOE: ([\s\S]+)$/, (m, tb, id, rest) => `⚠ Tabla ${tb} ${id}: tal como figura en el BOE: ${rest}`],
+    [/^⚠ Table (A1|B) (\S+): As printed in the BOE: ([\s\S]+)$/, (m, tb, id, rest) => `⚠ Tabla ${tb} ${id}: tal como figura en el BOE: ${esBoe(rest)}`],
     [/^(selected|no) γ, X or annihilation lines( of the parent)? with E ≥ 20 keV and yield ≥ 0\.01% — ICRP 107$/, (m, sel, par) =>
       `${sel === 'no' ? 'ninguna línea' : 'líneas seleccionadas'} γ, X o de aniquilación${par ? ' del padre' : ''} con E ≥ 20 keV y rendimiento ≥ 0,01 % — ICRP 107`],
     [/^(.+) — one of the IS-28 II\.A\.4 conditions \(see the notes below\)$/, '$1 — una de las condiciones de la IS-28 II.A.4 (véanse las notas más abajo)'],
@@ -1666,9 +1689,10 @@ const I18N_ES = {
     [/^(H'\(0\.07\)|H'\(0\.07\) row \(H\*\(10\) value\)) rate at d, t = 0$/, (m, q) => `Tasa de ${q === "H'(0.07)" ? "H'(0,07)" : "H'(0,07) (valor de H*(10))"} a d, t = 0`],
     [/^Annual integrated (H'\(0\.07\)|H'\(0\.07\) row \(H\*\(10\) value\))$/, (m, q) => `${q === "H'(0.07)" ? "H'(0,07)" : "H'(0,07) (valor de H*(10))"} integrada anual`],
     [/^(.+)\/y — (.+) % of 20 mSv\/y \(exposed workers\); (.+) % of 1 mSv\/y \(public\)$/, '$1/a — $2 % de 20 mSv/a (trabajadores expuestos); $3 % de 1 mSv/a (público)'],
-    [/^(.+) % of 50 mSv in one year; (.+) % of 100 mSv in 5 consecutive years, assuming this annual dose in each of the 5 years$/,
-      '$1 % de 50 mSv en un único año oficial; $2 % de 100 mSv a lo largo de cinco años oficiales consecutivos, suponiendo esta dosis anual en cada uno de los 5 años'],
-    [/^(.+)\/y — (.+) % of 500 mSv\/y$/, '$1/a — $2 % de 500 mSv/a'],
+    [/^(.+) % of 50 mSv in one year; (.+) % of 100 mSv in 5 consecutive years, assuming this annual dose in each of the 5 years \(exposed workers\); (.+) % of 15 mSv\/y \(public\)$/,
+      '$1 % de 50 mSv en un único año oficial; $2 % de 100 mSv a lo largo de cinco años oficiales consecutivos, suponiendo esta dosis anual en cada uno de los 5 años (trabajadores expuestos); $3 % de 15 mSv/a (público)'],
+    [/^(.+)\/y — (.+) % of 500 mSv\/y \(exposed workers, skin and extremities\); (.+) % of 50 mSv\/y \(public, skin\)$/,
+      '$1/a — $2 % de 500 mSv/a (trabajadores expuestos, piel y extremidades); $3 % de 50 mSv/a (público, piel)'],
     [/^Skin \/ extremities \(screened with (H'\(0\.07\)|H\*\(10\) — no H'\(0\.07\) constant)\)$/, (m, q) =>
       `Piel / extremidades (cribado con ${q === "H'(0.07)" ? "H'(0,07)" : "H*(10); sin constante H'(0,07)"})`],
     [/^H\*\(10\) and H'\(0\.07\) are area-monitoring quantities\. These operational-quantity estimates do not establish compliance\. Apply the dose-assessment and monitoring methods required for the exposure situation\. (The limit screening in this report is indicative only\.|No limit screening is made for this experimental scenario\.)$/,

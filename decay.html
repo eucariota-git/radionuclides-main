@@ -152,7 +152,7 @@
     <!-- Decay curve chart -->
     <h3 class="card-title mt-2">Decay Curve</h3>
     <div class="chart-wrap">
-      <canvas id="decayChart"></canvas>
+      <canvas id="decayChart" role="img" aria-label="Decay curve: activity, or activity per unit mass when a mass is entered, against time"></canvas>
     </div>
 
     <!-- Table of values -->
@@ -1062,8 +1062,9 @@
               <div class="prop-note">t = 0: ${status(c0, row.conc_kBq_kg)}${t_h > 0 ? `<br>t = ${UTILS.fmt(t_h)} h: ${status(ct, row.conc_kBq_kg)}` : ''}${tC ? `<br>Reached after &#126; ${fmtT(tC)}` : ''}</div></div>`;
           }
           crit += '</div>';
+          // one element per piece, so each is a text of its own (Spanish overlay)
           const extra = [row.note_text, row.progeny.length ? `Progeny: ${row.progeny.join(', ')}` : '', row.source_inconsistency ? `⚠ ${row.source_inconsistency}` : '']
-            .filter(Boolean).map(t => UTILS.escapeHtml(t)).join(' ');
+            .filter(Boolean).map(t => `<span>${UTILS.escapeHtml(t)}</span>`).join(' ');
           return (ex.rows.length > 1 ? `<p class="text-sm"><strong>${UTILS.escapeHtml(row.id)}${tag}</strong></p>` : '') + crit +
             (extra ? `<div class="form-hint">${extra}</div>` : '');
         }).join('');
@@ -1151,23 +1152,24 @@
       const rows = [
         ['Mass of material assessed', `${UTILS.num(r.vialWeightRaw)} ${r.vialWeightUnit} (${UTILS.fmt(r.weight_kg)} kg) — mass basis as entered by the user; the app does not record whether the container is included`],
         ['Specific activity at t = 0', `${UTILS.fmt(specA0)} kBq/kg`],
-        [`Specific activity at t = ${UTILS.fmt(r.t_h)} h`, `${UTILS.fmt(specAt)} kBq/kg`],
       ];
+      // the «at t» rows only when a time was entered (t = 0 would repeat the row above)
+      if (r.t_h > 0) rows.push([`Specific activity at t = ${UTILS.fmt(r.t_h)} h`, `${UTILS.fmt(specAt)} kBq/kg`]);
       const clrR = clearanceOf(r.n);
       if (clearLevel === null) {
         rows.push(['Clearance level (Table A1)', `${clrR.id}: ${clrR.text}${clrR.natural_text ? ' ' + clrR.natural_text : ''}`]);
       } else {
         const rowA1 = clrR.rows[0];
-        rows.push(['Clearance level (Table A1)', `${UTILS.fmt(clearLevel)} kBq/kg (${clrR.id}${rowA1.note ? `, note (${rowA1.note}); progeny ${rowA1.progeny.join(', ') || 'none listed'}` : ''})${rowA1.source_inconsistency ? ' — ' + rowA1.source_inconsistency : ''}`]);
+        rows.push(['Clearance level (Table A1)', `${UTILS.fmtSig(clearLevel, 1)} kBq/kg (${clrR.id}${rowA1.note ? `, note (${rowA1.note}); progeny ${rowA1.progeny.join(', ') || 'none listed'}` : ''})${rowA1.source_inconsistency ? ' — ' + rowA1.source_inconsistency : ''}`]);
         rows.push(['Status at t = 0', `${specA0 <= clearLevel ? 'AT OR BELOW' : 'ABOVE'} the individual Table A1 level (${UTILS.fmtRatio(specA0 / clearLevel)} × level)`]);
-        rows.push([`Status at t = ${UTILS.fmt(r.t_h)} h`, `${specAt <= clearLevel ? 'AT OR BELOW' : 'ABOVE'} the individual Table A1 level (${UTILS.fmtRatio(specAt / clearLevel)} × level)`]);
+        if (r.t_h > 0) rows.push([`Status at t = ${UTILS.fmt(r.t_h)} h`, `${specAt <= clearLevel ? 'AT OR BELOW' : 'ABOVE'} the individual Table A1 level (${UTILS.fmtRatio(specAt / clearLevel)} × level)`]);
         if (specA0 > clearLevel) {
           const t_clear_h = (r.T_half_h / Math.LN2) * Math.log(specA0 / clearLevel);
           rows.push(['Time to reach the Table A1 concentration level', `≈ ${UTILS.fmt(t_clear_h)} h = ${UTILS.fmt(t_clear_h / 24)} d`]);
         }
       }
       sections.push({ heading: 'Clearance assessment — RD 1217/2024 Annex IV Table A1', rows });
-      notes.push('Clearance: individual Table A1 level for one nuclide (any quantity, any solid material); the mixture rule Σ(Cᵢ/Lᵢ) ≤ 1 of Annex III.1.a is not evaluated.');
+      if (clearLevel !== null) notes.push('Clearance: individual Table A1 level for one nuclide (any quantity, any solid material); the mixture rule Σ(Cᵢ/Lᵢ) ≤ 1 of Annex III.1.a is not evaluated.');
     }
     {
       const ex = REGULATORY.exemptionB(r.n.id);
@@ -1180,10 +1182,11 @@
         for (const row of ex.rows) {
           const tag = row.note ? ` (${row.note})` : '';
           const A0_Bq = r.A0_MBq * 1e6, At_Bq = r.At_MBq * 1e6;
-          rows.push([`a) Total activity, ${col(3)}${tag}`, `${UTILS.fmt(row.activity_Bq)} Bq; t = 0: ${UTILS.fmtRatio(A0_Bq / row.activity_Bq)} × value; t = ${UTILS.fmt(r.t_h)} h: ${UTILS.fmtRatio(At_Bq / row.activity_Bq)} × value`]);
+          const atT = ratio => (r.t_h > 0 ? `; t = ${UTILS.fmt(r.t_h)} h: ${UTILS.fmtRatio(ratio)} × value` : '');
+          rows.push([`a) Total activity, ${col(3)}${tag}`, `${UTILS.fmtSig(row.activity_Bq, 1)} Bq; t = 0: ${UTILS.fmtRatio(A0_Bq / row.activity_Bq)} × value${atT(At_Bq / row.activity_Bq)}`]);
           if (r.weight_kg && r.weight_kg <= 1000) {
             const c0 = r.A0_MBq * 1e3 / r.weight_kg, ct = r.At_MBq * 1e3 / r.weight_kg;
-            rows.push([`b) Moderate quantity (≤ 1000 kg), ${col(2)}${tag}`, `${UTILS.fmt(row.conc_kBq_kg)} kBq/kg; t = 0: ${UTILS.fmtRatio(c0 / row.conc_kBq_kg)} × value; t = ${UTILS.fmt(r.t_h)} h: ${UTILS.fmtRatio(ct / row.conc_kBq_kg)} × value`]);
+            rows.push([`b) Moderate quantity (≤ 1000 kg), ${col(2)}${tag}`, `${UTILS.fmtSig(row.conc_kBq_kg, 1)} kBq/kg; t = 0: ${UTILS.fmtRatio(c0 / row.conc_kBq_kg)} × value${atT(ct / row.conc_kBq_kg)}`]);
           } else {
             rows.push([`b) Moderate quantity, ${col(2)}${tag}`, r.weight_kg ? 'not applicable: mass above 1000 kg (Annex II A.1.c — Table A1)' : 'not evaluated: no mass of material entered']);
           }
@@ -1191,8 +1194,11 @@
         }
       }
       sections.push({ heading: 'Exemption assessment — RD 1217/2024 Annex IV Table B (Annex II A.1 a and b)', rows });
-      notes.push('Exemption: Annex II A.1 criteria a) total activity (column 3) and b) activity per unit mass for ≤ 1000 kg (column 2) are separate criteria, shown for one nuclide; sums over several sources or mixtures are not evaluated.');
+      notes.push(ex.status === 'csn'
+        ? 'Exemption: the CSN values (Annex II A.3.a) of a) total activity and b) activity per unit mass for ≤ 1000 kg are separate criteria, as in Table B, shown for one nuclide; sums over several sources or mixtures are not evaluated.'
+        : 'Exemption: Annex II A.1 criteria a) total activity (column 3) and b) activity per unit mass for ≤ 1000 kg (column 2) are separate criteria, shown for one nuclide; sums over several sources or mixtures are not evaluated.');
       sources.push('RD 1217/2024, Anexo IV Tablas A1 y B y Anexos II y III (BOE-A-2024-25205).');
+      if (ex.status === 'csn') sources.push('Resolución del Consejo de Seguridad Nuclear de 16 de junio de 2025, valores de exención para Y-88 y Ba-133 (RD 1217/2024, anexo II A.3.a; publicada en la web del CSN).');
     }
     if (r.n._icrp107) notes.push('ICRP 107 extended entry: decay data not manually validated. Verify against primary sources before regulatory use.');
     if (r.n.chain_members) notes.push('Chain entry: dose constants include progeny in secular equilibrium; the decay calculation follows the parent half-life (valid once equilibrium is established, i.e. aged ≳ 10 daughter half-lives).');

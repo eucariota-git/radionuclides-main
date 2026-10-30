@@ -765,6 +765,28 @@ async function main() {
         /Exemption ≤ 1000 kg, CSN value/.test(props) && /CSN Resolution of 16 June 2025/.test(props) && /kept in force/.test(props), props.slice(0, 400));
       await pageChecks('properties Y-88');
     });
+    await guard('Audit 2026-10-30 (second): A-1, A-5, A-7', async () => {
+      // A-7: public lens and skin limits in the comparison box
+      await open('dose.html?id=Lu-177', 1280);
+      const lim = (await text('#limitComparison')).replace(/\s+/g, ' ');
+      check('dose: public lens 15 mSv/y and skin 50 mSv/y compared', /of 15 mSv\/y public limit/.test(lim) && /of 50 mSv\/y public limit \(skin\)/.test(lim), lim.slice(0, 300));
+      // A-1: Decay Table B note pieces in Spanish (Cs-137, note (b))
+      await open('decay.html?id=Cs-137', 1280);
+      await ev(`document.getElementById('langToggle').click()`); await sleep(400);
+      const ex = (await text('#exemptionContent')).replace(/\s+/g, ' ');
+      check('decay Cs-137 ES: Table B note and «Progenie: Ba-137m» in Spanish', /Progenie: Ba-137m/.test(ex) && !/Parent radionuclide|Progeny:/.test(ex), ex.slice(0, 300));
+      await ev(`document.getElementById('langToggle').click()`); await sleep(300);
+      // A-5: an out-of-range value marks its field and is not echoed as applied
+      await open('caregiver.html', 1280);
+      await ev(`(() => { const s = (i, v) => { const e = document.getElementById(i); e.value = v; e.dispatchEvent(new Event('input', { bubbles: true })); };
+        s('cycles', '1.5'); s('category', 'other'); s('manual_criterion_mSv', '-1'); })()`);
+      await sleep(500);
+      const cg = await ev(`({ cyc: document.getElementById('cycles').getAttribute('aria-invalid'), crit: document.getElementById('manual_criterion_mSv').getAttribute('aria-invalid'),
+        unit: document.getElementById('treatmentUnit').textContent, shown: document.getElementById('criterion').textContent })`);
+      check('caregiver: cycles 1.5 and criterion −1 marked aria-invalid; summary shows «?» and «—»',
+        cg.cyc === 'true' && cg.crit === 'true' && /\? cycle/.test(cg.unit) && cg.shown === '—', JSON.stringify(cg));
+      await pageChecks('caregiver invalid ranges');
+    });
     await guard('Theme follows the system preference without a stored choice', async () => {
       await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'dark' }] });
       await open('decay.html?id=Tc-99m', 1280);

@@ -320,7 +320,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v71');
+    swVersion === 'nm-planner-v72');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -1022,8 +1022,8 @@ async function main() {
       /'\.\/data\/nuclides\.json',\s*'\.\/data\/regulatory\.json',\s*'\.\/data\/caregiver\.json',\s*'\.\/data\/effluent-scenarios\.json',/.test(swJs));
     const nucs = JSON.parse(read('data/nuclides.json'));
     const pd = nucs.nuclides.find(n => n.id === 'Pd-103');
-    check('F-01: database v1.4 with content hash; Pd-103 shielding spectrum built with its chain_members ratio',
-      nucs.version === '1.4' && /^[0-9a-f]{64}$/.test(nucs.notes.content_sha256) &&
+    check('F-01: database v1.4 or later with content hash; Pd-103 shielding spectrum built with its chain_members ratio',
+      parseFloat(nucs.version) >= 1.4 && /^[0-9a-f]{64}$/.test(nucs.notes.content_sha256) &&
       (!fs.existsSync(path.join(ROOT, 'tools/add-shielding-spectra.js')) || /Array\.isArray\(n\.chain_members\) && n\.chain_members\.length/.test(read('tools/add-shielding-spectra.js'))) &&
       pd.shielding_spectrum.length === 16);
   }
@@ -1568,6 +1568,46 @@ async function main() {
     check('O-2 / O-3: e(g) note «kept in force»; f1 is the «> 1 y» column; I-131 ⓘ names the discharge activity',
       /Annex III table a\), kept in force/.test(indexHtml) && reg.ingestion_public_adult.rows.every(r => 'f1_over_1y' in r && !('f1' in r)) &&
       /f1 \(> 1 y\)/.test(indexHtml) && /Activity per treatment at hospital discharge \(default of the reference workbook\)/.test(read('data/effluent-scenarios.json')));
+  }
+
+  console.log('Test 33: audit 2026-10-30 (second), A-1…A-8 (v1.20.3)');
+  {
+    const ctx = vm.createContext({});
+    vm.runInContext(read('js/i18n-es.js') + ';this.__ES = I18N_ES;', ctx);
+    const ES = ctx.__ES;
+    const es = s => { if (ES.exact[s] !== undefined) return ES.exact[s]; for (const [re, rep] of ES.patterns) if (re.test(s)) { const r = s.replace(re, rep); if (r !== s) return r; } return null; };
+    const nucs = JSON.parse(read('data/nuclides.json')).nuclides;
+    const h007 = nucs.find(n => n.id === 'Cs-137').gamma_H007_source;
+    check('A-1: Spanish for the Table B note pieces, the Cornejo deviation, the composite Mo-99 notes, the H\'(0.07) and Cs-137 Γ sources',
+      /\.map\(t => `<span>\$\{UTILS\.escapeHtml\(t\)\}<\/span>`\)/.test(decayHtml) &&
+      es('Progeny: Ba-137m') === 'Progenie: Ba-137m' &&
+      /tabla B no lleva la nota \(b\)/.test(es('⚠ As printed in the BOE: the progeny list includes Ag-108m but its Table B row carries no note (b).')) &&
+      /^recalculada .* difiere un -6,2 % del valor publicado por Cornejo et al\. \(2015\) \(45 μSv/.test(es('recalculated (ICRP 107 (2008) photon data, ICRP 74 (1996) Table A.21) differs -6,2% from the published Cornejo et al. (2015) value (45 μSv·h⁻¹·GBq⁻¹·m²).') || '') &&
+      /^No se muestra un espectro/.test(es('No combined photon spectrum is shown for this composite entry; see its components (Mo-99, Tc-99m).') || '') &&
+      /^Evalúe los efluentes/.test(es(nucs.find(n => n.id === 'Mo-99+Tc-99m').effluent_liquid_note) || '') &&
+      /^Γ H'\(0,07\): Calculada en este proyecto/.test(es("Γ H'(0.07): " + h007) || '') &&
+      /los valores incluyen el gamma de 661,7 keV/.test(es('Γ source — K-air, H*: Cornejo (2015); H′: x. Cornejo et al. — Values include ¹³⁷ᵐBa 661.7 keV gamma in secular equilibrium') || ''));
+    check('A-2: no source text of the database cites an internal audit; nuclides.json v1.5 (values unchanged)',
+      nucs.every(n => !/\baudit\b|R-0\d/.test([n.gamma_H007_source, n.gamma_Kair_source, n.source, n.half_life_source].filter(Boolean).join(' '))) &&
+      JSON.parse(read('data/nuclides.json')).version === '1.5' && nucs.find(n => n.id === 'Cs-137').gamma_H007 === 92.27);
+    check('A-3: the notices and their About copy cite the CSN Resolution of 16 June 2025 (art. 13 LPI)',
+      [read('THIRD_PARTY_NOTICES.md'), aboutHtml].every(t => /Resolution of the\s+Consejo de Seguridad Nuclear of 16 June 2025/.test(t) && /csn_exemption/.test(t)));
+    check('A-4: the Decay report writes regulatory values with fmtSig, the «at t» parts only for t > 0, and a CSN wording of the exemption note',
+      /\$\{UTILS\.fmtSig\(row\.activity_Bq, 1\)\} Bq/.test(decayHtml) && /\$\{UTILS\.fmtSig\(row\.conc_kBq_kg, 1\)\} kBq\/kg; t = 0/.test(decayHtml) &&
+      /\$\{UTILS\.fmtSig\(clearLevel, 1\)\} kBq\/kg \(/.test(decayHtml) && /const atT = ratio => \(r\.t_h > 0/.test(decayHtml) &&
+      /if \(r\.t_h > 0\) rows\.push\(\[`Status at t = /.test(decayHtml) && /Exemption: the CSN values \(Annex II A\.3\.a\)/.test(decayHtml));
+    const inv = mod => { const x = wbInput(); mod(x); return CG.invalidFields(x).join(); };
+    check('A-5: CAREGIVER.invalidFields marks out-of-range values (none for the workbook case); the summary does not echo an invalid criterion or cycle count',
+      inv(() => {}) === '' && inv(x => { x.rate_1m_uSv_h = -1; }) === 'rate_1m_uSv_h' && inv(x => { x.cycles = 1.5; }) === 'cycles' &&
+      inv(x => { x.T_slow_h = 0; }) === 'T_slow_h' && inv(x => { x.rows.day.h_during = 30; }) === 'day_h_during' &&
+      inv(x => { x.category = 'other'; x.manual_criterion_mSv = -1; }) === 'manual_criterion_mSv' && inv(x => { x.manual_criterion_mSv = -1; }) === '' &&
+      /markRange\(CAREGIVER\.invalidFields\(input\)\)/.test(caregiverHtml) && /out\.criterion\.value > 0 \? UTILS\.num/.test(caregiverHtml) &&
+      /Number\.isInteger\(input\.cycles\) && input\.cycles >= 1/.test(caregiverHtml));
+    check('A-6: every chart canvas has role="img" and an aria-label',
+      [decayHtml, doseHtml, caregiverHtml, indexHtml].every(h => (h.match(/<canvas [^>]*>/g) || []).every(c => /role="img"/.test(c) && /aria-label="[^"]{10,}"/.test(c))));
+    check('A-7: Dose compares the public lens (15 mSv/y) and skin (50 mSv/y) limits of RD 1029/2022 art. 15.2, on screen and in the report',
+      /of 15 mSv\/y public limit/.test(doseHtml) && /of 50 mSv\/y public limit \(skin\)/.test(doseHtml) &&
+      /of 15 mSv\/y \(public\)/.test(doseHtml) && /of 50 mSv\/y \(public, skin\)/.test(doseHtml));
   }
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);

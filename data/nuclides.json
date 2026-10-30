@@ -1,5 +1,5 @@
 {
-  "version": "1.4",
+  "version": "1.5",
   "reference": "Cornejo Díaz N., Brosed Serreta A., Ruiz Manzano P. Constantes de tasa de kerma en aire y de tasa de equivalente de dosis ambiental de algunos radionucleidos utilizados en aplicaciones médicas. Radioprotección (SEPR), Nº 83, pp. 39–42, octubre 2015.",
   "notes": {
     "author": "José Ramón Sendón del Río — compilation, recalculation and verification of the curated database",
@@ -26,8 +26,8 @@
     "yield_threshold_note": "Lines with a stored yield EQUAL to 0.01 % are kept (filter n ≥ 0.01 %). Cornejo et al. (2015) state yields above 0.01 %; keeping the boundary lines is a project choice applied to all 1252 nuclides (audit 2026-10-03, H14).",
     "conversion_table_note": "Γ^H*(10) and Γ^H'(0.07) use the 25 printed fluence coefficients of ICRP 74 (1996) Table A.21 (js/data.js), log-log interpolated, since 2026-10-03. Before that the H*(10) column above 1 MeV and the H'(0.07) column did not match A.21 (audit 2026-10-03, H-01/H-02).",
     "half_life_source_note": "Per-nuclide provenance in half_life_source (audit 2026-10-14, N-03): each curated half-life matches ICRP Publication 107 (2008) or the DDEP recommended value (LNHB/CEA) within 0.015 %; the values that matched neither (O-15, Mo-99, Lu-177, Y-90 → DDEP; K-42 → ICRP 107) were replaced. Photon yields and Γ constants remain ICRP 107.",
-    "content_sha256": "221265852fa6bd75665ac131dce52b5d537c9568ef0a5baf4c10c41c47c0c3c4",
-    "version_note": "v1.4 (2026-10-15): content changed in app v1.12.0 (Pd-103 with Rh-103m, calculated H'(0.07) of Cs-137 and Mo-99+Tc-99m, 18 half-lives equal to their source, decay-mode notation) and v1.13.0 (shielding spectra from chain_members). content_sha256 = SHA-256 of JSON.stringify(nuclides); test/validate-data.js maps each version to its hash, so a content change without a version bump fails."
+    "content_sha256": "a49c9976066c5ae880b5adbba25ff1a464c3cb7e9a2581ec5fa41a8414318d9c",
+    "version_note": "v1.5 (2026-10-30): the H'(0.07) source text of Cs-137 and Mo-99+Tc-99m and the K-air source text of Ga-68 no longer cite an internal audit (app v1.20.3); values unchanged. v1.4 (2026-10-15): content changed in app v1.12.0 (Pd-103 with Rh-103m, calculated H'(0.07) of Cs-137 and Mo-99+Tc-99m, 18 half-lives equal to their source, decay-mode notation) and v1.13.0 (shielding spectra from chain_members). content_sha256 = SHA-256 of JSON.stringify(nuclides); test/validate-data.js maps each version to its hash, so a content change without a version bump fails."
   },
   "nuclides": [
     {
@@ -1001,7 +1001,7 @@
       "category": "diagnostic",
       "modality": "PET",
       "gamma_Kair": 129,
-      "gamma_Kair_source": "Calculated by this project from ICRP 107 (2008) photon data and ICRP 74 (1996) Table A.21 (air kerma per unit fluence): 128.75, stored as 129 (reproduced in audit 2026-10-14 v1.11, R-04)",
+      "gamma_Kair_source": "Calculated by this project from ICRP 107 (2008) photon data and ICRP 74 (1996) Table A.21 (air kerma per unit fluence): 128.75, stored as 129",
       "gamma_H10": 157.84,
       "gamma_H007": 157.84,
       "H007_from_cornejo": false,
@@ -1563,7 +1563,7 @@
         ]
       ],
       "half_life_source": "DDEP — LNHB/CEA Table de Radionucléides: T½ = 2.7479(6) d (Mo-99) (consulted 2026-10-14)",
-      "gamma_H007_source": "Calculated by this project (audit 2026-10-14 v1.11, R-03): ICRP 107 (2008) photon data incl. the equilibrium progeny, ICRP 74 (1996) Table A.21. Cornejo et al. (2015) publish no H'(0.07) for this entry; the value used until v1.11 was a copy of H*(10)."
+      "gamma_H007_source": "Calculated by this project: ICRP 107 (2008) photon data incl. the equilibrium progeny, ICRP 74 (1996) Table A.21. Cornejo et al. (2015) publish no H'(0.07) for this entry."
     },
     {
       "id": "Pd-103",
@@ -2740,7 +2740,7 @@
       "e_max_beta_MeV": 1.17563,
       "beta_yield_per_decay": 1.002,
       "half_life_source": "ICRP Publication 107 (2008)",
-      "gamma_H007_source": "Calculated by this project (audit 2026-10-14 v1.11, R-03): ICRP 107 (2008) photon data incl. the equilibrium progeny, ICRP 74 (1996) Table A.21. Cornejo et al. (2015) publish no H'(0.07) for this entry; the value used until v1.11 was a copy of H*(10)."
+      "gamma_H007_source": "Calculated by this project: ICRP 107 (2008) photon data incl. the equilibrium progeny, ICRP 74 (1996) Table A.21. Cornejo et al. (2015) publish no H'(0.07) for this entry."
     },
     {
       "id": "Sm-153",

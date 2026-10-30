@@ -677,6 +677,13 @@
   let last = null;
   // Error message in the page box and the offending field marked (presentation review 2026-10-15)
   const inputErr = UI.inputErrors('calcError');
+  // Out-of-range values: the status box says what is wrong; the fields are marked here
+  const rangeMarked = new Set();
+  function markRange(ids) {
+    for (const id of rangeMarked) { const e = $(id); e.classList.remove('is-invalid'); e.removeAttribute('aria-invalid'); }
+    rangeMarked.clear();
+    for (const id of ids) { const e = $(id); if (e) { e.classList.add('is-invalid'); e.setAttribute('aria-invalid', 'true'); rangeMarked.add(id); } }
+  }
   function render() {
     // Fields written by the page (Defaults, presets, adopted restriction) fire
     // no input event: refresh the "Read as …" notes here (decimal review 2026-10-15, D-01)
@@ -693,6 +700,7 @@
       cv = CAREGIVER.curve(input, data);
       sc = CAREGIVER.selfCheck(input, data);
     } catch (err) {
+      markRange([]);
       inputErr.show(err.message, err.field);
       $('resultBlock').classList.add('hidden');
       // the row doses sit in the cohabitation table, outside the result block:
@@ -702,6 +710,7 @@
       return;
     }
     inputErr.clear();
+    markRange(CAREGIVER.invalidFields(input));
     $('resultBlock').classList.remove('hidden');
     last = { input, out, cv, sc };
 
@@ -737,9 +746,10 @@
     for (const [k] of ROWS) $(`${k}_dose`).textContent = Number.isFinite(out.rows[k].dose_mSv) ? UTILS.dec(out.rows[k].dose_mSv.toPrecision(3)) : '—';
     $('perCycle').textContent = f3(out.perCycle_mSv);
     $('treatment').textContent = f3(out.treatment_mSv);
-    $('treatmentUnit').textContent = `mSv — ${Number.isFinite(input.cycles) ? UTILS.num(input.cycles) : '?'} cycle(s)`;
+    // an invalid number of cycles or criterion is not echoed as if it were applied (audit 2026-10-30, A-5)
+    $('treatmentUnit').textContent = `mSv — ${Number.isInteger(input.cycles) && input.cycles >= 1 ? UTILS.num(input.cycles) : '?'} cycle(s)`;
     $('treatmentBox').className = `result-box${bad ? ' danger' : ''}`;
-    $('criterion').textContent = Number.isFinite(out.criterion.value) ? UTILS.num(out.criterion.value) : '—';
+    $('criterion').textContent = Number.isFinite(out.criterion.value) && out.criterion.value > 0 ? UTILS.num(out.criterion.value) : '—';
     $('criterionUnit').textContent = out.criterion.label ? `mSv — ${out.criterion.label}` : 'mSv';
     $('margin').textContent = f3(out.margin_mSv);
     $('occupancyBox').classList.toggle('hidden', !out.occupancy && !out.occupancyNote);
@@ -852,7 +862,7 @@
           ['Fast effective half-life', input.fast_end_h > input.discharge_h ? `${UTILS.num(input.T_fast_h)} h` : 'not used'],
           ['Slow effective half-life', `${UTILS.num(input.T_slow_h)} h`],
           ['Number of equal cycles', UTILS.num(input.cycles)],
-          ['Category / criterion', `${out.criterion.label}: ${out.criterion.value != null ? UTILS.num(out.criterion.value) : '—'} mSv per treatment (${out.criterion.basis})`],
+          ['Category / criterion', `${out.criterion.label}: ${out.criterion.value > 0 ? UTILS.num(out.criterion.value) : '—'} mSv per treatment (${out.criterion.basis})`],
           ['Minimum restriction of the product information', input.spc_min_restriction_d === null ? 'not entered' : `${UTILS.num(input.spc_min_restriction_d)} d`],
           ['Proximity profile', `${prof.label} ${prof.ref} — ${prof.nature}`],
         ].concat(input.profile === 'own' ? out.points.map(p => [`Own measurement ${p.distance_m != null ? UTILS.num(p.distance_m) : '—'} m`, `${p.rate_uSv_h != null ? UTILS.num(p.rate_uSv_h) : '—'} µSv/h → factor ${Number.isFinite(p.factor) ? UTILS.dec(p.factor.toPrecision(4)) : 'none'}`]) : []) },

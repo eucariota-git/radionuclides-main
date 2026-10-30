@@ -182,6 +182,10 @@ Files: `data/regulatory.json`, `data/regulatory-data.js`.
   RD 783/2001 Annex III table a) adult public ingestion coefficients: legal
   provisions published in the BOE, excluded from intellectual property under
   art. 13 of the Spanish Intellectual Property Law (LPI).
+- Exemption values for Y-88 and Ba-133 (`csn_exemption`): Resolution of the
+  Consejo de Seguridad Nuclear of 16 June 2025 under RD 1217/2024 Annex II A.3.a,
+  published on the CSN website; an agreement of a public body, likewise excluded
+  under art. 13 LPI.
 - The ingestion coefficients are transcribed from ICRP Publication 119 (2012)
   Table F.1, © ICRP, which reproduces the same values; the chemical-form labels
   come from that publication. Cited with attribution; the publication is not

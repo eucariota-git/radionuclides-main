@@ -214,7 +214,7 @@
     <!-- Dose vs distance chart -->
     <h3 class="card-title" id="chartTitle">Dose-equivalent rate vs distance (unshielded)</h3>
     <div class="chart-wrap" id="distChartContainer">
-      <canvas id="distChart"></canvas>
+      <canvas id="distChart" role="img" aria-label="Dose rate against distance from the source"></canvas>
     </div>
 
     <hr class="divider">
@@ -779,8 +779,8 @@
     const fd = v => CALC.formatDose(v).display;
     return { heading: 'Annual dose limit comparison — indicative screening only (RD 1029/2022 arts. 11 and 15)', rows: [
       ['Effective dose (screened with H*(10))', `${fd(wb)}/y — ${pc(wb, 20)} of 20 mSv/y (exposed workers); ${pc(wb, 1)} of 1 mSv/y (public)`],
-      ['Lens of the eye (screened with H*(10); the assessment requires Hp(3) and the dosimetric history)', `${pc(wb, 50)} of 50 mSv in one year; ${pc(wb * 5, 100)} of 100 mSv in 5 consecutive years, assuming this annual dose in each of the 5 years`],
-      [`Skin / extremities (screened with ${r.useH007 ? "H'(0.07)" : "H*(10) — no H'(0.07) constant"})`, `${fd(ext)}/y — ${pc(ext, 500)} of 500 mSv/y`],
+      ['Lens of the eye (screened with H*(10); the assessment requires Hp(3) and the dosimetric history)', `${pc(wb, 50)} of 50 mSv in one year; ${pc(wb * 5, 100)} of 100 mSv in 5 consecutive years, assuming this annual dose in each of the 5 years (exposed workers); ${pc(wb, 15)} of 15 mSv/y (public)`],
+      [`Skin / extremities (screened with ${r.useH007 ? "H'(0.07)" : "H*(10) — no H'(0.07) constant"})`, `${fd(ext)}/y — ${pc(ext, 500)} of 500 mSv/y (exposed workers, skin and extremities); ${pc(ext, 50)} of 50 mSv/y (public, skin)`],
     ]};
   }
 
@@ -1398,7 +1398,7 @@
     let chartEl = document.getElementById('distChart');
     if (!chartEl || !chartEl.getContext) {
       const container = document.getElementById('distChartContainer');
-      container.innerHTML = '<canvas id="distChart"></canvas>';
+      container.innerHTML = '<canvas id="distChart" role="img" aria-label="Dose rate against distance from the source"></canvas>';
       chartEl = document.getElementById('distChart');
     }
     const ctx = chartEl.getContext('2d');
@@ -1503,9 +1503,11 @@
         <br><em style="font-size:0.9em;">Both RD 1029/2022 conditions must be satisfied:</em>
         &nbsp;— ${pct(annualDoseWB, 50)} of 50 mSv/y max annual
         &nbsp;|&nbsp; ${pct(annualDoseWB * 5, 100)} of 100 mSv per consecutive 5-year period, <em style="font-size:0.9em;">projected assuming this same annual dose during 5 years</em>
+        &nbsp;|&nbsp; ${pct(annualDoseWB, 15)} of 15 mSv/y public limit
         <br>
         <strong>Skin / extremities</strong> (screened with ${useH007 ? "H'(0.07)" : "H*(10) — no &#915;<sup>H'(0.07)</sup> constant for this nuclide; may underestimate the skin dose of low-energy emitters"}): ${CALC.formatDose(annualDoseExt).display}/y
-        &nbsp;— ${pct(annualDoseExt, 500)} of 500 mSv/y limit
+        &nbsp;— ${pct(annualDoseExt, 500)} of 500 mSv/y worker limit (skin and extremities)
+        &nbsp;|&nbsp; ${pct(annualDoseExt, 50)} of 50 mSv/y public limit (skin)
       </div>
     `;
 

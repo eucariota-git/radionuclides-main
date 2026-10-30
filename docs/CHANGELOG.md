@@ -4,6 +4,17 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
+### v1.20.3 — second full audit 2026-10-30: findings A-1…A-8
+- **A-1, Spanish screens.** Translated: the Table B note pieces in Decay (each piece is now its own element: note, «Progeny: …», «⚠ As printed in the BOE: …», with the four BOE inconsistencies in Spanish), the «Γ recalculated … differs … from the published Cornejo et al. value» warning, the composite Mo-99+Tc-99m notes, the H'(0.07) source line and the Cs-137 Γ source.
+- **A-2.** The source texts of Cs-137 and Mo-99+Tc-99m (H'(0.07)) and of Ga-68 (K-air) no longer cite internal audits; values unchanged (`nuclides.json` v1.5, new content hash).
+- **A-3.** `THIRD_PARTY_NOTICES.md` and its About copy cite the CSN Resolution of 16 June 2025 (`csn_exemption`, art. 13 LPI).
+- **A-4, Decay report.** Regulatory values with `fmtSig` (no false decimals: 1×10⁶ Bq, 100 kBq/kg); the «at t» rows and parts only when a time was entered; the exemption note and the sources name the CSN resolution for Y-88 / Ba-133; the A1 mixture note only when the nuclide has an A1 level.
+- **A-5, Caregiver.** `CAREGIVER.invalidFields` lists the out-of-range fields (same ranges as the status checks) and the page marks them (`aria-invalid`); an invalid criterion or number of cycles is no longer echoed in the summary or the report as if applied.
+- **A-6.** The Decay and Dose charts have `role="img"` and an `aria-label`.
+- **A-7, Dose.** The limit comparison adds the public limits of RD 1029/2022 art. 15.2 — lens 15 mSv/y and skin 50 mSv/y — on screen and in the report.
+- **A-8.** CLAUDE.md: the photon filter includes annihilation photons (AQ), as the code and the guide say.
+- Test 33; browser-smoke case.
+
 ### v1.20.2 — full audit 2026-10-30: observations O-1…O-3
 - **O-1, CSN exemption values for Y-88 and Ba-133.** RD 1217/2024 Annex II A.3.a refers nuclides not in Table B to the values set by the CSN; the CSN Resolution of 16 June 2025 (Plenary of 11 June 2025, published on the CSN website, not in the BOE) sets Y-88 10 kBq/kg · 1 × 10⁶ Bq and Ba-133 100 kBq/kg · 1 × 10⁶ Bq. `data/regulatory.json` v1.1.0 keeps them in their own block `csn_exemption` (never mixed with Annex IV; the build aborts if a nuclide is in both); `REGULATORY.exemptionB` returns them with status `csn`. Properties and Decay show them as «CSN value» with the resolution as source (screen, report and CSV); the A1 «not tabulated» state does not change (the resolution sets no clearance level). The «not tabulated» text of Table B now says which CSN values the app includes.
 - `tools/build-regulatory-data.js`: the hand-added A1 progeny Es-254m → Fm-254 is now read from the library CSV (corrected there on 2026-10-18) and checked. Annex IV, Table B and F.1 contents unchanged (only the library CSV hashes, whose headers were updated).
