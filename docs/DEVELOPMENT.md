@@ -247,6 +247,12 @@ warning is only silenced when the code is right and the rule does not apply.
 
 ### Release routine (each change that reaches users)
 
+Version numbers: `1.x` until the first release that may be distributed to third
+parties (ICRP permission obtained and the acceptance test completed on that same
+version), which becomes `2.0`. Minor versions for new behaviour, patch versions
+for fixes. The footer of every page shows the version from `UTILS.APP_VERSION`
+(`UI.initVersion`); it is never written by hand in the HTML.
+
 1. Change code/data; regenerate the twins (`tools/generate-data.js`) and, if
    the guide changed, `tools/build-about-guide.js`.
 2. Bump `APP_VERSION` and `APP_BUILD` (`js/utils.js`), `CACHE_VERSION`

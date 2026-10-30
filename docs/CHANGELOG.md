@@ -4,6 +4,11 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
+### v1.21.0 — version shown in the footer
+- The footer of every page ends with the application version (`· v1.21.0`), written from `UTILS.APP_VERSION` by `UI.initVersion()` into an empty `.app-version` span (`translate="no"`), so it always matches the code that is running, also when the service worker serves a cached copy; after an update the second load shows the new number.
+- Version numbering: 1.x until the first release distributable to third parties (ICRP permission obtained and acceptance test completed on that version), which becomes 2.0 (`docs/DEVELOPMENT.md` § Release routine).
+- Guides (EN/ES): the version is in the footer. Test 34; browser-smoke case.
+
 ### v1.20.3 — second full audit 2026-10-30: findings A-1…A-8
 - **A-1, Spanish screens.** Translated: the Table B note pieces in Decay (each piece is now its own element: note, «Progeny: …», «⚠ As printed in the BOE: …», with the four BOE inconsistencies in Spanish), the «Γ recalculated … differs … from the published Cornejo et al. value» warning, the composite Mo-99+Tc-99m notes, the H'(0.07) source line and the Cs-137 Γ source.
 - **A-2.** The source texts of Cs-137 and Mo-99+Tc-99m (H'(0.07)) and of Ga-68 (K-air) no longer cite internal audits; values unchanged (`nuclides.json` v1.5, new content hash).

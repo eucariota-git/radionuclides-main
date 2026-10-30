@@ -271,6 +271,15 @@ const UI = (() => {
     };
   }
 
+  /* --- Version in the footer --- */
+  // Written from UTILS.APP_VERSION only, so the footer always matches the code
+  // that is running (also when the service worker serves a cached copy). The
+  // separator goes inside the span: the text before it stays a catalog key.
+  function initVersion() {
+    if (typeof UTILS === 'undefined') return;
+    document.querySelectorAll('.app-version').forEach(el => { el.textContent = '· v' + UTILS.APP_VERSION; });
+  }
+
   /* --- Print --- */
   function initPrint() {
     window.addEventListener('beforeprint', () => {
@@ -443,6 +452,7 @@ const UI = (() => {
     hintTip,
     setHintTip,
     initPrint,
+    initVersion,
     initKeyboard,
     showFatalError,
     getChartTheme,

@@ -320,7 +320,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v72');
+    swVersion === 'nm-planner-v73');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -1608,6 +1608,20 @@ async function main() {
     check('A-7: Dose compares the public lens (15 mSv/y) and skin (50 mSv/y) limits of RD 1029/2022 art. 15.2, on screen and in the report',
       /of 15 mSv\/y public limit/.test(doseHtml) && /of 50 mSv\/y public limit \(skin\)/.test(doseHtml) &&
       /of 15 mSv\/y \(public\)/.test(doseHtml) && /of 50 mSv\/y \(public, skin\)/.test(doseHtml));
+  }
+
+  console.log('Test 34: version in the footer (v1.21.0)');
+  {
+    const pagesV = { index: indexHtml, decay: decayHtml, dose: doseHtml, effluent: effluentHtml, caregiver: caregiverHtml, about: aboutHtml };
+    const uiJs = read('js/ui.js');
+    check('every page footer ends with an empty .app-version span (translate="no") filled by UI.initVersion() from UTILS.APP_VERSION; no version number written in the HTML',
+      Object.values(pagesV).every(h => {
+        const foot = h.slice(h.indexOf('<footer class="site-footer">'), h.indexOf('</footer>'));
+        return /<span class="app-version" translate="no"><\/span>\n$/.test(foot) && /UI\.initVersion\(\);/.test(h) && !/\bv?1\.\d+\.\d+\b/.test(foot);
+      }) &&
+      /function initVersion\(\) \{[\s\S]{0,200}'· v' \+ UTILS\.APP_VERSION/.test(uiJs) && /\n    initVersion,\n/.test(uiJs));
+    check('the version policy is recorded: 1.x until the first release distributable to third parties, then 2.0',
+      /until the first release that may be distributed to third\s+parties/.test(read('docs/DEVELOPMENT.md')) && /Which version am I using\?/.test(read('docs/USER_GUIDE.md')));
   }
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);

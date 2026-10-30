@@ -787,6 +787,17 @@ async function main() {
         cg.cyc === 'true' && cg.crit === 'true' && /\? cycle/.test(cg.unit) && cg.shown === '—', JSON.stringify(cg));
       await pageChecks('caregiver invalid ranges');
     });
+    await guard('Version in the footer (v1.21.0)', async () => {
+      for (const pg of ['index.html', 'decay.html?id=Lu-177', 'dose.html?id=Lu-177', 'effluent.html', 'caregiver.html', 'about.html']) {
+        await open(pg, 390);
+        const v = await ev(`({ shown: (document.querySelector('.site-footer .app-version') || {}).textContent, expected: '· v' + UTILS.APP_VERSION })`);
+        await ev(`document.getElementById('langToggle').click()`); await sleep(300);
+        const es = await ev(`(document.querySelector('.site-footer .app-version') || {}).textContent`);
+        check(`${pg}: footer shows ${v.expected} (EN and ES)`, v.shown === v.expected && es === v.expected, JSON.stringify({ ...v, es }));
+        await pageChecks(`${pg} footer version ES @390`);
+        await ev(`document.getElementById('langToggle').click()`); await sleep(200);
+      }
+    });
     await guard('Theme follows the system preference without a stored choice', async () => {
       await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'dark' }] });
       await open('decay.html?id=Tc-99m', 1280);

@@ -183,6 +183,7 @@
     <p><strong>ICRP 107 data doesn't load</strong> — the database is bundled locally and needs no connection. Check the browser console (F12) for a missing <code>data/icrp107-data.js</code>. For an installed PWA, clear this app's site data or unregister its service worker and reload once online. For <code>file://</code>, keep the complete folder together.</p>
     <p><strong>Calculated dose seems too high or low</strong> — verify the activity unit (MBq vs GBq), check that the entered distance matches the selected unit (m or cm), and remember that extended ICRP 107 constants are computed, not validated.</p>
     <p><strong>Can I use ICRP 107 values for regulatory submissions?</strong> — Not without independent verification; prefer published, peer-reviewed values where they exist.</p>
+    <p><strong>Which version am I using?</strong> — The version is shown at the end of the footer of every page (also in reports and CSV files). After an update, an installed or cached copy may show the previous version on the first load; the second load serves the new one.</p>
 
     <hr>
     <h3 id="guide-references">References</h3>
@@ -408,6 +409,7 @@
     <p><strong>No cargan los datos de ICRP 107</strong>: la base de datos va incluida en la copia local y no necesita conexión. Busque en la consola del navegador (F12) si falta <code>data/icrp107-data.js</code>. En una PWA instalada, borre los datos del sitio de esta aplicación o anule el registro de su <em>service worker</em> y recargue una vez con conexión. Con <code>file://</code>, mantenga la carpeta completa.</p>
     <p><strong>La dosis calculada parece demasiado alta o baja</strong>: compruebe la unidad de actividad (MBq o GBq), que la distancia introducida corresponde a la unidad elegida (m o cm), y recuerde que las constantes ampliadas de ICRP 107 están calculadas, no validadas.</p>
     <p><strong>¿Puedo usar los valores de ICRP 107 en documentación reglamentaria?</strong> No sin una verificación independiente; use valores publicados y revisados por pares cuando existan.</p>
+    <p><strong>¿Qué versión estoy usando?</strong> La versión figura al final del pie de cada página (y también en los informes y en los CSV). Tras una actualización, una copia instalada o en caché puede mostrar la versión anterior en la primera carga; la segunda carga ya sirve la nueva.</p>
 
     <hr>
     <h3 id="guia-referencias">Referencias</h3>
@@ -940,7 +942,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   NM Radionuclide Planner &mdash; For radiation protection estimation purposes.
   Verify against primary sources for regulatory submissions.
   <br>Application, code and data compilation: &copy; 2026 José Ramón Sendón del Río &middot; EUPL-1.2 &middot; Third-party data: separate terms &mdash;
-  About, guide &amp; licences
+  About, guide &amp; licences <span class="app-version" translate="no"></span>
 </footer>
 
 <script src="js/i18n-es.js"></script>
@@ -949,6 +951,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 <script src="js/utils.js"></script>
 <script>
 UI.initDarkMode();
+UI.initVersion();
 UI.initDecimal();
 UI.initLanguage();
 UI.initPrint();

@@ -154,6 +154,8 @@ Without a saved choice the app follows the light or dark setting of the device. 
 
 **Can I use ICRP 107 values for regulatory submissions?** — Not without independent verification; prefer published, peer-reviewed values where they exist.
 
+**Which version am I using?** — The version is shown at the end of the footer of every page (also in reports and CSV files). After an update, an installed or cached copy may show the previous version on the first load; the second load serves the new one.
+
 ---
 
 ## References

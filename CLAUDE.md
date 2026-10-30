@@ -129,14 +129,16 @@ Calculators recalculate live (Decay/Dose through `UI.onInputs`, Effluent/Caregiv
 ## Workflow and release
 
 - Commits go directly on `main` (no branches). Push and package only when the user asks.
+- Version numbers: 1.x until the first release distributable to third parties (ICRP permission obtained and acceptance test completed on that version) → 2.0 (user decision 2026-10-30). The footer shows the version from `UTILS.APP_VERSION` through `UI.initVersion()` (empty `.app-version` span, `translate="no"`) — never write the number in the HTML.
 - Release routine (details in `docs/DEVELOPMENT.md` § Release routine): bump `APP_VERSION`/`APP_BUILD` (`js/utils.js`) and `CACHE_VERSION` (`sw.js`, same value) and the expected build in `test/validate-app.js`; CHANGELOG entry; a numbered «Test N» block in `test/validate-app.js` per review and, for rendered behaviour, a case in `tools/browser-smoke.js`; four suites + browser-smoke; commit; `node tools/build-package.js` (clean tree required; re-runs the suites from the staged copy — checks that read `tools/` or `.gitignore` must be skipped when absent).
 - The service worker installs with `cache: 'reload'` (an update otherwise kept the old files) and precaches the small JSON sources; after an update the second load serves the new version.
 - Headless Chrome checks on Windows: SHORT `--user-data-dir` (long paths break Cache Storage), override `alert`/`confirm`/`print`, kill only your own Chrome. Never close the user's browser.
 - Audit reports are local only (`docs/AUDIT_*.md`, gitignored). When the user asks for an audit without file changes, deliver it in the chat.
 - Bash heredocs with backslashes or nested quotes break: write helper scripts to the scratchpad and run them, or use the Edit tool.
 
-## Status and pending (as of 2026-10-30, v1.20.3)
+## Status and pending (as of 2026-10-30, v1.21.0)
 
+- v1.21.0 (version shown at the end of every footer, `UI.initVersion()` from `UTILS.APP_VERSION`; version policy 1.x → 2.0 at the first release distributable to third parties; Test 34) committed, not pushed nor packaged.
 - v1.20.3 (second full audit 2026-10-30, A-1…A-8: Spanish leftovers in Decay/Properties, no internal-audit citations in data texts (nuclides.json v1.5), CSN 2025 resolution in the notices, Decay report formatting, Caregiver out-of-range fields marked (`CAREGIVER.invalidFields`), chart aria-labels, public lens/skin limits in Dose; Test 33; README, LICENSING, notices and About texts reviewed) pushed and packaged: `dist/nm-radionuclide-planner-v1.20.3.zip` (SHA-256 85b001f1…, commit cce5367); file://, HTTP, PWA install and offline reload (with and without ?id=) checked headless on 2026-10-30.
 - Every earlier version is pushed and included in that package. Details per version in `docs/CHANGELOG.md`.
 - Spanish screens (v1.16.0+): English stays the default. Pending the author's review of the Spanish texts added in v1.16 (`docs/I18N_GLOSSARY_ES.md` items marked D or P, acceptance row B15) and in v1.18.0–v1.20.3; the v1.17 Caregiver texts were accepted (2026-10-22).

@@ -183,6 +183,8 @@ Si no se ha guardado ninguna elección, la aplicación sigue el modo claro u osc
 
 **¿Puedo usar los valores de ICRP 107 en documentación reglamentaria?** No sin una verificación independiente; use valores publicados y revisados por pares cuando existan.
 
+**¿Qué versión estoy usando?** La versión figura al final del pie de cada página (y también en los informes y en los CSV). Tras una actualización, una copia instalada o en caché puede mostrar la versión anterior en la primera carga; la segunda carga ya sirve la nueva.
+
 ---
 
 ## Referencias
