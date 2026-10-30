@@ -120,7 +120,7 @@
       <li><strong>Y-90:</strong> predominantly a β⁻ emitter with no photon line passing the filter; photon dose-rate constants are not applicable on this page. Dose offers a separate, explicitly experimental container-dependent bremsstrahlung scenario; direct beta dose is not calculated.</li>
       <li><strong>H*(10) and H'(0.07)</strong> are both AREA-monitoring operational quantities and are always shown side by side: H*(10) estimates effective dose, H'(0.07) indicates skin/extremity dose. Neither bounds the other (H*(10) is <em>not</em> always the higher figure — for Pd-103 the stored &#915;<sup>H*(10)</sup> is about 40% below &#915;<sup>H'(0.07)</sup>). Personal dosimetry quantities are Hp(10) / Hp(0.07) / Hp(3); limit comparisons in the dose page are indicative screening only.</li>
       <li><strong>Clearance — Table A1</strong> (RD 1217/2024 Annex IV, 257 entries): activity concentration for any quantity of solid material; the same values give the exemption of unlimited quantities (Annex II A.1.c). This is the value of the «Exemption / clearance» column. Not tabulated: Annex III.1.b refers to the European Commission's "Radiation Protection 122 Part 1".</li>
-      <li><strong>Exemption of moderate quantities — Table B</strong> (≤ 1000 kg): two separate criteria, not simultaneous conditions — column 3, total activity in Bq, for radioactive sources (Annex II A.1.a), and column 2, activity concentration in kBq/kg, for materials in moderate quantity (A.1.b). Shown in the detail panel. Not tabulated: Annex II A.3.a (values set by the CSN).</li>
+      <li><strong>Exemption of moderate quantities — Table B</strong> (≤ 1000 kg): two separate criteria, not simultaneous conditions — column 3, total activity in Bq, for radioactive sources (Annex II A.1.a), and column 2, activity concentration in kBq/kg, for materials in moderate quantity (A.1.b). Shown in the detail panel. Not tabulated: Annex II A.3.a (values set by the CSN; the app includes those of the CSN Resolution of 16 June 2025, Y-88 and Ba-133, shown as «CSN value»).</li>
       <li>Both are individual values for one nuclide (mixtures are not evaluated); Decay uses them for single-nuclide estimates.</li>
       <li><strong>Liquid effluent column</strong> (individual discharge concentration level, every nuclide): (1 mSv / e(g)) / 600 L, IS-28 Annex II II.A.4, with the adult ingestion coefficient e(g) of RD 783/2001 Annex III table a), kept in force by RD 1029/2022 and the CSN Resolution of 3 April 2024 (numerical transcription: ICRP 119 Table F.1); the most restrictive chemical form governs. It is only one condition of II.A.4: the mixture sum of fractions &le; 1 and the annual activity limits (10 GBq H-3, 1 GBq C-14, &lt; 1 GBq the rest combined) are not evaluated here, and II.A.4 also requires an express discharge authorisation and soluble or readily dispersible material. The facility's authorisation prevails.</li>
       <li><strong>Example applications</strong> shown for the curated nuclides are illustrative. They mix current, historical and research uses and do not indicate marketing authorisation, clinical status or availability in Spain.</li>
@@ -172,6 +172,10 @@
       ? b.rows.map(r => `<div class="prop-item"><div class="prop-key">Exemption ≤ 1000 kg, Table B${b.rows.length > 1 ? tag(r) : ''}</div>
            <div class="prop-val">${UTILS.fmtSig(r.conc_kBq_kg, 1)} kBq/kg · ${UTILS.fmtSig(r.activity_Bq, 1)} Bq</div>
            <div class="prop-note">column 2 (concentration) · column 3 (total activity)${b.rows.length > 1 ? '' : tag(r)}</div></div>`).join('')
+      : b.status === 'csn'
+      ? b.rows.map(r => `<div class="prop-item"><div class="prop-key">Exemption ≤ 1000 kg, CSN value</div>
+           <div class="prop-val">${UTILS.fmtSig(r.conc_kBq_kg, 1)} kBq/kg · ${UTILS.fmtSig(r.activity_Bq, 1)} Bq</div>
+           <div class="prop-note">not in Table B · CSN Resolution of 16 June 2025 (Annex II A.3.a)</div></div>`).join('')
       : `<div class="prop-item"><div class="prop-key">Exemption ≤ 1000 kg, Table B</div>
            <div class="prop-val">Not tabulated</div>
            <div class="prop-note">Annex II A.3.a: CSN values</div></div>`;
@@ -181,7 +185,7 @@
       html += ing.status === 'listed'
         ? `<div class="prop-item"><div class="prop-key">Adult ingestion e(g)</div>
              <div class="prop-val">${UTILS.fmtSig(ing.governing.e_Sv_per_Bq, 2)}</div>
-             <div class="prop-note">Sv/Bq · RD 783/2001 Annex III table a)${ing.rows.length > 1 ? ` · most restrictive of ${ing.rows.length} forms` : ''}</div></div>
+             <div class="prop-note">Sv/Bq · RD 783/2001 Annex III table a), kept in force${ing.rows.length > 1 ? ` · most restrictive of ${ing.rows.length} forms` : ''}</div></div>
            <div class="prop-item"><div class="prop-key">Individual discharge concentration level</div>
              <div class="prop-val">${fmt3(lvl.Bq_per_L)}</div>
              <div class="prop-note">Bq/L · IS-28 II.A.4 individual level</div></div>`
@@ -215,7 +219,7 @@
     if (withIngestion) {
       const ing = REGULATORY.ingestionAdult(id);
       if (ing.status === 'listed' && ing.rows.length > 1) {
-        const forms = ing.rows.map(r => `${UTILS.fmtSig(r.e_Sv_per_Bq, 2)} Sv/Bq${r.compound ? ' (' + esc(r.compound) + ')' : ''}, f1 ${UTILS.num(r.f1)}`).join('; ');
+        const forms = ing.rows.map(r => `${UTILS.fmtSig(r.e_Sv_per_Bq, 2)} Sv/Bq${r.compound ? ' (' + esc(r.compound) + ')' : ''}, f1 (> 1 y) ${UTILS.num(r.f1_over_1y)}`).join('; ');
         out.push(`Adult ingestion e(g), tabulated forms: ${forms}. The most restrictive governs the discharge level shown.`);
       }
     }
@@ -979,8 +983,8 @@
       n.effluent_liquid_limit_source ?? '',
       a1Of(n),
       a1Of(n) !== '' ? 'RD 1217/2024 Annex IV Table A1' : 'not tabulated in Table A1 (Annex III.1.b: RP 122 Part 1)',
-      (() => { const b = REGULATORY.exemptionB(n.id); return b.status === 'listed' ? b.rows.map(r => r.conc_kBq_kg + (r.note ? ` (${r.note})` : '')).join(' | ') : ''; })(),
-      (() => { const b = REGULATORY.exemptionB(n.id); return b.status === 'listed' ? b.rows.map(r => r.activity_Bq + (r.note ? ` (${r.note})` : '')).join(' | ') : ''; })(),
+      (() => { const b = REGULATORY.exemptionB(n.id); return b.status === 'listed' ? b.rows.map(r => r.conc_kBq_kg + (r.note ? ` (${r.note})` : '')).join(' | ') : b.status === 'csn' ? `${b.rows[0].conc_kBq_kg} (CSN Resolution 2025-06-16, not Table B)` : ''; })(),
+      (() => { const b = REGULATORY.exemptionB(n.id); return b.status === 'listed' ? b.rows.map(r => r.activity_Bq + (r.note ? ` (${r.note})` : '')).join(' | ') : b.status === 'csn' ? `${b.rows[0].activity_Bq} (CSN Resolution 2025-06-16, not Table B)` : ''; })(),
       n._regOnly ? '' : n._icrp107 ? `H*/H′: ${SRC_CALC}${n._progenyIds ? `, incl. ${n._progenyIds} in equilibrium` : ''}` : gammaSourceLabel(n),
       n.gamma_Kair_source || '',
       origin(n)

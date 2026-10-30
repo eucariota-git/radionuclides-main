@@ -320,7 +320,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v70');
+    swVersion === 'nm-planner-v71');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -1546,6 +1546,28 @@ async function main() {
       /UI\.setHintTip\(\$\('categoryTip'\)/.test(caregiverHtml) && /UI\.setHintTip\(\$\('profileTip'\)/.test(caregiverHtml) &&
       /'See <a href="#criteriaDetails"/.test(caregiverHtml) && !/id="profileHint"/.test(caregiverHtml) &&
       /<th>During \(h\/d\) <span class="hint-tip in-cell"/.test(caregiverHtml) && /function setHintTip\(el, text\)/.test(read('js/ui.js')));
+  }
+
+  console.log('Test 32: full audit 2026-10-30, O-1…O-3 (v1.20.2)');
+  {
+    const ctx = vm.createContext({});
+    vm.runInContext(read('data/regulatory-data.js') + ';' + read('js/regulatory.js') + ';this.R = REGULATORY;', ctx);
+    const R = ctx.R, reg = JSON.parse(read('data/regulatory.json'));
+    const y = R.exemptionB('Y-88'), ba = R.exemptionB('Ba-133');
+    check('O-1: CSN Resolution of 16 June 2025 — Y-88 10 kBq/kg · 1E6 Bq, Ba-133 100 kBq/kg · 1E6 Bq, status «csn», never in Table B, no A1 value',
+      y.status === 'csn' && y.rows[0].conc_kBq_kg === 10 && y.rows[0].activity_Bq === 1e6 &&
+      ba.status === 'csn' && ba.rows[0].conc_kBq_kg === 100 && ba.rows[0].activity_Bq === 1e6 &&
+      reg.csn_exemption.rows.length === 2 && reg.csn_exemption.rows.every(r => !reg.rd1217_annex4.b.some(x => x.id === r.id)) &&
+      /16 June 2025/.test(y.text) && /not in the BOE/.test(y.text) && R.clearanceA1('Ba-133').status === 'not_tabulated' &&
+      R.exemptionB('Tc-99m').status === 'listed' && R.exemptionB('Lu-177m').status === 'not_tabulated' &&
+      /CSN Resolution of 16 June 2025 \(Y-88, Ba-133\)/.test(reg.rd1217_annex4.not_tabulated_b));
+    check('O-1: Properties and Decay label the CSN values «CSN value» (screen, report, CSV), never «Table B» or «column 2/3»',
+      /Exemption ≤ 1000 kg, CSN value/.test(indexHtml) && /b\.status === 'csn'/.test(indexHtml) &&
+      /const col = k => \(ex\.status === 'csn' \? 'CSN value' : `column \$\{k\}`\);/.test(decayHtml) &&
+      (decayHtml.match(/\$\{col\([23]\)\}/g) || []).length === 7 && !/column [23]\$\{tag\}/.test(decayHtml) && /CSN Resolution 2025-06-16, not Table B/.test(decayHtml));
+    check('O-2 / O-3: e(g) note «kept in force»; f1 is the «> 1 y» column; I-131 ⓘ names the discharge activity',
+      /Annex III table a\), kept in force/.test(indexHtml) && reg.ingestion_public_adult.rows.every(r => 'f1_over_1y' in r && !('f1' in r)) &&
+      /f1 \(> 1 y\)/.test(indexHtml) && /Activity per treatment at hospital discharge \(default of the reference workbook\)/.test(read('data/effluent-scenarios.json')));
   }
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);

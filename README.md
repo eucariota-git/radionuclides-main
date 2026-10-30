@@ -46,7 +46,7 @@ Target users: medical physicists and radiation protection specialists.
 - CSV export includes dose rates at both selected distance and 1 m reference
 
 ### Regulatory values (all nuclides)
-- **RD 1217/2024 Annex IV Table A1** (all 257 entries, with the progeny of entries marked (a)) and **Table B** (297 rows, exemption of moderate quantities) for curated AND ICRP 107 extended entries; explicit *not tabulated* states (Annex III.1.b → RP 122 Part 1; Annex II A.3.a → CSN values)
+- **RD 1217/2024 Annex IV Table A1** (all 257 entries, with the progeny of entries marked (a)) and **Table B** (297 rows, exemption of moderate quantities) for curated AND ICRP 107 extended entries; explicit *not tabulated* states (Annex III.1.b → RP 122 Part 1; Annex II A.3.a → CSN values, of which the CSN Resolution of 16 June 2025 for Y-88 and Ba-133 is included)
 - Decay: single-nuclide clearance (A1) and exemption (B, criteria a and b of Annex II A.1 evaluated separately)
 - Adult public ingestion coefficients from RD 783/2001 Annex III table a) (kept in force by the CSN Resolution of 3 April 2024; numerical transcription ICRP 119 F.1) and the IS-28 individual discharge level for every nuclide with a coefficient
 

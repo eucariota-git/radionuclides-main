@@ -2,7 +2,7 @@
 const EFFLUENT_DATA = {
   "meta": {
     "id": "effluent-scenarios",
-    "version": "2.5.0",
+    "version": "2.5.1",
     "date": "2026-10-30",
     "author": {
       "name": "José Ramón Sendón del Río",
@@ -351,7 +351,7 @@ const EFFLUENT_DATA = {
         "cycles_per_patient": 1,
         "cycles_locked": true,
         "activity_per_cycle_GBq": 0.8,
-        "activity_label": "Activity per treatment taken from the workbook (= activity at hospital discharge, NOT the administered activity)",
+        "activity_label": "Activity per treatment at hospital discharge (default of the reference workbook), NOT the administered activity",
         "source": "Workbook I-131 estimate (cells G6, G56): 0.8 GBq per patient, half of it excreted at home; the fraction excreted in hospital is 1 − 0.5. One treatment per patient is an assumption of this scenario, not a clinical rule. Site-specific.",
         "fraction_in_hospital": 0.5,
         "controlled_default": false,

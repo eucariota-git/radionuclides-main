@@ -2,16 +2,17 @@
 const REGULATORY_DATA = {
   "meta": {
     "id": "regulatory",
-    "version": "1.0.0",
-    "built": "2026-10-03",
+    "version": "1.1.0",
+    "built": "2026-10-30",
     "author": {
       "name": "José Ramón Sendón del Río",
       "role": "Transcription and verification of the regulatory tables"
     },
     "sources": {
-      "annex_iv_csv_sha256": "0f4adfcb9c6a10dd8b0b392aa43ee02d0cadbd44df07eb9f0a7db5b5bacd705f",
-      "progeny_csv_sha256": "2fa4c18b9385d2327b5884628e31dbaac93c68d93c5dcb4d6298751f57c54771",
+      "annex_iv_csv_sha256": "faccb07634510cc6724e3f9bab9d114790968f6f6978b6915eecbcdd9bfe87ae",
+      "progeny_csv_sha256": "118c6c488e401be8c07d0d6ae5e98b51ea5b1c1254bca3c5396fe65bf216744b",
       "icrp119_f1_csv_sha256": "b05f4db8216b456bea51c6b1bb754d3822402fbaa2d9c56d3e8d29678167ac90",
+      "csn_2025_csv_sha256": "333cfecf55b8573dee7ab447175ec1141445ba39ea9bdaf8fd8312ba04edf275",
       "html_extraction_sha256": "35a6d3f4c983e8edcfa45db12cffa8e002b4288fd5b215c277f542b80f1f81de",
       "html_source_sha256": "05cf3f8bd074d5da1cd456389c9b507e93b15da7a94e5991e3ed2f75e9a799cd"
     }
@@ -23,7 +24,7 @@ const REGULATORY_DATA = {
     "note_a": "(a) Parent radionuclide whose listed progeny is already accounted for in the value: only the parent is checked (Annex II A.3.b).",
     "note_b": "(b) Parent radionuclide whose listed progeny is already accounted for in the value: only the parent is checked (Annex II A.3.b).",
     "not_tabulated_a1": "Not in Table A1. For clearance, Annex III.1.b applies complementarily the clearance levels of the latest version of the European Commission document \"Radiation Protection 122 Part 1\" (not included in this app).",
-    "not_tabulated_b": "Not in Table B. Annex II A.3.a: the exemption values established by the Consejo de Seguridad Nuclear apply (not included in this app).",
+    "not_tabulated_b": "Not in Table B. Annex II A.3.a: the exemption values established by the Consejo de Seguridad Nuclear apply. This app includes those of the CSN Resolution of 16 June 2025 (Y-88, Ba-133) only; check whether the CSN has set a value for this nuclide.",
     "natural_note": "Natural radionuclides in solid materials in secular equilibrium are covered by Table A2 (U-238 and Th-232 series, K-40), with its own conditions (Annex III.3) — not implemented in this app.",
     "criteria": "Annex II A.1: a) sources — total activity not above column 3 of Table B (sum of ratios ≤ 1 for several sources); b) moderate quantity (≤ 1000 kg) — activity per unit mass not above column 2 of Table B; c) unlimited quantity — activity per unit mass not above Table A1. Annex III.1.a: for mixtures, Σ(Cᵢ/Lᵢ) ≤ 1.",
     "a1": [
@@ -3846,4561 +3847,4577 @@ const REGULATORY_DATA = {
       }
     ]
   },
+  "csn_exemption": {
+    "source": "Resolution of the Consejo de Seguridad Nuclear of 16 June 2025 (agreed by the Plenary on 11 June 2025; published on the CSN website, not in the BOE), exemption values for Y-88 and Ba-133 under RD 1217/2024 Annex II A.3.a, for radionuclides not listed in Annex IV.",
+    "scope": "Exemption of practices with moderate quantities (≤ 1000 kg), same two separate criteria as Table B: activity concentration (kBq/kg) for materials (Annex II A.1.b) and total activity (Bq) for sources (A.1.a). There is no Table A1 (clearance) value for these nuclides.",
+    "rows": [
+      {
+        "id": "Y-88",
+        "conc_kBq_kg": 10,
+        "activity_Bq": 1000000
+      },
+      {
+        "id": "Ba-133",
+        "conc_kBq_kg": 100,
+        "activity_Bq": 1000000
+      }
+    ]
+  },
   "ingestion_public_adult": {
     "source": "e(g) for members of the public, adult (> 17 y): RD 783/2001 Annex III table a), repealed by RD 1029/2022 but kept in force by its third transitional provision and by the CSN Resolution of 3 April 2024. Numerical transcription: ICRP Publication 119 (2012) Table F.1, adult column (verified against the BOE scan).",
     "governing_rule": "When several chemical forms are tabulated, the most restrictive (largest e(g)) governs by default.",
     "rows": [
       {
         "id": "H-3",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 4.2e-11,
         "compound": "Organically bound tritium"
       },
       {
         "id": "H-3",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 1.8e-11,
         "compound": "Tritiated water"
       },
       {
         "id": "Be-7",
-        "f1": 0.005,
+        "f1_over_1y": 0.005,
         "e_Sv_per_Bq": 2.8e-11,
         "compound": null
       },
       {
         "id": "Be-10",
-        "f1": 0.005,
+        "f1_over_1y": 0.005,
         "e_Sv_per_Bq": 1.1e-9,
         "compound": null
       },
       {
         "id": "C-11",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 2.4e-11,
         "compound": null
       },
       {
         "id": "C-14",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 5.8e-10,
         "compound": null
       },
       {
         "id": "F-18",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 4.9e-11,
         "compound": null
       },
       {
         "id": "Na-22",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 3.2e-9,
         "compound": null
       },
       {
         "id": "Na-24",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 4.3e-10,
         "compound": null
       },
       {
         "id": "Mg-28",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 2.2e-9,
         "compound": null
       },
       {
         "id": "Al-26",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 3.5e-9,
         "compound": null
       },
       {
         "id": "Si-31",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 1.6e-10,
         "compound": null
       },
       {
         "id": "Si-32",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 5.6e-10,
         "compound": null
       },
       {
         "id": "P-32",
-        "f1": 0.8,
+        "f1_over_1y": 0.8,
         "e_Sv_per_Bq": 2.4e-9,
         "compound": null
       },
       {
         "id": "P-33",
-        "f1": 0.8,
+        "f1_over_1y": 0.8,
         "e_Sv_per_Bq": 2.4e-10,
         "compound": null
       },
       {
         "id": "S-35",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 7.7e-10,
         "compound": "Organic sulphur"
       },
       {
         "id": "S-35",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 1.3e-10,
         "compound": "Inorganic sulphur"
       },
       {
         "id": "Cl-36",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 9.3e-10,
         "compound": null
       },
       {
         "id": "Cl-38",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 1.2e-10,
         "compound": null
       },
       {
         "id": "Cl-39",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 8.5e-11,
         "compound": null
       },
       {
         "id": "K-40",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 6.2e-9,
         "compound": null
       },
       {
         "id": "K-42",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 4.3e-10,
         "compound": null
       },
       {
         "id": "K-43",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 2.5e-10,
         "compound": null
       },
       {
         "id": "K-44",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 8.4e-11,
         "compound": null
       },
       {
         "id": "K-45",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 5.4e-11,
         "compound": null
       },
       {
         "id": "Ca-41",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 1.9e-10,
         "compound": "For the adult, f1 is 0.3"
       },
       {
         "id": "Ca-45",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 7.1e-10,
         "compound": "For the adult, f1 is 0.3"
       },
       {
         "id": "Ca-47",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 1.6e-9,
         "compound": "For the adult, f1 is 0.3"
       },
       {
         "id": "Sc-43",
-        "f1": 0.0001,
+        "f1_over_1y": 0.0001,
         "e_Sv_per_Bq": 1.9e-10,
         "compound": null
       },
       {
         "id": "Sc-44",
-        "f1": 0.0001,
+        "f1_over_1y": 0.0001,
         "e_Sv_per_Bq": 3.5e-10,
         "compound": null
       },
       {
         "id": "Sc-44m",
-        "f1": 0.0001,
+        "f1_over_1y": 0.0001,
         "e_Sv_per_Bq": 2.4e-9,
         "compound": null
       },
       {
         "id": "Sc-46",
-        "f1": 0.0001,
+        "f1_over_1y": 0.0001,
         "e_Sv_per_Bq": 1.5e-9,
         "compound": null
       },
       {
         "id": "Sc-47",
-        "f1": 0.0001,
+        "f1_over_1y": 0.0001,
         "e_Sv_per_Bq": 5.4e-10,
         "compound": null
       },
       {
         "id": "Sc-48",
-        "f1": 0.0001,
+        "f1_over_1y": 0.0001,
         "e_Sv_per_Bq": 1.7e-9,
         "compound": null
       },
       {
         "id": "Sc-49",
-        "f1": 0.0001,
+        "f1_over_1y": 0.0001,
         "e_Sv_per_Bq": 8.2e-11,
         "compound": null
       },
       {
         "id": "Ti-44",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 5.8e-9,
         "compound": null
       },
       {
         "id": "Ti-45",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 1.5e-10,
         "compound": null
       },
       {
         "id": "V-47",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 6.3e-11,
         "compound": null
       },
       {
         "id": "V-48",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 2e-9,
         "compound": null
       },
       {
         "id": "V-49",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 1.8e-11,
         "compound": null
       },
       {
         "id": "Cr-48",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 2e-10,
         "compound": null
       },
       {
         "id": "Cr-48",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 2e-10,
         "compound": null
       },
       {
         "id": "Cr-49",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 6.1e-11,
         "compound": null
       },
       {
         "id": "Cr-49",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 6.1e-11,
         "compound": null
       },
       {
         "id": "Cr-51",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 3.8e-11,
         "compound": null
       },
       {
         "id": "Cr-51",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 3.7e-11,
         "compound": null
       },
       {
         "id": "Mn-51",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 9.3e-11,
         "compound": null
       },
       {
         "id": "Mn-52",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 1.8e-9,
         "compound": null
       },
       {
         "id": "Mn-52m",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 6.9e-11,
         "compound": null
       },
       {
         "id": "Mn-53",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 3e-11,
         "compound": null
       },
       {
         "id": "Mn-54",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 7.1e-10,
         "compound": null
       },
       {
         "id": "Mn-56",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 2.5e-10,
         "compound": null
       },
       {
         "id": "Fe-52",
-        "f1": 0.2,
+        "f1_over_1y": 0.2,
         "e_Sv_per_Bq": 1.4e-9,
         "compound": "For the adult, f1 is 0.1"
       },
       {
         "id": "Fe-55",
-        "f1": 0.2,
+        "f1_over_1y": 0.2,
         "e_Sv_per_Bq": 3.3e-10,
         "compound": "For the adult, f1 is 0.1"
       },
       {
         "id": "Fe-59",
-        "f1": 0.2,
+        "f1_over_1y": 0.2,
         "e_Sv_per_Bq": 1.8e-9,
         "compound": "For the adult, f1 is 0.1"
       },
       {
         "id": "Fe-60",
-        "f1": 0.2,
+        "f1_over_1y": 0.2,
         "e_Sv_per_Bq": 1.1e-7,
         "compound": "For the adult, f1 is 0.1"
       },
       {
         "id": "Co-55",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 1e-9,
         "compound": "For the adult, f1 is 0.1"
       },
       {
         "id": "Co-56",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 2.5e-9,
         "compound": "For the adult, f1 is 0.1"
       },
       {
         "id": "Co-57",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 2.1e-10,
         "compound": "For the adult, f1 is 0.1"
       },
       {
         "id": "Co-58",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 7.4e-10,
         "compound": "For the adult, f1 is 0.1"
       },
       {
         "id": "Co-58m",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 2.4e-11,
         "compound": "For the adult, f1 is 0.1"
       },
       {
         "id": "Co-60",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 3.4e-9,
         "compound": "For the adult, f1 is 0.1"
       },
       {
         "id": "Co-60m",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 1.7e-12,
         "compound": "For the adult, f1 is 0.1"
       },
       {
         "id": "Co-61",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 7.4e-11,
         "compound": "For the adult, f1 is 0.1"
       },
       {
         "id": "Co-62m",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 4.7e-11,
         "compound": "For the adult, f1 is 0.1"
       },
       {
         "id": "Ni-56",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 8.6e-10,
         "compound": null
       },
       {
         "id": "Ni-57",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 8.7e-10,
         "compound": null
       },
       {
         "id": "Ni-59",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 6.3e-11,
         "compound": null
       },
       {
         "id": "Ni-63",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 1.5e-10,
         "compound": null
       },
       {
         "id": "Ni-65",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 1.8e-10,
         "compound": null
       },
       {
         "id": "Ni-66",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 3e-9,
         "compound": null
       },
       {
         "id": "Cu-60",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 7e-11,
         "compound": null
       },
       {
         "id": "Cu-61",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 1.2e-10,
         "compound": null
       },
       {
         "id": "Cu-64",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 1.2e-10,
         "compound": null
       },
       {
         "id": "Cu-67",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 3.4e-10,
         "compound": null
       },
       {
         "id": "Zn-62",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 9.4e-10,
         "compound": null
       },
       {
         "id": "Zn-63",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 7.9e-11,
         "compound": null
       },
       {
         "id": "Zn-65",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 3.9e-9,
         "compound": null
       },
       {
         "id": "Zn-69",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 3.1e-11,
         "compound": null
       },
       {
         "id": "Zn-69m",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 3.3e-10,
         "compound": null
       },
       {
         "id": "Zn-71m",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 2.4e-10,
         "compound": null
       },
       {
         "id": "Zn-72",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 1.4e-9,
         "compound": null
       },
       {
         "id": "Ga-65",
-        "f1": 0.001,
+        "f1_over_1y": 0.001,
         "e_Sv_per_Bq": 3.7e-11,
         "compound": null
       },
       {
         "id": "Ga-66",
-        "f1": 0.001,
+        "f1_over_1y": 0.001,
         "e_Sv_per_Bq": 1.2e-9,
         "compound": null
       },
       {
         "id": "Ga-67",
-        "f1": 0.001,
+        "f1_over_1y": 0.001,
         "e_Sv_per_Bq": 1.9e-10,
         "compound": null
       },
       {
         "id": "Ga-68",
-        "f1": 0.001,
+        "f1_over_1y": 0.001,
         "e_Sv_per_Bq": 1e-10,
         "compound": null
       },
       {
         "id": "Ga-70",
-        "f1": 0.001,
+        "f1_over_1y": 0.001,
         "e_Sv_per_Bq": 3.1e-11,
         "compound": null
       },
       {
         "id": "Ga-72",
-        "f1": 0.001,
+        "f1_over_1y": 0.001,
         "e_Sv_per_Bq": 1.1e-9,
         "compound": null
       },
       {
         "id": "Ga-73",
-        "f1": 0.001,
+        "f1_over_1y": 0.001,
         "e_Sv_per_Bq": 2.6e-10,
         "compound": null
       },
       {
         "id": "Ge-66",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 1e-10,
         "compound": null
       },
       {
         "id": "Ge-67",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 6.5e-11,
         "compound": null
       },
       {
         "id": "Ge-68",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 1.3e-9,
         "compound": null
       },
       {
         "id": "Ge-69",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 2.4e-10,
         "compound": null
       },
       {
         "id": "Ge-71",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 1.2e-11,
         "compound": null
       },
       {
         "id": "Ge-75",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 4.6e-11,
         "compound": null
       },
       {
         "id": "Ge-77",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 3.3e-10,
         "compound": null
       },
       {
         "id": "Ge-78",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 1.2e-10,
         "compound": null
       },
       {
         "id": "As-69",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 5.7e-11,
         "compound": null
       },
       {
         "id": "As-70",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 1.3e-10,
         "compound": null
       },
       {
         "id": "As-71",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 4.6e-10,
         "compound": null
       },
       {
         "id": "As-72",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 1.8e-9,
         "compound": null
       },
       {
         "id": "As-73",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 2.6e-10,
         "compound": null
       },
       {
         "id": "As-74",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 1.3e-9,
         "compound": null
       },
       {
         "id": "As-76",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 1.6e-9,
         "compound": null
       },
       {
         "id": "As-77",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 4e-10,
         "compound": null
       },
       {
         "id": "As-78",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 2.1e-10,
         "compound": null
       },
       {
         "id": "Se-70",
-        "f1": 0.8,
+        "f1_over_1y": 0.8,
         "e_Sv_per_Bq": 1.2e-10,
         "compound": null
       },
       {
         "id": "Se-73",
-        "f1": 0.8,
+        "f1_over_1y": 0.8,
         "e_Sv_per_Bq": 2.1e-10,
         "compound": null
       },
       {
         "id": "Se-73m",
-        "f1": 0.8,
+        "f1_over_1y": 0.8,
         "e_Sv_per_Bq": 2.8e-11,
         "compound": null
       },
       {
         "id": "Se-75",
-        "f1": 0.8,
+        "f1_over_1y": 0.8,
         "e_Sv_per_Bq": 2.6e-9,
         "compound": null
       },
       {
         "id": "Se-79",
-        "f1": 0.8,
+        "f1_over_1y": 0.8,
         "e_Sv_per_Bq": 2.9e-9,
         "compound": null
       },
       {
         "id": "Se-81",
-        "f1": 0.8,
+        "f1_over_1y": 0.8,
         "e_Sv_per_Bq": 2.7e-11,
         "compound": null
       },
       {
         "id": "Se-81m",
-        "f1": 0.8,
+        "f1_over_1y": 0.8,
         "e_Sv_per_Bq": 5.3e-11,
         "compound": null
       },
       {
         "id": "Se-83",
-        "f1": 0.8,
+        "f1_over_1y": 0.8,
         "e_Sv_per_Bq": 4.7e-11,
         "compound": null
       },
       {
         "id": "Br-74",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 8.4e-11,
         "compound": null
       },
       {
         "id": "Br-74m",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 1.4e-10,
         "compound": null
       },
       {
         "id": "Br-75",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 7.9e-11,
         "compound": null
       },
       {
         "id": "Br-76",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 4.6e-10,
         "compound": null
       },
       {
         "id": "Br-77",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 9.6e-11,
         "compound": null
       },
       {
         "id": "Br-80",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 3.1e-11,
         "compound": null
       },
       {
         "id": "Br-80m",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 1.1e-10,
         "compound": null
       },
       {
         "id": "Br-82",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 5.4e-10,
         "compound": null
       },
       {
         "id": "Br-83",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 4.3e-11,
         "compound": null
       },
       {
         "id": "Br-84",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 8.8e-11,
         "compound": null
       },
       {
         "id": "Rb-79",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 5e-11,
         "compound": null
       },
       {
         "id": "Rb-81",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 5.4e-11,
         "compound": null
       },
       {
         "id": "Rb-81m",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 9.7e-12,
         "compound": null
       },
       {
         "id": "Rb-82m",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 1.3e-10,
         "compound": null
       },
       {
         "id": "Rb-83",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 1.9e-9,
         "compound": null
       },
       {
         "id": "Rb-84",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 2.8e-9,
         "compound": null
       },
       {
         "id": "Rb-86",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 2.8e-9,
         "compound": null
       },
       {
         "id": "Rb-87",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 1.5e-9,
         "compound": null
       },
       {
         "id": "Rb-88",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 9e-11,
         "compound": null
       },
       {
         "id": "Rb-89",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 4.7e-11,
         "compound": null
       },
       {
         "id": "Sr-80",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 3.4e-10,
         "compound": "For the adult, f1 is 0.3"
       },
       {
         "id": "Sr-81",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 7.7e-11,
         "compound": "For the adult, f1 is 0.3"
       },
       {
         "id": "Sr-82",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 6.1e-9,
         "compound": "For the adult, f1 is 0.3"
       },
       {
         "id": "Sr-83",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 4.9e-10,
         "compound": "For the adult, f1 is 0.3"
       },
       {
         "id": "Sr-85",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 5.6e-10,
         "compound": "For the adult, f1 is 0.3"
       },
       {
         "id": "Sr-85m",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 6.1e-12,
         "compound": "For the adult, f1 is 0.3"
       },
       {
         "id": "Sr-87m",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 3e-11,
         "compound": "For the adult, f1 is 0.3"
       },
       {
         "id": "Sr-89",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 2.6e-9,
         "compound": "For the adult, f1 is 0.3"
       },
       {
         "id": "Sr-90",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 2.8e-8,
         "compound": "For the adult, f1 is 0.3"
       },
       {
         "id": "Sr-91",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 6.5e-10,
         "compound": "For the adult, f1 is 0.3"
       },
       {
         "id": "Sr-92",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 4.3e-10,
         "compound": "For the adult, f1 is 0.3"
       },
       {
         "id": "Y-86",
-        "f1": 0.0001,
+        "f1_over_1y": 0.0001,
         "e_Sv_per_Bq": 9.6e-10,
         "compound": null
       },
       {
         "id": "Y-86m",
-        "f1": 0.0001,
+        "f1_over_1y": 0.0001,
         "e_Sv_per_Bq": 5.6e-11,
         "compound": null
       },
       {
         "id": "Y-87",
-        "f1": 0.0001,
+        "f1_over_1y": 0.0001,
         "e_Sv_per_Bq": 5.5e-10,
         "compound": null
       },
       {
         "id": "Y-88",
-        "f1": 0.0001,
+        "f1_over_1y": 0.0001,
         "e_Sv_per_Bq": 1.3e-9,
         "compound": null
       },
       {
         "id": "Y-90",
-        "f1": 0.0001,
+        "f1_over_1y": 0.0001,
         "e_Sv_per_Bq": 2.7e-9,
         "compound": null
       },
       {
         "id": "Y-90m",
-        "f1": 0.0001,
+        "f1_over_1y": 0.0001,
         "e_Sv_per_Bq": 1.7e-10,
         "compound": null
       },
       {
         "id": "Y-91",
-        "f1": 0.0001,
+        "f1_over_1y": 0.0001,
         "e_Sv_per_Bq": 2.4e-9,
         "compound": null
       },
       {
         "id": "Y-91m",
-        "f1": 0.0001,
+        "f1_over_1y": 0.0001,
         "e_Sv_per_Bq": 1.1e-11,
         "compound": null
       },
       {
         "id": "Y-92",
-        "f1": 0.0001,
+        "f1_over_1y": 0.0001,
         "e_Sv_per_Bq": 4.9e-10,
         "compound": null
       },
       {
         "id": "Y-93",
-        "f1": 0.0001,
+        "f1_over_1y": 0.0001,
         "e_Sv_per_Bq": 1.2e-9,
         "compound": null
       },
       {
         "id": "Y-94",
-        "f1": 0.0001,
+        "f1_over_1y": 0.0001,
         "e_Sv_per_Bq": 8.1e-11,
         "compound": null
       },
       {
         "id": "Y-95",
-        "f1": 0.0001,
+        "f1_over_1y": 0.0001,
         "e_Sv_per_Bq": 4.6e-11,
         "compound": null
       },
       {
         "id": "Zr-86",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 8.6e-10,
         "compound": null
       },
       {
         "id": "Zr-88",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 4.5e-10,
         "compound": null
       },
       {
         "id": "Zr-89",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 7.9e-10,
         "compound": null
       },
       {
         "id": "Zr-93",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 1.1e-9,
         "compound": null
       },
       {
         "id": "Zr-95",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 9.5e-10,
         "compound": null
       },
       {
         "id": "Zr-97",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 2.1e-9,
         "compound": null
       },
       {
         "id": "Nb-88",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 6.3e-11,
         "compound": null
       },
       {
         "id": "Nb-89",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 2.7e-10,
         "compound": null
       },
       {
         "id": "Nb-89m",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 1.4e-10,
         "compound": null
       },
       {
         "id": "Nb-90",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 1.2e-9,
         "compound": null
       },
       {
         "id": "Nb-93m",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 1.2e-10,
         "compound": null
       },
       {
         "id": "Nb-94",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 1.7e-9,
         "compound": null
       },
       {
         "id": "Nb-95",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 5.8e-10,
         "compound": null
       },
       {
         "id": "Nb-95m",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 5.6e-10,
         "compound": null
       },
       {
         "id": "Nb-96",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 1.1e-9,
         "compound": null
       },
       {
         "id": "Nb-97",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 6.8e-11,
         "compound": null
       },
       {
         "id": "Nb-98s",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 1.1e-10,
         "compound": "errata en la fuente: probablemente Nb-98m"
       },
       {
         "id": "Mo-90",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 2.2e-10,
         "compound": null
       },
       {
         "id": "Mo-93",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 3.1e-9,
         "compound": null
       },
       {
         "id": "Mo-93m",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 1.1e-10,
         "compound": null
       },
       {
         "id": "Mo-99",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 6e-10,
         "compound": null
       },
       {
         "id": "Mo-101",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 4.1e-11,
         "compound": null
       },
       {
         "id": "Tc-93",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 5.5e-11,
         "compound": null
       },
       {
         "id": "Tc-93m",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 2.5e-11,
         "compound": null
       },
       {
         "id": "Tc-94",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 2e-10,
         "compound": null
       },
       {
         "id": "Tc-94m",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 1e-10,
         "compound": null
       },
       {
         "id": "Tc-95",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 1.8e-10,
         "compound": null
       },
       {
         "id": "Tc-95m",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 5.6e-10,
         "compound": null
       },
       {
         "id": "Tc-96",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 1.1e-9,
         "compound": null
       },
       {
         "id": "Tc-96m",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 1.2e-11,
         "compound": null
       },
       {
         "id": "Tc-97",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 6.8e-11,
         "compound": null
       },
       {
         "id": "Tc-97m",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 5.5e-10,
         "compound": null
       },
       {
         "id": "Tc-98",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 2e-9,
         "compound": null
       },
       {
         "id": "Tc-99",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 6.4e-10,
         "compound": null
       },
       {
         "id": "Tc-99m",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 2.2e-11,
         "compound": null
       },
       {
         "id": "Tc-101",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 1.9e-11,
         "compound": null
       },
       {
         "id": "Tc-104",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 8e-11,
         "compound": null
       },
       {
         "id": "Ru-94",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 9.4e-11,
         "compound": null
       },
       {
         "id": "Ru-97",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 1.5e-10,
         "compound": null
       },
       {
         "id": "Ru-103",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 7.3e-10,
         "compound": null
       },
       {
         "id": "Ru-105",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 2.6e-10,
         "compound": null
       },
       {
         "id": "Ru-106",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 7e-9,
         "compound": null
       },
       {
         "id": "Rh-99",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 5.1e-10,
         "compound": null
       },
       {
         "id": "Rh-99m",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 6.6e-11,
         "compound": null
       },
       {
         "id": "Rh-100",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 7.1e-10,
         "compound": null
       },
       {
         "id": "Rh-101",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 5.5e-10,
         "compound": null
       },
       {
         "id": "Rh-101m",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 2.2e-10,
         "compound": null
       },
       {
         "id": "Rh-102m",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 2.6e-9,
         "compound": null
       },
       {
         "id": "Rh-102",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 1.2e-9,
         "compound": null
       },
       {
         "id": "Rh-103m",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 3.8e-12,
         "compound": null
       },
       {
         "id": "Rh-105",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 3.7e-10,
         "compound": null
       },
       {
         "id": "Rh-106m",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 1.6e-10,
         "compound": null
       },
       {
         "id": "Rh-107",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 2.4e-11,
         "compound": null
       },
       {
         "id": "Pd-100",
-        "f1": 0.005,
+        "f1_over_1y": 0.005,
         "e_Sv_per_Bq": 9.4e-10,
         "compound": null
       },
       {
         "id": "Pd-101",
-        "f1": 0.005,
+        "f1_over_1y": 0.005,
         "e_Sv_per_Bq": 9.4e-11,
         "compound": null
       },
       {
         "id": "Pd-103",
-        "f1": 0.005,
+        "f1_over_1y": 0.005,
         "e_Sv_per_Bq": 1.9e-10,
         "compound": null
       },
       {
         "id": "Pd-107",
-        "f1": 0.005,
+        "f1_over_1y": 0.005,
         "e_Sv_per_Bq": 3.7e-11,
         "compound": null
       },
       {
         "id": "Pd-109",
-        "f1": 0.005,
+        "f1_over_1y": 0.005,
         "e_Sv_per_Bq": 5.5e-10,
         "compound": null
       },
       {
         "id": "Ag-102",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 4e-11,
         "compound": null
       },
       {
         "id": "Ag-103",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 4.3e-11,
         "compound": null
       },
       {
         "id": "Ag-104",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 6e-11,
         "compound": null
       },
       {
         "id": "Ag-104m",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 5.4e-11,
         "compound": null
       },
       {
         "id": "Ag-105",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 4.7e-10,
         "compound": null
       },
       {
         "id": "Ag-106",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 3.2e-11,
         "compound": null
       },
       {
         "id": "Ag-106m",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 1.5e-9,
         "compound": null
       },
       {
         "id": "Ag-108m",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 2.3e-9,
         "compound": null
       },
       {
         "id": "Ag-110m",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 2.8e-9,
         "compound": null
       },
       {
         "id": "Ag-111",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 1.3e-9,
         "compound": null
       },
       {
         "id": "Ag-112",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 4.3e-10,
         "compound": null
       },
       {
         "id": "Ag-115",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 6e-11,
         "compound": null
       },
       {
         "id": "Cd-104",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 5.4e-11,
         "compound": null
       },
       {
         "id": "Cd-107",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 6.2e-11,
         "compound": null
       },
       {
         "id": "Cd-109",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 2e-9,
         "compound": null
       },
       {
         "id": "Cd-113",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 2.5e-8,
         "compound": null
       },
       {
         "id": "Cd-113m",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 2.3e-8,
         "compound": null
       },
       {
         "id": "Cd-115",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 1.4e-9,
         "compound": null
       },
       {
         "id": "Cd-115m",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 3.3e-9,
         "compound": null
       },
       {
         "id": "Cd-117",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 2.8e-10,
         "compound": null
       },
       {
         "id": "Cd-117m",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 2.8e-10,
         "compound": null
       },
       {
         "id": "In-109",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 6.6e-11,
         "compound": null
       },
       {
         "id": "In-110",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 2.4e-10,
         "compound": null
       },
       {
         "id": "In-110m",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 1e-10,
         "compound": null
       },
       {
         "id": "In-111",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 2.9e-10,
         "compound": null
       },
       {
         "id": "In-112",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 1e-11,
         "compound": null
       },
       {
         "id": "In-113m",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 2.8e-11,
         "compound": null
       },
       {
         "id": "In-114m",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 4.1e-9,
         "compound": null
       },
       {
         "id": "In-115",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 3.2e-8,
         "compound": null
       },
       {
         "id": "In-115m",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 8.6e-11,
         "compound": null
       },
       {
         "id": "In-116m",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 6.4e-11,
         "compound": null
       },
       {
         "id": "In-117",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 3.1e-11,
         "compound": null
       },
       {
         "id": "In-117m",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 1.2e-10,
         "compound": null
       },
       {
         "id": "In-119m",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 4.7e-11,
         "compound": null
       },
       {
         "id": "Sn-110",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 3.5e-10,
         "compound": null
       },
       {
         "id": "Sn-111",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 2.3e-11,
         "compound": null
       },
       {
         "id": "Sn-113",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 7.3e-10,
         "compound": null
       },
       {
         "id": "Sn-117m",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 7.1e-10,
         "compound": null
       },
       {
         "id": "Sn-119m",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 3.4e-10,
         "compound": null
       },
       {
         "id": "Sn-121",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 2.3e-10,
         "compound": null
       },
       {
         "id": "Sn-121m",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 3.8e-10,
         "compound": null
       },
       {
         "id": "Sn-123",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 2.1e-9,
         "compound": null
       },
       {
         "id": "Sn-123m",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 3.8e-11,
         "compound": null
       },
       {
         "id": "Sn-125",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 3.1e-9,
         "compound": null
       },
       {
         "id": "Sn-126",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 4.7e-9,
         "compound": null
       },
       {
         "id": "Sn-127",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 2e-10,
         "compound": null
       },
       {
         "id": "Sn-128",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 1.5e-10,
         "compound": null
       },
       {
         "id": "Sb-115",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 2.4e-11,
         "compound": null
       },
       {
         "id": "Sb-116",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 2.6e-11,
         "compound": null
       },
       {
         "id": "Sb-116m",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 6.7e-11,
         "compound": null
       },
       {
         "id": "Sb-117",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 1.8e-11,
         "compound": null
       },
       {
         "id": "Sb-118m",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 2.1e-10,
         "compound": null
       },
       {
         "id": "Sb-119",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 8e-11,
         "compound": null
       },
       {
         "id": "Sb-120m",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 1.2e-9,
         "compound": null
       },
       {
         "id": "Sb-120",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 1.4e-11,
         "compound": null
       },
       {
         "id": "Sb-122",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 1.7e-9,
         "compound": null
       },
       {
         "id": "Sb-124",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 2.5e-9,
         "compound": null
       },
       {
         "id": "Sb-124n",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 8e-12,
         "compound": null
       },
       {
         "id": "Sb-125",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 1.1e-9,
         "compound": null
       },
       {
         "id": "Sb-126",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 2.4e-9,
         "compound": null
       },
       {
         "id": "Sb-126m",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 3.6e-11,
         "compound": null
       },
       {
         "id": "Sb-127",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 1.7e-9,
         "compound": null
       },
       {
         "id": "Sb-128",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 7.6e-10,
         "compound": null
       },
       {
         "id": "Sb-128m",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 3.3e-11,
         "compound": null
       },
       {
         "id": "Sb-129",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 4.2e-10,
         "compound": null
       },
       {
         "id": "Sb-130",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 9.1e-11,
         "compound": null
       },
       {
         "id": "Sb-131",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 1e-10,
         "compound": null
       },
       {
         "id": "Te-116",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 1.7e-10,
         "compound": null
       },
       {
         "id": "Te-121",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 4.3e-10,
         "compound": null
       },
       {
         "id": "Te-121m",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 2.3e-9,
         "compound": null
       },
       {
         "id": "Te-123",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 4.4e-9,
         "compound": null
       },
       {
         "id": "Te-123m",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 1.4e-9,
         "compound": null
       },
       {
         "id": "Te-125m",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 8.7e-10,
         "compound": null
       },
       {
         "id": "Te-127",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 1.7e-10,
         "compound": null
       },
       {
         "id": "Te-127m",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 2.3e-9,
         "compound": null
       },
       {
         "id": "Te-129",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 6.3e-11,
         "compound": null
       },
       {
         "id": "Te-129m",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 3e-9,
         "compound": null
       },
       {
         "id": "Te-131",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 8.7e-11,
         "compound": null
       },
       {
         "id": "Te-131m",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 1.9e-9,
         "compound": null
       },
       {
         "id": "Te-132",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 3.8e-9,
         "compound": null
       },
       {
         "id": "Te-133",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 7.2e-11,
         "compound": null
       },
       {
         "id": "Te-133m",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 2.8e-10,
         "compound": null
       },
       {
         "id": "Te-134",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 1.1e-10,
         "compound": null
       },
       {
         "id": "I-120",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 3.4e-10,
         "compound": null
       },
       {
         "id": "I-120m",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 2.1e-10,
         "compound": null
       },
       {
         "id": "I-121",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 8.2e-11,
         "compound": null
       },
       {
         "id": "I-123",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 2.1e-10,
         "compound": null
       },
       {
         "id": "I-124",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 1.3e-8,
         "compound": null
       },
       {
         "id": "I-125",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 1.5e-8,
         "compound": null
       },
       {
         "id": "I-126",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 2.9e-8,
         "compound": null
       },
       {
         "id": "I-128",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 4.6e-11,
         "compound": null
       },
       {
         "id": "I-129",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 1.1e-7,
         "compound": null
       },
       {
         "id": "I-130",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 2e-9,
         "compound": null
       },
       {
         "id": "I-131",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 2.2e-8,
         "compound": null
       },
       {
         "id": "I-132",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 2.9e-10,
         "compound": null
       },
       {
         "id": "I-132m",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 2.2e-10,
         "compound": null
       },
       {
         "id": "I-133",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 4.3e-9,
         "compound": null
       },
       {
         "id": "I-134",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 1.1e-10,
         "compound": null
       },
       {
         "id": "I-135",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 9.3e-10,
         "compound": null
       },
       {
         "id": "Cs-125",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 3.5e-11,
         "compound": null
       },
       {
         "id": "Cs-127",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 2.4e-11,
         "compound": null
       },
       {
         "id": "Cs-129",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 6e-11,
         "compound": null
       },
       {
         "id": "Cs-130",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 2.8e-11,
         "compound": null
       },
       {
         "id": "Cs-131",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 5.8e-11,
         "compound": null
       },
       {
         "id": "Cs-132",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 5e-10,
         "compound": null
       },
       {
         "id": "Cs-134",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 1.9e-8,
         "compound": null
       },
       {
         "id": "Cs-134m",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 2e-11,
         "compound": null
       },
       {
         "id": "Cs-135",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 2e-9,
         "compound": null
       },
       {
         "id": "Cs-135m",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 1.9e-11,
         "compound": null
       },
       {
         "id": "Cs-136",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 3e-9,
         "compound": null
       },
       {
         "id": "Cs-137",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 1.3e-8,
         "compound": null
       },
       {
         "id": "Cs-138",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 9.2e-11,
         "compound": null
       },
       {
         "id": "Ba-126",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 2.6e-10,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "Ba-128",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 2.7e-9,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "Ba-131",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 4.5e-10,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "Ba-131m",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 4.9e-12,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "Ba-133",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 1.5e-9,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "Ba-133m",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 5.4e-10,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "Ba-135m",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 4.3e-10,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "Ba-139",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 1.2e-10,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "Ba-140",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 2.6e-9,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "Ba-141",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 7e-11,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "Ba-142",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 3.5e-11,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "La-131",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3.5e-11,
         "compound": null
       },
       {
         "id": "La-132",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3.9e-10,
         "compound": null
       },
       {
         "id": "La-135",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3e-11,
         "compound": null
       },
       {
         "id": "La-137",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 8.1e-11,
         "compound": null
       },
       {
         "id": "La-138",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.1e-9,
         "compound": null
       },
       {
         "id": "La-140",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2e-9,
         "compound": null
       },
       {
         "id": "La-141",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3.6e-10,
         "compound": null
       },
       {
         "id": "La-142",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.8e-10,
         "compound": null
       },
       {
         "id": "La-143",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 5.6e-11,
         "compound": null
       },
       {
         "id": "Ce-134",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.5e-9,
         "compound": null
       },
       {
         "id": "Ce-135",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 7.9e-10,
         "compound": null
       },
       {
         "id": "Ce-137",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.5e-11,
         "compound": null
       },
       {
         "id": "Ce-137m",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 5.4e-10,
         "compound": null
       },
       {
         "id": "Ce-139",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.6e-10,
         "compound": null
       },
       {
         "id": "Ce-141",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 7.1e-10,
         "compound": null
       },
       {
         "id": "Ce-143",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.1e-9,
         "compound": null
       },
       {
         "id": "Ce-144",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 5.2e-9,
         "compound": null
       },
       {
         "id": "Pr-136",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3.3e-11,
         "compound": null
       },
       {
         "id": "Pr-137",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 4e-11,
         "compound": null
       },
       {
         "id": "Pr-138m",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.3e-10,
         "compound": null
       },
       {
         "id": "Pr-139",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3.1e-11,
         "compound": null
       },
       {
         "id": "Pr-142",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.3e-9,
         "compound": null
       },
       {
         "id": "Pr-142m",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.7e-11,
         "compound": null
       },
       {
         "id": "Pr-143",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.2e-9,
         "compound": null
       },
       {
         "id": "Pr-144",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 5e-11,
         "compound": null
       },
       {
         "id": "Pr-145",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3.9e-10,
         "compound": null
       },
       {
         "id": "Pr-147",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3.3e-11,
         "compound": null
       },
       {
         "id": "Nd-136",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 9.9e-11,
         "compound": null
       },
       {
         "id": "Nd-138",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 6.4e-10,
         "compound": null
       },
       {
         "id": "Nd-139",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2e-11,
         "compound": null
       },
       {
         "id": "Nd-139m",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.5e-10,
         "compound": null
       },
       {
         "id": "Nd-141",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 8.3e-12,
         "compound": null
       },
       {
         "id": "Nd-147",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.1e-9,
         "compound": null
       },
       {
         "id": "Nd-149",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.2e-10,
         "compound": null
       },
       {
         "id": "Nd-151",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3e-11,
         "compound": null
       },
       {
         "id": "Pm-141",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3.6e-11,
         "compound": null
       },
       {
         "id": "Pm-143",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.3e-10,
         "compound": null
       },
       {
         "id": "Pm-144",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 9.7e-10,
         "compound": null
       },
       {
         "id": "Pm-145",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.1e-10,
         "compound": null
       },
       {
         "id": "Pm-146",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 9e-10,
         "compound": null
       },
       {
         "id": "Pm-147",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.6e-10,
         "compound": null
       },
       {
         "id": "Pm-148",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.7e-9,
         "compound": null
       },
       {
         "id": "Pm-148m",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.7e-9,
         "compound": null
       },
       {
         "id": "Pm-149",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 9.9e-10,
         "compound": null
       },
       {
         "id": "Pm-150",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.6e-10,
         "compound": null
       },
       {
         "id": "Pm-151",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 7.3e-10,
         "compound": null
       },
       {
         "id": "Sm-141",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3.9e-11,
         "compound": null
       },
       {
         "id": "Sm-141m",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 6.5e-11,
         "compound": null
       },
       {
         "id": "Sm-142",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.9e-10,
         "compound": null
       },
       {
         "id": "Sm-145",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.1e-10,
         "compound": null
       },
       {
         "id": "Sm-146",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 5.4e-8,
         "compound": null
       },
       {
         "id": "Sm-147",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 4.9e-8,
         "compound": null
       },
       {
         "id": "Sm-151",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 9.8e-11,
         "compound": null
       },
       {
         "id": "Sm-153",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 7.4e-10,
         "compound": null
       },
       {
         "id": "Sm-155",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.9e-11,
         "compound": null
       },
       {
         "id": "Sm-156",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.5e-10,
         "compound": null
       },
       {
         "id": "Eu-145",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 7.5e-10,
         "compound": null
       },
       {
         "id": "Eu-146",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.3e-9,
         "compound": null
       },
       {
         "id": "Eu-147",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 4.4e-10,
         "compound": null
       },
       {
         "id": "Eu-148",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.3e-9,
         "compound": null
       },
       {
         "id": "Eu-149",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1e-10,
         "compound": null
       },
       {
         "id": "Eu-150",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.3e-9,
         "compound": null
       },
       {
         "id": "Eu-150m",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3.8e-10,
         "compound": null
       },
       {
         "id": "Eu-152",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.4e-9,
         "compound": null
       },
       {
         "id": "Eu-152m",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 5e-10,
         "compound": null
       },
       {
         "id": "Eu-154",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2e-9,
         "compound": null
       },
       {
         "id": "Eu-155",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3.2e-10,
         "compound": null
       },
       {
         "id": "Eu-156",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.2e-9,
         "compound": null
       },
       {
         "id": "Eu-157",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 6e-10,
         "compound": null
       },
       {
         "id": "Eu-158",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 9.4e-11,
         "compound": null
       },
       {
         "id": "Gd-145",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 4.4e-11,
         "compound": null
       },
       {
         "id": "Gd-146",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 9.6e-10,
         "compound": null
       },
       {
         "id": "Gd-147",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 6.1e-10,
         "compound": null
       },
       {
         "id": "Gd-148",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 5.6e-8,
         "compound": null
       },
       {
         "id": "Gd-149",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 4.5e-10,
         "compound": null
       },
       {
         "id": "Gd-151",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2e-10,
         "compound": null
       },
       {
         "id": "Gd-152",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 4.1e-8,
         "compound": null
       },
       {
         "id": "Gd-153",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.7e-10,
         "compound": null
       },
       {
         "id": "Gd-159",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 4.9e-10,
         "compound": null
       },
       {
         "id": "Tb-147",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.6e-10,
         "compound": null
       },
       {
         "id": "Tb-149",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.5e-10,
         "compound": null
       },
       {
         "id": "Tb-150",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.5e-10,
         "compound": null
       },
       {
         "id": "Tb-151",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3.4e-10,
         "compound": null
       },
       {
         "id": "Tb-153",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.5e-10,
         "compound": null
       },
       {
         "id": "Tb-154",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 6.5e-10,
         "compound": null
       },
       {
         "id": "Tb-155",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.1e-10,
         "compound": null
       },
       {
         "id": "Tb-156",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.2e-9,
         "compound": null
       },
       {
         "id": "Tb-156n",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 8.1e-11,
         "compound": null
       },
       {
         "id": "Tb-156m",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.7e-10,
         "compound": null
       },
       {
         "id": "Tb-157",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3.4e-11,
         "compound": null
       },
       {
         "id": "Tb-158",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.1e-9,
         "compound": null
       },
       {
         "id": "Tb-160",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.6e-9,
         "compound": null
       },
       {
         "id": "Tb-161",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 7.2e-10,
         "compound": null
       },
       {
         "id": "Dy-155",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.3e-10,
         "compound": null
       },
       {
         "id": "Dy-157",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 6.1e-11,
         "compound": null
       },
       {
         "id": "Dy-159",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1e-10,
         "compound": null
       },
       {
         "id": "Dy-165",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.1e-10,
         "compound": null
       },
       {
         "id": "Dy-166",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.6e-9,
         "compound": null
       },
       {
         "id": "Ho-155",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3.7e-11,
         "compound": null
       },
       {
         "id": "Ho-157",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 6.5e-12,
         "compound": null
       },
       {
         "id": "Ho-159",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 7.9e-12,
         "compound": null
       },
       {
         "id": "Ho-161",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.3e-11,
         "compound": null
       },
       {
         "id": "Ho-162",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3.3e-12,
         "compound": null
       },
       {
         "id": "Ho-162m",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.6e-11,
         "compound": null
       },
       {
         "id": "Ho-164",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 9.5e-12,
         "compound": null
       },
       {
         "id": "Ho-164m",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.6e-11,
         "compound": null
       },
       {
         "id": "Ho-166",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.4e-9,
         "compound": null
       },
       {
         "id": "Ho-166m",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2e-9,
         "compound": null
       },
       {
         "id": "Ho-167",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 8.3e-11,
         "compound": null
       },
       {
         "id": "Er-161",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 8e-11,
         "compound": null
       },
       {
         "id": "Er-165",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.9e-11,
         "compound": null
       },
       {
         "id": "Er-169",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3.7e-10,
         "compound": null
       },
       {
         "id": "Er-171",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3.6e-10,
         "compound": null
       },
       {
         "id": "Er-172",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1e-9,
         "compound": null
       },
       {
         "id": "Tm-162",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.9e-11,
         "compound": null
       },
       {
         "id": "Tm-166",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.8e-10,
         "compound": null
       },
       {
         "id": "Tm-167",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 5.6e-10,
         "compound": null
       },
       {
         "id": "Tm-170",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.3e-9,
         "compound": null
       },
       {
         "id": "Tm-171",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.1e-10,
         "compound": null
       },
       {
         "id": "Tm-172",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.7e-9,
         "compound": null
       },
       {
         "id": "Tm-173",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3.1e-10,
         "compound": null
       },
       {
         "id": "Tm-175",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.7e-11,
         "compound": null
       },
       {
         "id": "Yb-162",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.3e-11,
         "compound": null
       },
       {
         "id": "Yb-166",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 9.5e-10,
         "compound": null
       },
       {
         "id": "Yb-167",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 6.7e-12,
         "compound": null
       },
       {
         "id": "Yb-169",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 7.1e-10,
         "compound": null
       },
       {
         "id": "Yb-175",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 4.4e-10,
         "compound": null
       },
       {
         "id": "Yb-177",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 8.8e-11,
         "compound": null
       },
       {
         "id": "Yb-178",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.2e-10,
         "compound": null
       },
       {
         "id": "Lu-169",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 4.6e-10,
         "compound": null
       },
       {
         "id": "Lu-170",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 9.9e-10,
         "compound": null
       },
       {
         "id": "Lu-171",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 6.7e-10,
         "compound": null
       },
       {
         "id": "Lu-172",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.3e-9,
         "compound": null
       },
       {
         "id": "Lu-173",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.6e-10,
         "compound": null
       },
       {
         "id": "Lu-174",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.7e-10,
         "compound": null
       },
       {
         "id": "Lu-174m",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 5.3e-10,
         "compound": null
       },
       {
         "id": "Lu-176",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.8e-9,
         "compound": null
       },
       {
         "id": "Lu-176m",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.7e-10,
         "compound": null
       },
       {
         "id": "Lu-177",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 5.3e-10,
         "compound": null
       },
       {
         "id": "Lu-177m",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.7e-9,
         "compound": null
       },
       {
         "id": "Lu-178",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 4.7e-11,
         "compound": null
       },
       {
         "id": "Lu-178m",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3.8e-11,
         "compound": null
       },
       {
         "id": "Lu-179",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.1e-10,
         "compound": null
       },
       {
         "id": "Hf-170",
-        "f1": 0.002,
+        "f1_over_1y": 0.002,
         "e_Sv_per_Bq": 4.8e-10,
         "compound": null
       },
       {
         "id": "Hf-172",
-        "f1": 0.002,
+        "f1_over_1y": 0.002,
         "e_Sv_per_Bq": 1e-9,
         "compound": null
       },
       {
         "id": "Hf-173",
-        "f1": 0.002,
+        "f1_over_1y": 0.002,
         "e_Sv_per_Bq": 2.3e-10,
         "compound": null
       },
       {
         "id": "Hf-175",
-        "f1": 0.002,
+        "f1_over_1y": 0.002,
         "e_Sv_per_Bq": 4.1e-10,
         "compound": null
       },
       {
         "id": "Hf-177m",
-        "f1": 0.002,
+        "f1_over_1y": 0.002,
         "e_Sv_per_Bq": 8.1e-11,
         "compound": null
       },
       {
         "id": "Hf-178m",
-        "f1": 0.002,
+        "f1_over_1y": 0.002,
         "e_Sv_per_Bq": 4.7e-9,
         "compound": null
       },
       {
         "id": "Hf-179m",
-        "f1": 0.002,
+        "f1_over_1y": 0.002,
         "e_Sv_per_Bq": 1.2e-9,
         "compound": null
       },
       {
         "id": "Hf-180m",
-        "f1": 0.002,
+        "f1_over_1y": 0.002,
         "e_Sv_per_Bq": 1.7e-10,
         "compound": null
       },
       {
         "id": "Hf-181",
-        "f1": 0.002,
+        "f1_over_1y": 0.002,
         "e_Sv_per_Bq": 1.1e-9,
         "compound": null
       },
       {
         "id": "Hf-182",
-        "f1": 0.002,
+        "f1_over_1y": 0.002,
         "e_Sv_per_Bq": 3e-9,
         "compound": null
       },
       {
         "id": "Hf-182m",
-        "f1": 0.002,
+        "f1_over_1y": 0.002,
         "e_Sv_per_Bq": 4.2e-11,
         "compound": null
       },
       {
         "id": "Hf-183",
-        "f1": 0.002,
+        "f1_over_1y": 0.002,
         "e_Sv_per_Bq": 7.3e-11,
         "compound": null
       },
       {
         "id": "Hf-184",
-        "f1": 0.002,
+        "f1_over_1y": 0.002,
         "e_Sv_per_Bq": 5.2e-10,
         "compound": null
       },
       {
         "id": "Ta-172",
-        "f1": 0.001,
+        "f1_over_1y": 0.001,
         "e_Sv_per_Bq": 5.3e-11,
         "compound": null
       },
       {
         "id": "Ta-173",
-        "f1": 0.001,
+        "f1_over_1y": 0.001,
         "e_Sv_per_Bq": 1.9e-10,
         "compound": null
       },
       {
         "id": "Ta-174",
-        "f1": 0.001,
+        "f1_over_1y": 0.001,
         "e_Sv_per_Bq": 5.7e-11,
         "compound": null
       },
       {
         "id": "Ta-175",
-        "f1": 0.001,
+        "f1_over_1y": 0.001,
         "e_Sv_per_Bq": 2.1e-10,
         "compound": null
       },
       {
         "id": "Ta-176",
-        "f1": 0.001,
+        "f1_over_1y": 0.001,
         "e_Sv_per_Bq": 3.1e-10,
         "compound": null
       },
       {
         "id": "Ta-177",
-        "f1": 0.001,
+        "f1_over_1y": 0.001,
         "e_Sv_per_Bq": 1.1e-10,
         "compound": null
       },
       {
         "id": "Ta-178m",
-        "f1": 0.001,
+        "f1_over_1y": 0.001,
         "e_Sv_per_Bq": 7.2e-11,
         "compound": null
       },
       {
         "id": "Ta-179",
-        "f1": 0.001,
+        "f1_over_1y": 0.001,
         "e_Sv_per_Bq": 6.5e-11,
         "compound": null
       },
       {
         "id": "Ta-180",
-        "f1": 0.001,
+        "f1_over_1y": 0.001,
         "e_Sv_per_Bq": 5.4e-11,
         "compound": null
       },
       {
         "id": "Ta-182",
-        "f1": 0.001,
+        "f1_over_1y": 0.001,
         "e_Sv_per_Bq": 1.5e-9,
         "compound": null
       },
       {
         "id": "Ta-182m",
-        "f1": 0.001,
+        "f1_over_1y": 0.001,
         "e_Sv_per_Bq": 1.2e-11,
         "compound": null
       },
       {
         "id": "Ta-183",
-        "f1": 0.001,
+        "f1_over_1y": 0.001,
         "e_Sv_per_Bq": 1.3e-9,
         "compound": null
       },
       {
         "id": "Ta-184",
-        "f1": 0.001,
+        "f1_over_1y": 0.001,
         "e_Sv_per_Bq": 6.8e-10,
         "compound": null
       },
       {
         "id": "Ta-185",
-        "f1": 0.001,
+        "f1_over_1y": 0.001,
         "e_Sv_per_Bq": 6.8e-11,
         "compound": null
       },
       {
         "id": "Ta-186",
-        "f1": 0.001,
+        "f1_over_1y": 0.001,
         "e_Sv_per_Bq": 3.3e-11,
         "compound": null
       },
       {
         "id": "W-176",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 1e-10,
         "compound": null
       },
       {
         "id": "W-177",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 5.8e-11,
         "compound": null
       },
       {
         "id": "W-178",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 2.2e-10,
         "compound": null
       },
       {
         "id": "W-179",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 3.3e-12,
         "compound": null
       },
       {
         "id": "W-181",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 7.6e-11,
         "compound": null
       },
       {
         "id": "W-185",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 4.4e-10,
         "compound": null
       },
       {
         "id": "W-187",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 6.3e-10,
         "compound": null
       },
       {
         "id": "W-188",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 2.1e-9,
         "compound": null
       },
       {
         "id": "Re-177",
-        "f1": 0.8,
+        "f1_over_1y": 0.8,
         "e_Sv_per_Bq": 2.2e-11,
         "compound": null
       },
       {
         "id": "Re-178",
-        "f1": 0.8,
+        "f1_over_1y": 0.8,
         "e_Sv_per_Bq": 2.5e-11,
         "compound": null
       },
       {
         "id": "Re-181",
-        "f1": 0.8,
+        "f1_over_1y": 0.8,
         "e_Sv_per_Bq": 4.2e-10,
         "compound": null
       },
       {
         "id": "Re-182",
-        "f1": 0.8,
+        "f1_over_1y": 0.8,
         "e_Sv_per_Bq": 1.4e-9,
         "compound": null
       },
       {
         "id": "Re-182m",
-        "f1": 0.8,
+        "f1_over_1y": 0.8,
         "e_Sv_per_Bq": 2.7e-10,
         "compound": null
       },
       {
         "id": "Re-184",
-        "f1": 0.8,
+        "f1_over_1y": 0.8,
         "e_Sv_per_Bq": 1e-9,
         "compound": null
       },
       {
         "id": "Re-184m",
-        "f1": 0.8,
+        "f1_over_1y": 0.8,
         "e_Sv_per_Bq": 1.5e-9,
         "compound": null
       },
       {
         "id": "Re-186",
-        "f1": 0.8,
+        "f1_over_1y": 0.8,
         "e_Sv_per_Bq": 1.5e-9,
         "compound": null
       },
       {
         "id": "Re-186m",
-        "f1": 0.8,
+        "f1_over_1y": 0.8,
         "e_Sv_per_Bq": 2.2e-9,
         "compound": null
       },
       {
         "id": "Re-187",
-        "f1": 0.8,
+        "f1_over_1y": 0.8,
         "e_Sv_per_Bq": 5.1e-12,
         "compound": null
       },
       {
         "id": "Re-188",
-        "f1": 0.8,
+        "f1_over_1y": 0.8,
         "e_Sv_per_Bq": 1.4e-9,
         "compound": null
       },
       {
         "id": "Re-188m",
-        "f1": 0.8,
+        "f1_over_1y": 0.8,
         "e_Sv_per_Bq": 3e-11,
         "compound": null
       },
       {
         "id": "Re-189",
-        "f1": 0.8,
+        "f1_over_1y": 0.8,
         "e_Sv_per_Bq": 7.8e-10,
         "compound": null
       },
       {
         "id": "Os-180",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 1.7e-11,
         "compound": null
       },
       {
         "id": "Os-181",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 8.9e-11,
         "compound": null
       },
       {
         "id": "Os-182",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 5.6e-10,
         "compound": null
       },
       {
         "id": "Os-185",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 5.1e-10,
         "compound": null
       },
       {
         "id": "Os-189m",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 1.8e-11,
         "compound": null
       },
       {
         "id": "Os-191",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 5.7e-10,
         "compound": null
       },
       {
         "id": "Os-191m",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 9.6e-11,
         "compound": null
       },
       {
         "id": "Os-193",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 8.1e-10,
         "compound": null
       },
       {
         "id": "Os-194",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 2.4e-9,
         "compound": null
       },
       {
         "id": "Ir-182",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 4.8e-11,
         "compound": null
       },
       {
         "id": "Ir-184",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 1.7e-10,
         "compound": null
       },
       {
         "id": "Ir-185",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 2.6e-10,
         "compound": null
       },
       {
         "id": "Ir-186",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 4.9e-10,
         "compound": null
       },
       {
         "id": "Ir-186m",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 6.1e-11,
         "compound": null
       },
       {
         "id": "Ir-187",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 1.2e-10,
         "compound": null
       },
       {
         "id": "Ir-188",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 6.3e-10,
         "compound": null
       },
       {
         "id": "Ir-189",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 2.4e-10,
         "compound": null
       },
       {
         "id": "Ir-190",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 1.2e-9,
         "compound": null
       },
       {
         "id": "Ir-190n",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 1.2e-10,
         "compound": null
       },
       {
         "id": "Ir-190m",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 8e-12,
         "compound": null
       },
       {
         "id": "Ir-192",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 1.4e-9,
         "compound": null
       },
       {
         "id": "Ir-192n",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 3.1e-10,
         "compound": null
       },
       {
         "id": "Ir-193m",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 2.7e-10,
         "compound": null
       },
       {
         "id": "Ir-194",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 1.3e-9,
         "compound": null
       },
       {
         "id": "Ir-194m",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 2.1e-9,
         "compound": null
       },
       {
         "id": "Ir-195",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 1e-10,
         "compound": null
       },
       {
         "id": "Ir-195m",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 2.1e-10,
         "compound": null
       },
       {
         "id": "Pt-186",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 9.3e-11,
         "compound": null
       },
       {
         "id": "Pt-188",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 7.6e-10,
         "compound": null
       },
       {
         "id": "Pt-189",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 1.2e-10,
         "compound": null
       },
       {
         "id": "Pt-191",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 3.4e-10,
         "compound": null
       },
       {
         "id": "Pt-193",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 3.1e-11,
         "compound": null
       },
       {
         "id": "Pt-193m",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 4.5e-10,
         "compound": null
       },
       {
         "id": "Pt-195m",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 6.3e-10,
         "compound": null
       },
       {
         "id": "Pt-197",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 4e-10,
         "compound": null
       },
       {
         "id": "Pt-197m",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 8.4e-11,
         "compound": null
       },
       {
         "id": "Pt-199",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 3.9e-11,
         "compound": null
       },
       {
         "id": "Pt-200",
-        "f1": 0.01,
+        "f1_over_1y": 0.01,
         "e_Sv_per_Bq": 1.2e-9,
         "compound": null
       },
       {
         "id": "Au-193",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 1.3e-10,
         "compound": null
       },
       {
         "id": "Au-194",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 4.2e-10,
         "compound": null
       },
       {
         "id": "Au-195",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 2.5e-10,
         "compound": null
       },
       {
         "id": "Au-198",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 1e-9,
         "compound": null
       },
       {
         "id": "Au-198m",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 1.3e-9,
         "compound": null
       },
       {
         "id": "Au-199",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 4.4e-10,
         "compound": null
       },
       {
         "id": "Au-200",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 6.8e-11,
         "compound": null
       },
       {
         "id": "Au-200m",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 1.1e-9,
         "compound": null
       },
       {
         "id": "Au-201",
-        "f1": 0.1,
+        "f1_over_1y": 0.1,
         "e_Sv_per_Bq": 2.4e-11,
         "compound": null
       },
       {
         "id": "Hg-193",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 8.2e-11,
         "compound": "Inorganic mercury"
       },
       {
         "id": "Hg-193",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 3.1e-11,
         "compound": "Methyl mercury"
       },
       {
         "id": "Hg-193m",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 4e-10,
         "compound": "Inorganic mercury"
       },
       {
         "id": "Hg-193m",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 1.3e-10,
         "compound": "Methyl mercury"
       },
       {
         "id": "Hg-193m",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 3e-10,
         "compound": "Other organic forms"
       },
       {
         "id": "Hg-194",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 1.4e-9,
         "compound": "Inorganic mercury"
       },
       {
         "id": "Hg-194",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 5.1e-8,
         "compound": "Methyl mercury"
       },
       {
         "id": "Hg-194",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 2.1e-8,
         "compound": "Other organic forms"
       },
       {
         "id": "Hg-195",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 9.7e-11,
         "compound": "Inorganic mercury"
       },
       {
         "id": "Hg-195",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 3.4e-11,
         "compound": "Methyl mercury"
       },
       {
         "id": "Hg-195",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 7.5e-11,
         "compound": "Other organic forms"
       },
       {
         "id": "Hg-195m",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 5.6e-10,
         "compound": "Inorganic mercury"
       },
       {
         "id": "Hg-195m",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 2.2e-10,
         "compound": "Methyl mercury"
       },
       {
         "id": "Hg-195m",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 4.1e-10,
         "compound": "Other organic forms"
       },
       {
         "id": "Hg-197",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 2.3e-10,
         "compound": "Inorganic mercury"
       },
       {
         "id": "Hg-197",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 9.9e-11,
         "compound": "Methyl mercury"
       },
       {
         "id": "Hg-197",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 1.7e-10,
         "compound": "Other organic forms"
       },
       {
         "id": "Hg-197m",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 4.7e-10,
         "compound": "Inorganic mercury"
       },
       {
         "id": "Hg-197m",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 1.5e-10,
         "compound": "Methyl mercury"
       },
       {
         "id": "Hg-197m",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 3.4e-10,
         "compound": "Other organic forms"
       },
       {
         "id": "Hg-199m",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 3.1e-11,
         "compound": "Inorganic mercury"
       },
       {
         "id": "Hg-199m",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 2.8e-11,
         "compound": "Methyl mercury"
       },
       {
         "id": "Hg-199m",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 3.1e-11,
         "compound": "Other organic forms"
       },
       {
         "id": "Hg-203",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 5.4e-10,
         "compound": "Inorganic mercury"
       },
       {
         "id": "Hg-203",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 1.9e-9,
         "compound": "Methyl mercury"
       },
       {
         "id": "Hg-203",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 1.1e-9,
         "compound": "Other organic forms"
       },
       {
         "id": "Tl-194",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 8.1e-12,
         "compound": null
       },
       {
         "id": "Tl-194m",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 4e-11,
         "compound": null
       },
       {
         "id": "Tl-195",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 2.7e-11,
         "compound": null
       },
       {
         "id": "Tl-197",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 2.3e-11,
         "compound": null
       },
       {
         "id": "Tl-198",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 7.3e-11,
         "compound": null
       },
       {
         "id": "Tl-198m",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 5.4e-11,
         "compound": null
       },
       {
         "id": "Tl-199",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 2.6e-11,
         "compound": null
       },
       {
         "id": "Tl-200",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 2e-10,
         "compound": null
       },
       {
         "id": "Tl-201",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 9.5e-11,
         "compound": null
       },
       {
         "id": "Tl-202",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 4.5e-10,
         "compound": null
       },
       {
         "id": "Tl-204",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 1.2e-9,
         "compound": null
       },
       {
         "id": "Pb-195m",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 2.9e-11,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "Pb-198",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 1e-10,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "Pb-199",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 5.4e-11,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "Pb-200",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 4e-10,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "Pb-201",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 1.6e-10,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "Pb-202",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 8.8e-9,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "Pb-202m",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 1.3e-10,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "Pb-203",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 2.4e-10,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "Pb-205",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 2.8e-10,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "Pb-209",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 5.7e-11,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "Pb-210",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 6.9e-7,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "Pb-211",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 1.8e-10,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "Pb-212",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 6e-9,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "Pb-214",
-        "f1": 0.4,
+        "f1_over_1y": 0.4,
         "e_Sv_per_Bq": 1.4e-10,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "Bi-200",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 5.1e-11,
         "compound": null
       },
       {
         "id": "Bi-201",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 1.2e-10,
         "compound": null
       },
       {
         "id": "Bi-202",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 8.9e-11,
         "compound": null
       },
       {
         "id": "Bi-203",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 4.8e-10,
         "compound": null
       },
       {
         "id": "Bi-205",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 9e-10,
         "compound": null
       },
       {
         "id": "Bi-206",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 1.9e-9,
         "compound": null
       },
       {
         "id": "Bi-207",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 1.3e-9,
         "compound": null
       },
       {
         "id": "Bi-210",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 1.3e-9,
         "compound": null
       },
       {
         "id": "Bi-210m",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 1.5e-8,
         "compound": null
       },
       {
         "id": "Bi-212",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 2.6e-10,
         "compound": null
       },
       {
         "id": "Bi-213",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 2e-10,
         "compound": null
       },
       {
         "id": "Bi-214",
-        "f1": 0.05,
+        "f1_over_1y": 0.05,
         "e_Sv_per_Bq": 1.1e-10,
         "compound": null
       },
       {
         "id": "Po-203",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 4.6e-11,
         "compound": null
       },
       {
         "id": "Po-205",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 5.8e-11,
         "compound": null
       },
       {
         "id": "Po-207",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 1.1e-10,
         "compound": null
       },
       {
         "id": "Po-210",
-        "f1": 0.5,
+        "f1_over_1y": 0.5,
         "e_Sv_per_Bq": 0.0000012,
         "compound": null
       },
       {
         "id": "At-207",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 2.4e-10,
         "compound": null
       },
       {
         "id": "At-211",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 1.1e-8,
         "compound": null
       },
       {
         "id": "Fr-222",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 7.2e-10,
         "compound": null
       },
       {
         "id": "Fr-223",
-        "f1": 1,
+        "f1_over_1y": 1,
         "e_Sv_per_Bq": 2.4e-9,
         "compound": null
       },
       {
         "id": "Ra-223",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 1e-7,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "Ra-224",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 6.5e-8,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "Ra-225",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 9.9e-8,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "Ra-226",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 2.8e-7,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "Ra-227",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 8.1e-11,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "Ra-228",
-        "f1": 0.3,
+        "f1_over_1y": 0.3,
         "e_Sv_per_Bq": 6.9e-7,
         "compound": "For the adult, f1 is 0.2"
       },
       {
         "id": "Ac-224",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 7e-10,
         "compound": null
       },
       {
         "id": "Ac-225",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.4e-8,
         "compound": null
       },
       {
         "id": "Ac-226",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1e-8,
         "compound": null
       },
       {
         "id": "Ac-227",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 0.0000011,
         "compound": null
       },
       {
         "id": "Ac-228",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 4.3e-10,
         "compound": null
       },
       {
         "id": "Th-226",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3.5e-10,
         "compound": null
       },
       {
         "id": "Th-227",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 8.8e-9,
         "compound": null
       },
       {
         "id": "Th-228",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 7.2e-8,
         "compound": null
       },
       {
         "id": "Th-229",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 4.9e-7,
         "compound": null
       },
       {
         "id": "Th-230",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.1e-7,
         "compound": null
       },
       {
         "id": "Th-231",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3.4e-10,
         "compound": null
       },
       {
         "id": "Th-232",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.3e-7,
         "compound": null
       },
       {
         "id": "Th-234",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3.4e-9,
         "compound": null
       },
       {
         "id": "Pa-227",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 4.5e-10,
         "compound": null
       },
       {
         "id": "Pa-228",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 7.8e-10,
         "compound": null
       },
       {
         "id": "Pa-230",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 9.2e-10,
         "compound": null
       },
       {
         "id": "Pa-231",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 7.1e-7,
         "compound": null
       },
       {
         "id": "Pa-232",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 7.2e-10,
         "compound": null
       },
       {
         "id": "Pa-233",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 8.7e-10,
         "compound": null
       },
       {
         "id": "Pa-234",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 5.1e-10,
         "compound": null
       },
       {
         "id": "U-230",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 5.6e-8,
         "compound": null
       },
       {
         "id": "U-231",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 2.8e-10,
         "compound": null
       },
       {
         "id": "U-232",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 3.3e-7,
         "compound": null
       },
       {
         "id": "U-233",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 5.1e-8,
         "compound": null
       },
       {
         "id": "U-234",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 4.9e-8,
         "compound": null
       },
       {
         "id": "U-235",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 4.7e-8,
         "compound": null
       },
       {
         "id": "U-236",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 4.7e-8,
         "compound": null
       },
       {
         "id": "U-237",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 7.6e-10,
         "compound": null
       },
       {
         "id": "U-238",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 4.5e-8,
         "compound": null
       },
       {
         "id": "U-239",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 2.7e-11,
         "compound": null
       },
       {
         "id": "U-240",
-        "f1": 0.02,
+        "f1_over_1y": 0.02,
         "e_Sv_per_Bq": 1.1e-9,
         "compound": null
       },
       {
         "id": "Np-232",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 9.7e-12,
         "compound": null
       },
       {
         "id": "Np-233",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.2e-12,
         "compound": null
       },
       {
         "id": "Np-234",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 8.1e-10,
         "compound": null
       },
       {
         "id": "Np-235",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 5.3e-11,
         "compound": null
       },
       {
         "id": "Np-236",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.7e-8,
         "compound": null
       },
       {
         "id": "Np-236m",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.9e-10,
         "compound": null
       },
       {
         "id": "Np-237",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.1e-7,
         "compound": null
       },
       {
         "id": "Np-238",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 9.1e-10,
         "compound": null
       },
       {
         "id": "Np-239",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 8e-10,
         "compound": null
       },
       {
         "id": "Np-240",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 8.2e-11,
         "compound": null
       },
       {
         "id": "Pu-234",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.6e-10,
         "compound": null
       },
       {
         "id": "Pu-235",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.1e-12,
         "compound": null
       },
       {
         "id": "Pu-236",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 8.7e-8,
         "compound": null
       },
       {
         "id": "Pu-237",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1e-10,
         "compound": null
       },
       {
         "id": "Pu-238",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.3e-7,
         "compound": null
       },
       {
         "id": "Pu-239",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.5e-7,
         "compound": null
       },
       {
         "id": "Pu-240",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.5e-7,
         "compound": null
       },
       {
         "id": "Pu-241",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 4.8e-9,
         "compound": null
       },
       {
         "id": "Pu-242",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.4e-7,
         "compound": null
       },
       {
         "id": "Pu-243",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 8.5e-11,
         "compound": null
       },
       {
         "id": "Pu-244",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.4e-7,
         "compound": null
       },
       {
         "id": "Pu-245",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 7.2e-10,
         "compound": null
       },
       {
         "id": "Pu-246",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3.3e-9,
         "compound": null
       },
       {
         "id": "Am-237",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.8e-11,
         "compound": null
       },
       {
         "id": "Am-238",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3.2e-11,
         "compound": null
       },
       {
         "id": "Am-239",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.4e-10,
         "compound": null
       },
       {
         "id": "Am-240",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 5.8e-10,
         "compound": null
       },
       {
         "id": "Am-241",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2e-7,
         "compound": null
       },
       {
         "id": "Am-242",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3e-10,
         "compound": null
       },
       {
         "id": "Am-242m",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.9e-7,
         "compound": null
       },
       {
         "id": "Am-243",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2e-7,
         "compound": null
       },
       {
         "id": "Am-244",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 4.6e-10,
         "compound": null
       },
       {
         "id": "Am-244m",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.9e-11,
         "compound": null
       },
       {
         "id": "Am-245",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 6.2e-11,
         "compound": null
       },
       {
         "id": "Am-246",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 5.8e-11,
         "compound": null
       },
       {
         "id": "Am-246m",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3.4e-11,
         "compound": null
       },
       {
         "id": "Cm-238",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 8e-11,
         "compound": null
       },
       {
         "id": "Cm-240",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 7.6e-9,
         "compound": null
       },
       {
         "id": "Cm-241",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 9.1e-10,
         "compound": null
       },
       {
         "id": "Cm-242",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.2e-8,
         "compound": null
       },
       {
         "id": "Cm-243",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.5e-7,
         "compound": null
       },
       {
         "id": "Cm-244",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.2e-7,
         "compound": null
       },
       {
         "id": "Cm-245",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.1e-7,
         "compound": null
       },
       {
         "id": "Cm-246",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.1e-7,
         "compound": null
       },
       {
         "id": "Cm-247",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.9e-7,
         "compound": null
       },
       {
         "id": "Cm-248",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 7.7e-7,
         "compound": null
       },
       {
         "id": "Cm-249",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3.1e-11,
         "compound": null
       },
       {
         "id": "Cm-250",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 0.0000044,
         "compound": null
       },
       {
         "id": "Bk-245",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 5.7e-10,
         "compound": null
       },
       {
         "id": "Bk-246",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 4.8e-10,
         "compound": null
       },
       {
         "id": "Bk-247",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3.5e-7,
         "compound": null
       },
       {
         "id": "Bk-249",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 9.7e-10,
         "compound": null
       },
       {
         "id": "Bk-250",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.4e-10,
         "compound": null
       },
       {
         "id": "Cf-244",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 7e-11,
         "compound": null
       },
       {
         "id": "Cf-246",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3.3e-9,
         "compound": null
       },
       {
         "id": "Cf-248",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.8e-8,
         "compound": null
       },
       {
         "id": "Cf-249",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3.5e-7,
         "compound": null
       },
       {
         "id": "Cf-250",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.6e-7,
         "compound": null
       },
       {
         "id": "Cf-251",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 3.6e-7,
         "compound": null
       },
       {
         "id": "Cf-252",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 9e-8,
         "compound": null
       },
       {
         "id": "Cf-253",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.4e-9,
         "compound": null
       },
       {
         "id": "Cf-254",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 4e-7,
         "compound": null
       },
       {
         "id": "Es-250m",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.1e-11,
         "compound": null
       },
       {
         "id": "Es-251",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.7e-10,
         "compound": null
       },
       {
         "id": "Es-253",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 6.1e-9,
         "compound": null
       },
       {
         "id": "Es-254",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.8e-8,
         "compound": null
       },
       {
         "id": "Es-254m",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 4.2e-9,
         "compound": null
       },
       {
         "id": "Fm-252",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.7e-9,
         "compound": null
       },
       {
         "id": "Fm-253",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 9.1e-10,
         "compound": null
       },
       {
         "id": "Fm-254",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 4.4e-10,
         "compound": null
       },
       {
         "id": "Fm-255",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 2.5e-9,
         "compound": null
       },
       {
         "id": "Fm-257",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.5e-8,
         "compound": null
       },
       {
         "id": "Md-257",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.2e-10,
         "compound": null
       },
       {
         "id": "Md-258",
-        "f1": 0.0005,
+        "f1_over_1y": 0.0005,
         "e_Sv_per_Bq": 1.3e-8,
         "compound": null
       }

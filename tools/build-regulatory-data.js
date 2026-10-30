@@ -11,6 +11,10 @@
  *                           RD 783/2001 Annex III table a), kept in force by the
  *                           CSN Resolution of 3 April 2024; numerical transcription
  *                           ICRP 119 Table F.1 (all chemical-form rows).
+ *   csn_exemption           exemption values set by the CSN under Annex II A.3.a for
+ *                           nuclides NOT in Table B (CSN Resolution of 16 June 2025:
+ *                           Y-88, Ba-133), kept apart from Annex IV: CSN secondary
+ *                           rule, not published in the BOE.
  *
  * Inputs (read only; nothing is written outside data/)
  *   --library <dir>   professional library folder '40_datos_y_herramientas' with
@@ -18,6 +22,7 @@
  *                       'RD 1217 de 2024 - Anexo IV, exencion y desclasificacion.csv'
  *                       'RD 1217 de 2024 - Anexo IV, progenies consideradas.csv'
  *                       'ICRP 119 (2012) - Tabla F1, dosis efectiva por ingestion, publico.csv'
+ *                       'Resolucion CSN de 16 de junio de 2025 - Valores de exencion para Y-88 y Ba-133.csv'
  *   --html <file>     extraction of the official BOE consolidated HTML with the
  *                     notes kept PER TABLE (output/auditoria-rd1217-2026-10-03/
  *                     cotejo.json, cross-checked there against the PDF text layer).
@@ -26,9 +31,9 @@
  * 'nota_A1' and 'nota_B' since its 2026-10-03 correction — before that a single
  * 'nota' column hid the Table B note of merged rows) and the BOE HTML
  * extraction must agree on EVERY id, per-table note and value; the build aborts
- * on any difference. The library CSV must have the per-table note columns. Progeny comes from the library CSV plus the one line it
- * misses (A1 'Es-254 m → Fm-254', continued on BOE p. 164687; checked against
- * the rendered page on 2026-10-03).
+ * on any difference. The library CSV must have the per-table note columns. Progeny comes from the library CSV, which
+ * must include A1 'Es-254 m → Fm-254' (continued on BOE p. 164687; added to the
+ * library on 2026-10-18 — until then the build supplied it by hand).
  *
  * Source inconsistencies kept AS PRINTED in the BOE (checked on the rendered
  * pages, 2026-10-03) and flagged per row:
@@ -61,7 +66,8 @@ if (!LIB || !HTML) fail('usage: --library <dir> --html <cotejo.json>');
 const F_ANNEX = path.join(LIB, 'RD 1217 de 2024 - Anexo IV, exencion y desclasificacion.csv');
 const F_PROG = path.join(LIB, 'RD 1217 de 2024 - Anexo IV, progenies consideradas.csv');
 const F_F1 = path.join(LIB, 'ICRP 119 (2012) - Tabla F1, dosis efectiva por ingestion, publico.csv');
-for (const f of [F_ANNEX, F_PROG, F_F1, HTML]) if (!fs.existsSync(f)) fail(`missing input ${f}`);
+const F_CSN = path.join(LIB, 'Resolucion CSN de 16 de junio de 2025 - Valores de exencion para Y-88 y Ba-133.csv');
+for (const f of [F_ANNEX, F_PROG, F_F1, F_CSN, HTML]) if (!fs.existsSync(f)) fail(`missing input ${f}`);
 
 const sha = f => crypto.createHash('sha256').update(fs.readFileSync(f)).digest('hex');
 
@@ -91,7 +97,7 @@ const normId = s => s.trim().replace(/\.$/, '').replace(/\s+m\b/, 'm');
 const splitProgeny = s => s.split(';').map(x => x.trim().replace(/\.$/, '')).filter(Boolean)
   .map(x => x.replace(/^([A-Z][a-z]?-\d+)\s+m\b/, '$1m'));
 
-// ---- progeny (library + the missing continuation line) ----
+// ---- progeny (library) ----
 const progeny = { A1: {}, B: {} };
 // Every progeny item must be a nuclide identifier with an optional branching
 // fraction, e.g. 'Tl-208 (0,36)'. Anything else — such as the BOE margin text
@@ -104,8 +110,9 @@ for (const r of readCsv(F_PROG)) {
   if (bad.length) fail(`progeny of ${r.tabla} ${r.padre}: invalid item(s) ${JSON.stringify(bad)}`);
   progeny[r.tabla][normId(r.padre)] = items;
 }
-if (progeny.A1['Es-254m']) fail('library progeny now contains Es-254m — remove the manual addition');
-progeny.A1['Es-254m'] = ['Fm-254'];
+// The library CSV lacked the continuation line A1 'Es-254 m → Fm-254' (BOE
+// p. 164687) until its 2026-10-18 correction; the build supplied it by hand.
+if (JSON.stringify(progeny.A1['Es-254m']) !== '["Fm-254"]') fail('library progeny lacks A1 Es-254m → Fm-254 (pre-2026-10-18 version?)');
 
 // ---- HTML extraction: structure and per-table notes ----
 const html = JSON.parse(fs.readFileSync(HTML, 'utf8'));
@@ -165,22 +172,30 @@ if (JSON.stringify(flags.slice().sort()) !== JSON.stringify(EXPECTED_FLAGS)) {
   fail(`unexpected source-consistency flags: ${flags.join(', ')} (expected ${EXPECTED_FLAGS.join(', ')})`);
 }
 
+// ---- CSN exemption values for nuclides not in Table B (Annex II A.3.a) ----
+const csn = readCsv(F_CSN).map(r => ({ id: r.nucleido, conc_kBq_kg: Number(r.conc_B_kBq_kg), activity_Bq: Number(r.actividad_B_Bq) }));
+if (csn.length !== 2 || csn.some(r => !(r.conc_kBq_kg > 0 && r.activity_Bq > 0))) fail('CSN resolution: expected 2 rows with positive values');
+for (const r of csn) if (b.some(x => x.id === r.id)) fail(`CSN resolution: ${r.id} is also in Table B — Annex II A.3.a covers only nuclides NOT in Annex IV`);
+
 // ---- ICRP 119 F.1 adult column ----
+// f1 as printed in the "> 1 y" column; for some elements the source notes a
+// different adult value in 'compound' ("For the adult, f1 is 0.2")
 const f1 = readCsv(F_F1).map(r => ({
-  id: r.nucleido, f1: Number(r.f1_gt_1a), e_Sv_per_Bq: Number(r.e_gt_17a), compound: r.compuesto || null,
+  id: r.nucleido, f1_over_1y: Number(r.f1_gt_1a), e_Sv_per_Bq: Number(r.e_gt_17a), compound: r.compuesto || null,
 }));
 if (f1.some(r => !(r.e_Sv_per_Bq > 0))) fail('F.1 row without a positive adult coefficient');
 
 const out = {
   meta: {
     id: 'regulatory',
-    version: '1.0.0',
-    built: '2026-10-03',
+    version: '1.1.0',
+    built: '2026-10-30',
     author: { name: 'José Ramón Sendón del Río', role: 'Transcription and verification of the regulatory tables' },
     sources: {
       annex_iv_csv_sha256: sha(F_ANNEX),
       progeny_csv_sha256: sha(F_PROG),
       icrp119_f1_csv_sha256: sha(F_F1),
+      csn_2025_csv_sha256: sha(F_CSN),
       html_extraction_sha256: sha(HTML),
       html_source_sha256: html.source_sha256 || null,
     },
@@ -192,11 +207,16 @@ const out = {
     note_a: '(a) Parent radionuclide whose listed progeny is already accounted for in the value: only the parent is checked (Annex II A.3.b).',
     note_b: '(b) Parent radionuclide whose listed progeny is already accounted for in the value: only the parent is checked (Annex II A.3.b).',
     not_tabulated_a1: 'Not in Table A1. For clearance, Annex III.1.b applies complementarily the clearance levels of the latest version of the European Commission document "Radiation Protection 122 Part 1" (not included in this app).',
-    not_tabulated_b: 'Not in Table B. Annex II A.3.a: the exemption values established by the Consejo de Seguridad Nuclear apply (not included in this app).',
+    not_tabulated_b: 'Not in Table B. Annex II A.3.a: the exemption values established by the Consejo de Seguridad Nuclear apply. This app includes those of the CSN Resolution of 16 June 2025 (Y-88, Ba-133) only; check whether the CSN has set a value for this nuclide.',
     natural_note: 'Natural radionuclides in solid materials in secular equilibrium are covered by Table A2 (U-238 and Th-232 series, K-40), with its own conditions (Annex III.3) — not implemented in this app.',
     criteria: 'Annex II A.1: a) sources — total activity not above column 3 of Table B (sum of ratios ≤ 1 for several sources); b) moderate quantity (≤ 1000 kg) — activity per unit mass not above column 2 of Table B; c) unlimited quantity — activity per unit mass not above Table A1. Annex III.1.a: for mixtures, Σ(Cᵢ/Lᵢ) ≤ 1.',
     a1,
     b,
+  },
+  csn_exemption: {
+    source: 'Resolution of the Consejo de Seguridad Nuclear of 16 June 2025 (agreed by the Plenary on 11 June 2025; published on the CSN website, not in the BOE), exemption values for Y-88 and Ba-133 under RD 1217/2024 Annex II A.3.a, for radionuclides not listed in Annex IV.',
+    scope: 'Exemption of practices with moderate quantities (≤ 1000 kg), same two separate criteria as Table B: activity concentration (kBq/kg) for materials (Annex II A.1.b) and total activity (Bq) for sources (A.1.a). There is no Table A1 (clearance) value for these nuclides.',
+    rows: csn,
   },
   ingestion_public_adult: {
     source: 'e(g) for members of the public, adult (> 17 y): RD 783/2001 Annex III table a), repealed by RD 1029/2022 but kept in force by its third transitional provision and by the CSN Resolution of 3 April 2024. Numerical transcription: ICRP Publication 119 (2012) Table F.1, adult column (verified against the BOE scan).',
@@ -208,5 +228,6 @@ const out = {
 const dest = path.join(__dirname, '..', 'data', 'regulatory.json');
 fs.writeFileSync(dest, JSON.stringify(out, null, 2) + '\n', 'utf8');
 console.log(`✓ ${dest}`);
+console.log(`  CSN Resolution 2025: ${csn.map(r => r.id).join(', ')}`);
 console.log(`  A1 ${a1.length} rows, B ${b.length} rows (${new Set(b.map(r => r.id)).size} ids), F.1 ${f1.length} rows (${new Set(f1.map(r => r.id)).size} nuclides)`);
 console.log(`  source inconsistencies flagged: ${flags.join(', ')}`);

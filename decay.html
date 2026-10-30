@@ -225,6 +225,7 @@
   // Table B columns as text for the CSV (two rows possible, e.g. U-240 with/without (b))
   const exemptionColsOf = n => {
     const b = REGULATORY.exemptionB(n.id);
+    if (b.status === 'csn') return { col2: `${b.rows[0].conc_kBq_kg} (CSN Resolution 2025-06-16, not Table B)`, col3: `${b.rows[0].activity_Bq} (CSN Resolution 2025-06-16, not Table B)` };
     if (b.status !== 'listed') return { col2: '', col3: '' };
     const tag = r => (r.note ? ` (${r.note})` : '');
     return { col2: b.rows.map(r => `${r.conc_kBq_kg}${tag(r)}`).join(' | '), col3: b.rows.map(r => `${r.activity_Bq}${tag(r)}`).join(' | ') };
@@ -1031,29 +1032,32 @@
         return `<span style="color:${ok ? 'var(--green-700)' : 'var(--danger)'};">${ok ? '&#10003; Not above' : '&#9888; Above'}</span> (${UTILS.fmtRatio(val / lim)} &times; value)`;
       };
       let html = '';
-      if (ex.status !== 'listed') {
+      // Column names of Table B, or «CSN value» for a nuclide not in it (Annex II A.3.a)
+      const col = k => (ex.status === 'csn' ? 'CSN value' : `column ${k}`);
+      if (ex.status === 'not_tabulated') {
         html = `<div class="alert alert-info">${UTILS.escapeHtml(ex.text)}</div>`;
       } else {
+        if (ex.status === 'csn') html = `<div class="form-hint mb-1">Not in Table B. ${UTILS.escapeHtml(ex.text)}</div>`;
         const A0_Bq = A0_MBq * 1e6, At_Bq = At_MBq * 1e6;
-        html = ex.rows.map(row => {
+        html += ex.rows.map(row => {
           const tag = row.note ? ` (${UTILS.escapeHtml(row.note)})` : '';
           const tA = tReach(A0_Bq, row.activity_Bq);
           let crit = `<div class="prop-grid">
-            <div class="prop-item"><div class="prop-key">a) Total activity &mdash; column 3${tag}</div>
+            <div class="prop-item"><div class="prop-key">a) Total activity &mdash; ${col(3)}${tag}</div>
               <div class="prop-val">${UTILS.fmtSig(row.activity_Bq, 1)} Bq</div>
               <div class="prop-note">t = 0: ${status(A0_Bq, row.activity_Bq)}${t_h > 0 ? `<br>t = ${UTILS.fmt(t_h)} h: ${status(At_Bq, row.activity_Bq)}` : ''}${tA ? `<br>Reached after &#126; ${fmtT(tA)}` : ''}</div></div>`;
           if (weight_kg === null) {
-            crit += `<div class="prop-item"><div class="prop-key">b) Moderate quantity &mdash; column 2${tag}</div>
+            crit += `<div class="prop-item"><div class="prop-key">b) Moderate quantity &mdash; ${col(2)}${tag}</div>
               <div class="prop-val">${UTILS.fmtSig(row.conc_kBq_kg, 1)} kBq/kg</div>
               <div class="prop-note">Enter the mass of material to evaluate this criterion.</div></div>`;
           } else if (weight_kg > 1000) {
-            crit += `<div class="prop-item"><div class="prop-key">b) Moderate quantity &mdash; column 2${tag}</div>
+            crit += `<div class="prop-item"><div class="prop-key">b) Moderate quantity &mdash; ${col(2)}${tag}</div>
               <div class="prop-val">Not applicable</div>
               <div class="prop-note">Mass above 1000 kg: Annex II A.1.c applies (Table A1 values, see the clearance block).</div></div>`;
           } else {
             const c0 = A0_MBq * 1e3 / weight_kg, ct = At_MBq * 1e3 / weight_kg;   // kBq/kg
             const tC = tReach(c0, row.conc_kBq_kg);
-            crit += `<div class="prop-item"><div class="prop-key">b) Moderate quantity &mdash; column 2${tag}</div>
+            crit += `<div class="prop-item"><div class="prop-key">b) Moderate quantity &mdash; ${col(2)}${tag}</div>
               <div class="prop-val">${UTILS.fmtSig(row.conc_kBq_kg, 1)} kBq/kg</div>
               <div class="prop-note">t = 0: ${status(c0, row.conc_kBq_kg)}${t_h > 0 ? `<br>t = ${UTILS.fmt(t_h)} h: ${status(ct, row.conc_kBq_kg)}` : ''}${tC ? `<br>Reached after &#126; ${fmtT(tC)}` : ''}</div></div>`;
           }
@@ -1168,18 +1172,20 @@
     {
       const ex = REGULATORY.exemptionB(r.n.id);
       const rows = [];
-      if (ex.status !== 'listed') {
+      const col = k => (ex.status === 'csn' ? 'CSN value' : `column ${k}`);
+      if (ex.status === 'not_tabulated') {
         rows.push(['Table B', `${ex.id}: ${ex.text}`]);
       } else {
+        if (ex.status === 'csn') rows.push(['Table B', `${ex.id}: not in Table B. ${ex.text}`]);
         for (const row of ex.rows) {
           const tag = row.note ? ` (${row.note})` : '';
           const A0_Bq = r.A0_MBq * 1e6, At_Bq = r.At_MBq * 1e6;
-          rows.push([`a) Total activity, column 3${tag}`, `${UTILS.fmt(row.activity_Bq)} Bq; t = 0: ${UTILS.fmtRatio(A0_Bq / row.activity_Bq)} × value; t = ${UTILS.fmt(r.t_h)} h: ${UTILS.fmtRatio(At_Bq / row.activity_Bq)} × value`]);
+          rows.push([`a) Total activity, ${col(3)}${tag}`, `${UTILS.fmt(row.activity_Bq)} Bq; t = 0: ${UTILS.fmtRatio(A0_Bq / row.activity_Bq)} × value; t = ${UTILS.fmt(r.t_h)} h: ${UTILS.fmtRatio(At_Bq / row.activity_Bq)} × value`]);
           if (r.weight_kg && r.weight_kg <= 1000) {
             const c0 = r.A0_MBq * 1e3 / r.weight_kg, ct = r.At_MBq * 1e3 / r.weight_kg;
-            rows.push([`b) Moderate quantity (≤ 1000 kg), column 2${tag}`, `${UTILS.fmt(row.conc_kBq_kg)} kBq/kg; t = 0: ${UTILS.fmtRatio(c0 / row.conc_kBq_kg)} × value; t = ${UTILS.fmt(r.t_h)} h: ${UTILS.fmtRatio(ct / row.conc_kBq_kg)} × value`]);
+            rows.push([`b) Moderate quantity (≤ 1000 kg), ${col(2)}${tag}`, `${UTILS.fmt(row.conc_kBq_kg)} kBq/kg; t = 0: ${UTILS.fmtRatio(c0 / row.conc_kBq_kg)} × value; t = ${UTILS.fmt(r.t_h)} h: ${UTILS.fmtRatio(ct / row.conc_kBq_kg)} × value`]);
           } else {
-            rows.push([`b) Moderate quantity, column 2${tag}`, r.weight_kg ? 'not applicable: mass above 1000 kg (Annex II A.1.c — Table A1)' : 'not evaluated: no mass of material entered']);
+            rows.push([`b) Moderate quantity, ${col(2)}${tag}`, r.weight_kg ? 'not applicable: mass above 1000 kg (Annex II A.1.c — Table A1)' : 'not evaluated: no mass of material entered']);
           }
           if (row.progeny.length || row.source_inconsistency) rows.push(['Note', [row.note_text, row.progeny.length ? `progeny ${row.progeny.join(', ')}` : '', row.source_inconsistency].filter(Boolean).join(' ')]);
         }

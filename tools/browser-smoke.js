@@ -741,6 +741,30 @@ async function main() {
       await pageChecks('dose ES live');
       await ev(`document.getElementById('langToggle').click()`);
     });
+    await guard('Audit 2026-10-30 O-1: CSN exemption values (Ba-133, Y-88)', async () => {
+      // Ba-133: not in Table B → CSN Resolution of 16 June 2025, 100 kBq/kg · 1E6 Bq
+      await open('decay.html?id=Ba-133', 1280);
+      await ev(`(() => { const s = (i, v) => { document.getElementById(i).value = v; };
+        s('A0', '0.5'); s('vialWeight', '1'); s('vialWeightUnit', 'kg');
+        document.getElementById('vialWeightUnit').dispatchEvent(new Event('change', { bubbles: true })); })()`);
+      await sleep(600);
+      const ex = (await text('#exemptionContent')).replace(/\s+/g, ' ');
+      check('decay Ba-133: «CSN value» criteria a) and b) from the CSN Resolution of 16 June 2025, no «column 2/3»',
+        /a\) Total activity — CSN value/.test(ex) && /b\) Moderate quantity — CSN value/.test(ex) && /16 June 2025/.test(ex) &&
+        !/column [23]/.test(ex) && /1 ?× ?10⁶ Bq|1E\+?6 Bq|1,?000,?000 Bq/.test(ex), ex.slice(0, 300));
+      await pageChecks('decay Ba-133 CSN value');
+      await ev(`document.getElementById('langToggle').click()`); await sleep(400);
+      const exEs = (await text('#exemptionContent')).replace(/\s+/g, ' ');
+      check('decay Ba-133 ES: «valor del CSN» and the resolution in Spanish',
+        /a\) Actividad total — valor del CSN/.test(exEs) && /b\) Cantidad moderada — valor del CSN/.test(exEs) &&
+        /No figura en la tabla B\. Resolución del Consejo de Seguridad Nuclear de 16 de junio de 2025/.test(exEs), exEs.slice(0, 300));
+      await ev(`document.getElementById('langToggle').click()`); await sleep(300);
+      await open('index.html?id=Y-88', 1280);
+      const props = (await ev(`document.getElementById('detailProps').textContent`)).replace(/\s+/g, ' ');
+      check('properties Y-88: «Exemption ≤ 1000 kg, CSN value» 10 kBq/kg, A1 not tabulated, e(g) «kept in force»',
+        /Exemption ≤ 1000 kg, CSN value/.test(props) && /CSN Resolution of 16 June 2025/.test(props) && /kept in force/.test(props), props.slice(0, 400));
+      await pageChecks('properties Y-88');
+    });
     await guard('Theme follows the system preference without a stored choice', async () => {
       await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'dark' }] });
       await open('decay.html?id=Tc-99m', 1280);

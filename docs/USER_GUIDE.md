@@ -50,7 +50,7 @@ No installation or authentication is needed:
 1. Select a nuclide (curated or extended) and enter the **initial activity** (MBq, GBq, mCi, Ci, kBq).
 2. Give the time either as **reference and target date/time** (local time of the device) or as an **elapsed time**, which takes precedence when filled.
 3. Optional **target activity**: the time to reach it (a target ≥ A₀ is reported as already reached or unreachable; zero as never reached in finite time).
-4. Optional **mass of material being assessed**, the mass that contains the activity (state whether the container is included). It enables the Table A1 clearance check and the Table B exemption criteria, which Annex II A.1 sets *separately*: a) total activity of a source vs column 3; b) moderate quantity (≤ 1000 kg) vs column 2.
+4. Optional **mass of material being assessed**, the mass that contains the activity (state whether the container is included). It enables the Table A1 clearance check and the Table B exemption criteria, which Annex II A.1 sets *separately*: a) total activity of a source vs column 3; b) moderate quantity (≤ 1000 kg) vs column 2. Y-88 and Ba-133, not in Table B, use the values of the CSN Resolution of 16 June 2025 (Annex II A.3.a), labelled «CSN value».
 5. **Results** (updated as you type): A(t), fraction remaining, the decay curve and a table of values. With no elapsed time and no target date the values are those at t = 0, and a note says so.
 
 **Key limits**: one nuclide; mixtures and sums over sources are not evaluated; reaching the Table A1 level is not by itself a clearance (Annex III applies).

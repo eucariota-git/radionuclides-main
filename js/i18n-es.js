@@ -275,8 +275,8 @@ const I18N_ES = {
     '(RD 1217/2024 Annex IV, 257 entries): activity concentration for any quantity of solid material; the same values give the exemption of unlimited quantities (Annex II A.1.c). This is the value of the «Exemption / clearance» column. Not tabulated: Annex III.1.b refers to the European Commission\'s "Radiation Protection 122 Part 1".':
       '(anexo IV del RD 1217/2024, 257 entradas): concentración de actividad para cualquier cantidad de material sólido; los mismos valores dan la exención de cantidades ilimitadas (anexo II A.1.c). Es el valor de la columna «Exención / desclasificación». Si no figura en la tabla: el anexo III.1.b remite a «Radiation Protection 122 Part 1» de la Comisión Europea.',
     'Exemption of moderate quantities — Table B': 'Exención de cantidades moderadas — tabla B',
-    '(≤ 1000 kg): two separate criteria, not simultaneous conditions — column 3, total activity in Bq, for radioactive sources (Annex II A.1.a), and column 2, activity concentration in kBq/kg, for materials in moderate quantity (A.1.b). Shown in the detail panel. Not tabulated: Annex II A.3.a (values set by the CSN).':
-      '(≤ 1000 kg): dos criterios distintos, no condiciones simultáneas: columna 3, actividad total en Bq, para fuentes radiactivas (anexo II A.1.a), y columna 2, concentración de actividad en kBq/kg, para materiales en cantidad moderada (A.1.b). Se muestran en el panel de detalle. Si no figura en la tabla: anexo II A.3.a (valores establecidos por el CSN).',
+    '(≤ 1000 kg): two separate criteria, not simultaneous conditions — column 3, total activity in Bq, for radioactive sources (Annex II A.1.a), and column 2, activity concentration in kBq/kg, for materials in moderate quantity (A.1.b). Shown in the detail panel. Not tabulated: Annex II A.3.a (values set by the CSN; the app includes those of the CSN Resolution of 16 June 2025, Y-88 and Ba-133, shown as «CSN value»).':
+      '(≤ 1000 kg): dos criterios distintos, no condiciones simultáneas: columna 3, actividad total en Bq, para fuentes radiactivas (anexo II A.1.a), y columna 2, concentración de actividad en kBq/kg, para materiales en cantidad moderada (A.1.b). Se muestran en el panel de detalle. Si no figura en la tabla: anexo II A.3.a (valores establecidos por el CSN; la app incluye los de la Resolución del CSN de 16 de junio de 2025, Y-88 y Ba-133, mostrados como «valor del CSN»).',
     'Both are individual values for one nuclide (mixtures are not evaluated); Decay uses them for single-nuclide estimates.':
       'Ambos son valores individuales para un nucleido (no se evalúan mezclas); la página Decaimiento los usa para estimaciones de un solo nucleido.',
     'Liquid effluent column': 'Columna de efluente líquido',
@@ -339,8 +339,12 @@ const I18N_ES = {
       '(b) Radionucleido padre cuya progenie listada ya está incluida en el valor: solo se comprueba el padre (anexo II A.3.b).',
     'Not in Table A1. For clearance, Annex III.1.b applies complementarily the clearance levels of the latest version of the European Commission document "Radiation Protection 122 Part 1" (not included in this app).':
       'No figura en la tabla A1. Para la desclasificación, el anexo III.1.b aplica complementariamente los niveles de desclasificación de la última versión del documento de la Comisión Europea «Radiation Protection 122 Part 1» (no incluido en esta app).',
-    'Not in Table B. Annex II A.3.a: the exemption values established by the Consejo de Seguridad Nuclear apply (not included in this app).':
-      'No figura en la tabla B. Anexo II A.3.a: se aplican los valores de exención establecidos por el Consejo de Seguridad Nuclear (no incluidos en esta app).',
+    'Not in Table B. Annex II A.3.a: the exemption values established by the Consejo de Seguridad Nuclear apply. This app includes those of the CSN Resolution of 16 June 2025 (Y-88, Ba-133) only; check whether the CSN has set a value for this nuclide.':
+      'No figura en la tabla B. Anexo II A.3.a: se aplican los valores de exención establecidos por el Consejo de Seguridad Nuclear. Esta app incluye solo los de la Resolución del CSN de 16 de junio de 2025 (Y-88, Ba-133); compruebe si el CSN ha fijado un valor para este nucleido.',
+    'Resolution of the Consejo de Seguridad Nuclear of 16 June 2025 (agreed by the Plenary on 11 June 2025; published on the CSN website, not in the BOE), exemption values for Y-88 and Ba-133 under RD 1217/2024 Annex II A.3.a, for radionuclides not listed in Annex IV.':
+      'Resolución del Consejo de Seguridad Nuclear de 16 de junio de 2025 (acordada por el Pleno el 11 de junio de 2025; publicada en la web del CSN, no en el BOE), valores de exención para Y-88 y Ba-133 en virtud del anexo II A.3.a del RD 1217/2024, para radionucleidos que no figuran en el anexo IV.',
+    'Exemption ≤ 1000 kg, CSN value': 'Exención ≤ 1000 kg, valor del CSN',
+    'not in Table B · CSN Resolution of 16 June 2025 (Annex II A.3.a)': 'no figura en la tabla B · Resolución del CSN de 16 de junio de 2025 (anexo II A.3.a)',
     'Natural radionuclides in solid materials in secular equilibrium are covered by Table A2 (U-238 and Th-232 series, K-40), with its own conditions (Annex III.3) — not implemented in this app.':
       'Los radionucleidos naturales en materiales sólidos en equilibrio secular se rigen por la tabla A2 (series del U-238 y del Th-232, K-40), con sus propias condiciones (anexo III.3); no implementado en esta app.',
     'Note (1): potassium salts in quantities below 1000 kg are exempt ("Quedan exentas las sales de potasio en cantidades inferiores a 1.000 kg").':
@@ -474,7 +478,6 @@ const I18N_ES = {
     'Clearance: individual Table A1 level for one nuclide (any quantity, any solid material); the mixture rule Σ(Cᵢ/Lᵢ) ≤ 1 of Annex III.1.a is not evaluated.':
       'Desclasificación: nivel individual de la tabla A1 para un nucleido (cualquier cantidad, cualquier material sólido); no se evalúa la regla de mezclas Σ(Cᵢ/Lᵢ) ≤ 1 del anexo III.1.a.',
     'Exemption assessment — RD 1217/2024 Annex IV Table B (Annex II A.1 a and b)': 'Evaluación de exención — RD 1217/2024, anexo IV, tabla B (anexo II A.1 a y b)',
-    'b) Moderate quantity, column 2': 'b) Cantidad moderada, columna 2',
     'not evaluated: no mass of material entered': 'no evaluado: no se ha introducido la masa del material',
     'not applicable: mass above 1000 kg (Annex II A.1.c — Table A1)': 'no aplicable: masa superior a 1000 kg (anexo II A.1.c — tabla A1)',
     'Table B': 'Tabla B',
@@ -975,8 +978,8 @@ const I18N_ES = {
       "NUREG/CR-5814 §5.2.1 y tabla A.20. Los coeficientes son solo de fotones: no incluyen la radiación de frenado de la emisión beta y de positrones, que no se ha acotado para esta geometría (el alcance CSDA en aire de un electrón de 0,5 MeV supera la distancia de 1 m). La limitación es mayor para el F-18 y el I-131 que para el Lu-177, y menor para el Tc-99m.",
     "Administered activity per cycle":
       "Actividad administrada por ciclo",
-    "Activity per treatment taken from the workbook (= activity at hospital discharge, NOT the administered activity)":
-      "Actividad por tratamiento tomada del libro (= actividad en el alta hospitalaria, NO la actividad administrada)",
+    "Activity per treatment at hospital discharge (default of the reference workbook), NOT the administered activity":
+      "Actividad por tratamiento en el alta hospitalaria (valor por defecto del libro de referencia), NO la actividad administrada",
     "Lu-177m impurity per cycle":
       "Impureza de Lu-177m por ciclo",
     "Administered activity per study":
@@ -1542,8 +1545,13 @@ const I18N_ES = {
     [/^with progeny in equilibrium · parent only: (.+)$/, 'con progenie en equilibrio · solo el padre: $1'],
     [/^Equilibrium after ≈ (.+) \(10 half-lives of the longest-lived one\)\. App criterion: T½ ≤ 1\/10 of the parent's and ≤ 30 d$/,
       'Equilibrio tras ≈ $1 (10 periodos del de vida más larga). Criterio de la app: T½ ≤ 1/10 del del padre y ≤ 30 d'],
-    [/^Sv\/Bq · RD 783\/2001 Annex III table a\)( · most restrictive of (\d+) forms)?$/, (m, f, n) =>
-      'Sv/Bq · RD 783/2001, anexo III, tabla a)' + (f ? ` · la más restrictiva de ${n} formas` : '')],
+    [/^Sv\/Bq · RD 783\/2001 Annex III table a\), kept in force( · most restrictive of (\d+) forms)?$/, (m, f, n) =>
+      'Sv/Bq · RD 783/2001, anexo III, tabla a), mantenida en vigor' + (f ? ` · la más restrictiva de ${n} formas` : '')],
+    // Decay, nuclide with a CSN exemption value (Annex II A.3.a): criteria labels, screen hint and report row
+    [/^([ab])\) (Total activity|Moderate quantity)( \(≤ 1000 kg\))?(,| —) CSN value$/, (m, k, c, q, sep) =>
+      `${k}) ${c === 'Total activity' ? 'Actividad total' : 'Cantidad moderada'}${q || ''}${sep} valor del CSN`],
+    [/^(?:([A-Z][a-z]?-\d+m?): not|Not) in Table B\. Resolution of the Consejo de Seguridad Nuclear of 16 June 2025 [\s\S]+$/, (m, id) =>
+      `${id ? id + ': no' : 'No'} figura en la tabla B. Resolución del Consejo de Seguridad Nuclear de 16 de junio de 2025 (acordada por el Pleno el 11 de junio de 2025; publicada en la web del CSN, no en el BOE), valores de exención para Y-88 y Ba-133 en virtud del anexo II A.3.a del RD 1217/2024, para radionucleidos que no figuran en el anexo IV.`],
     [/^H\*\/H′: ICRP 107 \(2008\) \+ ICRP 74 \(1996\), A\.21(, incl\. [^()]+)? \(not manually validated\)$/, m => esSource(m)],
     [/^⚠ (\S+) appears in the regulatory tables \(RD 1217\/2024 Annex IV and\/or RD 783\/2001 Annex III table a\)\) but has no nuclear data in this app \(neither the curated database nor ICRP 107\): half-life, emissions and dose-rate constants are not available, so the Decay and Dose calculators are disabled for it\. The identifier is shown as printed and is not mapped to a similar one \(e\.g\. Nb-98 is not treated as Nb-98m or as the "Nb-98s" printed in ICRP 119\)\.$/,
       '⚠ $1 figura en las tablas reglamentarias (anexo IV del RD 1217/2024 y/o tabla a) del anexo III del RD 783/2001), pero no tiene datos nucleares en esta app (ni en la base revisada ni en ICRP 107): no se dispone de periodo de semidesintegración, emisiones ni constantes de tasa de dosis, por lo que las calculadoras de Decaimiento y Dosis están desactivadas para él. El identificador se muestra tal como figura impreso y no se asimila a otro parecido (p. ej., Nb-98 no se trata como Nb-98m ni como el «Nb-98s» impreso en ICRP 119).'],
@@ -1590,6 +1598,7 @@ const I18N_ES = {
       `${v} (${id}, nota (${n}); progenie ${p})${rest.replace(' — As printed in the BOE: ', ' — Tal como figura en el BOE: ')}`],
     [/^a\) Total activity, column 3((?: \([a-z0-9]\))?)$/, 'a) Actividad total, columna 3$1'],
     [/^b\) Moderate quantity \(≤ 1000 kg\), column 2((?: \([a-z0-9]\))?)$/, 'b) Cantidad moderada (≤ 1000 kg), columna 2$1'],
+    [/^b\) Moderate quantity, column 2((?: \([a-z0-9]\))?)$/, 'b) Cantidad moderada, columna 2$1'],
     [/^(.+ (?:Bq|kBq\/kg); t = 0: [\s\S]+ × value)$/, m => m.split(' × value').join(' × valor')],
     [/^(\S+): (Not in Table (?:A1|B)\.[\s\S]+)$/, (m, id, t) => `${id}: ${esText(t)}`],
 

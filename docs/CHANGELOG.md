@@ -4,6 +4,13 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-10
 
+### v1.20.2 — full audit 2026-10-30: observations O-1…O-3
+- **O-1, CSN exemption values for Y-88 and Ba-133.** RD 1217/2024 Annex II A.3.a refers nuclides not in Table B to the values set by the CSN; the CSN Resolution of 16 June 2025 (Plenary of 11 June 2025, published on the CSN website, not in the BOE) sets Y-88 10 kBq/kg · 1 × 10⁶ Bq and Ba-133 100 kBq/kg · 1 × 10⁶ Bq. `data/regulatory.json` v1.1.0 keeps them in their own block `csn_exemption` (never mixed with Annex IV; the build aborts if a nuclide is in both); `REGULATORY.exemptionB` returns them with status `csn`. Properties and Decay show them as «CSN value» with the resolution as source (screen, report and CSV); the A1 «not tabulated» state does not change (the resolution sets no clearance level). The «not tabulated» text of Table B now says which CSN values the app includes.
+- `tools/build-regulatory-data.js`: the hand-added A1 progeny Es-254m → Fm-254 is now read from the library CSV (corrected there on 2026-10-18) and checked. Annex IV, Table B and F.1 contents unchanged (only the library CSV hashes, whose headers were updated).
+- **O-2.** The Properties e(g) note reads «RD 783/2001 Annex III table a), kept in force».
+- **O-3.** The F.1 `f1` field is renamed `f1_over_1y` (it is the «> 1 y» column; for 58 rows the source notes another adult f1) and labelled «f1 (> 1 y)»; the I-131 Effluent ⓘ reads «Activity per treatment at hospital discharge (default of the reference workbook), NOT the administered activity» (`effluent-scenarios.json` 2.5.1).
+- Guides (EN/ES) and README: Y-88 / Ba-133. Test 32; browser-smoke case.
+
 ### v1.20.1 — second screen-text review (author's comments)
 - **Dose**: «Point-source approximation (1/d²)» under Distance only as the short-distance warning (< 0.25 m); the limits are cited once, in the first line of the comparison box (RD 1029/2022 arts. 11 and 15), without the footer.
 - **Effluent**: top warning reduced to «Screening estimate, not a complete discharge assessment»; «the two scenarios … are never added together» moved next to the totals, and the IS-28 II.A.4 / mixture-clearance sentence to Method. Source term: the notes under the activity field are an ⓘ next to each nuclide (amber for I-131); the A_adm note leaves the screen (the full model is in «Sources and assumptions»), and the I-131 and F-18 warnings head that collapsible list.

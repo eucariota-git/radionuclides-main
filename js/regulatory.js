@@ -2,7 +2,9 @@
  * regulatory.js — Spanish regulatory reference values (no DOM)
  *
  *   REGULATORY.clearanceA1(id)    RD 1217/2024 Annex IV Table A1 (kBq/kg)
- *   REGULATORY.exemptionB(id)     RD 1217/2024 Annex IV Table B (kBq/kg, Bq)
+ *   REGULATORY.exemptionB(id)     RD 1217/2024 Annex IV Table B (kBq/kg, Bq), or
+ *                                 for a nuclide not in it the CSN value under
+ *                                 Annex II A.3.a (Resolution of 16 June 2025)
  *   REGULATORY.ingestionAdult(id) e(g) adult public — RD 783/2001 Annex III
  *                                 table a), kept by the CSN Resolution of
  *                                 3 April 2024 (transcription: ICRP 119 F.1)
@@ -93,21 +95,28 @@ const REGULATORY = (() => {
   }
 
   /**
-   * @returns {{status:'listed', id, rows:Array} | {status:'not_tabulated', id, text}}
+   * @returns {{status:'listed', id, rows:Array} | {status:'csn', id, rows:Array, text} |
+   *           {status:'not_tabulated', id, text}}
    *   rows: [{id, note, conc_kBq_kg (column 2), activity_Bq (column 3), progeny[], note_text}]
    *   A nuclide can have two rows (U-240, with and without (b)).
+   *   'csn': not in Table B; value set by the CSN under Annex II A.3.a (same two
+   *   criteria, cited to the CSN resolution — never labelled as Table B).
    */
   function exemptionB(id) {
     const pid = parentId(id);
     const a4 = data().rd1217_annex4;
     const rows = a4.b.filter(r => r.id === pid);
     if (rows.length) return { status: 'listed', id: pid, rows: rowsWithText(rows, 'b') };
+    const csn = data().csn_exemption;
+    const csnRows = csn ? csn.rows.filter(r => r.id === pid) : [];
+    if (csnRows.length) return { status: 'csn', id: pid, text: csn.source,
+      rows: csnRows.map(r => Object.assign({ note: null, progeny: [], note_text: null }, r)) };
     return { status: 'not_tabulated', id: pid, text: a4.not_tabulated_b };
   }
 
   /**
    * @returns {{status:'listed', id, rows:Array, governing:object} | {status:'not_tabulated', id}}
-   *   rows: [{id, f1, e_Sv_per_Bq, compound}]; governing = largest e(g).
+   *   rows: [{id, f1_over_1y, e_Sv_per_Bq, compound}]; governing = largest e(g).
    */
   function ingestionAdult(id) {
     const pid = parentId(id);
@@ -144,12 +153,13 @@ const REGULATORY = (() => {
   function allIds() {
     const d = data();
     return [...new Set([...d.rd1217_annex4.a1.map(r => r.id), ...d.rd1217_annex4.b.map(r => r.id),
-      ...d.ingestion_public_adult.rows.map(r => r.id)])].sort();
+      ...(d.csn_exemption ? d.csn_exemption.rows.map(r => r.id) : []), ...d.ingestion_public_adult.rows.map(r => r.id)])].sort();
   }
 
   function sources() {
     const d = data();
     return { annex4: d.rd1217_annex4.source, ingestion: d.ingestion_public_adult.source,
+             csn_exemption: d.csn_exemption ? d.csn_exemption.source : null,
              criteria: d.rd1217_annex4.criteria, governing_rule: d.ingestion_public_adult.governing_rule };
   }
 
