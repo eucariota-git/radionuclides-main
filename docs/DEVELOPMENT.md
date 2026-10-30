@@ -111,7 +111,7 @@ Each module (PHYSICS, CALC, DB, ICRP107, UI) is an IIFE returning public API. No
 
 **`data/caregiver.json`** — source of truth for the caregiver page: defaults, proximity profiles (points and factors), criteria per category with their basis as cited by the source workbook, assumptions, references and the reference cases used by the self-check
 
-**`data/regulatory.json`** — built by `tools/build-regulatory-data.js` from the verified CSVs of the professional library (RD 1217/2024 Annex IV values and progeny; ICRP 119 F.1) plus the extraction of the BOE consolidated HTML. The library CSV has per-table note columns (`nota_A1`, `nota_B`) since its 2026-10-03 correction; every id, note and value must match in both extractions or the build aborts. Kept as printed and flagged: four note/progeny inconsistencies of the BOE (A1 Ce-144, U-231; B Ag-108m, U-230). Added by hand, checked on the rendered page: A1 progeny `Es-254m → Fm-254`, missing from the library CSV.
+**`data/regulatory.json`** — built by `tools/build-regulatory-data.js` from the author's verified CSV transcriptions of the official tables, kept outside the repository (RD 1217/2024 Annex IV values and progeny; ICRP 119 F.1; CSN Resolution of 16 June 2025 for Y-88 and Ba-133), plus the extraction of the BOE consolidated HTML. The CSV has per-table note columns (`nota_A1`, `nota_B`); every id, note and value must match in both extractions or the build aborts. Kept as printed and flagged: four note/progeny inconsistencies of the BOE (A1 Ce-144, U-231; B Ag-108m, U-230). The A1 progeny `Es-254m → Fm-254` (continued on BOE p. 164687) must be present in the CSV.
 
 **Auto-generated:**
 - `nuclides-data.js` — JavaScript wrapper for file:// compatibility

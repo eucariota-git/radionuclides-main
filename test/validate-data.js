@@ -329,7 +329,7 @@ console.log('TEST: Effluent Scenario 1 and 2 coefficients vs their sources');
   const eff = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/effluent-scenarios.json'), 'utf8'));
   // Hand-entered from the primary sources, independent of the data file:
   //  - e(inh): ICRP Publication 119 (2012) Table G.1, adult column, verified CSV
-  //    in the professional library (40_datos_y_herramientas).
+  //    transcription kept by the author outside the repository.
   //  - k1 (Scenario 1): own PHITS report 'Escenario 1 del NUREG/CR-5814 ·
   //    Lu-177, Lu-177m, Tc-99m, I-131 y F-18', 2026-08-20, Table 7.
   //  - k2 (Scenario 2): Lu-177 / Lu-177m report approved 2026-07-30 §7.2;

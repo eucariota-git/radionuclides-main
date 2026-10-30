@@ -17,7 +17,7 @@
  *                           rule, not published in the BOE.
  *
  * Inputs (read only; nothing is written outside data/)
- *   --library <dir>   professional library folder '40_datos_y_herramientas' with
+ *   --library <dir>   the author's folder of verified CSV transcriptions, with
  *                     the verified CSVs:
  *                       'RD 1217 de 2024 - Anexo IV, exencion y desclasificacion.csv'
  *                       'RD 1217 de 2024 - Anexo IV, progenies consideradas.csv'
@@ -42,7 +42,7 @@
  *   B:  Ag-108m and U-230 have progeny entries but their rows carry no (b).
  *
  * Usage
- *   node tools/build-regulatory-data.js --library "<...>/40_datos_y_herramientas" \
+ *   node tools/build-regulatory-data.js --library "<library dir>" \
  *        --html output/auditoria-rd1217-2026-10-03/cotejo.json
  *   node tools/generate-data.js        # writes the data/regulatory-data.js twin
  */

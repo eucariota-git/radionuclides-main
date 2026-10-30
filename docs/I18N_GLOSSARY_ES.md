@@ -1,12 +1,12 @@
 # Glosario español de las pantallas
 
-Terminología del catálogo `js/i18n-es.js`. Cada término lleva la fuente española de la que se toma, con el texto consultado en la biblioteca profesional (`archivos_profesionales`).
+Terminología del catálogo `js/i18n-es.js`. Cada término lleva la fuente española de la que se toma, con el texto consultado en esa fuente oficial.
 
 **Estado**
 - **✓**: literal en la fuente citada.
-- **D**: sin fuente normativa en la biblioteca; adoptado por decisión del usuario (15-10-2026).
+- **D**: sin fuente normativa española; adoptado por decisión del autor (15-10-2026).
 
-Revisado por el usuario el 15-10-2026: se aceptan los términos propuestos con dos cambios, «haz amplio» y «solo cribado orientativo»; se adoptan la coma en los nombres de magnitud y «/a» como símbolo de año. Los términos que antes eran P quedan como **D** (decisión del usuario).
+Revisado por el autor el 15-10-2026: se aceptan los términos propuestos con dos cambios, «haz amplio» y «solo cribado orientativo»; se adoptan la coma en los nombres de magnitud y «/a» como símbolo de año. Los términos que antes eran P quedan como **D** (decisión del autor).
 
 **Fuentes**
 - **RD 1029/2022**: Real Decreto 1029/2022, Reglamento sobre protección de la salud contra los riesgos derivados de la exposición a las radiaciones ionizantes (BOE-A-2022-21682). Vigente.
@@ -105,7 +105,7 @@ Revisado por el usuario el 15-10-2026: se aceptan los términos propuestos con d
 | Caregiver (page name) | Acompañantes | D | nombre del libro de origen; la página cubre cuidadores, familiares, público y compañeros de trabajo |
 | year (unit symbol, /y) | a (por ejemplo, mSv/a, GBq/a) | ✓ | Foro-Ef («1 GBq/a») |
 
-## 6. Blindaje y cálculo (sin fuente española en la biblioteca: D)
+## 6. Blindaje y cálculo (sin fuente española: D)
 
 | Inglés | Español propuesto |
 |---|---|
