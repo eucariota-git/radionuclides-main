@@ -2,11 +2,11 @@
 
 ## Project Overview
 
-This project is a nuclear medicine radionuclide reference web app with calculators (decay, dose rate, clearance). The stack is plain HTML/CSS/JavaScript with no build tools. Key files: decay.html, dose.html, and associated JS/CSS files.
+This project is a nuclear medicine radionuclide reference web app (Properties) with four calculators: Decay (with single-nuclide clearance/exemption), Dose (dose rate and shielding), Effluent (sewer and STP workers) and Caregiver (dose after discharge). The stack is plain HTML/CSS/JavaScript with no build tools.
 
 ## What This Project Is
 
-A static web application for medical physicists and radiation protection specialists. It provides radionuclide properties, decay calculations, external dose estimation, and regulatory compliance checks (EU RD 1029/2022 / EURATOM 2013/59).
+A static web application for medical physicists and radiation protection specialists. It provides radionuclide properties, decay calculations, external dose estimation, liquid-effluent and caregiver screening, and indicative regulatory screening against Spanish regulations (RD 1029/2022, RD 1217/2024, IS-28; Directive 2013/59/Euratom) — never a compliance determination.
 
 ## Tech Stack
 
@@ -35,7 +35,9 @@ js/regulatory.js  REGULATORY module — RD 1217/2024 A1/B, RD 783/2001 e(g), IS-
 js/caregiver.js   CAREGIVER module — two-phase kinetics, cohabitation dose, inverse calcs, self-check (no DOM)
 js/icrp107-loader.js  ICRP107 module — extended index search, Γ, progeny in equilibrium, index identity
 js/utils.js       UTILS — APP_VERSION/APP_BUILD, fmt/fmtRatio/fmtSig/toSci, csvSafe, escapeHtml
-js/ui.js          UI — dark mode, print, keyboard, stale-result notice, chart theme (also sets Chart.js locale)
+js/ui.js          UI — dark mode, print, keyboard, stale-result notice, chart theme (also sets Chart.js locale), field help ⓘ, input errors
+js/i18n.js        Optional Spanish screens: display overlay engine (exact, scoped and pattern catalogs)
+js/i18n-es.js     Spanish catalog (terminology from docs/I18N_GLOSSARY_ES.md)
 js/nuclide-id.js  NUCLIDE_ID — shared name normalization (177Lu, Lu177 → Lu-177)
 js/chart.umd.min.js  Chart.js 4.4.0, bundled locally (MIT)
 
@@ -73,7 +75,7 @@ Or open directly via `file://` — the app handles both protocols.
 - **Module pattern**: IIFE with returned public API (e.g., `const PHYSICS = (function(){ ... return { ... }; })();`)
 - **Physics is pure**: `js/physics.js` contains only calculations, no DOM manipulation
 - **Dual data loading**: tries `fetch()` for JSON first, falls back to embedded `NUCLIDE_DATA` (in `nuclides-data.js`) for offline support
-- **Data constants** (e.g., CLEARANCE_A1, dose rate constants) should be stored in external data files (JSON), not inline in HTML. When adding new constants, follow this pattern.
+- **Data constants** (regulatory values in `data/regulatory.json`, dose-rate constants in `data/nuclides.json`, effluent and caregiver parameters in their JSON files) are stored in external data files, not inline in HTML. When adding new constants, follow this pattern.
 
 ## Physics Notes
 
@@ -135,21 +137,15 @@ Calculators recalculate live (Decay/Dose through `UI.onInputs`, Effluent/Caregiv
 
 ## Status and pending (as of 2026-10-30, v1.20.3)
 
-- v1.20.3 (second full audit 2026-10-30, A-1…A-8: Spanish leftovers in Decay/Properties, no internal-audit citations in data texts (nuclides.json v1.5), CSN 2025 resolution in the notices, Decay report formatting, Caregiver out-of-range fields marked (`CAREGIVER.invalidFields`), chart aria-labels, public lens/skin limits in Dose; Test 33) committed, not pushed nor packaged.
+- v1.20.3 (second full audit 2026-10-30, A-1…A-8: Spanish leftovers in Decay/Properties, no internal-audit citations in data texts (nuclides.json v1.5), CSN 2025 resolution in the notices, Decay report formatting, Caregiver out-of-range fields marked (`CAREGIVER.invalidFields`), chart aria-labels, public lens/skin limits in Dose; Test 33; README, LICENSING, notices and About texts reviewed) committed, not pushed nor packaged.
+- Everything up to v1.20.2 is pushed and packaged: `dist/nm-radionuclide-planner-v1.20.2.zip` (SHA-256 130b864a…, commit e5add5d); file://, HTTP, PWA install and offline reload (with and without ?id=) checked headless on 2026-10-30. Details per version in `docs/CHANGELOG.md`.
+- Spanish screens (v1.16.0+): English stays the default. Pending the author's review of the Spanish texts added in v1.16 (`docs/I18N_GLOSSARY_ES.md` items marked D or P, acceptance row B15) and in v1.18.0–v1.20.3; the v1.17 Caregiver texts were accepted (2026-10-22).
+- Pending decisions: saving and reopening a case (`UI.saveHistory`/`loadHistory` exist but are unused); a results summary near the top of Effluent.
 - Deferred by the user (2026-10-30): RP 122 Part 1 clearance values for nuclides not in Table A1 — assessment and plan in the project memory (`rp122-clearance-plan.md`).
-- v1.20.2 (full audit 2026-10-30: data vs library CSVs 0 discrepancies, package file:// / HTTP / PWA / offline checked; O-1 CSN Resolution of 16 June 2025 exemption values Y-88 / Ba-133 in `regulatory.json` `csn_exemption`, status `csn`, labelled «CSN value»; O-2 e(g) «kept in force»; O-3 `f1_over_1y`, I-131 ⓘ) pushed and packaged (e5add5d).
-- v1.20.1 (second screen-text review on the author's comments: Dose point-source note and limits footer; Effluent one-line warning, per-nuclide ⓘ, warnings in «Sources and assumptions»; Caregiver warning trimmed with the fetal-dose statement moved to Assumptions, category/profile ⓘ, table rules ⓘ) pushed and packaged (2d8fef5).
-- v1.20.0 (author José Ramón Sendón del Río named in licence, footers, report header `UTILS.APP_AUTHOR`, guides, data files and every PHITS source; ⓘ field help `UI.hintTip` / `.hint-tip`; README aligned) pushed and packaged (2d8fef5); new Spanish texts pending the author's review.
-- v1.19.1 (neutral texts: criteria «adopted in this application», no case-file workbook name, PHITS reports named by date with the SHA-256 prefix only in report/CSV, ICRP permission status updated; Test 29 guards it) pushed and packaged (2d8fef5).
-- v1.19.0 (screen-text review: repeated texts removed or moved to the collapsibles, each regulatory warning kept once where the result is read; Effluent intermediate columns behind «Show intermediate values»; Effluent warnings only for included nuclides; reports and CSV unchanged) pushed and packaged (2d8fef5); new Spanish texts pending the author's review.
-- v1.18.0 (Caregiver: informative bounds of the daily-average occupancy h/24 — rate at the start / end of each 24 h interval from discharge, `out.occupancy`; never changes the dose; defaults without restriction ×0.75–×1.35; v1.18.1: only for restrictions of whole days (audit A-06) and geometric sums (A-07)) pushed (72067ff) and packaged; new Spanish texts pending the author's review.
-- v1.17.0–v1.17.4 (Caregiver: preset spread, Foro Table 3.B 1 cohabitation scenarios, restriction days empty by default, children 1 mSv, rows Contact / Proximity, header «Row», external audit 2026-10-22 A-01…A-05 fixed) pushed (7a960d7); new Spanish texts accepted by the author (2026-10-22).
-- Last package built: `dist/nm-radionuclide-planner-v1.20.2.zip` (SHA-256 130b864a…, commit e5add5d, pushed); file://, HTTP, PWA install and offline reload (with and without ?id=) checked headless on 2026-10-30.
-- v1.14.0 (usability and presentation review), v1.15.0 (decimal point or comma) and v1.15.1 (fixes D-01…D-03 of an independent review) pushed (03cc8d0), not packaged. v1.16.0 (optional Spanish screens: engine, glossary, catalogs of the five pages, reports, data notes and Spanish guide) pushed (7009fb8), not packaged; pending the author's review of the Spanish texts (`docs/I18N_GLOSSARY_ES.md` items marked D or P) and acceptance row B15. English stays the default. Pending decision: saving and reopening a case (`UI.saveHistory`/`loadHistory` exist but are unused); a results summary near the top of Effluent.
 - **External distribution blocked by data rights**: permission requested from ICRP (permissions@icrp.org, 2026-10-15, personal capacity) for ICRP 74 Table A.21 (50 values), ICRP 119 Table G.1 (5 inhalation coefficients) and the Table F.1 chemical-form labels. When the reply arrives, update «Status / permissions» in `THIRD_PARTY_NOTICES.md` and its copy in `about.html`. DDEP/LNHB: no restriction, citation requested (done). Cornejo et al. 2015 (SEPR): courtesy request deferred until ICRP answers.
 - Professional use: the acceptance sheet (`docs/ACCEPTANCE_TEST.md`) has not been completed for the current version (the local copy is v1.2); PHITS coefficients of Effluent need an external technical review.
 - Open by the user's decision: T06 (I-131 0.8 GBq «at discharge» in Effluent), T13 (clinical uses without reference), Cs-137/Sm-153/Tm-170/Ac-225 half-lives kept on ICRP 107. Demir et al. 2016: local copy is a proof — compare Table 1 with the published version when available.
-- Not implemented: IS-28 mixture sum and annual limits, RD 1217 mixture clearance, Effluent scenario 4 (A11/A12, PRTR). IS-28 rev. 1 is in CSN public consultation — check before relying on the II.A.4 level.
+- Not implemented: IS-28 mixture sum and annual limits, RD 1217 mixture clearance, Effluent scenario 4 (A11/A12, PRTR). IS-28 rev. 1 is in CSN prior public consultation — check before relying on the II.A.4 level.
 
 ## Licensing
 
@@ -160,5 +156,6 @@ Calculators recalculate live (Decay/Dose through `UI.onInputs`, Effluent/Caregiv
 ## Key References
 
 - Cornejo 2015 — dose rate constant methodology
-- Oumano et al. 2025 — shielding validation
-- ICRU Report 57, ICRP Publication 74
+- Oumano et al. 2025 — Archer broad-beam shielding parameters
+- ICRP Publication 74 (1996) Table A.21 — fluence-to-dose conversion coefficients
+- ICRP Publication 107 (2008) — nuclear decay data; DDEP (LNHB/CEA) — recommended half-lives

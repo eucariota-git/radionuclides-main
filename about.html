@@ -472,14 +472,15 @@
     <h3>Licence scope</h3>
     <ul>
       <li><strong>EUPL-1.2 only:</strong> original application code, maintenance tools, tests and original project documentation, to the extent copyright is held by the project licensor.</li>
+      <li><strong>Author's own data:</strong> the PHITS external dose-rate coefficients of the Effluent page are the project author's own calculations, not third-party data.</li>
       <li><strong>Upstream MIT:</strong> Chart.js v4.4.0 and @kurkle/color v0.3.2 in <code>js/chart.umd.min.js</code>.</li>
       <li><strong>Separate data terms:</strong> ICRP-07 and other third-party datasets and publication-derived material identified below.</li>
       <li>In mixed files, EUPL covers the original structure and code, not the underlying third-party data. Generated or transformed data does not acquire the EUPL merely because project code produced it.</li>
     </ul>
-    <p>The licence change does not purport to withdraw permissions already granted for copies obtained under the project's former MIT licence.</p>
+    <p>The project was formerly distributed under the MIT licence. The change to EUPL-1.2 does not purport to withdraw permissions already granted for copies obtained under that licence.</p>
 
     <h3>Source-code availability</h3>
-    <p>The application is distributed directly in machine-readable source-code form. Its original HTML, CSS and JavaScript, maintenance files, documentation and licence notices accompany the local copy. No external source-code service is required to study, modify or redistribute the application.</p>
+    <p>The application is distributed directly in machine-readable source-code form. Its original HTML, CSS and JavaScript, documentation and licence notices accompany the local copy. No external source-code service is required to study, modify or redistribute the application. Development-only maintenance and data-regeneration tools (the repository's <code>tools/</code> and <code>references/</code> directories) are not part of the application and are distributed only with the project's source repository, available from the maintainer.</p>
     <p>Version-control metadata, including a hidden <code>.git</code> directory, is development infrastructure rather than part of the application and must be excluded from copies supplied to end users.</p>
 
     <h3 id="license-code">Original project material — EUPL-1.2 only</h3>
@@ -871,7 +872,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     <p>Files: <code>data/icrp107-index.json</code>, <code>data/icrp107-data.js</code>, and the photon-derived values in <code>data/nuclides.json</code> / <code>data/nuclides-data.js</code>. © 2008 A. Endo and K.F. Eckerman (ICRP-07 / DECDATA). Redistributed for educational, research and not-for-profit purposes under the ICRP-07 copyright notice — see <a href="#license-data">LICENSE.TXT</a>, whose terms require that file to accompany all copies. <strong>Commercial use requires permission from the copyright holders</strong> (<a href="https://www.icrp.org/">https://www.icrp.org/</a>).</p>
 
     <h4>ICRP Publication 74 — conversion coefficients</h4>
-    <p>The conversion table in <code>js/data.js</code> (constant <code>ICRU57</code>): ambient dose equivalent h*(10) and directional dose equivalent h'(0.07,0°) per unit fluence, the 25 energies printed in ICRP Publication 74 (1996), Table A.21, used with attribution (since 2026-10-03; before that the h*(10) column above 1 MeV and the h'(0.07) column did not match the table). © ICRP. ICRP publications retain copyright; verify permission for the intended reuse. This is separate from the terms of the ICRP-07 decay data package (<code>LICENSE.TXT</code>).</p>
+    <p>The conversion table in <code>js/data.js</code> (constant <code>ICRU57</code>): ambient dose equivalent h*(10) and directional dose equivalent h'(0.07,0°) per unit fluence, the 25 energies printed in ICRP Publication 74 (1996), Table A.21, used with attribution. © ICRP. ICRP publications retain copyright; verify permission for the intended reuse. This is separate from the terms of the ICRP-07 decay data package (<code>LICENSE.TXT</code>).</p>
 
     <h4>DDEP (LNHB/CEA) — recommended half-lives</h4>
     <p>The <code>half_life_s</code> of the 16 curated entries whose <code>half_life_source</code> names DDEP: recommended values of the Decay Data Evaluation Project, LNHB/CEA <em>Table de Radionucléides</em> (<a href="https://www.lnhb.fr/">www.lnhb.fr</a>), consulted 2026-10-14; the recent evaluations are published in Metrologia 62 (2025) 029001 / 029002 and 63 (2026) 019001. Sixteen numeric values cited with attribution in each entry; the tables are not redistributed. The LNHB nuclear-data page sets no reuse conditions and asks that its evaluations be cited — the <em>Metrologia</em> articles and the BIPM-5 monograph <em>Table of Radionuclides</em> (checked 2026-10-15); both are cited.</p>
@@ -925,11 +926,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     <ul>
       <li><strong>Express licence.</strong> ICRP-107 (the ICRP-07 decay data package) may be redistributed for the educational, research and not-for-profit purposes stated in <code>LICENSE.TXT</code>. That licence covers the decay data package only.</li>
       <li><strong>No permission on file.</strong> ICRP Publication 74 (1996) Table A.21 (25 energies, two columns), the five inhalation coefficients of ICRP Publication 119 (2012) Table G.1 and the chemical-form labels of its Table F.1 are © ICRP and are used with attribution. Attribution and a not-for-profit purpose are not a permission: reuse permission was requested from ICRP on 2026-10-15 and is pending. It must be obtained, or the basis for the reuse documented, before the package is distributed to third parties.</li>
-      <li><strong>Legal provisions.</strong> The adult ingestion coefficients are the values of RD 783/2001 Annex III, and Tables A1 and B those of RD 1217/2024 Annex IV, both published in the BOE (art. 13 LPI); ICRP 119 Table F.1 is the numerical transcription of the former.</li>
+      <li><strong>Legal provisions.</strong> The adult ingestion coefficients are the values of RD 783/2001 Annex III, and Tables A1 and B those of RD 1217/2024 Annex IV, both published in the BOE; the Y-88 and Ba-133 exemption values are those of the CSN Resolution of 16 June 2025 (art. 13 LPI for all three); ICRP 119 Table F.1 is the numerical transcription of the first.</li>
       <li>The NIST and NUREG numeric tables are used with attribution under the terms stated in their sections; Oumano is CC BY 4.0.</li>
       <li><strong>Citation requested, no restriction.</strong> The 16 DDEP half-lives: the LNHB asks only that its evaluations be cited (checked 2026-10-15).</li>
       <li><strong>Attribution only, terms not checked.</strong> The Cornejo et al. (2015) constants (SEPR) are cited with attribution; no reuse permission is on file.</li>
-      <li>For <strong>commercial use of the affected data</strong>, first obtain permission from ICRP (ICRP-107 data and any substantial ICRU/ICRP-74 material) and written confirmation of the applicable terms from NIST (XCOM SRD 8) and NRC/ORNL or ANS (ANS-6.4.3 buildup).</li>
+      <li>For <strong>commercial use of the affected data</strong>, first obtain permission from ICRP (ICRP-107 data and the ICRP 74 and ICRP 119 material) and written confirmation of the applicable terms from NIST (XCOM SRD 8) and NRC/ORNL or ANS (ANS-6.4.3 buildup).</li>
       <li>Public hosting, copying or forking does not expand the permissions granted by any data source; each deployment and redistribution must assess those terms.</li>
     </ul>
   </section>

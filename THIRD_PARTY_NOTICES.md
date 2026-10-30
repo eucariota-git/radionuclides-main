@@ -36,7 +36,7 @@ does.
 
 ## Software
 
-## Chart.js v4.4.0
+### Chart.js v4.4.0
 
 Bundled as `js/chart.umd.min.js`. https://www.chartjs.org
 
@@ -54,7 +54,7 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
 
-## @kurkle/color v0.3.2
+### @kurkle/color v0.3.2
 
 Bundled inside `js/chart.umd.min.js` (Chart.js dependency); version and copyright
 match the distributed bundle banner.
@@ -97,8 +97,7 @@ holders** (https://www.icrp.org/).
 The conversion table in `js/data.js` (constant `ICRU57`): ambient dose
 equivalent h*(10) and directional dose equivalent h'(0.07,0°) per unit fluence,
 the 25 energies printed in ICRP Publication 74 (1996), Table A.21, used with
-attribution (since 2026-10-03; before that the h*(10) column above 1 MeV and
-the h'(0.07) column did not match the table). © ICRP. ICRP publications retain
+attribution. © ICRP. ICRP publications retain
 copyright; verify permission for the intended reuse. This is separate from the
 terms of the ICRP-07 decay data package (`LICENSE.TXT`).
 
@@ -227,8 +226,9 @@ reference, not the article.
   package is distributed to third parties.
 - **Legal provisions.** The adult ingestion coefficients are the values of
   RD 783/2001 Annex III, and Tables A1 and B those of RD 1217/2024 Annex IV,
-  both published in the BOE (art. 13 LPI); ICRP 119 Table F.1 is the numerical
-  transcription of the former.
+  both published in the BOE; the Y-88 and Ba-133 exemption values are those of
+  the CSN Resolution of 16 June 2025 (art. 13 LPI for all three); ICRP 119
+  Table F.1 is the numerical transcription of the first.
 - The NIST and NUREG numeric tables are used with attribution under the terms
   stated in their sections; Oumano is CC BY 4.0.
 - **Citation requested, no restriction.** The 16 DDEP half-lives: the LNHB asks
@@ -236,7 +236,7 @@ reference, not the article.
 - **Attribution only, terms not checked.** The Cornejo et al. (2015) constants
   (SEPR) are cited with attribution; no reuse permission is on file.
 - For **commercial use of the affected data**, first obtain permission from ICRP (ICRP-107 data
-  and any substantial ICRU/ICRP-74 material) and written confirmation of the
+  and the ICRP 74 and ICRP 119 material) and written confirmation of the
   applicable terms from NIST (XCOM SRD 8) and NRC/ORNL or ANS (ANS-6.4.3 buildup).
 - Public hosting, copying or forking does not expand the permissions granted by
   any data source; each deployment and redistribution must assess those terms.

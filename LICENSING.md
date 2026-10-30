@@ -16,9 +16,10 @@ The EUPL applies only to copyright held by the project licensor. In files that
 also contain third-party data or material, it covers the original selection,
 structure and code but does not relicense the underlying third-party content.
 
-This change does not purport to withdraw permissions already granted for copies
-that a recipient obtained under the project's former MIT licence. The current
-distribution is offered under `EUPL-1.2` as delimited here.
+The project was formerly distributed under the MIT licence. The change to
+`EUPL-1.2` does not purport to withdraw permissions already granted for copies
+that a recipient obtained under that licence. The current distribution is
+offered under `EUPL-1.2` as delimited here.
 
 ## Source-code availability
 
@@ -48,10 +49,14 @@ copies supplied to end users.
   `data/icrp107-index.json`, `data/icrp107-data.js`, and ICRP-107-derived values
   in `data/nuclides.json` and `data/nuclides-data.js`.
 - Numerical tables, coefficients, legal texts and publication-derived material
-  from ICRU/ICRP, NIST, NUREG/ANS, BOE, DDEP (LNHB/CEA), Cornejo et al. (2015),
-  Oumano et al. and the Caregiver sources (Monserrat Fuertes, Kurth, Demir,
-  Gayol Vilorio, Foro CSN-SEPR-SEFM) retain the terms and attribution stated in
+  from ICRP (Publications 74 and 119), NIST, NUREG/CR-5740 and ANS,
+  NUREG/CR-5814, IAEA SRS-19, the BOE and the CSN,
+  DDEP (LNHB/CEA), Cornejo et al. (2015), Oumano et al. (2025) and the Caregiver
+  sources (Monserrat Fuertes, Kurth, Demir, Gayol Vilorio, Foro CSN-SEPR-SEFM)
+  retain the terms and attribution stated in
   [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
+- The PHITS external dose-rate coefficients of the Effluent page are the
+  project author's own calculations, not third-party data.
 - Generated copies and transformed data do not acquire the EUPL merely because
   project code produced or packaged them.
 
