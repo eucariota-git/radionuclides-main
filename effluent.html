@@ -546,7 +546,7 @@
 
     const totalText = res => (res.complete ? '' : '≥ ') + sci(res.total_mSv_y);
     const pctText = res => out.comparison === 'none'
-      ? 'mSv/y — no comparison (criterion ≤ 0)'
+      ? 'mSv/y — no comparison (criterion 0)'
       : `mSv/y — ${res.complete ? '' : 'at least '}${pct(res.fraction_of_criterion)} % of the criterion${res.fraction_of_criterion > 1 ? ' — EXCEEDS IT' : ''}`;
     // R-02 (audit 2026-10-14 v1.11): a total above the criterion was shown in the
     // same neutral box as one at 2 % of it. Same thresholds as Dose (> 100 %
@@ -661,7 +661,7 @@
       : [r.id, `${sci(r.A_GBq_y)} GBq/y; DF ${fmtDF(r.DF)}; FD ${sci(r.per_GBq.FD_uSv)} µSv/GBq (external ${sci(r.per_GBq.D_ext_uSv)}, inhalation ${sci(r.per_GBq.D_inh_uSv)}); E = ${sci(r.E_mSv_y)} mSv/y${extra(r)}`])
       .concat([[res.complete ? 'Total (linear sum over included nuclides)' : 'PARTIAL SUM (pathways missing: ' + res.missing.join(', ') + ')',
         `${res.complete ? '' : '≥ '}${sci(res.total_mSv_y)} mSv/y` + (out.comparison === 'none'
-          ? ' — no comparison (criterion ≤ 0)'
+          ? ' — no comparison (criterion 0)'
           : ` = ${res.complete ? '' : 'at least '}${pct(res.fraction_of_criterion)} % of the user-defined criterion of ${UTILS.num(out.criterion_mSv_y)} mSv/y`)]]);
     REPORT.print({
       title: 'Liquid Effluent — Sewer and STP Workers (NUREG/CR-5814 Scenarios 1 and 2)',

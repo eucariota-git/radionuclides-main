@@ -788,7 +788,7 @@ const I18N_ES = {
     'No external coefficient for Scenario 2': 'Sin coeficiente externo para el escenario 2',
     '(partial)': '(parcial)',
     'n/a — no coefficient (not zero)': 'n/d — sin coeficiente (no es cero)',
-    'mSv/y — no comparison (criterion ≤ 0)': 'mSv/a — sin comparación (criterio ≤ 0)',
+    'mSv/y — no comparison (criterion 0)': 'mSv/a — sin comparación (criterio 0)',
     'No positive criterion entered: totals are not compared.': 'No se ha introducido un criterio positivo: los totales no se comparan.',
     'E (mSv/y)': 'E (mSv/a)',
     'Leaving hospital (GBq/y)': 'Sale del hospital (GBq/a)',
@@ -1819,7 +1819,7 @@ const I18N_ES = {
     [/^PARTIAL SUM \(pathways missing: (.+)\)$/, (m, l) => `SUMA PARCIAL (vías que faltan: ${l.replace(/ external/g, ' externa')})`],
     [/^(≥ )?(.+) mSv\/y = (at least )?(.+) % of the user-defined criterion of (.+) mSv\/y$/, (m, ge, v, al, p, c) =>
       `${ge || ''}${v} mSv/a = ${al ? 'al menos el ' : ''}${p} % del criterio definido por el usuario de ${c} mSv/a`],
-    [/^(.+) mSv\/y — no comparison \(criterion ≤ 0\)$/, '$1 mSv/a — sin comparación (criterio ≤ 0)'],
+    [/^(.+) mSv\/y — no comparison \(criterion 0\)$/, '$1 mSv/a — sin comparación (criterio 0)'],
 
     // ---- Caregiver ----
     [/^(.+) — ((?:[\d.,]+) mSv)$/, (m, label, v) => { const t = esText(label); return t === label ? m : `${t} — ${v}`; }],
