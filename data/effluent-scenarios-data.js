@@ -23,7 +23,7 @@ const EFFLUENT_DATA = {
         "value": 1.2,
         "unit": "m³/h",
         "min": 0,
-        "source": "Light-work breathing rate, as usually attributed to the ICRP reference values; the primary table has not been verified in this application."
+        "source": "ICRP Publication 130 (2015), para. 83 and Table A.2(c): Reference Worker at light work, 1.2 m³/h (2.5 h sitting at 0.54 m³/h and 5.5 h light exercise at 1.5 m³/h)."
       },
       "dose_criterion_mSv_y": {
         "label": "Dose criterion for comparison",

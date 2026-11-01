@@ -937,8 +937,8 @@ const I18N_ES = {
       "Tiempo de decaimiento desde el vertido hasta la prensa de lodos",
     "Decay between discharge and the sludge press. No further decay is applied.":
       "Decaimiento entre el vertido y la prensa de lodos. No se aplica ningún otro decaimiento.",
-    "Light-work breathing rate, as usually attributed to the ICRP reference values; the primary table has not been verified in this application.":
-      "Tasa de respiración para trabajo ligero, tal como suele atribuirse a los valores de referencia de ICRP; la tabla original no se ha verificado en esta aplicación.",
+    "ICRP Publication 130 (2015), para. 83 and Table A.2(c): Reference Worker at light work, 1.2 m³/h (2.5 h sitting at 0.54 m³/h and 5.5 h light exercise at 1.5 m³/h).":
+      "ICRP Publication 130 (2015), párr. 83 y tabla A.2(c): trabajador de referencia en trabajo ligero, 1,2 m³/h (2,5 h sentado a 0,54 m³/h y 5,5 h de ejercicio ligero a 1,5 m³/h).",
     "User-defined; the app attributes no regulatory basis to it.":
       "Definido por el usuario; la app no le atribuye base reglamentaria.",
     "IS-28 Annex II II.A.4: annual discharge strictly below 1 GBq for the sum of nuclides other than H-3 and C-14 (the facility's authorisation prevails). The 1 GBq/y default is that boundary — a boundary scenario, not a demonstration of compliance.":
