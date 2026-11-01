@@ -9,8 +9,14 @@ No build step: the pages open directly over `file://`. Chrome is at
 `C:/Program Files/Google/Chrome/Application/chrome.exe` (Edge also works).
 
 ## Handle
-- Launch Chrome yourself: `--headless=new --remote-debugging-port=<port> --user-data-dir=<short dir in the scratchpad>`
-  (a long profile path breaks Cache Storage). Kill only that process at the end — never `taskkill /IM chrome.exe`.
+- Launch Chrome yourself: `--headless=new --remote-debugging-port=<port> --user-data-dir=<profile>`. Kill only that
+  process at the end — never `taskkill /IM chrome.exe`.
+- The profile path must be SHORT for anything touching the service worker (PWA, offline): use
+  `"$(cygpath -m "$TMP")/nmv"` and delete it afterwards. A scratchpad path is too long — `register()` resolves,
+  then the worker silently disappears and Cache Storage stays empty. For DOM-only checks any path works.
+- Offline check: serve the extracted package (`python -m http.server <port> --bind 127.0.0.1`), load twice until
+  `navigator.serviceWorker.controller`, then `Network.setCacheDisabled` + `Network.emulateNetworkConditions
+  {offline: true}` and reload every page with and without `?id=`; `Page.getInstallabilityErrors` must be empty.
 - Driver: `node - "$(pwd -W)" "<profile>" <<'EOF' … EOF` from the repo root. `pwd -W` gives the path with
   forward slashes, so the page URL is `'file:///' + ROOT + '/effluent.html'`.
 - **No backslashes inside the heredoc**: they are lost (`\s`, `\d`, `\n` break the script). Use
