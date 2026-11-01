@@ -96,13 +96,13 @@ No hace falta instalación ni autenticación:
 - Es un modelo de cribado: vertido anual dividido entre el volumen anual de agua o la producción de lodos, con decaimiento solo durante el tránsito.
 - Los coeficientes externos son cálculos PHITS de José Ramón Sendón del Río, el autor, válidos solo para sus geometrías de modelo y solo de fotones en el escenario 1. Ninguno cubre la lámina infinita de NUREG/CR-5814.
 - El F-18 no tiene coeficiente externo para el escenario 2, de modo que ese total es una suma parcial (≥).
-- El I-131 no tiene actividad administrada por defecto (los 0,8 GBq del libro de referencia eran la actividad al alta): introduzca el valor de la instalación.
+- El I-131 no tiene actividad administrada por defecto: introduzca el valor de la instalación.
 - **No es una evaluación completa del vertido**: las condiciones del apartado II.A.4 de la IS-28 y la desclasificación de mezclas se evalúan aparte.
 
 **Ejemplo** (valores por defecto; Lu-177, e I-131 incluido con 0,8 GBq por tratamiento introducidos como valor ilustrativo; sin depósitos de decaimiento; geometría de 45 × 45 × 3 m):
 - Escenario 1: Lu-177 1498,5 GBq/a → 0,0172 mSv/a; I-131 20 GBq/a → 0,0027 mSv/a; total 0,0199 mSv/a
-- Escenario 2 (40 % de zona servida): Lu-177 2231,1 GBq/a → 2,38 mSv/a; I-131 28 GBq/a → 0,367 mSv/a; total 2,74 mSv/a
-- Con los dos nucleidos en depósitos de decaimiento (1 GBq/a en total), el escenario 2 baja a 0,886 mSv/a
+- Escenario 2 (100 % de zona servida, el valor por defecto): Lu-177 3330 GBq/a → 3,55 mSv/a; I-131 40 GBq/a → 0,524 mSv/a; total 4,07 mSv/a
+- Con los dos nucleidos en depósitos de decaimiento (1 GBq/a en total), el escenario 2 baja a 2,21 mSv/a
 
 ---
 
@@ -219,7 +219,7 @@ Si no se ha guardado ninguna elección, la aplicación sigue el modo claro u osc
 
 ## Autor
 
-**José Ramón Sendón del Río** — aplicación y código; recopilación, recálculo y verificación de los datos (base de datos revisada, tablas reglamentarias, índice de ICRP 107); los coeficientes PHITS de tasa de dosis externa de la página de efluentes; el libro de cálculo de acompañantes adaptado en Caregiver. Los informes PHITS y los libros de referencia están disponibles a petición al autor.
+**José Ramón Sendón del Río** — aplicación y código; recopilación, recálculo y verificación de los datos (base de datos revisada, tablas reglamentarias, índice de ICRP 107); los coeficientes PHITS de tasa de dosis externa de la página de efluentes; el libro de cálculo de acompañantes adaptado en Caregiver. Los informes PHITS y el libro de cálculo de acompañantes están disponibles a petición al autor.
 
 ## Soporte y comentarios
 

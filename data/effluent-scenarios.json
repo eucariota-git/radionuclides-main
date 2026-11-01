@@ -1,11 +1,11 @@
 {
   "meta": {
     "id": "effluent-scenarios",
-    "version": "2.6.0",
-    "date": "2026-10-30",
+    "version": "2.7.0",
+    "date": "2026-11-01",
     "author": { "name": "José Ramón Sendón del Río", "role": "Data compilation, PHITS external coefficients and verification" },
     "title": "Liquid effluent to sewer — NUREG/CR-5814 Scenarios No. 1 (sewer inspector) and No. 2 (STP sludge process operator)",
-    "description": "Screening doses to two workers who are members of the public with respect to the licensee: (1) a sewer system inspector exposed to the facility's wastewater in the interceptor — external irradiation from wastewater (water slab; receptor 1 m above its surface) plus aerosol inhalation; (2) a sewage-treatment-plant (EDAR) operator of sludge dewatering equipment — external exposure to dewatered sludge plus inhalation of resuspended dry sludge. Scenario 1 adapts NUREG/CR-5814 §5.2.1 as the workbook 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx' (sheet Escenario-1); Scenario 2 adapts NUREG/CR-5814 §5.2.2 as the Scenario 2 reference workbook for Lu-177 (sheet Escenario-2). Screening philosophy of IAEA SRS-19 §4.9 and §6.6.",
+    "description": "Screening doses to two workers who are members of the public with respect to the licensee: (1) a sewer system inspector exposed to the facility's wastewater in the interceptor — external irradiation from wastewater (water slab; receptor 1 m above its surface) plus aerosol inhalation; (2) a sewage-treatment-plant (EDAR) operator of sludge dewatering equipment — external exposure to dewatered sludge plus inhalation of resuspended dry sludge. Scenario 1 adapts NUREG/CR-5814 §5.2.1; Scenario 2 adapts NUREG/CR-5814 §5.2.2. Screening philosophy of IAEA SRS-19 §4.9 and §6.6.",
     "units_note": "Values in this file are in the display units stated in each 'unit' field; the CALC functions work in SI and EFFLUENT.evaluate converts.",
     "source_term_model": "A_adm = patients × cycles × administered activity per cycle; e_hosp = A_adm × fraction excreted in hospital. Activity leaving the hospital: e_hosp, or, for nuclides controlled in decay tanks, e_hosp × min(1, L / Σ e_hosp of controlled nuclides) with L the annual tank discharge (no decay credit when Σ e_hosp < L). Scenario 1: activity leaving the hospital. Scenario 2: activity leaving the hospital + A_adm × (1 − fraction in hospital) × catchment fraction (all administered activity assumed excreted).",
     "adaptation_note": "Adaptations of NUREG/CR-5814, not reproductions: Scenario 1 dilutes the annual facility discharge in its annual water volume (NUREG used 10 % of the 10 CFR 20 concentrations); Scenario 2 uses finite 3 m deep PHITS geometries instead of the 1 m infinite slab, and site source terms instead of 1 Ci/y.",
@@ -19,7 +19,7 @@
         "value": 1.2,
         "unit": "m³/h",
         "min": 0,
-        "source": "ICRP light-work breathing rate (workbook cell D38)."
+        "source": "Light-work breathing rate, as usually attributed to the ICRP reference values; the primary table has not been verified in this application."
       },
       "dose_criterion_mSv_y": {
         "label": "Dose criterion for comparison",
@@ -27,7 +27,7 @@
         "value": 1,
         "unit": "mSv/y",
         "min": 0,
-        "source": "User-defined. Workbook default (cell D60). No regulatory basis is attributed by the app."
+        "source": "User-defined; the app attributes no regulatory basis to it."
       },
       "tank_limit_GBq_y": {
         "label": "Annual discharge from decay tanks (sum of controlled nuclides)",
@@ -45,7 +45,7 @@
         "value": 20000,
         "unit": "m³/y",
         "min": 0,
-        "source": "Site-specific: obtain from the licensee (consumption ≈ discharge in a hospital). Workbook generic values (cell D20): hospital 20 000 m³/y, clinic 3650 m³/y.",
+        "source": "Site-specific: obtain from the licensee (consumption ≈ discharge in a hospital). Generic illustrative values: hospital 20 000 m³/y, clinic 3650 m³/y.",
         "positive": true
       },
       "water_density_kg_m3": {
@@ -54,7 +54,7 @@
         "value": 1000,
         "unit": "kg/m³",
         "min": 0,
-        "source": "Mass basis for the aerosol resuspension model (workbook cell D21).",
+        "source": "Mass basis for the aerosol resuspension model.",
         "positive": true
       },
       "aerosol_loading_kg_m3": {
@@ -99,7 +99,7 @@
         "unit": "–",
         "min": 0,
         "max": 1,
-        "source": "Workbook cell D37 (water slab at 1 m, no correction)."
+        "source": "1 = model geometry (water slab, receptor at 1 m), no correction."
       },
       "transit_h": {
         "label": "Decay time from discharge to the inspector",
@@ -107,18 +107,18 @@
         "value": 0.2,
         "unit": "h",
         "min": 0,
-        "source": "NUREG/CR-5814 §5.2.1 (≈ 0.2 h). Workbook cell D42: 0.008333 d."
+        "source": "NUREG/CR-5814 §5.2.1 (≈ 0.2 h)."
       }
     },
     "s2": {
       "catchment_pct": {
         "label": "Patients living in the STP catchment",
         "hint": "Share of patients whose home discharges to this treatment plant. Applies only to the activity excreted at home.",
-        "value": 40,
+        "value": 100,
         "unit": "%",
         "min": 0,
         "max": 100,
-        "source": "Site-specific; applies only to the activity excreted at home (the hospital discharges to this STP). Workbook default (cell D10)."
+        "source": "Site-specific; applies only to the activity excreted at home (the hospital discharges to this STP). Default 100 %: all patients assumed to live in the catchment (conservative)."
       },
       "wet_sludge_t_per_y": {
         "label": "Wet (dewatered) sludge production",
@@ -126,7 +126,7 @@
         "value": 5090,
         "unit": "t/y",
         "min": 0,
-        "source": "Site-specific: PRTR-España (prtr-es.miteco.gob.es), waste code LER 19 08 05. Default 5090 t/y = value of the reference workbook for STP PRTR code 7504; it has NOT been verified against the PRTR declaration (year, waste and mass basis).",
+        "source": "Site-specific: PRTR-España (prtr-es.miteco.gob.es), waste code LER 19 08 05. The 5090 t/y default is an illustrative value; it has NOT been verified against a PRTR declaration (year, waste and mass basis).",
         "positive": true
       },
       "solids_fraction": {
@@ -136,7 +136,7 @@
         "unit": "–",
         "min": 0,
         "max": 1,
-        "source": "Site hypothesis: value of the reference workbook, which cites PEMAR 2025-2035; no 20–25 % solids range has been found in the PEMAR. NUREG/CR-5814 uses 0.30. Only the inhalation pathway depends on it (the external pathway uses the wet-sludge concentration).",
+        "source": "Site hypothesis (illustrative value); NUREG/CR-5814 uses 0.30. Only the inhalation pathway depends on it (the external pathway uses the wet-sludge concentration).",
         "positive": true
       },
       "wet_density_kg_m3": {
@@ -199,7 +199,7 @@
         "unit": "–",
         "min": 0,
         "max": 1,
-        "source": "Workbook cell D41 (no credit for structures)."
+        "source": "1 = no credit for structures."
       },
       "transit_d": {
         "label": "Decay time from discharge to sludge press",
@@ -220,7 +220,7 @@
       "label": "Clinic",
       "water_volume_m3_y": 3650
     },
-    "source": "Workbook 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx', sheet Escenario-1, cell D20. Generic values; use the licensee's figure when available."
+    "source": "Generic illustrative values; use the licensee's figure when available."
   },
   "geometries": {
     "L10": {
@@ -292,7 +292,7 @@
         "cycles_locked": false,
         "activity_per_cycle_GBq": 7.4,
         "activity_label": "Administered activity per cycle",
-        "source": "Workbook defaults (cells D9, D11, D12); fraction excreted in hospital = 1 − 0.55 (workbook f_san, cell D14). Site-specific.",
+        "source": "Illustrative example values; fraction excreted in hospital 0.45 (the remaining 55 % is excreted at home). Site-specific.",
         "fraction_in_hospital": 0.45,
         "controlled_default": false
       }
@@ -347,11 +347,11 @@
         "cycles_per_patient": 1,
         "cycles_locked": true,
         "activity_per_cycle_GBq": null,
-        "activity_label": "Administered activity per treatment: enter the facility's value. For reference, patients usually leave hospital with less than 0.8 GBq (informative; the reference workbook's 0.8 GBq was that activity at discharge, not the administered activity)",
-        "source": "No default administered activity: the reference workbook's 0.8 GBq per patient (cells G6, G56) is the activity at discharge, not the administered activity. Fraction excreted in hospital 0.5 = workbook value; one treatment per patient is an assumption of this scenario, not a clinical rule. Site-specific.",
+        "activity_label": "Administered activity per treatment: enter the facility's value. For reference, patients usually leave hospital with less than 0.8 GBq (informative)",
+        "source": "No default administered activity: enter the facility's value. Fraction excreted in hospital 0.5 (illustrative); one treatment per patient is an assumption of this scenario, not a clinical rule. Site-specific.",
         "fraction_in_hospital": 0.5,
         "controlled_default": false,
-        "activity_warning": "No default activity: enter the administered activity per treatment and an in-hospital fraction justified for the facility. The reference workbook's 0.8 GBq is the activity at discharge (patients usually leave hospital with less; informative), not the administered activity."
+        "activity_warning": "No default activity: enter the administered activity per treatment and an in-hospital fraction justified for the facility (for reference, patients usually leave hospital with less than 0.8 GBq; informative)."
       },
       "cross_checks": {
         "nureg_table_B7": {
@@ -428,7 +428,7 @@
         "cycles_locked": false,
         "activity_per_cycle_GBq": 0.00074,
         "activity_label": "Lu-177m impurity per cycle",
-        "source": "Impurity of carrier-added Lu-177: 0.01 % of 7.4 GBq per cycle (Workbook 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx', sheet Escenario-2, cell D11). Fraction excreted in hospital = 1 − 0.55. Site-specific.",
+        "source": "Impurity of carrier-added Lu-177, assumed at 0.01 % of the 7.4 GBq per cycle (illustrative). Fraction excreted in hospital 0.45, as for Lu-177. Site-specific.",
         "fraction_in_hospital": 0.45,
         "controlled_default": false
       },
@@ -477,8 +477,8 @@
         "value": 1.9e-11,
         "unit": "Sv/Bq",
         "type": "M",
-        "source": "RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by RD 1029/2022 and the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1), absorption type M (workbook choice; types F and S give 1.2E-11 and 2.0E-11 Sv/Bq). Inhaled particulate aerosol, AMAD 1 µm (ICRP 119); not applicable to gases or vapours.",
-        "type_note": "type M (workbook choice; types F and S give 1.2E-11 and 2.0E-11 Sv/Bq)"
+        "source": "RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by RD 1029/2022 and the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1), absorption type M (choice of this application; types F and S give 1.2E-11 and 2.0E-11 Sv/Bq). Inhaled particulate aerosol, AMAD 1 µm (ICRP 119); not applicable to gases or vapours.",
+        "type_note": "type M (choice of this application; types F and S give 1.2E-11 and 2.0E-11 Sv/Bq)"
       },
       "source_term": {
         "patients_per_y": 0,
@@ -486,7 +486,7 @@
         "cycles_locked": false,
         "activity_per_cycle_GBq": 0,
         "activity_label": "Administered activity per study",
-        "source": "No default in the workbooks: enter the facility's data. Fraction excreted in hospital 0.45 = 1 − the workbook's generic 0.55.",
+        "source": "No default: enter the facility's data. Fraction excreted in hospital 0.45 (illustrative).",
         "fraction_in_hospital": 0.45,
         "controlled_default": false
       },
@@ -519,8 +519,8 @@
         "value": 5.6e-11,
         "unit": "Sv/Bq",
         "type": "M",
-        "source": "RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by RD 1029/2022 and the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1), absorption type M (workbook choice; types F and S give 2.8E-11 and 5.9E-11 Sv/Bq). Inhaled particulate aerosol, AMAD 1 µm (ICRP 119); not applicable to gases or vapours.",
-        "type_note": "type M (workbook choice; types F and S give 2.8E-11 and 5.9E-11 Sv/Bq)"
+        "source": "RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by RD 1029/2022 and the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1), absorption type M (choice of this application; types F and S give 2.8E-11 and 5.9E-11 Sv/Bq). Inhaled particulate aerosol, AMAD 1 µm (ICRP 119); not applicable to gases or vapours.",
+        "type_note": "type M (choice of this application; types F and S give 2.8E-11 and 5.9E-11 Sv/Bq)"
       },
       "source_term": {
         "patients_per_y": 2500,
@@ -528,11 +528,11 @@
         "cycles_locked": false,
         "activity_per_cycle_GBq": 0.3,
         "activity_label": "Administered activity per study",
-        "source": "Workbook 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx', sheet Escenario-1 (cells D9–D13). Fraction excreted in hospital = 1 − 0.55. Site-specific.",
+        "source": "Illustrative example values; fraction excreted in hospital 0.45 (the remaining 55 % is excreted at home). Site-specific.",
         "fraction_in_hospital": 0.45,
         "controlled_default": false
       },
-      "s2_note": "No Scenario 2 coefficient has been calculated (the workbook's 0 means 'not calculated'); after 3 d of transit the F-18 decay factor is about 1E-12.",
+      "s2_note": "No Scenario 2 coefficient has been calculated; after 3 d of transit the F-18 decay factor is about 1E-12.",
       "nureg_table_A21": {
         "stp_wkr_Sv_y_per_Bq_m3": 1.07e-9,
         "sewer_maint_Sv_y_per_Bq_m3": 2.3e-10,
@@ -546,8 +546,7 @@
     "ICRP Publication 119 (2012) — Compendium of Dose Coefficients based on ICRP Publication 60, Table G.1 (inhalation, members of the public).",
     "ICRP Publication 116 (2010) — Conversion Coefficients for Radiological Protection Quantities for External Radiation Exposures (ROT geometry), with ICRP Publication 129 (2015) corrigenda.",
     "PHITS calculations by José Ramón Sendón del Río of the Scenario 2 external coefficients for Lu-177 and Lu-177m (2026-07-30), I-131 (2026-08-23) and Tc-99m — reports available from the author on request.",
-    "PHITS calculations by José Ramón Sendón del Río of the Scenario 1 external coefficients for Lu-177, Lu-177m, Tc-99m, I-131 and F-18 (2026-08-20).",
-    "Workbooks of Scenario 2 for Lu-177 and 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx' (Scenario 1) — reference implementations of the algorithms."
+    "PHITS calculations by José Ramón Sendón del Río of the Scenario 1 external coefficients for Lu-177, Lu-177m, Tc-99m, I-131 and F-18 (2026-08-20)."
   ],
   "nureg_table_A21_note": "NUREG/CR-5814 Table A.21 (pp. A.54–A.56), 'Modified external dose factors for GENII, Sv/yr per Bq/m3 (8-Aug-90)': column 'SEWER MAINT 1.0 m' (Scenario 1) and 'STP WKR 0.15 m' (Scenario 2). Converted with 1 y = 8766 h, the convention that reproduces Table B.7. GENII-1990 effective dose equivalent (ICRP 26/30 era) and NUREG geometries (Table A.20); Lu-177 and Lu-177m are not tabulated. Indicative comparison only; the differences have not been investigated.",
   "phits_reports_note": "The PHITS reports are documents of José Ramón Sendón del Río, available from the author on request; the report and the CSV identify the exact version of each by the first 12 characters of its SHA-256 (2026-10-03).",

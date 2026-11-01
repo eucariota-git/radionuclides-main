@@ -127,12 +127,12 @@
       <li><strong>Common</strong>: breathing rate, annual tank discharge and a <strong>user-defined</strong> dose criterion (no regulatory basis is attributed to it).</li>
       <li>Results update as you type: dose per nuclide and per scenario (<strong>Show intermediate values</strong> adds the decay factor, the concentrations and the dose per GBq), with the coefficients used and an indicative cross-check against NUREG/CR-5814 and IAEA SRS-19 factors.</li>
     </ol>
-    <p><strong>Key limits</strong>: screening model (annual discharge over annual water volume or sludge production, transit decay only); the external coefficients are PHITS calculations by José Ramón Sendón del Río, the author, valid only for their model geometries, photon-only in Scenario 1, and none covers the infinite slab of NUREG/CR-5814; F-18 has no Scenario 2 external coefficient, so that total is a partial sum (≥); I-131 has no default administered activity (the reference workbook's 0.8 GBq was the activity at discharge): enter the facility's value. <strong>Not a complete discharge assessment</strong>: the IS-28 II.A.4 conditions and mixture clearance are evaluated separately.</p>
+    <p><strong>Key limits</strong>: screening model (annual discharge over annual water volume or sludge production, transit decay only); the external coefficients are PHITS calculations by José Ramón Sendón del Río, the author, valid only for their model geometries, photon-only in Scenario 1, and none covers the infinite slab of NUREG/CR-5814; F-18 has no Scenario 2 external coefficient, so that total is a partial sum (≥); I-131 has no default administered activity: enter the facility's value. <strong>Not a complete discharge assessment</strong>: the IS-28 II.A.4 conditions and mixture clearance are evaluated separately.</p>
     <p><strong>Example</strong> (defaults; Lu-177, and I-131 included with 0.8 GBq per treatment entered as an illustrative value; no decay tanks; 45 × 45 × 3 m geometry):</p>
     <ul>
       <li>Scenario 1: Lu-177 1498.5 GBq/y → 0.0172 mSv/y; I-131 20 GBq/y → 0.0027 mSv/y; total 0.0199 mSv/y</li>
-      <li>Scenario 2 (40 % catchment): Lu-177 2231.1 GBq/y → 2.38 mSv/y; I-131 28 GBq/y → 0.367 mSv/y; total 2.74 mSv/y</li>
-      <li>With both nuclides in decay tanks (1 GBq/y in total), Scenario 2 falls to 0.886 mSv/y</li>
+      <li>Scenario 2 (100 % catchment, the default): Lu-177 3330 GBq/y → 3.55 mSv/y; I-131 40 GBq/y → 0.524 mSv/y; total 4.07 mSv/y</li>
+      <li>With both nuclides in decay tanks (1 GBq/y in total), Scenario 2 falls to 2.21 mSv/y</li>
     </ul>
 
     <hr>
@@ -217,7 +217,7 @@
 
     <hr>
     <h3 id="guide-author">Author</h3>
-    <p><strong>José Ramón Sendón del Río</strong> — application and code; compilation, recalculation and verification of the data (curated database, regulatory tables, ICRP 107 index); the PHITS external dose-rate coefficients of the Effluent page; the caregiver workbook ported in Caregiver. The PHITS reports and reference workbooks are available from the author on request.</p>
+    <p><strong>José Ramón Sendón del Río</strong> — application and code; compilation, recalculation and verification of the data (curated database, regulatory tables, ICRP 107 index); the PHITS external dose-rate coefficients of the Effluent page; the caregiver workbook ported in Caregiver. The PHITS reports and the caregiver workbook are available from the author on request.</p>
     <h3 id="guide-support-and-feedback">Support &amp; Feedback</h3>
     <p>For issues, questions or feature requests, contact the author or whoever supplied your copy of the application.</p>
     <h3 id="guide-development-tooling">Development tooling</h3>
@@ -318,14 +318,14 @@
       <li>Es un modelo de cribado: vertido anual dividido entre el volumen anual de agua o la producción de lodos, con decaimiento solo durante el tránsito.</li>
       <li>Los coeficientes externos son cálculos PHITS de José Ramón Sendón del Río, el autor, válidos solo para sus geometrías de modelo y solo de fotones en el escenario 1. Ninguno cubre la lámina infinita de NUREG/CR-5814.</li>
       <li>El F-18 no tiene coeficiente externo para el escenario 2, de modo que ese total es una suma parcial (≥).</li>
-      <li>El I-131 no tiene actividad administrada por defecto (los 0,8 GBq del libro de referencia eran la actividad al alta): introduzca el valor de la instalación.</li>
+      <li>El I-131 no tiene actividad administrada por defecto: introduzca el valor de la instalación.</li>
       <li><strong>No es una evaluación completa del vertido</strong>: las condiciones del apartado II.A.4 de la IS-28 y la desclasificación de mezclas se evalúan aparte.</li>
     </ul>
     <p><strong>Ejemplo</strong> (valores por defecto; Lu-177, e I-131 incluido con 0,8 GBq por tratamiento introducidos como valor ilustrativo; sin depósitos de decaimiento; geometría de 45 × 45 × 3 m):</p>
     <ul>
       <li>Escenario 1: Lu-177 1498,5 GBq/a → 0,0172 mSv/a; I-131 20 GBq/a → 0,0027 mSv/a; total 0,0199 mSv/a</li>
-      <li>Escenario 2 (40 % de zona servida): Lu-177 2231,1 GBq/a → 2,38 mSv/a; I-131 28 GBq/a → 0,367 mSv/a; total 2,74 mSv/a</li>
-      <li>Con los dos nucleidos en depósitos de decaimiento (1 GBq/a en total), el escenario 2 baja a 0,886 mSv/a</li>
+      <li>Escenario 2 (100 % de zona servida, el valor por defecto): Lu-177 3330 GBq/a → 3,55 mSv/a; I-131 40 GBq/a → 0,524 mSv/a; total 4,07 mSv/a</li>
+      <li>Con los dos nucleidos en depósitos de decaimiento (1 GBq/a en total), el escenario 2 baja a 2,21 mSv/a</li>
     </ul>
 
     <hr>
@@ -444,7 +444,7 @@
 
     <hr>
     <h3 id="guia-autor">Autor</h3>
-    <p><strong>José Ramón Sendón del Río</strong> — aplicación y código; recopilación, recálculo y verificación de los datos (base de datos revisada, tablas reglamentarias, índice de ICRP 107); los coeficientes PHITS de tasa de dosis externa de la página de efluentes; el libro de cálculo de acompañantes adaptado en Caregiver. Los informes PHITS y los libros de referencia están disponibles a petición al autor.</p>
+    <p><strong>José Ramón Sendón del Río</strong> — aplicación y código; recopilación, recálculo y verificación de los datos (base de datos revisada, tablas reglamentarias, índice de ICRP 107); los coeficientes PHITS de tasa de dosis externa de la página de efluentes; el libro de cálculo de acompañantes adaptado en Caregiver. Los informes PHITS y el libro de cálculo de acompañantes están disponibles a petición al autor.</p>
     <h3 id="guia-soporte-y-comentarios">Soporte y comentarios</h3>
     <p>Para incidencias, preguntas o peticiones de mejora, diríjase al autor o a quien le suministró su copia de la aplicación.</p>
     <h3 id="guia-herramientas-de-desarrollo">Herramientas de desarrollo</h3>

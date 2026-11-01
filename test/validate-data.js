@@ -379,13 +379,14 @@ console.log('TEST: Effluent Scenario 1 and 2 coefficients vs their sources');
     test(`${id} NUREG Table A.21 SEWER MAINT = ${sewer}`, a.sewer_maint_Sv_y_per_Bq_m3, sewer, 0);
   }
   // Defaults equal the reference workbooks (Scenario 2: Lu-177 Scenario 2 reference workbook;
-  // Scenario 1: 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx').
+  // Scenario 1: 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx'), except the
+  // catchment: 100 % since v1.23.0 (the workbook's 40 % was a site value)
   const P = eff.parameters;
   const DEFAULTS = {
     common: { breathing_rate_m3_h: 1.2, dose_criterion_mSv_y: 1, tank_limit_GBq_y: 1 },
     s1: { water_volume_m3_y: 20000, water_density_kg_m3: 1000, aerosol_loading_kg_m3: 1e-7, respirable_fraction: 0.2,
           t_external_h_y: 100, t_inhalation_h_y: 20, geometry_factor: 1, transit_h: 0.2 },
-    s2: { catchment_pct: 40, wet_sludge_t_per_y: 5090, solids_fraction: 0.25, wet_density_kg_m3: 1200,
+    s2: { catchment_pct: 100, wet_sludge_t_per_y: 5090, solids_fraction: 0.25, wet_density_kg_m3: 1200,
           dust_loading_kg_m3: 1e-7, respirable_fraction: 0.2, sludge_fraction: 1,
           t_external_h_y: 1500, t_inhalation_h_y: 300, geometry_factor: 1, transit_d: 3 },
   };

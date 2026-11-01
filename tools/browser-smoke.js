@@ -246,15 +246,15 @@ async function main() {
       check('dose Lu-177 1 GBq at 0.3 m: H*(10) rate 69.8 µSv/h', /69\.8/.test(await text('#resultsBody')));
     });
     await guard('Effluent defaults', async () => {
-      // Effluent defaults (v1.22.0: I-131 has no default activity and is not included):
-      // Lu-177 only, Scenario 1 0.01718 mSv/y, Scenario 2 2.376 mSv/y. With I-131 included
-      // and 0.8 GBq entered: 0.0199 / 2.74 mSv/y (acceptance A11/A12)
+      // Effluent defaults (v1.22.0: I-131 has no default activity and is not included;
+      // v1.23.0: catchment 100 %): Lu-177 only, Scenario 1 0.01718 mSv/y, Scenario 2
+      // 3.546 mSv/y. With I-131 included and 0.8 GBq entered: 0.0199 / 4.070 mSv/y (acceptance A11/A12)
       await open('effluent.html', 1280);
       {
         const near = (txt, ref) => Math.abs(parseFloat(txt) / ref - 1) < 0.005;   // ±0.5 %, display rounding
         let s1 = await text('#s1Total'), s2 = await text('#s2Total');
         check('effluent defaults (Lu-177 only): Scenario 1 total 0.01718 mSv/y', near(s1, 0.01718), s1);
-        check('effluent defaults (Lu-177 only): Scenario 2 total 2.376 mSv/y', near(s2, 2.376), s2);
+        check('effluent defaults (Lu-177 only): Scenario 2 total 3.546 mSv/y (catchment 100 %)', near(s2, 3.546), s2);
         const i = await ev(`[...document.querySelectorAll('#sourceBody tr')].findIndex(tr => tr.querySelector('.sym').textContent.startsWith('I-131'))`);
         await ev(`(() => { const c = document.getElementById('st_${i}_include'); c.checked = true; c.dispatchEvent(new Event('change', { bubbles: true })); })()`);
         await sleep(400);
@@ -264,7 +264,7 @@ async function main() {
         await sleep(400);
         s1 = await text('#s1Total'); s2 = await text('#s2Total');
         check('effluent: with I-131 0.8 GBq entered, Scenario 1 total 0.0199 mSv/y', near(s1, 0.0199), s1);
-        check('effluent: with I-131 0.8 GBq entered, Scenario 2 total 2.74 mSv/y', near(s2, 2.742), s2);
+        check('effluent: with I-131 0.8 GBq entered, Scenario 2 total 4.070 mSv/y', near(s2, 4.0701), s2);
         check('effluent: E (mSv/y) is the second column', /E \(mSv\/y\)/.test(await text('#s1Table th:nth-child(2)')));
         // v1.20.1: no visible source-term notes; per-nuclide ⓘ (amber for I-131); warnings head the collapsible sources
         const st = await ev(`(() => { const rows = [...document.querySelectorAll('#sourceBody tr')];
@@ -278,7 +278,22 @@ async function main() {
         await ev(`document.getElementById('btnIntermediate').click()`);
         const colsOn = await ev(`[getComputedStyle(document.querySelector('#s2Table td.col-int')).display, document.getElementById('btnIntermediate').getAttribute('aria-pressed')]`);
         check('effluent: intermediate columns hidden by default, shown by the button (aria-pressed)', colsOff === 'none' && colsOn[0] === 'table-cell' && colsOn[1] === 'true', JSON.stringify([colsOff, colsOn]));
+        // v1.23.0: lists in the collapsibles are indented (the reset left the bullets
+        // outside the text column) and the «Coefficients used» notes follow the Spanish screens
+        const pads = await ev(`['#sourceNotes', '#methodDetails ul', '#coeffSources'].map(s => parseFloat(getComputedStyle(document.querySelector(s)).paddingLeft))`);
+        check('effluent: lists in the collapsibles are indented (padding-left > 0)', pads.every(p => p > 0), JSON.stringify(pads));
+        await ev(`document.getElementById('langToggle').click()`); await sleep(400);
+        const cs = await text('#coeffSources');
+        await ev(`document.getElementById('langToggle').click()`); await sleep(300);
+        check('effluent: ES — «Coefficients used» notes in Spanish (no «All nuclides», «Half-life:», «report of»)',
+          /Todos los nucleidos/.test(cs) && /Periodo de semidesintegración:/.test(cs) && !/All nuclides|Half-life:|report of|Effective dose rate/.test(cs), cs.slice(0, 200));
       }
+    });
+    await guard('Caregiver lists (v1.23.0)', async () => {
+      await open('caregiver.html', 1280);
+      const pads = await ev(`['#warningList', '#assumptionList', '#cohabCoworkers', '#methodDetails .text-sm > ul', '#presetList li ul']
+        .map(s => { const e = document.querySelector(s); return e ? parseFloat(getComputedStyle(e).paddingLeft) : -1; })`);
+      check('caregiver: lists indented (warnings, assumptions, co-workers, Method, preset spread)', pads.every(p => p > 0), JSON.stringify(pads));
     });
     await guard('Field help ⓘ (v1.20.0)', async () => {
       // Hidden until focused or tapped; the box spans the form group, inside a 390 px screen; translated in Spanish

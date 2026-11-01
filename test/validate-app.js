@@ -320,7 +320,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v74');
+    swVersion === 'nm-planner-v75');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -1637,7 +1637,8 @@ async function main() {
     check('3/4: inhalation coefficients declare AMAD 1 µm; I-131 has no default activity, is not included, and an empty field is an error only when included',
       eff.nuclides.every(n => /AMAD 1 µm \(ICRP 119\); not applicable to gases or vapours/.test(n.e_inh.source)) && /AMAD 1 µm \(ICRP 119\), not to gases or vapours/.test(effluentHtml) &&
       i131.source_term.activity_per_cycle_GBq === null && i131.include_default === false && /usually leave hospital with less than 0\.8 GBq/.test(i131.source_term.activity_label) &&
-      /function readActivity\(el, included, id\)/.test(effluentHtml) && /if \(!included\) return null;/.test(effluentHtml) && eff.meta.version === '2.6.0');
+      /function readActivity\(el, included, id\)/.test(effluentHtml) && /if \(!included\) return null;/.test(effluentHtml) &&
+      eff.meta.version.localeCompare('2.6.0', undefined, { numeric: true }) >= 0);   // 2.6.0 or later (2.7.0: v1.23.0)
     check('5/10: the Y-90 container values are «hypothetical» on screen, report, CSV and docs; «no photon line passes the filter»',
       /hypothetical container values/.test(doseHtml) && /HYPOTHETICAL VALUES, no primary source or documented derivation/.test(read('js/report.js')) &&
       /'Y-90 hypothetical container values'/.test(doseHtml) && /HYPOTHETICAL, NOT TRACEABLE/.test(read('js/data.js')) && /hypothetical container values/.test(read('README.md')) &&
@@ -1659,6 +1660,37 @@ async function main() {
       [read('THIRD_PARTY_NOTICES.md'), aboutHtml].every(t => /is a\s+packaging choice of this project/.test(t) && !/moved into a/.test(t) && !/case-insensitive/.test(t)) &&
       /From the source repository \(the package does not contain `tools\/`\)/.test(read('docs/DEVELOPMENT.md')) &&
       nucs.nuclides.find(n => n.id === 'Cr-51').modality === 'other' && nucs.version === '1.6');
+  }
+
+  console.log('Test 36: indented lists, Spanish coefficient notes, no workbook references in Effluent, catchment 100 % (v1.23.0)');
+  {
+    const eff = JSON.parse(read('data/effluent-scenarios.json'));
+    const cg = JSON.parse(read('data/caregiver.json'));
+    const css = read('css/style.css');
+    const g = read('docs/USER_GUIDE.md'), ge = read('docs/USER_GUIDE.es.md');
+    const esCtx = vm.createContext({});
+    vm.runInContext(read('js/i18n-es.js') + ';this.__ES = I18N_ES;', esCtx);
+    const I18N_ES = esCtx.__ES;
+    check('lists: one zero-specificity rule after the reset restores the indentation (class rules still win)',
+      /:where\(ul, ol\) \{ padding-left: 1\.2rem; \}/.test(css) &&
+      css.indexOf(':where(ul, ol)') > css.indexOf('box-sizing: border-box; margin: 0; padding: 0;'));
+    check('Effluent: «Coefficients used» notes translatable — no translate="no" on #coeffSources, each label and text in its own element, catalog entries present',
+      /<ul class="ref-list text-sm mt-1" id="coeffSources"><\/ul>/.test(effluentHtml) && /const part = s => `<span>\$\{esc\(s\)\}<\/span>`;/.test(effluentHtml) &&
+      ['All nuclides', 'k Sc. 2: not calculated.', 'Half-life:', eff.coefficient_notes.k_s1, eff.coefficient_notes.k_s2_quantity, eff.coefficient_notes.e_inh_basis]
+        .concat(eff.nuclides.map(n => n.e_inh.type_note), eff.nuclides.filter(n => n.k_ext.s2).map(n => n.k_ext.s2.source))
+        .every(s => I18N_ES.exact[s] !== undefined));
+    // Distributed Effluent texts (data, page, guides) name no workbook, sheet, cell or plant code
+    const effTexts = JSON.stringify(eff) + effluentHtml.replace(/\/\/[^\n]*/g, '') + g.split('### 4.')[1].split('### 5.')[0] + ge.split('### 4.')[1].split('### 5.')[0];
+    check('Effluent: no workbook, sheet, cell, xlsx or PRTR plant code in the data, the page or the guide section',
+      !/workbook|[Ll]ibro|xlsx|\bcells? [A-Z]\d|sheet Escenario|f_san|7504|PEMAR/.test(effTexts));
+    check('Effluent: catchment default 100 % (conservative), stated in its source; guide example 3330 GBq/y → 3.55 mSv/y',
+      eff.parameters.s2.catchment_pct.value === 100 && /Default 100 %: all patients assumed to live in the catchment \(conservative\)/.test(eff.parameters.s2.catchment_pct.source) &&
+      /100 % catchment, the default\): Lu-177 3330 GBq\/y → 3\.55 mSv\/y/.test(g) && /100 % de zona servida, el valor por defecto\): Lu-177 3330 GBq\/a → 3,55 mSv\/a/.test(ge) &&
+      eff.meta.version === '2.7.0');
+    check('Caregiver: presets and self-check without «source workbook v6», «workbook preset» or sheet names; the port statement stays',
+      !/workbook v6|source workbook|Source-workbook|workbook preset|Comprobación sheet/.test(JSON.stringify(cg.kinetic_presets) + cg.reference_cases.note + caregiverHtml) &&
+      /^Port of the workbook Dosis_acompanantes_simple_v2\.1\.xlsx/.test(cg.meta.origin) &&
+      /reference cases computed with the author's original spreadsheet/.test(caregiverHtml));
   }
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);

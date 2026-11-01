@@ -195,7 +195,7 @@
             <tbody id="coeffBody"></tbody>
           </table>
         </div>
-        <ul class="ref-list text-sm mt-1" id="coeffSources" translate="no"></ul>
+        <ul class="ref-list text-sm mt-1" id="coeffSources"></ul>
       </details>
 
       <details class="mt-2" id="crossCheckDetails">
@@ -235,7 +235,7 @@
       calculated with PHITS by José Ramón Sendón del Río for the geometry of each scenario — they are <strong>not</strong> point-source Γ
       constants and only apply to that geometry.</p>
       <p>Doses are summed per nuclide within each scenario; the two scenarios concern different receptors and are never added together. Not a complete discharge assessment: the IS-28 Annex II II.A.4 sewer conditions (per-nuclide concentration level, sum of fractions, annual activity limits) and mixture clearance are evaluated separately.</p>
-      <p>Algorithms and defaults are adapted from the reference workbooks of Scenario 2 (Lu-177) and <em>Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx</em> (Scenario 1). <span id="adaptationNote"></span> Inhalation coefficients are those for adult members of
+      <p><span id="adaptationNote"></span> Inhalation coefficients are those for adult members of
       the public (RD 783/2001 Annex III table b), kept by the CSN Resolution of 3 April 2024; transcription: ICRP Publication 119 (2012),
       Table G.1), lung absorption type F (fast) or M (moderate). They apply to an inhaled particulate aerosol of AMAD 1 µm (ICRP 119), not to gases or vapours (e.g. elemental iodine vapour). Half-lives are taken from the
       app database (Lu-177m, not a curated entry, from ICRP 107).</p>
@@ -329,7 +329,7 @@
       </div>`;
     }).join('');
   }
-  // Provenance (workbook cells, report sections) is kept for traceability, apart
+  // Provenance (sources, report sections) is kept for traceability, apart
   // from the entry instructions (copy audit 2026-10-03, T30).
   const SCEN_NAME = { common: 'Common', s1: 'Scenario 1', s2: 'Scenario 2' };
   document.getElementById('paramSources').innerHTML = SCEN.map(s => Object.values(PG[s]).map(p =>
@@ -554,15 +554,19 @@
         <td>${esc(nd.e_inh.type)}</td>
       </tr>`;
     }).join('');
-    // Shared statements once; per nuclide only what differs (copy audit 2026-10-14)
+    // Shared statements once; per nuclide only what differs (copy audit 2026-10-14).
+    // Each label and data text in its own element, so the Spanish overlay matches
+    // it whole (a joined string has no catalog entry)
     const CN = data.coefficient_notes;
+    const part = s => `<span>${esc(s)}</span>`;
     document.getElementById('coeffSources').innerHTML =
-      `<li><strong>All nuclides</strong> — k Sc. 1: ${esc(CN.k_s1)}
-        k Sc. 2: ${esc(CN.k_s2_quantity)} e(inh): ${esc(CN.e_inh_basis)}</li>` +
+      `<li><strong>All nuclides</strong> — ${part('k Sc. 1:')} ${part(CN.k_s1)}
+        ${part('k Sc. 2:')} ${part(CN.k_s2_quantity)} ${part('e(inh):')} ${part(CN.e_inh_basis)}</li>` +
       nuclides.map(({ nd }) =>
         `<li><strong>${esc(nd.id)}</strong> — ` +
-        (nd.k_ext.s2 ? `k Sc. 2: ${esc(nd.k_ext.s2.source)} ` : 'k Sc. 2: not calculated. ') +
-        `e(inh): absorption ${esc(nd.e_inh.type_note)}. Half-life: ${esc(nd.half_life_source || (DB.getById(nd.id) || {}).half_life_source || 'app database')}</li>`).join('');
+        (nd.k_ext.s2 ? `${part('k Sc. 2:')} ${part(nd.k_ext.s2.source)} ` : `${part('k Sc. 2: not calculated.')} `) +
+        `${part('e(inh), absorption:')} ${part(nd.e_inh.type_note)}. ${part('Half-life:')} ` +
+        `${part(nd.half_life_source || (DB.getById(nd.id) || {}).half_life_source || 'app database')}</li>`).join('');
 
     const ccHtml = nuclides.map(({ nd, T }) => {
       const cc = EFFLUENT.crossChecks(nd, T, input.s2);

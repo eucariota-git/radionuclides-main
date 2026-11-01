@@ -2,6 +2,16 @@
 
 History of changes, newest first. **This file is a record, not a description of the current behaviour**: older entries describe methods that were later replaced — in particular the reconstructed h'(0.07) column (replaced by ICRP 74 Table A.21 in v1.7.0) and the automatic selection of H'(0.07) below 25 cm (removed in 2026-07; both quantities are always shown). For what the application does now, read `README.md` and `docs/USER_GUIDE.md`.
 
+## 2026-11
+
+### v1.23.0 — lists, Spanish coefficient notes, Effluent defaults without workbook references
+- **Lists** (all pages): the CSS reset left every list without padding, so the bullets hung outside the text column (Effluent and Caregiver collapsibles, Caregiver warnings, preset spread). One zero-specificity rule restores the indentation; list classes keep their own.
+- **Effluent, Spanish screens**: the notes under *Coefficients used* were marked `translate="no"` as a whole and joined several data texts in one string; each label and text is now its own element with its Spanish entry (PHITS sources, absorption types, half-life sources). Column headers «Sc. 1/2» read «Esc. 1/2».
+- **Effluent, defaults**: **patients living in the STP catchment 100 %** by default (conservative; was 40 %). Example with the defaults and I-131 at 0.8 GBq: Scenario 2 Lu-177 3330 GBq/y → 3.55 mSv/y, I-131 40 GBq/y → 0.524 mSv/y, total 4.07 mSv/y (2.21 mSv/y with both in decay tanks); Scenario 1 unchanged.
+- **Effluent, sources of the defaults**: no workbook, sheet, cell or plant code in the data, the page, the report or the guides. Each default cites its primary source (NUREG/CR-5814, IAEA SRS-19, IS-28, PRTR-España) or is stated as an illustrative, site-specific value; the PRTR plant code and the PEMAR remark are removed; the 1.2 m³/h breathing rate is stated as not verified against its primary table; the Method paragraph and the report references no longer cite the workbooks. `effluent-scenarios.json` 2.7.0.
+- **Caregiver**: preset and self-check texts no longer cite «source workbook v6», sheet names or «the workbook preset» (the reference cases are «computed with the author's original spreadsheet»); the port of the v2.1 workbook is still stated. Preset values in *Kinetics presets and their sources* follow the decimal separator. `caregiver.json` 1.14.
+- Acceptance sheet A11/A12: new expected values and a hand calculation as the independent check. Test 36; browser-smoke cases (list indentation, Spanish coefficient notes, new Scenario 2 totals).
+
 ## 2026-10
 
 ### v1.22.0 — review of another AI's analysis (16 points, each checked against the sources)

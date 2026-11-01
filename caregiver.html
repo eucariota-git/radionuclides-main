@@ -223,7 +223,7 @@
       <details class="mt-2" id="selfCheckDetails">
         <summary><strong>Self-check: <span id="selfCheckStatus">—</span></strong></summary>
         <p class="text-sm mt-1">A: the result is recomputed with an independent formulation in µSv and h for the current inputs.
-          B: that formulation reproduces the reference cases of the source workbook v6 (restriction 3 d from discharge,
+          B: that formulation reproduces the reference cases computed with the author's original spreadsheet (restriction 3 d from discharge,
           6 cycles, fast phase ending at 24 h). «REVIEW» means a formula has been altered.</p>
         <div class="overflow-x-auto">
           <table class="data-table">
@@ -360,10 +360,15 @@
   $('presetNote').textContent = data.kinetic_presets_note;
   // Under each preset, the dispersion its source publishes (statistic named in the text)
   const spreadItems = p => (p.spread.length ? p.spread.map(s => s.text) : [data.kinetic_presets_no_spread]);
-  $('presetList').innerHTML = PRESETS.map(p => `<li><strong>${esc(p.label)}</strong> — ` +
-    `${p.fast_end_h > 0 ? `fast phase until ${p.fast_end_h} h, T fast ${p.T_fast_h} h, ` : 'single exponential, '}T slow ${p.T_slow_h} h, ` +
-    `${p.cycles} cycle(s), profile ${esc(data.profiles[p.profile].label)}. ${esc(p.source)}` +
-    `<div class="mt-1"><em>Spread in the source:</em></div><ul>${spreadItems(p).map(t => `<li>${esc(t)}</li>`).join('')}</ul></li>`).join('');
+  // Values with the user's separator (rebuilt on nm-decimal-change; v1.23.0)
+  const buildPresetList = () => {
+    const n = UTILS.num;
+    $('presetList').innerHTML = PRESETS.map(p => `<li><strong>${esc(p.label)}</strong> — ` +
+      `${p.fast_end_h > 0 ? `fast phase until ${n(p.fast_end_h)} h, T fast ${n(p.T_fast_h)} h, ` : 'single exponential, '}T slow ${n(p.T_slow_h)} h, ` +
+      `${p.cycles} cycle(s), profile ${esc(data.profiles[p.profile].label)}. ${esc(p.source)}` +
+      `<div class="mt-1"><em>Spread in the source:</em></div><ul>${spreadItems(p).map(t => `<li>${esc(t)}</li>`).join('')}</ul></li>`).join('');
+  };
+  buildPresetList();
   const presetHint = () => {
     const p = PRESETS.find(q => q.key === $('preset').value);
     // What a preset fills is in the ⓘ of the label; only the hand-entered state is said here
@@ -812,6 +817,7 @@
   // distance lists and the results with the new one
   document.addEventListener('nm-decimal-change', () => {
     buildCategoryOptions();
+    buildPresetList();
     buildProfileTables();
     buildCohabTable();
     try { fillDistanceSelects(readInputs()); } catch (e) { /* render reports it */ }

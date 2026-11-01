@@ -823,8 +823,6 @@ const I18N_ES = {
     'The two scenarios concern different receptors: their totals are never added together.': 'Los dos escenarios corresponden a receptores distintos: sus totales nunca se suman.',
     'Doses are summed per nuclide within each scenario; the two scenarios concern different receptors and are never added together. Not a complete discharge assessment: the IS-28 Annex II II.A.4 sewer conditions (per-nuclide concentration level, sum of fractions, annual activity limits) and mixture clearance are evaluated separately.':
       'Dentro de cada escenario, las dosis se suman por nucleido; los dos escenarios corresponden a receptores distintos y nunca se suman. No es una evaluación completa del vertido: las condiciones de la IS-28, anexo II, II.A.4, para el alcantarillado (nivel de concentración por nucleido, suma de las fracciones, límites anuales de actividad) y la desclasificación de mezclas se evalúan aparte.',
-    'Algorithms and defaults are adapted from the reference workbooks of Scenario 2 (Lu-177) and': 'Los algoritmos y los valores por defecto se adaptan de los libros de referencia del escenario 2 (Lu-177) y',
-    '(Scenario 1).': '(escenario 1).',
     'Inhalation coefficients are those for adult members of the public (RD 783/2001 Annex III table b), kept by the CSN Resolution of 3 April 2024; transcription: ICRP Publication 119 (2012), Table G.1), lung absorption type F (fast) or M (moderate). They apply to an inhaled particulate aerosol of AMAD 1 µm (ICRP 119), not to gases or vapours (e.g. elemental iodine vapour). Half-lives are taken from the app database (Lu-177m, not a curated entry, from ICRP 107).':
       'Los coeficientes de inhalación son los de adultos miembros del público (RD 783/2001, anexo III, tabla b), mantenidos por la Resolución del CSN de 3 de abril de 2024; transcripción: ICRP Publication 119 (2012), tabla G.1), con absorción pulmonar de tipo F (rápida) o M (moderada). Se aplican a un aerosol de partículas inhalado de AMAD 1 µm (ICRP 119), no a gases ni vapores (p. ej., vapor de yodo elemental). Los periodos de semidesintegración se toman de la base de datos de la app (el Lu-177m, que no es una entrada revisada, de ICRP 107).',
     'The entered values are outside the representable range': 'Los valores introducidos están fuera del intervalo representable',
@@ -939,28 +937,28 @@ const I18N_ES = {
       "Tiempo de decaimiento desde el vertido hasta la prensa de lodos",
     "Decay between discharge and the sludge press. No further decay is applied.":
       "Decaimiento entre el vertido y la prensa de lodos. No se aplica ningún otro decaimiento.",
-    "ICRP light-work breathing rate (workbook cell D38).":
-      "Tasa de respiración de ICRP para trabajo ligero (celda D38 del libro).",
-    "User-defined. Workbook default (cell D60). No regulatory basis is attributed by the app.":
-      "Definido por el usuario. Valor por defecto del libro (celda D60). La app no le atribuye base reglamentaria.",
+    "Light-work breathing rate, as usually attributed to the ICRP reference values; the primary table has not been verified in this application.":
+      "Tasa de respiración para trabajo ligero, tal como suele atribuirse a los valores de referencia de ICRP; la tabla original no se ha verificado en esta aplicación.",
+    "User-defined; the app attributes no regulatory basis to it.":
+      "Definido por el usuario; la app no le atribuye base reglamentaria.",
     "IS-28 Annex II II.A.4: annual discharge strictly below 1 GBq for the sum of nuclides other than H-3 and C-14 (the facility's authorisation prevails). The 1 GBq/y default is that boundary — a boundary scenario, not a demonstration of compliance.":
       "IS-28, anexo II, II.A.4: vertido anual estrictamente inferior a 1 GBq para la suma de los nucleidos distintos del H-3 y del C-14 (prevalece la autorización de la instalación). El valor por defecto de 1 GBq/a es ese límite: un escenario de frontera, no una demostración de cumplimiento.",
-    "Site-specific: obtain from the licensee (consumption ≈ discharge in a hospital). Workbook generic values (cell D20): hospital 20 000 m³/y, clinic 3650 m³/y.":
-      "Propio del emplazamiento: obténgalo del titular (en un hospital, consumo ≈ vertido). Valores genéricos del libro (celda D20): hospital 20 000 m³/a, clínica 3650 m³/a.",
-    "Mass basis for the aerosol resuspension model (workbook cell D21).":
-      "Base másica del modelo de resuspensión de aerosol (celda D21 del libro).",
+    "Site-specific: obtain from the licensee (consumption ≈ discharge in a hospital). Generic illustrative values: hospital 20 000 m³/y, clinic 3650 m³/y.":
+      "Propio del emplazamiento: obténgalo del titular (en un hospital, consumo ≈ vertido). Valores genéricos ilustrativos: hospital 20 000 m³/a, clínica 3650 m³/a.",
+    "Mass basis for the aerosol resuspension model.":
+      "Base másica del modelo de resuspensión de aerosol.",
     "NUREG/CR-5814 §5.2.1 (20 h/y; respirator worn most of the time).":
       "NUREG/CR-5814 §5.2.1 (20 h/a; se lleva protección respiratoria la mayor parte del tiempo).",
-    "Workbook cell D37 (water slab at 1 m, no correction).":
-      "Celda D37 del libro (lámina de agua a 1 m, sin corrección).",
-    "NUREG/CR-5814 §5.2.1 (≈ 0.2 h). Workbook cell D42: 0.008333 d.":
-      "NUREG/CR-5814 §5.2.1 (≈ 0,2 h). Celda D42 del libro: 0,008333 d.",
-    "Site-specific; applies only to the activity excreted at home (the hospital discharges to this STP). Workbook default (cell D10).":
-      "Propio del emplazamiento; solo se aplica a la actividad excretada en el domicilio (el hospital vierte a esta depuradora). Valor por defecto del libro (celda D10).",
-    "Site-specific: PRTR-España (prtr-es.miteco.gob.es), waste code LER 19 08 05. Default 5090 t/y = value of the reference workbook for STP PRTR code 7504; it has NOT been verified against the PRTR declaration (year, waste and mass basis).":
-      "Propio del emplazamiento: PRTR-España (prtr-es.miteco.gob.es), código de residuo LER 19 08 05. Por defecto 5090 t/a = valor del libro de referencia para la depuradora con código PRTR 7504; NO se ha verificado con la declaración PRTR (año, residuo y base másica).",
-    "Site hypothesis: value of the reference workbook, which cites PEMAR 2025-2035; no 20–25 % solids range has been found in the PEMAR. NUREG/CR-5814 uses 0.30. Only the inhalation pathway depends on it (the external pathway uses the wet-sludge concentration).":
-      "Hipótesis del emplazamiento: valor del libro de referencia, que cita el PEMAR 2025-2035; en el PEMAR no se ha encontrado un intervalo de sólidos del 20–25 %. NUREG/CR-5814 usa 0,30. Solo depende de él la vía de inhalación (la vía externa usa la concentración en lodo húmedo).",
+    "1 = model geometry (water slab, receptor at 1 m), no correction.":
+      "1 = geometría del modelo (lámina de agua, receptor a 1 m), sin corrección.",
+    "NUREG/CR-5814 §5.2.1 (≈ 0.2 h).":
+      "NUREG/CR-5814 §5.2.1 (≈ 0,2 h).",
+    "Site-specific; applies only to the activity excreted at home (the hospital discharges to this STP). Default 100 %: all patients assumed to live in the catchment (conservative).":
+      "Propio del emplazamiento; solo se aplica a la actividad excretada en el domicilio (el hospital vierte a esta depuradora). Por defecto 100 %: se supone que todos los pacientes viven en la zona servida (conservador).",
+    "Site-specific: PRTR-España (prtr-es.miteco.gob.es), waste code LER 19 08 05. The 5090 t/y default is an illustrative value; it has NOT been verified against a PRTR declaration (year, waste and mass basis).":
+      "Propio del emplazamiento: PRTR-España (prtr-es.miteco.gob.es), código de residuo LER 19 08 05. El valor por defecto de 5090 t/a es ilustrativo; NO se ha verificado con ninguna declaración PRTR (año, residuo y base másica).",
+    "Site hypothesis (illustrative value); NUREG/CR-5814 uses 0.30. Only the inhalation pathway depends on it (the external pathway uses the wet-sludge concentration).":
+      "Hipótesis del emplazamiento (valor ilustrativo); NUREG/CR-5814 usa 0,30. Solo depende de él la vía de inhalación (la vía externa usa la concentración en lodo húmedo).",
     "NUREG/CR-5814 (1992), Table A.16.":
       "NUREG/CR-5814 (1992), tabla A.16.",
     "NUREG/CR-5814 §5.2.2 (1.0E-4 g/m³); range 5E-8 – 5E-6 kg/m³. Same value in IAEA SRS-19 §6.6.2.":
@@ -971,12 +969,12 @@ const I18N_ES = {
       "NUREG/CR-5814 §5.2.2 (1500 h/a; intervalo 500–1750 h/a). ISCORS 2004 §4.7.3: 1000 h/a.",
     "NUREG/CR-5814 §5.2.2 (300 h/y; range 100–350 h/y).":
       "NUREG/CR-5814 §5.2.2 (300 h/a; intervalo 100–350 h/a).",
-    "Workbook cell D41 (no credit for structures).":
-      "Celda D41 del libro (sin crédito por estructuras).",
+    "1 = no credit for structures.":
+      "1 = sin crédito por estructuras.",
     "NUREG/CR-5814 §5.2.2 (~3 d; range 3 – 50+ d).":
       "NUREG/CR-5814 §5.2.2 (~3 d; intervalo 3 – 50+ d).",
-    "Workbook 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx', sheet Escenario-1, cell D20. Generic values; use the licensee's figure when available.":
-      "Libro 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx', hoja Escenario-1, celda D20. Valores genéricos; use el dato del titular cuando lo haya.",
+    "Generic illustrative values; use the licensee's figure when available.":
+      "Valores genéricos ilustrativos; use el dato del titular cuando lo haya.",
     "Model geometry: 10 × 10 × 3 m sludge mass; receptor 2 m above centre":
       "Geometría del modelo: masa de lodo de 10 × 10 × 3 m; receptor a 2 m sobre el centro",
     "Model geometry: 45 × 45 × 3 m sludge mass (2025 m²); receptor 2 m above centre":
@@ -993,30 +991,65 @@ const I18N_ES = {
       "NUREG/CR-5814 §5.2.1 y tabla A.20. Los coeficientes son solo de fotones: no incluyen la radiación de frenado de la emisión beta y de positrones, que no se ha acotado para esta geometría (el alcance CSDA en aire de un electrón de 0,5 MeV supera la distancia de 1 m). La limitación es mayor para el F-18 y el I-131 que para el Lu-177, y menor para el Tc-99m.",
     "Administered activity per cycle":
       "Actividad administrada por ciclo",
-    "Administered activity per treatment: enter the facility's value. For reference, patients usually leave hospital with less than 0.8 GBq (informative; the reference workbook's 0.8 GBq was that activity at discharge, not the administered activity)":
-      "Actividad administrada por tratamiento: introduzca el valor de la instalación. Como referencia, los pacientes suelen salir del hospital con menos de 0,8 GBq (dato informativo; los 0,8 GBq del libro de referencia eran esa actividad al alta, no la actividad administrada)",
+    "Administered activity per treatment: enter the facility's value. For reference, patients usually leave hospital with less than 0.8 GBq (informative)":
+      "Actividad administrada por tratamiento: introduzca el valor de la instalación. Como referencia, los pacientes suelen salir del hospital con menos de 0,8 GBq (dato informativo)",
     "Lu-177m impurity per cycle":
       "Impureza de Lu-177m por ciclo",
     "Administered activity per study":
       "Actividad administrada por estudio",
-    "Workbook defaults (cells D9, D11, D12); fraction excreted in hospital = 1 − 0.55 (workbook f_san, cell D14). Site-specific.":
-      "Valores por defecto del libro (celdas D9, D11, D12); fracción excretada en el hospital = 1 − 0,55 (f_san del libro, celda D14). Propio del emplazamiento.",
-    "No default administered activity: the reference workbook's 0.8 GBq per patient (cells G6, G56) is the activity at discharge, not the administered activity. Fraction excreted in hospital 0.5 = workbook value; one treatment per patient is an assumption of this scenario, not a clinical rule. Site-specific.":
-      "Sin actividad administrada por defecto: los 0,8 GBq por paciente del libro de referencia (celdas G6, G56) son la actividad al alta, no la actividad administrada. Fracción excretada en el hospital 0,5 = valor del libro; un tratamiento por paciente es una hipótesis de este escenario, no una regla clínica. Propio del emplazamiento.",
-    "No default activity: enter the administered activity per treatment and an in-hospital fraction justified for the facility. The reference workbook's 0.8 GBq is the activity at discharge (patients usually leave hospital with less; informative), not the administered activity.":
-      "Sin actividad por defecto: introduzca la actividad administrada por tratamiento y una fracción en el hospital justificada para la instalación. Los 0,8 GBq del libro de referencia son la actividad al alta (los pacientes suelen salir del hospital con menos; dato informativo), no la actividad administrada.",
+    "Illustrative example values; fraction excreted in hospital 0.45 (the remaining 55 % is excreted at home). Site-specific.":
+      "Valores de ejemplo ilustrativos; fracción excretada en el hospital 0,45 (el 55 % restante se excreta en el domicilio). Propio del emplazamiento.",
+    "No default administered activity: enter the facility's value. Fraction excreted in hospital 0.5 (illustrative); one treatment per patient is an assumption of this scenario, not a clinical rule. Site-specific.":
+      "Sin actividad administrada por defecto: introduzca el valor de la instalación. Fracción excretada en el hospital 0,5 (ilustrativa); un tratamiento por paciente es una hipótesis de este escenario, no una regla clínica. Propio del emplazamiento.",
+    "No default activity: enter the administered activity per treatment and an in-hospital fraction justified for the facility (for reference, patients usually leave hospital with less than 0.8 GBq; informative).":
+      "Sin actividad por defecto: introduzca la actividad administrada por tratamiento y una fracción en el hospital justificada para la instalación (como referencia, los pacientes suelen salir del hospital con menos de 0,8 GBq; dato informativo).",
     "NUREG/CR-5814 Table B.7: I-131, 3 d decay, 3.9E-2 rem/y for 1 Ci/y (≈ 10.5 µSv/GBq), external dose from the GENII-1990 'STP WKR' factor (effective dose equivalent, ICRP 26/30 era) for a 1 m deep infinite slab at 2 m. Rescaled to the user plant by dry sludge mass and solids fraction.":
       "NUREG/CR-5814, tabla B.7: I-131, 3 d de decaimiento, 3,9E-2 rem/a por 1 Ci/a (≈ 10,5 µSv/GBq), dosis externa con el factor 'STP WKR' de GENII-1990 (equivalente de dosis efectiva, época de ICRP 26/30) para una lámina infinita de 1 m de espesor a 2 m. Reescalada a la planta del usuario por la masa de lodo seco y la fracción de sólidos.",
     "IAEA SRS-19 (2001) Table I–IV: 400 t/y dry sludge, no transit decay, 2000 h/y. Annex I uses an occupancy of 0.288 where 2000/8760 = 0.228, so the factor may be 26 % high. Indicative only.":
       "IAEA SRS-19 (2001), tabla I–IV: 400 t/a de lodo seco, sin decaimiento en tránsito, 2000 h/a. El anexo I usa una ocupación de 0,288 cuando 2000/8760 = 0,228, por lo que el factor puede estar un 26 % alto. Solo orientativo.",
-    "Impurity of carrier-added Lu-177: 0.01 % of 7.4 GBq per cycle (Workbook 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx', sheet Escenario-2, cell D11). Fraction excreted in hospital = 1 − 0.55. Site-specific.":
-      "Impureza del Lu-177 con portador: 0,01 % de 7,4 GBq por ciclo (libro 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx', hoja Escenario-2, celda D11). Fracción excretada en el hospital = 1 − 0,55. Propio del emplazamiento.",
-    "No default in the workbooks: enter the facility's data. Fraction excreted in hospital 0.45 = 1 − the workbook's generic 0.55.":
-      "Sin valor por defecto en los libros: introduzca los datos de la instalación. Fracción excretada en el hospital 0,45 = 1 − el 0,55 genérico del libro.",
-    "Workbook 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx', sheet Escenario-1 (cells D9–D13). Fraction excreted in hospital = 1 − 0.55. Site-specific.":
-      "Libro 'Efluentes - Dosis precisas escenarios 1_2_4 v2.xlsx', hoja Escenario-1 (celdas D9–D13). Fracción excretada en el hospital = 1 − 0,55. Propio del emplazamiento.",
-    "No Scenario 2 coefficient has been calculated (the workbook's 0 means 'not calculated'); after 3 d of transit the F-18 decay factor is about 1E-12.":
-      "No se ha calculado coeficiente del escenario 2 (el 0 del libro significa 'no calculado'); tras 3 d de tránsito, el factor de decaimiento del F-18 es del orden de 1E-12.",
+    "Impurity of carrier-added Lu-177, assumed at 0.01 % of the 7.4 GBq per cycle (illustrative). Fraction excreted in hospital 0.45, as for Lu-177. Site-specific.":
+      "Impureza del Lu-177 con portador, supuesta del 0,01 % de los 7,4 GBq por ciclo (ilustrativa). Fracción excretada en el hospital 0,45, como para el Lu-177. Propio del emplazamiento.",
+    "No default: enter the facility's data. Fraction excreted in hospital 0.45 (illustrative).":
+      "Sin valor por defecto: introduzca los datos de la instalación. Fracción excretada en el hospital 0,45 (ilustrativa).",
+    "No Scenario 2 coefficient has been calculated; after 3 d of transit the F-18 decay factor is about 1E-12.":
+      "No se ha calculado coeficiente del escenario 2; tras 3 d de tránsito, el factor de decaimiento del F-18 es del orden de 1E-12.",
+    // Notes under «Coefficients used» (each label and data text is its own element)
+    'All nuclides': 'Todos los nucleidos',
+    'k Sc. 1:': 'k esc. 1:',
+    'k Sc. 2:': 'k esc. 2:',
+    'k Sc. 2: not calculated.': 'k esc. 2: no calculado.',
+    // Column headers with the Scenario abbreviation (source term, coefficients, cross-check)
+    'Sc. 1 (GBq/y)': 'Esc. 1 (GBq/a)',
+    'Sc. 2 (GBq/y)': 'Esc. 2 (GBq/a)',
+    'k Sc. 1 ((nSv/h)/(Bq/m³))': 'k esc. 1 ((nSv/h)/(Bq/m³))',
+    'k Sc. 2 ((nSv/h)/(Bq/m³))': 'k esc. 2 ((nSv/h)/(Bq/m³))',
+    'Sc. 1 PHITS': 'Esc. 1 PHITS',
+    'Sc. 1 NUREG': 'Esc. 1 NUREG',
+    'Sc. 2 NUREG': 'Esc. 2 NUREG',
+    'e(inh), absorption:': 'e(inh), absorción:',
+    'Half-life:': 'Periodo de semidesintegración:',
+    'app database': 'base de datos de la app',
+    "PHITS 3.33 calculation by José Ramón Sendón del Río: 'Escenario 1 del NUREG/CR-5814 · Lu-177, Lu-177m, Tc-99m, I-131 y F-18', 2026-08-20, Table 7. Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); photon transport only. Uncertainty: relative Monte Carlo standard uncertainty (coverage factor 1).":
+      "Cálculo con PHITS 3.33 de José Ramón Sendón del Río: 'Escenario 1 del NUREG/CR-5814 · Lu-177, Lu-177m, Tc-99m, I-131 y F-18', 2026-08-20, tabla 7. Tasa de dosis efectiva por unidad de concentración de actividad, geometría ROT, ICRP 116 (con la corrección de errores de ICRP 129); solo transporte de fotones. Incertidumbre: incertidumbre típica relativa Monte Carlo (factor de cobertura 1).",
+    "Effective dose rate per unit activity concentration, ROT geometry, ICRP 116 (with ICRP 129 corrigenda); receptor 2 m above the centre of a uniform 3 m deep source of water-equivalent sludge (1.2 g/cm³).":
+      "Tasa de dosis efectiva por unidad de concentración de actividad, geometría ROT, ICRP 116 (con la corrección de errores de ICRP 129); receptor a 2 m sobre el centro de una fuente uniforme de 3 m de espesor de lodo equivalente a agua (1,2 g/cm³).",
+    "RD 783/2001 Annex III table b), adult (> 17 y) member of the public, kept in force by RD 1029/2022 and the CSN Resolution of 3 April 2024 (numerical transcription: ICRP Publication 119 (2012) Table G.1).":
+      "RD 783/2001, anexo III, tabla b), adulto (> 17 a) miembro del público, mantenida en vigor por el RD 1029/2022 y la Resolución del CSN de 3 de abril de 2024 (transcripción numérica: ICRP Publication 119 (2012), tabla G.1).",
+    "PHITS calculation by José Ramón Sendón del Río: 'Coeficientes de tasa de dosis efectiva externa para Lu-177 y Lu-177m en el escenario 2 de NUREG/CR-5814' (report of 2026-07-30, §7.2; available from the author on request). Uncertainties are relative Monte Carlo standard uncertainties (coverage factor 1). The report does not state a one-sided secondary-electron envelope.":
+      "Cálculo con PHITS de José Ramón Sendón del Río: 'Coeficientes de tasa de dosis efectiva externa para Lu-177 y Lu-177m en el escenario 2 de NUREG/CR-5814' (informe de 2026-07-30, §7.2; disponible a petición al autor). Las incertidumbres son incertidumbres típicas relativas Monte Carlo (factor de cobertura 1). El informe no da una envolvente unilateral por electrones secundarios.",
+    "PHITS calculation by José Ramón Sendón del Río: 'Coeficientes de tasa de dosis efectiva externa para Lu-177 y Lu-177m en el escenario 2 de NUREG/CR-5814' (report of 2026-07-30, §7.2; available from the author on request). Uncertainties are relative Monte Carlo standard uncertainties (coverage factor 1).":
+      "Cálculo con PHITS de José Ramón Sendón del Río: 'Coeficientes de tasa de dosis efectiva externa para Lu-177 y Lu-177m en el escenario 2 de NUREG/CR-5814' (informe de 2026-07-30, §7.2; disponible a petición al autor). Las incertidumbres son incertidumbres típicas relativas Monte Carlo (factor de cobertura 1).",
+    "Xe-131m excluded (open pool). PHITS 3.330 calculation by José Ramón Sendón del Río: 'Informe de resultados del I-131 en el escenario 2 de NUREG/CR-5814' (report of 2026-08-23; available from the author on request). Uncertainties are relative Monte Carlo standard uncertainties (coverage factor 1); the envelope is a separate one-sided model bound for bremsstrahlung and direct beta, not added to the central value.":
+      "Xe-131m excluido (balsa abierta). Cálculo con PHITS 3.330 de José Ramón Sendón del Río: 'Informe de resultados del I-131 en el escenario 2 de NUREG/CR-5814' (informe de 2026-08-23; disponible a petición al autor). Las incertidumbres son incertidumbres típicas relativas Monte Carlo (factor de cobertura 1); la envolvente es una cota unilateral aparte del modelo para la radiación de frenado y la beta directa, que no se suma al valor central.",
+    "PHITS calculation by José Ramón Sendón del Río for Scenario 2 of NUREG/CR-5814, L10 and L45 geometries (Tc-99m report; available from the author on request). Uncertainties are relative Monte Carlo standard uncertainties (coverage factor 1).":
+      "Cálculo con PHITS de José Ramón Sendón del Río para el escenario 2 de NUREG/CR-5814, geometrías L10 y L45 (informe del Tc-99m; disponible a petición al autor). Las incertidumbres son incertidumbres típicas relativas Monte Carlo (factor de cobertura 1).",
+    'type M (lutetium is tabulated for types M and S only)': 'tipo M (el lutecio solo está tabulado para los tipos M y S)',
+    'type F (types M and S give 2.4E-9 and 1.6E-9 Sv/Bq; F is the most conservative and the type used by IAEA SRS-19 Table XVI)':
+      'tipo F (los tipos M y S dan 2,4E-9 y 1,6E-9 Sv/Bq; F es el más conservador y el tipo que usa IAEA SRS-19, tabla XVI)',
+    'type M (choice of this application; types F and S give 1.2E-11 and 2.0E-11 Sv/Bq)':
+      'tipo M (elección de esta aplicación; los tipos F y S dan 1,2E-11 y 2,0E-11 Sv/Bq)',
+    'type M (choice of this application; types F and S give 2.8E-11 and 5.9E-11 Sv/Bq)':
+      'tipo M (elección de esta aplicación; los tipos F y S dan 2,8E-11 y 5,9E-11 Sv/Bq)',
     "NUREG/CR-5814 Table A.21 (pp. A.54–A.56), 'Modified external dose factors for GENII, Sv/yr per Bq/m3 (8-Aug-90)': column 'SEWER MAINT 1.0 m' (Scenario 1) and 'STP WKR 0.15 m' (Scenario 2). Converted with 1 y = 8766 h, the convention that reproduces Table B.7. GENII-1990 effective dose equivalent (ICRP 26/30 era) and NUREG geometries (Table A.20); Lu-177 and Lu-177m are not tabulated. Indicative comparison only; the differences have not been investigated.":
       "NUREG/CR-5814, tabla A.21 (pp. A.54–A.56), 'Modified external dose factors for GENII, Sv/yr per Bq/m3 (8-Aug-90)': columna 'SEWER MAINT 1.0 m' (escenario 1) y 'STP WKR 0.15 m' (escenario 2). Convertidos con 1 a = 8766 h, la convención que reproduce la tabla B.7. Equivalente de dosis efectiva de GENII-1990 (época de ICRP 26/30) y geometrías del NUREG (tabla A.20); el Lu-177 y el Lu-177m no están tabulados. Comparación solo orientativa; las diferencias no se han investigado.",
     "Adaptations of NUREG/CR-5814, not reproductions: Scenario 1 dilutes the annual facility discharge in its annual water volume (NUREG used 10 % of the 10 CFR 20 concentrations); Scenario 2 uses finite 3 m deep PHITS geometries instead of the 1 m infinite slab, and site source terms instead of 1 Ci/y.":
@@ -1106,8 +1139,8 @@ const I18N_ES = {
     'No curve: the inputs are rejected (see the status above).': 'Sin curva: las entradas se rechazan (véase la situación arriba).',
     'No curve: with the same restriction in both rows the hours during the restriction would exceed 24 h/day.': 'Sin curva: con la misma restricción en las dos filas, las horas durante la restricción superarían 24 h/día.',
     'Self-check:': 'Autocomprobación:',
-    'A: the result is recomputed with an independent formulation in µSv and h for the current inputs. B: that formulation reproduces the reference cases of the source workbook v6 (restriction 3 d from discharge, 6 cycles, fast phase ending at 24 h). «REVIEW» means a formula has been altered.':
-      'A: el resultado se recalcula con una formulación independiente en µSv y h para las entradas actuales. B: esa formulación reproduce los casos de referencia del libro de origen v6 (restricción de 3 d desde el alta, 6 ciclos, fase rápida que termina a las 24 h). «REVISAR» significa que se ha alterado una fórmula.',
+    "A: the result is recomputed with an independent formulation in µSv and h for the current inputs. B: that formulation reproduces the reference cases computed with the author's original spreadsheet (restriction 3 d from discharge, 6 cycles, fast phase ending at 24 h). «REVIEW» means a formula has been altered.":
+      'A: el resultado se recalcula con una formulación independiente en µSv y h para las entradas actuales. B: esa formulación reproduce los casos de referencia calculados con la hoja de cálculo original del autor (restricción de 3 d desde el alta, 6 ciclos, fase rápida que termina a las 24 h). «REVISAR» significa que se ha alterado una fórmula.',
     'Check': 'Comprobación',
     'Value': 'Valor',
     'Status': 'Estado',
@@ -1239,16 +1272,16 @@ const I18N_ES = {
       "Protocolo de medida propia que debe registrarse: radiofármaco, referencia de distancia, postura, orientación y momento de la medida.",
     "The intermediate distances of the approximate profiles [2], [3] are model evaluations, not measurements, and 6.25 is not a measured ratio: the spatial ratios measured by Demir [4] vary with time. The d^-1.5 approximation of IAEA SRS-63 [10] is not adopted as a universal profile.":
       "Las distancias intermedias de los perfiles aproximados [2], [3] son evaluaciones del modelo, no medidas, y 6,25 no es un cociente medido: los cocientes espaciales medidos por Demir [4] varían con el tiempo. La aproximación d^-1,5 de IAEA SRS-63 [10] no se adopta como perfil universal.",
-    "Reference cases of workbook v6 (Comprobación sheet B): restriction 3 d from discharge, 6 cycles, fast phase ending at 24 h. Carer: 6 h/d at 1 m during the restriction; afterwards 6 h/d at 1 m and 8 h/d in contact (factor 6.25) → fr = 0.25, fn = 2.3333. Non-carer adult: 6 h/d at 1 m with no shared rest → fr = fn = 0.25. Expected values rounded to 2 decimals.":
-      "Casos de referencia del libro v6 (hoja Comprobación B): restricción de 3 d desde el alta, 6 ciclos, fase rápida que termina a las 24 h. Persona cuidadora: 6 h/d a 1 m durante la restricción; después, 6 h/d a 1 m y 8 h/d en contacto (factor 6,25) → fr = 0,25, fn = 2,3333. Adulto no cuidador: 6 h/d a 1 m sin descanso compartido → fr = fn = 0,25. Valores esperados redondeados a 2 decimales.",
+    "Reference cases computed with the author's original spreadsheet: restriction 3 d from discharge, 6 cycles, fast phase ending at 24 h. Carer: 6 h/d at 1 m during the restriction; afterwards 6 h/d at 1 m and 8 h/d in contact (factor 6.25) → fr = 0.25, fn = 2.3333. Non-carer adult: 6 h/d at 1 m with no shared rest → fr = fn = 0.25. Expected values rounded to 2 decimals.":
+      "Casos de referencia calculados con la hoja de cálculo original del autor: restricción de 3 d desde el alta, 6 ciclos, fase rápida que termina a las 24 h. Persona cuidadora: 6 h/d a 1 m durante la restricción; después, 6 h/d a 1 m y 8 h/d en contacto (factor 6,25) → fr = 0,25, fn = 2,3333. Adulto no cuidador: 6 h/d a 1 m sin descanso compartido → fr = fn = 0,25. Valores esperados redondeados a 2 decimales.",
     "I-131 (NaI) — thyroid remnant ablation, Foro (2011)":
       "I-131 (NaI) — ablación de restos tiroideos, Foro (2011)",
     "I-131 (NaI) — thyroid cancer metastases, Foro (2011)":
       "I-131 (NaI) — metástasis de cáncer de tiroides, Foro (2011)",
     "I-131 (NaI) — hyperthyroidism, Foro (2011)":
       "I-131 (NaI) — hipertiroidismo, Foro (2011)",
-    "Source-workbook default. T fast 16.4 h is consistent with the mean dose rates at 1 m of Demir et al. (2016) Table 1, 15 µSv/h at 6 h and 7 µSv/h at 24 h: 18 h · ln 2 / ln(15/7) = 16.37 h. T slow 40.5 h: mean effective half-life after 48 h, Kurth et al. (2018) (cohort range 21.7–85.7 h). 6 cycles as in Gayol Vilorio et al. (2025).":
-      "Valor por defecto del libro de origen. T rápida 16,4 h es coherente con las tasas de dosis medias a 1 m de Demir et al. (2016), tabla 1, 15 µSv/h a las 6 h y 7 µSv/h a las 24 h: 18 h · ln 2 / ln(15/7) = 16,37 h. T lenta 40,5 h: periodo efectivo medio después de 48 h, Kurth et al. (2018) (intervalo de la cohorte 21,7–85,7 h). 6 ciclos, como en Gayol Vilorio et al. (2025).",
+    "Default preset. T fast 16.4 h is consistent with the mean dose rates at 1 m of Demir et al. (2016) Table 1, 15 µSv/h at 6 h and 7 µSv/h at 24 h: 18 h · ln 2 / ln(15/7) = 16.37 h. T slow 40.5 h: mean effective half-life after 48 h, Kurth et al. (2018) (cohort range 21.7–85.7 h). 6 cycles as in Gayol Vilorio et al. (2025).":
+      "Cinética por defecto. T rápida 16,4 h es coherente con las tasas de dosis medias a 1 m de Demir et al. (2016), tabla 1, 15 µSv/h a las 6 h y 7 µSv/h a las 24 h: 18 h · ln 2 / ln(15/7) = 16,37 h. T lenta 40,5 h: periodo efectivo medio después de 48 h, Kurth et al. (2018) (intervalo de la cohorte 21,7–85,7 h). 6 ciclos, como en Gayol Vilorio et al. (2025).",
     "Gayol Vilorio et al. (2025), Tables 4 and 6: Tef,1 = 22 h (median of the early mono-exponential fits, 12–24 h post-infusion, Table 2), Tef,2 = 42 h (median of the late values), 6 cycles; fast phase until 24 h post-infusion.":
       "Gayol Vilorio et al. (2025), tablas 4 y 6: Tef,1 = 22 h (mediana de los ajustes monoexponenciales tempranos, 12–24 h tras la infusión, tabla 2), Tef,2 = 42 h (mediana de los valores tardíos), 6 ciclos; fase rápida hasta 24 h tras la infusión.",
     "Gayol Vilorio et al. (2025), Tables 3 and 5: Tef,1 = 25 h (median of the early mono-exponential fits, Table 2), Tef,2 = 55 h (median of the late values), 4 cycles; fast phase until 24 h post-infusion.":
@@ -1263,14 +1296,14 @@ const I18N_ES = {
       "Foro CSN-SEPR-SEFM (2011), anexo 3.C, tabla 3.C 2: «T.ef. (vida media efectiva) = 7,2 días», calculado con la ecuación del anexo 3.B, en la que Tef = 1/λ: periodo efectivo 7,2 d · ln 2 = 119,8 h. Una sola exponencial desde el alta; la captación tiroidea alcanza su máximo a las 24–48 h, por lo que no se modela la excreción urinaria temprana de un paciente ambulatorio. Habitualmente ambulatorio; el Foro da esta tabla por actividad administrada (185–800 MBq), la app necesita la tasa medida a 1 m.",
     "Dose rate at 1 m — Demir et al. (2016), Table 1, 23 patients, 7.4 GBq: 15 ± 4 µSv/h at 6 h and 7 ± 2 µSv/h at 24 h after infusion. Table 1 does not name the statistic after ±; the paper uses mean ± SD in its Table 3.":
       "Tasa de dosis a 1 m — Demir et al. (2016), tabla 1, 23 pacientes, 7,4 GBq: 15 ± 4 µSv/h a las 6 h y 7 ± 2 µSv/h a las 24 h tras la infusión. La tabla 1 no indica el estadístico tras ±; el artículo usa media ± DE en su tabla 3.",
-    "T fast: no dispersion published; 16.4 h is derived from the mean rates. With mean + 2 SD at both times (23 and 11 µSv/h): 18 h · ln 2 / ln(23/11) = 16.9 h, the «high» case of the source workbook v6.":
-      "T rápida: no se publica dispersión; 16,4 h se deduce de las tasas medias. Con media + 2 DE en ambos momentos (23 y 11 µSv/h): 18 h · ln 2 / ln(23/11) = 16,9 h, el caso «alto» del libro de origen v6.",
-    "T slow — Kurth et al. (2018), Table 3, measurement at 48 h: 40.5 ± 15.8 h (mean ± SD), minimum 21.7 h, maximum 85.7 h; the maximum is the T slow of the «high» case of workbook v6. The abstract prints «40.5 ± 9.6 h»: 9.6 h is the SD of the 72 h column (38.4 ± 9.6 h, 25.7–74.5 h, 25 patients), a discrepancy between abstract and table; Table 3 is followed. At 24 h: 26.0 ± 12.4 h (11.0–73.5 h).":
-      "T lenta — Kurth et al. (2018), tabla 3, medida a las 48 h: 40,5 ± 15,8 h (media ± DE), mínimo 21,7 h, máximo 85,7 h; el máximo es la T lenta del caso «alto» del libro v6. El resumen imprime «40.5 ± 9.6 h»: 9,6 h es la DE de la columna de 72 h (38,4 ± 9,6 h, 25,7–74,5 h, 25 pacientes), discrepancia entre el resumen y la tabla; se sigue la tabla 3. A las 24 h: 26,0 ± 12,4 h (11,0–73,5 h).",
+    "T fast: no dispersion published; 16.4 h is derived from the mean rates. With mean + 2 SD at both times (23 and 11 µSv/h): 18 h · ln 2 / ln(23/11) = 16.9 h, the «high» case among the self-check reference cases.":
+      "T rápida: no se publica dispersión; 16,4 h se deduce de las tasas medias. Con media + 2 DE en ambos momentos (23 y 11 µSv/h): 18 h · ln 2 / ln(23/11) = 16,9 h, el caso «alto» de los casos de referencia de la autocomprobación.",
+    "T slow — Kurth et al. (2018), Table 3, measurement at 48 h: 40.5 ± 15.8 h (mean ± SD), minimum 21.7 h, maximum 85.7 h (the T slow of that «high» reference case). The abstract prints «40.5 ± 9.6 h»: 9.6 h is the SD of the 72 h column (38.4 ± 9.6 h, 25.7–74.5 h, 25 patients), a discrepancy between abstract and table; Table 3 is followed. At 24 h: 26.0 ± 12.4 h (11.0–73.5 h).":
+      "T lenta — Kurth et al. (2018), tabla 3, medida a las 48 h: 40,5 ± 15,8 h (media ± DE), mínimo 21,7 h, máximo 85,7 h (la T lenta de ese caso de referencia «alto»). El resumen imprime «40.5 ± 9.6 h»: 9,6 h es la DE de la columna de 72 h (38,4 ± 9,6 h, 25,7–74,5 h, 25 pacientes), discrepancia entre el resumen y la tabla; se sigue la tabla 3. A las 24 h: 26,0 ± 12,4 h (11,0–73,5 h).",
     "No SD published: Tef,1 = 22 h is the median of two literature values, Gayol Vilorio et al. (2025), Table 2: early mono-exponential 18.5 h (Parlak) and 26 h (Kurth).":
       "No se publica DE: Tef,1 = 22 h es la mediana de dos valores de la literatura, Gayol Vilorio et al. (2025), tabla 2: monoexponencial temprano 18,5 h (Parlak) y 26 h (Kurth).",
-    "Tef,2 = 42 h is the median of seven literature values from five studies (late mono-exponential or slow bi-exponential), spread 38.4–54 h. Table 2 labels the 26 and 38.4 h of Kurth as medians; in Kurth et al. (2018), Table 3, they are means (24 h and 72 h). For the cohort SD see the workbook preset.":
-      "Tef,2 = 42 h es la mediana de siete valores de la literatura de cinco estudios (monoexponencial tardío o componente lenta biexponencial), con dispersión 38,4–54 h. La tabla 2 presenta los 26 y 38,4 h de Kurth como medianas; en Kurth et al. (2018), tabla 3, son medias (24 h y 72 h). Para la DE de la cohorte, véase la cinética del libro de trabajo.",
+    "Tef,2 = 42 h is the median of seven literature values from five studies (late mono-exponential or slow bi-exponential), spread 38.4–54 h. Table 2 labels the 26 and 38.4 h of Kurth as medians; in Kurth et al. (2018), Table 3, they are means (24 h and 72 h). For the cohort SD see the Demir (2016) / Kurth (2018) preset.":
+      "Tef,2 = 42 h es la mediana de siete valores de la literatura de cinco estudios (monoexponencial tardío o componente lenta biexponencial), con dispersión 38,4–54 h. La tabla 2 presenta los 26 y 38,4 h de Kurth como medianas; en Kurth et al. (2018), tabla 3, son medias (24 h y 72 h). Para la DE de la cohorte, véase la cinética Demir (2016) / Kurth (2018).",
     "No SD published: Tef,1 = 25 h is the only early value in Gayol Vilorio et al. (2025), Table 2 (Monserrat); its cohort spread is given under the Monserrat preset.":
       "No se publica DE: Tef,1 = 25 h es el único valor temprano de Gayol Vilorio et al. (2025), tabla 2 (Monserrat); su dispersión en la cohorte figura en la cinética de Monserrat.",
     "Tef,2 = 55 h is the median of five literature values (late mono-exponential or slow bi-exponential), spread 49.5–58 h.":
@@ -1728,6 +1761,7 @@ const I18N_ES = {
     [/^mSv\/y — (at least )?(.+) % of the criterion((?: — EXCEEDS IT)?)((?: — PARTIAL SUM, missing: .+)?)$/, (m, al, p, ex, part) =>
       `mSv/a — ${al ? 'al menos el ' : ''}${p} % del criterio${ex ? ' — LO SUPERA' : ''}${part ? part.replace(' — PARTIAL SUM, missing: ', ' — SUMA PARCIAL, falta: ').replace(/ external$/, ' externa') : ''}`],
     [/^Criterion: (.+) mSv\/y, user-defined — the app attributes no regulatory basis to it\.$/, 'Criterio: $1 mSv/a, definido por el usuario; la app no le atribuye base reglamentaria.'],
+    [/^Sc\. 2 PHITS \((L10|L45)\)$/, 'Esc. 2 PHITS ($1)'],
     [/^Sc\. 1: ([\s\S]+)$/, m => m.replace(/Sc\. /g, 'Esc. ').replace('Sc. 2: no coefficient', 'Esc. 2: sin coeficiente').replace('Esc. 2: no coefficient', 'Esc. 2: sin coeficiente').replace('one-sided model envelope', 'envolvente unilateral del modelo')],
     [/^(PHITS Scenario [12] report[\s\S]*)$/, m => esReport(m)],
     [/^This model \((L10|L45)\)$/, 'Este modelo ($1)'],

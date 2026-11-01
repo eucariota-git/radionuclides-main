@@ -103,6 +103,10 @@
 
 /* ---- Reset & Base ---- */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* Lists in page content: the reset removed their padding and left the bullets
+   hanging outside the text column. Zero specificity, so any list class
+   (.ref-list, .nuclide-dropdown, .history-list, .about-content) still wins. */
+:where(ul, ol) { padding-left: 1.2rem; }
 
 html { font-size: 15px; scroll-behavior: smooth; }
 

@@ -806,7 +806,7 @@ console.log('TEST 13: Effluent Scenarios 1 and 2 (CALC.sewerInspectorScenario1, 
   // in-hospital fraction leaves through the facility (Scenario 1 and 2); the rest
   // is excreted at home and reaches the STP × catchment (Scenario 2 only).
   // Defaults: Lu-177 75 × 6 × 7.4 GBq, f_hosp 0.45; I-131 50 × 1 × 0.8 GBq (test input), f_hosp 0.5;
-  // catchment 40 %; no nuclide in decay tanks. Expected activities computed by hand;
+  // catchment 100 % (v1.23.0; was 40 %); no nuclide in decay tanks. Expected activities computed by hand;
   // doses = activity × the per-GBq factors verified above (Sc. 2 FD unchanged).
   test('app Sc.1 Lu-177 leaves hospital = 3330 × 0.45 = 1498.5 GBq/y', row(l45.s1, 'Lu-177').A_GBq_y, 1498.5, 1e-9);
   test('app Sc.1 Lu-177 FD = 0.0114651 µSv/GBq', row(l45.s1, 'Lu-177').per_GBq.FD_uSv, 0.01146505198, 1e-6);
@@ -818,18 +818,21 @@ console.log('TEST 13: Effluent Scenarios 1 and 2 (CALC.sewerInspectorScenario1, 
   test('app Sc.1 Lu-177m E = 5.10221E-5 mSv/y', row(l45.s1, 'Lu-177m').E_mSv_y, 5.102213441e-05, 1e-6);
   test('app Sc.1 F-18 FD equals the workbook factor (0.333591 µSv/GBq)', row(l45.s1, 'F-18').per_GBq.FD_uSv, 0.333590987210136, 1e-5);   // app transit 0.2 h vs workbook 0.008333 d
   test('app Sc.1 Tc-99m default source term is zero (no workbook default)', row(l45.s1, 'Tc-99m').E_mSv_y, 0, 0);
-  test('app Sc.2 Lu-177 to STP = 1498.5 + 3330 × 0.55 × 0.40 = 2231.1 GBq/y', row(l45.s2, 'Lu-177').A_GBq_y, 2231.1, 1e-9);
+  test('app Sc.2 Lu-177 to STP = 1498.5 + 3330 × 0.55 × 1 = 3330 GBq/y', row(l45.s2, 'Lu-177').A_GBq_y, 3330, 1e-9);
   // Lu-177 T½ = DDEP 6.6443 d since v1.10.2 (was an unsourced 6.6421 d): the 3-d
   // transit decay factor rises by exp[ln2·3·(1/6.6421 − 1/6.6443)] = 1.000105, so
   // the three Lu-177 Scenario 2 anchors below are the former ones × 1.000105.
+  // Catchment 40 → 100 % (v1.23.0): E = activity to STP × the unchanged FD
+  // (L45 Lu-177 3330 × 1.064903182, I-131 40 × 13.09901400 µSv/GBq; L10 the
+  // former E × 3330/2231.1 and × 40/28).
   test('app Sc.2 L45 Lu-177 FD = 1.06490 µSv/GBq', row(l45.s2, 'Lu-177').per_GBq.FD_uSv, 1.064903182, 1e-6);
-  test('app Sc.2 L45 Lu-177 E = 2.37591 mSv/y', row(l45.s2, 'Lu-177').E_mSv_y, 2.375905489, 1e-6);
-  test('app Sc.2 I-131 to STP = 20 + 40 × 0.5 × 0.40 = 28 GBq/y', row(l45.s2, 'I-131').A_GBq_y, 28, 1e-9);
+  test('app Sc.2 L45 Lu-177 E = 3.54613 mSv/y', row(l45.s2, 'Lu-177').E_mSv_y, 3.546127596, 1e-6);
+  test('app Sc.2 I-131 to STP = 20 + 40 × 0.5 × 1 = 40 GBq/y', row(l45.s2, 'I-131').A_GBq_y, 40, 1e-9);
   test('app Sc.2 L45 I-131 DF = 0.771688', row(l45.s2, 'I-131').DF, 0.7716876942, 1e-6);
   test('app Sc.2 L45 I-131 FD = 13.0990 µSv/GBq (unchanged)', row(l45.s2, 'I-131').per_GBq.FD_uSv, 13.09901400, 1e-6);
-  test('app Sc.2 L45 I-131 E = 0.366772 mSv/y', row(l45.s2, 'I-131').E_mSv_y, 0.366772392, 1e-6);
-  test('app Sc.2 L10 Lu-177 E = 1.63181 mSv/y', row(l10.s2, 'Lu-177').E_mSv_y, 1.631806306, 1e-6);
-  test('app Sc.2 L10 I-131 E = 0.259874 mSv/y', row(l10.s2, 'I-131').E_mSv_y, 0.2598737855, 1e-6);
+  test('app Sc.2 L45 I-131 E = 0.523961 mSv/y', row(l45.s2, 'I-131').E_mSv_y, 0.523960560, 1e-6);
+  test('app Sc.2 L10 Lu-177 E = 2.43553 mSv/y', row(l10.s2, 'Lu-177').E_mSv_y, 2.435531800, 1e-6);
+  test('app Sc.2 L10 I-131 E = 0.371248 mSv/y', row(l10.s2, 'I-131').E_mSv_y, 0.371248265, 1e-6);
   test('app Sc.1 total is the sum of its rows', l45.s1.total_mSv_y,
     l45.s1.rows.reduce((a, r) => a + r.E_mSv_y, 0), 1e-12);
   // Decay tanks: Lu-177 and I-131 controlled share the 1 GBq/y discharge in
@@ -843,7 +846,7 @@ console.log('TEST 13: Effluent Scenarios 1 and 2 (CALC.sewerInspectorScenario1, 
     test('tanks: I-131 leaves hospital = 1 × 20 / 1518.5 GBq/y', row(o.s1, 'I-131').A_GBq_y, 20 / 1518.5, 1e-12);
     test('tanks: controlled discharges add up to the 1 GBq/y limit',
       row(o.s1, 'Lu-177').A_GBq_y + row(o.s1, 'I-131').A_GBq_y, 1, 1e-12);
-    test('tanks: Lu-177 to STP = tank share + home part 732.6 GBq/y', row(o.s2, 'Lu-177').A_GBq_y, 1498.5 / 1518.5 + 732.6, 1e-12);
+    test('tanks: Lu-177 to STP = tank share + home part 1831.5 GBq/y', row(o.s2, 'Lu-177').A_GBq_y, 1498.5 / 1518.5 + 1831.5, 1e-12);
     // only I-131 controlled, below the limit after scaling patients down: no decay credit
     inp.nuclides.forEach(n => { n.controlled = n.id === 'I-131'; if (n.id === 'I-131') n.patients_per_y = 2; });
     const o2 = EFF.evaluate(inp);
@@ -894,9 +897,9 @@ console.log('TEST 13: Effluent Scenarios 1 and 2 (CALC.sewerInspectorScenario1, 
   };
   {
     const inp = defaults('L45');
-    inp.s2.catchment_pct = 20;
-    test('Sc.2: catchment 40 → 20 % halves only the home part (Lu-177 1498.5 + 366.3 GBq/y)',
-      row(EFF.evaluate(inp).s2, 'Lu-177').A_GBq_y, 1498.5 + 3330 * 0.55 * 0.2, 1e-12);
+    inp.s2.catchment_pct = 50;
+    test('Sc.2: catchment 100 → 50 % halves only the home part (Lu-177 1498.5 + 915.75 GBq/y)',
+      row(EFF.evaluate(inp).s2, 'Lu-177').A_GBq_y, 1498.5 + 3330 * 0.55 * 0.5, 1e-12);
   }
   test('Sc.1: catchment has no effect', ratio('s1', 's2', 'catchment_pct', 0.5), 1, 1e-12);
   test('Sc.2: wet sludge mass × 2 halves the total', ratio('s2', 's2', 'wet_sludge_t_per_y', 2), 0.5, 1e-9);

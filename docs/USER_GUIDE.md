@@ -90,12 +90,12 @@ No installation or authentication is needed:
 3. **Common**: breathing rate, annual tank discharge and a **user-defined** dose criterion (no regulatory basis is attributed to it).
 4. Results update as you type: dose per nuclide and per scenario (**Show intermediate values** adds the decay factor, the concentrations and the dose per GBq), with the coefficients used and an indicative cross-check against NUREG/CR-5814 and IAEA SRS-19 factors.
 
-**Key limits**: screening model (annual discharge over annual water volume or sludge production, transit decay only); the external coefficients are PHITS calculations by José Ramón Sendón del Río, the author, valid only for their model geometries, photon-only in Scenario 1, and none covers the infinite slab of NUREG/CR-5814; F-18 has no Scenario 2 external coefficient, so that total is a partial sum (≥); I-131 has no default administered activity (the reference workbook's 0.8 GBq was the activity at discharge): enter the facility's value. **Not a complete discharge assessment**: the IS-28 II.A.4 conditions and mixture clearance are evaluated separately.
+**Key limits**: screening model (annual discharge over annual water volume or sludge production, transit decay only); the external coefficients are PHITS calculations by José Ramón Sendón del Río, the author, valid only for their model geometries, photon-only in Scenario 1, and none covers the infinite slab of NUREG/CR-5814; F-18 has no Scenario 2 external coefficient, so that total is a partial sum (≥); I-131 has no default administered activity: enter the facility's value. **Not a complete discharge assessment**: the IS-28 II.A.4 conditions and mixture clearance are evaluated separately.
 
 **Example** (defaults; Lu-177, and I-131 included with 0.8 GBq per treatment entered as an illustrative value; no decay tanks; 45 × 45 × 3 m geometry):
 - Scenario 1: Lu-177 1498.5 GBq/y → 0.0172 mSv/y; I-131 20 GBq/y → 0.0027 mSv/y; total 0.0199 mSv/y
-- Scenario 2 (40 % catchment): Lu-177 2231.1 GBq/y → 2.38 mSv/y; I-131 28 GBq/y → 0.367 mSv/y; total 2.74 mSv/y
-- With both nuclides in decay tanks (1 GBq/y in total), Scenario 2 falls to 0.886 mSv/y
+- Scenario 2 (100 % catchment, the default): Lu-177 3330 GBq/y → 3.55 mSv/y; I-131 40 GBq/y → 0.524 mSv/y; total 4.07 mSv/y
+- With both nuclides in decay tanks (1 GBq/y in total), Scenario 2 falls to 2.21 mSv/y
 
 ---
 
@@ -190,7 +190,7 @@ Without a saved choice the app follows the light or dark setting of the device. 
 
 ## Author
 
-**José Ramón Sendón del Río** — application and code; compilation, recalculation and verification of the data (curated database, regulatory tables, ICRP 107 index); the PHITS external dose-rate coefficients of the Effluent page; the caregiver workbook ported in Caregiver. The PHITS reports and reference workbooks are available from the author on request.
+**José Ramón Sendón del Río** — application and code; compilation, recalculation and verification of the data (curated database, regulatory tables, ICRP 107 index); the PHITS external dose-rate coefficients of the Effluent page; the caregiver workbook ported in Caregiver. The PHITS reports and the caregiver workbook are available from the author on request.
 
 ## Support & Feedback
 
