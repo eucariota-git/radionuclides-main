@@ -320,7 +320,7 @@ async function main() {
   const swVersion = (swJs.match(/CACHE_VERSION = '([^']+)'/) || [])[1];
   const appBuild = (read('js/utils.js').match(/APP_BUILD = '([^']+)'/) || [])[1];
   check('service-worker cache version was bumped for this change',
-    swVersion === 'nm-planner-v75');
+    swVersion === 'nm-planner-v76');
   check('report build id (UTILS.APP_BUILD) matches the service-worker cache version',
     Boolean(appBuild) && appBuild === swVersion);
   check('icons exist only in their organized asset directory',
@@ -1730,6 +1730,17 @@ async function main() {
       /Own criterion \(mSv per treatment\)/.test(caregiverHtml) && !/Manual criterion/.test(caregiverHtml) && cg.meta.version === '1.15');
     check('Properties: «no Cornejo et al. (2015) comparison value» instead of «no published comparison»',
       /no Cornejo et al\. \(2015\) comparison value; calculated in the same way/.test(indexHtml) && !/no published comparison;/.test(indexHtml));
+  }
+
+  console.log('Test 38: acceptance sheet reduced to the independent checks (v1.23.1)');
+  {
+    const acc = read('docs/ACCEPTANCE_TEST.md');
+    const rowsA = acc.match(/^\| A\d+ \|[^\n]*/gm) || [];
+    check('9 calculation cases, each with an independent check (published table or hand calculation); 5 checks; automated evidence names the suites and browser-smoke',
+      rowsA.length === 9 && (acc.match(/^\| B\d+ \|/gm) || []).length === 5 &&
+      rowsA.every(r => /Cornejo|Oumano|NCRP 155|RD 1217\/2024|RD 783\/2001|Foro CSN-SEPR-SEFM|A mano/.test(r)) &&
+      /node tools\/browser-smoke\.js/.test(acc) && /validate-constants\.js/.test(acc) &&
+      /Desviación \+8 %: revisar y justificar/.test(acc) && !/(?:del|el) servicio\b|criterios del área/.test(acc));
   }
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);
