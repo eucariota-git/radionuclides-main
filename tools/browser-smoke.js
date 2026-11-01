@@ -293,6 +293,17 @@ async function main() {
         check('effluent: ES — catalog decimals follow the separator (1.2 g/cm³ with the point, 1,2 g/cm³ with the comma)',
           /\(1\.2 g\/cm³\)/.test(csPoint) && !/\d,\d/.test(csPoint.replace(/«[^»]*»/g, '')) && /\(1,2 g\/cm³\)/.test(csComma), csPoint.slice(0, 120));
         await ev(`document.getElementById('langToggle').click(); localStorage.removeItem('nm_decimal')`); await sleep(300);
+        // v1.23.0 (text audit): an out-of-range parameter names the visible field and its range, marks it, and is translated
+        const setField = (id, v) => ev(`(() => { const e = document.getElementById('${id}'); e.value = '${v}'; e.dispatchEvent(new Event('input', { bubbles: true })); })()`);
+        await setField('s1_respirable_fraction', '1.5'); await sleep(300);
+        const rangeErr = await ev(`({ msg: document.getElementById('calcError').textContent, inv: document.getElementById('s1_respirable_fraction').getAttribute('aria-invalid') })`);
+        await ev(`document.getElementById('langToggle').click()`); await sleep(300);
+        const rangeErrEs = await text('#calcError');
+        await ev(`document.getElementById('langToggle').click()`); await sleep(200);
+        await setField('s1_respirable_fraction', '0.2'); await sleep(300);
+        check('effluent: respirable fraction 1.5 → «Scenario 1 — Respirable fraction: enter a value between 0 and 1.», field marked, Spanish message',
+          /^Scenario 1 — Respirable fraction: enter a value between 0 and 1\.$/.test(rangeErr.msg.trim()) && rangeErr.inv === 'true' &&
+          /^Escenario 1 — Fracción respirable: introduzca un valor entre 0 y 1\.$/.test(rangeErrEs.trim()), JSON.stringify(rangeErr) + ' | ' + rangeErrEs);
         check('effluent: ES — «Coefficients used» notes in Spanish (no «All nuclides», «Half-life:», «report of»)',
           /Todos los nucleidos/.test(cs) && /Periodo de semidesintegración:/.test(cs) && !/All nuclides|Half-life:|report of|Effective dose rate/.test(cs), cs.slice(0, 200));
       }
@@ -598,7 +609,7 @@ async function main() {
       await ev(`document.getElementById('btnPrintDose').click()`); await sleep(100);
       const drep = await ev(`(document.getElementById('printReport') || {}).innerText || ''`);
       check('dose report: contains the indicative limit screening and the distance once ("0.3 m")',
-        /Annual dose limit comparison/.test(drep) && /of 20 mSv\/y/.test(drep) && /Distance\s*0\.3 m\s*Shielding/.test(drep) && !/0\.3 m \(0\.3 m\)/.test(drep), drep.slice(0, 200));
+        /Dose limit comparison/.test(drep) && /of 20 mSv\/y/.test(drep) && /Distance\s*0\.3 m\s*Shielding/.test(drep) && !/0\.3 m \(0\.3 m\)/.test(drep), drep.slice(0, 200));
       // Dose: an ICRP 107 nuclide calculates without a confirm() dialog and keeps a visible warning
       await send('Page.addScriptToEvaluateOnNewDocument', { source: 'window.confirm=()=>{window.__confirmed=true;return true;};' });
       await open('dose.html?id=Ge-68', 1280);
@@ -715,7 +726,7 @@ async function main() {
       await ev(`window.__csvBlob = null; document.getElementById('btnExportDoseCsv').click()`); await sleep(100);
       const csv = await ev(`window.__csvBlob ? window.__csvBlob.text() : ''`);
       check('D-02: range warning with comma on screen (99,9 %), with point in the CSV (99.9 %, no "d,d")',
-        /99,9%/.test(warnScreen) && /OUT OF VALIDATED RANGE — 99\.9%/.test(csv) && !/\d,\d/.test(csv), (warnScreen.slice(0, 80) + ' | ' + (csv.match(/OUT OF[^"]{0,80}/) || [''])[0]));
+        /99,9%/.test(warnScreen) && /OUT OF TABULATED RANGE — 99\.9%/.test(csv) && !/\d,\d/.test(csv), (warnScreen.slice(0, 80) + ' | ' + (csv.match(/OUT OF[^"]{0,80}/) || [''])[0]));
       // D-03 and material densities: no option keeps the other separator
       for (const pg of ['decay.html?id=Lu-177', 'dose.html?id=Lu-177', 'effluent.html', 'caregiver.html']) {
         await open(pg, 1280);
@@ -795,6 +806,10 @@ async function main() {
       check('decay Ba-133: «CSN value» criteria a) and b) from the CSN Resolution of 16 June 2025, no «column 2/3»',
         /a\) Total activity — CSN value/.test(ex) && /b\) Moderate quantity — CSN value/.test(ex) && /16 June 2025/.test(ex) &&
         !/column [23]/.test(ex) && /1 ?× ?10⁶ Bq|1E\+?6 Bq|1,?000,?000 Bq/.test(ex), ex.slice(0, 300));
+      // v1.23.0 (text audit): the heading no longer says «Table B»; the values are named per case
+      const exHead = await text('#exemptionSection h3');
+      check('decay Ba-133: exemption heading «Exemption assessment — RD 1217/2024» (no «Table B»); «Not in Table B» stated',
+        /Exemption assessment — RD 1217\/2024$/.test(exHead.trim()) && !/Table B/.test(exHead) && /Not in Table B/.test(ex), exHead);
       await pageChecks('decay Ba-133 CSN value');
       await ev(`document.getElementById('langToggle').click()`); await sleep(400);
       const exEs = (await text('#exemptionContent')).replace(/\s+/g, ' ');

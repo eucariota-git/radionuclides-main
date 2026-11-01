@@ -109,7 +109,7 @@
         </div>
       </div>
       <div class="form-group">
-        <label class="form-label" for="vialWeight">Mass of material being assessed <span class="text-muted">(optional)</span> <span class="hint-tip" tabindex="0" role="img" aria-label="Mass that contains the entered activity (state whether it includes the container). Enables the Table A1 clearance and Table B (≤ 1000 kg) checks." data-tooltip="Mass that contains the entered activity (state whether it includes the container). Enables the Table A1 clearance and Table B (≤ 1000 kg) checks."><span class="ico ico-info" aria-hidden="true"></span></span></label>
+        <label class="form-label" for="vialWeight">Mass of material being assessed <span class="text-muted">(optional)</span> <span class="hint-tip" tabindex="0" role="img" aria-label="Mass that contains the entered activity (state whether it includes the container). Needed for the activity-per-mass criteria: Table A1 clearance and Table B column 2; the total-activity criterion needs no mass." data-tooltip="Mass that contains the entered activity (state whether it includes the container). Needed for the activity-per-mass criteria: Table A1 clearance and Table B column 2; the total-activity criterion needs no mass."><span class="ico ico-info" aria-hidden="true"></span></span></label>
         <div class="d-flex gap-1">
           <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="vialWeight" placeholder="e.g. 10" title="Mass of material being assessed">
           <select class="form-select form-select-medium" id="vialWeightUnit" title="Unit" aria-label="Mass unit">
@@ -145,7 +145,7 @@
     <!-- Exemption assessment (Table B) -->
     <div id="exemptionSection" class="hidden">
       <hr class="divider">
-      <h3 class="card-title"><span class="ico ico-scale" aria-hidden="true"></span> Exemption assessment &mdash; RD 1217/2024, Annex IV Table B</h3>
+      <h3 class="card-title"><span class="ico ico-scale" aria-hidden="true"></span> Exemption assessment &mdash; RD 1217/2024</h3>
       <div id="exemptionContent"></div>
     </div>
 
@@ -501,7 +501,7 @@
       return fail('Reference and target dates must be valid.', 'targetDateTime');
     }
     if (Number.isFinite(t_h) && t_h < 0) {
-      return fail('Target date must be after reference date.', 'targetDateTime');
+      return fail('Target date must not be before the reference date.', 'targetDateTime');
     }
 
     // Validate ALL inputs before rendering anything: the material mass used to
@@ -1038,7 +1038,10 @@
       if (ex.status === 'not_tabulated') {
         html = `<div class="alert alert-info">${UTILS.escapeHtml(ex.text)}</div>`;
       } else {
-        if (ex.status === 'csn') html = `<div class="form-hint mb-1">Not in Table B. ${UTILS.escapeHtml(ex.text)}</div>`;
+        // Which values are shown: Table B, or the CSN values (never presented as Table B)
+        html = ex.status === 'csn'
+          ? `<div class="form-hint mb-1">Not in Table B. ${UTILS.escapeHtml(ex.text)}</div>`
+          : '<div class="form-hint mb-1">Values of Annex IV Table B (Annex II A.1 a and b).</div>';
         const A0_Bq = A0_MBq * 1e6, At_Bq = At_MBq * 1e6;
         html += ex.rows.map(row => {
           const tag = row.note ? ` (${UTILS.escapeHtml(row.note)})` : '';
@@ -1179,7 +1182,7 @@
       if (ex.status === 'not_tabulated') {
         rows.push(['Table B', `${ex.id}: ${ex.text}`]);
       } else {
-        if (ex.status === 'csn') rows.push(['Table B', `${ex.id}: not in Table B. ${ex.text}`]);
+        if (ex.status === 'csn') rows.push(['CSN values', `${ex.id}: not in Table B. ${ex.text}`]);
         for (const row of ex.rows) {
           const tag = row.note ? ` (${row.note})` : '';
           const A0_Bq = r.A0_MBq * 1e6, At_Bq = r.At_MBq * 1e6;
@@ -1194,7 +1197,9 @@
           if (row.progeny.length || row.source_inconsistency) rows.push(['Note', [row.note_text, row.progeny.length ? `progeny ${row.progeny.join(', ')}` : '', row.source_inconsistency].filter(Boolean).join(' ')]);
         }
       }
-      sections.push({ heading: 'Exemption assessment — RD 1217/2024 Annex IV Table B (Annex II A.1 a and b)', rows });
+      sections.push({ heading: ex.status === 'csn'
+        ? 'Exemption assessment — RD 1217/2024, CSN values (Annex II A.3.a)'
+        : 'Exemption assessment — RD 1217/2024 Annex IV Table B (Annex II A.1 a and b)', rows });
       notes.push(ex.status === 'csn'
         ? 'Exemption: the CSN values (Annex II A.3.a) of a) total activity and b) activity per unit mass for ≤ 1000 kg are separate criteria, as in Table B, shown for one nuclide; sums over several sources or mixtures are not evaluated.'
         : 'Exemption: Annex II A.1 criteria a) total activity (column 3) and b) activity per unit mass for ≤ 1000 kg (column 2) are separate criteria, shown for one nuclide; sums over several sources or mixtures are not evaluated.');

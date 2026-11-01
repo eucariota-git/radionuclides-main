@@ -116,16 +116,17 @@
         </div>
       </div>
       <div class="form-group">
-        <label class="form-label" for="patientTx">Patient transmission <span class="text-muted">(optional)</span> <span class="hint-tip" tabindex="0" role="img" aria-label="Empty = no patient attenuation. No default: derive it for your geometry from a measurement or a published study." data-tooltip="Empty = no patient attenuation. No default: derive it for your geometry from a measurement or a published study."><span class="ico ico-info" aria-hidden="true"></span></span></label>
+        <label class="form-label" for="patientTx">Transmission through the patient <span class="text-muted">(optional)</span> <span class="hint-tip" tabindex="0" role="img" aria-label="Empty = no patient attenuation. No default: derive it for your geometry from a measurement or a published study." data-tooltip="Empty = no patient attenuation. No default: derive it for your geometry from a measurement or a published study."><span class="ico ico-info" aria-hidden="true"></span></span></label>
         <div class="d-flex gap-1">
-          <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="patientTx" value="" placeholder="none" title="Patient transmission (%)">
+          <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="patientTx" value="" placeholder="none" title="Transmission through the patient (%)">
           <span class="percent-symbol">%</span>
         </div>
       </div>
     </div>
     <div id="hvlInfo" class="alert alert-info mt-2 hidden"></div>
     <div id="y90ShieldNote" class="alert alert-warning alert-lg mt-2 hidden">
-      &#9888; For <strong>Y-90</strong> the external dose is a bremsstrahlung estimate and shielding is modelled
+      &#9888; For <strong>Y-90</strong> the external dose is an illustrative bremsstrahlung calculation with
+      <strong>hypothetical</strong> container values (no documented derivation or measurement); direct beta dose is excluded. Shielding is selected
       <strong>only</strong> through the container selector below the results (PMMA / Pb / W). The general
       slab material and thickness above do not apply and are disabled while Y-90 is selected.
     </div>
@@ -220,7 +221,7 @@
     <hr class="divider">
 
     <!-- Dose limit comparison -->
-    <h3 class="card-title">Annual dose limit comparison</h3>
+    <h3 class="card-title">Dose limit comparison</h3>
     <div id="limitComparison"></div>
   </div>
 
@@ -676,7 +677,7 @@
   function shieldingValidity(r) {
     if (r.isY90) return 'Experimental scenario with hypothetical container values (no documented derivation or measurement); validity not established; no regulatory assessment';
     if (r.shieldWarnings && r.shieldWarnings.length)
-      return 'OUT OF VALIDATED RANGE — ' + r.shieldWarnings.join('; ') + '. Treat the shielding result as an extrapolation';
+      return 'OUT OF TABULATED RANGE — ' + r.shieldWarnings.join('; ') + '. Values at the table edge are used; accuracy outside the tables is not established';
     if (r.method === 'archer') return 'Published fit; applicability range not checked by the app';
     if (r.method === 'unshielded') return 'No shielding';
     return 'Within the tabulated attenuation and build-up ranges';
@@ -713,7 +714,7 @@
       (r.isY90 ? 'No limit screening is made for this experimental scenario.' : 'The limit screening in this report is indicative only.'));
     if (r.n._icrp107) notes.push('ICRP 107 extended entry: constants computed automatically, NOT manually validated. Verify against primary sources before regulatory use.');
     if (r.patientTx !== undefined && r.patientTx < 1) notes.push(`Patient attenuation applied: transmission ${UTILS.fmt(r.patientTx * 100)}%.`);
-    if (r.shieldWarnings && r.shieldWarnings.length) notes.push('⚠ Shielding out of validated range: ' + r.shieldWarnings.join('; ') + '.');
+    if (r.shieldWarnings && r.shieldWarnings.length) notes.push('⚠ Shielding out of tabulated range: ' + r.shieldWarnings.join('; ') + '. Values at the table edge are used; accuracy outside the tables is not established.');
 
     // Only the sources the calculation actually used (audit 2026-07-16, H-06;
     // re-audit R-02): a Y-90 report must not cite conversion coefficients, the
@@ -773,12 +774,12 @@
   };
 
   // Indicative screening against the RD 1029/2022 annual limits, for the report;
-  // the same percentages as the "Annual dose limit comparison" block.
+  // the same percentages as the "Dose limit comparison" block.
   function limitScreeningSection(r) {
     const wb = r.H_WB_cum * r.nAdmin, ext = r.H_Ext_cum * r.nAdmin;   // μSv/y
     const pc = (v, lim_mSv) => `${UTILS.fmtRatio(v / 1000 / lim_mSv * 100, 100)} %`;
     const fd = v => CALC.formatDose(v).display;
-    return { heading: 'Annual dose limit comparison — indicative screening only (RD 1029/2022 arts. 11 and 15)', rows: [
+    return { heading: 'Dose limit comparison — indicative screening only (RD 1029/2022 arts. 11 and 15)', rows: [
       ['Effective dose (screened with H*(10))', `${fd(wb)}/y — ${pc(wb, 20)} of 20 mSv/y (exposed workers); ${pc(wb, 1)} of 1 mSv/y (public)`],
       ['Lens of the eye (screened with H*(10); the assessment requires Hp(3) and the dosimetric history)', `${pc(wb, 50)} of 50 mSv in one year; ${pc(wb * 5, 100)} of 100 mSv in 5 consecutive years, assuming this annual dose in each of the 5 years (exposed workers); ${pc(wb, 15)} of 15 mSv/y (public)`],
       [`Skin / extremities (screened with ${r.useH007 ? "H'(0.07)" : "H*(10) — no H'(0.07) constant"})`, `${fd(ext)}/y — ${pc(ext, 500)} of 500 mSv/y (exposed workers, skin and extremities); ${pc(ext, 50)} of 50 mSv/y (public, skin)`],
@@ -908,7 +909,7 @@
     const patientAttenEnabled = parsed !== null;
     if (patientAttenEnabled &&
         (!Number.isFinite(parsed) || parsed <= 0 || parsed > 100)) {
-      return fail('Patient transmission must be > 0 % and ≤ 100 %, or empty for no patient attenuation. There is no default: derive it from measurement or a published study for your geometry.', 'patientTx');
+      return fail('Transmission through the patient must be > 0 % and ≤ 100 %, or empty for no patient attenuation. There is no default: derive it from measurement or a published study for your geometry.', 'patientTx');
     }
     const patientTx = patientAttenEnabled ? parsed / 100 : 1;
 
@@ -1319,7 +1320,7 @@
                       <div class="prop-note">Attenuation factor: ${UTILS.fmt(1/T007)}</div>` : ''}
         </div>
         <div class="prop-item"><div class="prop-key">Thickness / first HVL</div><div class="prop-val">${UTILS.fmt(thick / hvl_cm)}</div><div class="prop-note">Not the number of halvings: use the transmission</div></div>
-        <div class="prop-item"><div class="prop-key">Patient transmission</div><div class="prop-val">${UTILS.fmt(patientTx * 100)}%</div><div class="prop-note">${patientTx < 1 ? 'Patient attenuation applied' : 'No patient attenuation'}</div></div>
+        <div class="prop-item"><div class="prop-key">Transmission through the patient</div><div class="prop-val">${UTILS.fmt(patientTx * 100)}%</div><div class="prop-note">${patientTx < 1 ? 'Patient attenuation applied' : 'No patient attenuation'}</div></div>
       `;
 
       // Out-of-range warning for the narrow-beam models (Archer has its own
@@ -1366,7 +1367,7 @@
         };
         const msgs = buildMsgs();
         if (msgs.length) {
-          warnEl.innerHTML = `<div class="alert alert-warning alert-lg mt-1">&#9888; Out of validated range: ${msgs.join('; ')}. Treat the shielding result as an extrapolation.</div>`;
+          warnEl.innerHTML = `<div class="alert alert-warning alert-lg mt-1">&#9888; Out of tabulated range: ${msgs.join('; ')}. Values at the table edge are used; accuracy outside the tables is not established.</div>`;
           // Persist the same warnings in the exportable result (audit 2026-10-03, H-07)
           shieldWarnings = msgs.map(m => m.replace(/<[^>]+>/g, ''));
           shieldWarningsPoint = UTILS.withPoint(buildMsgs).map(m => m.replace(/<[^>]+>/g, ''));

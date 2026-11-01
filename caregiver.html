@@ -92,8 +92,8 @@
         <div class="form-hint" id="categoryHint"></div>
       </div>
       <div class="form-group">
-        <label class="form-label" for="manual_criterion_mSv">Manual criterion (mSv per treatment)</label>
-        <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="manual_criterion_mSv" title="Manual criterion">
+        <label class="form-label" for="manual_criterion_mSv">Own criterion (mSv per treatment)</label>
+        <input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" class="form-input num-input" id="manual_criterion_mSv" title="Own criterion">
         <div class="form-hint" id="manualHint"></div>
       </div>
       <div class="form-group">
@@ -195,7 +195,8 @@
         <span>Informative (Method): they never change the dose; comparing the upper bound with the criterion is an evaluation decision.</span>
       </p>
 
-      <h3 class="card-title mt-2">Inverse calculations (same restriction in both rows)</h3>
+      <h3 class="card-title mt-2">Inverse calculations</h3>
+      <p class="form-hint">The maximum rate uses the restriction days entered; the minimum and adopted restriction apply one common duration to both rows.</p>
       <div class="overflow-x-auto">
         <table class="data-table" id="inverseTable">
           <tbody>
@@ -224,7 +225,8 @@
         <summary><strong>Self-check: <span id="selfCheckStatus">—</span></strong></summary>
         <p class="text-sm mt-1">A: the result is recomputed with an independent formulation in µSv and h for the current inputs.
           B: that formulation reproduces the reference cases computed with the author's original spreadsheet (restriction 3 d from discharge,
-          6 cycles, fast phase ending at 24 h). «REVIEW» means a formula has been altered.</p>
+          6 cycles, fast phase ending at 24 h). «REVIEW»: the formulations or a reference case disagree — do not use the result until the cause is found.
+          The self-check verifies consistency; it does not replace an independent validation.</p>
         <div class="overflow-x-auto">
           <table class="data-table">
             <thead><tr><th>Check</th><th class="text-right">Value</th><th>Status</th></tr></thead>
@@ -491,7 +493,7 @@
   $('profilesNote').textContent = data.profiles_note;
   $('refList').innerHTML = data.references.map(r => `<li>${esc(r)}</li>`).join('');
   $('originNote').textContent = data.meta.origin;
-  $('inverseNote').textContent = '"Unattainable" = the criterion is not met however long the restriction lasts: contact during the restriction must be reduced.';
+  $('inverseNote').textContent = '"Unattainable" = the criterion is not met however long the restriction lasts: reduce contact during the restriction or the rate at discharge.';
   $('ownNote').textContent = data.own_protocol_note;
   $('refCasesNote').textContent = data.reference_cases.note;
 
@@ -884,7 +886,7 @@
           ['Margin to the criterion', `${f3(out.margin_mSv)} mSv`],
           ['Daily-average occupancy bounds of the treatment dose', out.occupancy ? occText(out.occupancy) : (out.occupancyNote || 'not available')],
         ] },
-        { heading: 'Inverse calculations (same restriction in both rows)', rows: [
+        { heading: 'Inverse calculations (maximum rate with the restriction days entered; minimum and adopted restriction common to both rows)', rows: [
           ['Maximum rate at 1 m at discharge', `${f3(inv.maxRate_uSv_h)} µSv/h`],
           [indefText(inv), `${f3(inv.floor_mSv)} mSv`],
           ['Minimum restriction', inv.minRestriction_d !== null ? `${f2d(inv.minRestriction_d)} d` : (CAREGIVER.INVERSE_TEXT[inv.minRestrictionCode] || '—')],

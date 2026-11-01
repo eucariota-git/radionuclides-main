@@ -39,7 +39,7 @@ Target users: medical physicists and radiation protection specialists.
 - **Spectrum-weighted narrow beam** (dose-weighted sum over ICRP 107 photon lines, NIST XCOM) for all other nuclides — accounts for beam hardening of multi-line emitters; the spectrum is stored for curated nuclides and built dynamically for ICRP 107 extended entries (`PHYSICS.buildShieldingSpectrum`); single-line narrow beam is the internal fallback when no spectrum is available
 - **Report / PDF** — printable calculation report with timestamp, application version and author, database version, inputs, results, method, data sources and disclaimer (in all four calculators)
 - Cumulative dose with radioactive decay integration
-- **Annual dose limit comparison**, indicative screening only (RD 1029/2022 arts. 11 and 15; Directive 2013/59/Euratom):
+- **Dose limit comparison**, indicative screening only (RD 1029/2022 arts. 11 and 15; Directive 2013/59/Euratom):
   - Effective dose: 20 mSv/y exposed workers, 1 mSv/y public
   - Skin and extremities: 500 mSv/y exposed workers; skin 50 mSv/y public
   - **Lens of eye:** exposed workers — both conditions must be satisfied: 50 mSv in one year AND 100 mSv over any 5 consecutive years (regime in force since 22 Jun 2024); public 15 mSv/y

@@ -47,9 +47,9 @@ const esModes = s => s.split(' + ').map(m => ES_MODES[m] || m).join(' + ');
 const esPerYear = s => s.replace(/(Sv|Bq)\/y\b/g, '$1/a');
 // Shielding range warnings (screen, report, CSV-independent)
 const esShield = s => s
-  .replace('OUT OF VALIDATED RANGE — ', 'FUERA DEL INTERVALO VALIDADO — ')
-  .replace('⚠ Shielding out of validated range: ', '⚠ Blindaje fuera del intervalo validado: ')
-  .replace('⚠ Out of validated range: ', '⚠ Fuera del intervalo validado: ')
+  .replace('OUT OF TABULATED RANGE — ', 'FUERA DEL INTERVALO TABULADO — ')
+  .replace('⚠ Shielding out of tabulated range: ', '⚠ Blindaje fuera del intervalo tabulado: ')
+  .replace('⚠ Out of tabulated range: ', '⚠ Fuera del intervalo tabulado: ')
   .replace(/(\S+)% of the dose weight sits above the tabulated attenuation range \((.+?) MeV\); μ is held at the \2 MeV value/g,
     '$1 % del peso de dosis queda por encima del intervalo tabulado de atenuación ($2 MeV); μ se mantiene en el valor de $2 MeV')
   .replace(/(\S+)% of the dose weight exceeds (\d+) mean free paths \(deepest line: (.+?) mfp\); the build-up factor is clamped and( underestimates the transmitted dose)?/g,
@@ -57,7 +57,8 @@ const esShield = s => s
   .replace(/^the transmitted dose/, 'la dosis transmitida')
   .replace(/(\S+)% of the dose weight lies below (\S+) keV, where the (.+?) build-up table starts; B is held at its lowest tabulated energy/g,
     (m, p, e, mat) => `${p} % del peso de dosis está por debajo de ${e} keV, donde empieza la tabla de acumulación de ${(ES_MATERIALS[mat] || mat).replace(/^./, c => c.toLowerCase())}; B se mantiene en su energía tabulada más baja`)
-  .replace('Treat the shielding result as an extrapolation', 'Trate el resultado del blindaje como una extrapolación');
+  .replace('Values at the table edge are used; accuracy outside the tables is not established',
+    'Se usan los valores del extremo de la tabla; la exactitud fuera de las tablas no está establecida');
 
 // Effluent: "/y" in units, and the report rows of each scenario
 const esUnit = u => u.replace(/\/y$/, '/a');
@@ -124,7 +125,7 @@ const I18N_ES = {
     // Dose
     '#shieldMaterial': { 'None': 'Ninguno' },
     '#patientTx': { 'none': 'ninguna' },
-    '#y90ShieldNote': { 'only': 'solo' },
+    '#y90ShieldNote': { 'only': 'solo', 'hypothetical': 'hipotéticos' },
     '#shieldRangeWarn': { 'underestimates': 'subestima' },
     // Effluent: subscripts and fragments of the method formulas and the cross-check
     '#methodDetails': {
@@ -263,8 +264,8 @@ const I18N_ES = {
     "Cornejo et al. (2015) provides published comparison values, and its air-kerma constants are the ones shown in the K-air column. H*(10) and H'(0.07) are recalculated using the stated nuclear data (ICRP 107, 2008) and conversion coefficients (ICRP 74, 1996, Table A.21), except the H*(10) of Cs-137 and Mo-99+Tc-99m, which keep the published value; 24 of the 32 H*(10) values lie within ±2 % of the published ones, those two included. Where they differ, the difference has not been reconciled.":
       "Cornejo et al. (2015) aporta valores publicados de comparación, y sus constantes de kerma en aire son las que se muestran en la columna K-aire. H*(10) y H'(0,07) se recalculan con los datos nucleares indicados (ICRP 107, 2008) y los coeficientes de conversión (ICRP 74, 1996, tabla A.21), salvo el H*(10) del Cs-137 y del Mo-99+Tc-99m, que conservan el valor publicado; 24 de los 32 valores de H*(10) quedan dentro de ±2 % de los publicados, esos dos incluidos. Donde difieren, la diferencia no se ha conciliado.",
     'Ga-68, Zr-89, Cu-67, Tb-161, Ho-166, Ra-223 and Ac-225:': 'Ga-68, Zr-89, Cu-67, Tb-161, Ho-166, Ra-223 y Ac-225:',
-    'no published comparison; calculated in the same way. For the two alpha-therapy chains (Ra-223, Ac-225) the constants':
-      'sin comparación publicada; calculados del mismo modo. Para las dos cadenas de terapia alfa (Ra-223, Ac-225) las constantes',
+    'no Cornejo et al. (2015) comparison value; calculated in the same way. For the two alpha-therapy chains (Ra-223, Ac-225) the constants':
+      'sin valor de comparación de Cornejo et al. (2015); calculados del mismo modo. Para las dos cadenas de terapia alfa (Ra-223, Ac-225) las constantes',
     'assume all progeny retained in the source and in secular equilibrium':
       'suponen toda la progenie retenida en la fuente y en equilibrio secular',
     '— check it for the actual source (preparation time, loss of gaseous progeny).':
@@ -384,8 +385,8 @@ const I18N_ES = {
     'Target activity unit': 'Unidad de la actividad objetivo',
     'Mass of material being assessed': 'Masa del material evaluado',
     'Mass unit': 'Unidad de masa',
-    'Mass that contains the entered activity (state whether it includes the container). Enables the Table A1 clearance and Table B (≤ 1000 kg) checks.':
-      'Masa que contiene la actividad introducida (indique si incluye el contenedor). Activa las comprobaciones de desclasificación de la tabla A1 y de exención de la tabla B (≤ 1000 kg).',
+    'Mass that contains the entered activity (state whether it includes the container). Needed for the activity-per-mass criteria: Table A1 clearance and Table B column 2; the total-activity criterion needs no mass.':
+      'Masa que contiene la actividad introducida (indique si incluye el contenedor). Necesaria para los criterios de actividad por unidad de masa: desclasificación de la tabla A1 y columna 2 de la tabla B; el criterio de actividad total no necesita masa.',
     'Results': 'Resultados',
     'No elapsed time or target date entered: the values below are at t = 0. Enter an':
       'No se ha introducido tiempo transcurrido ni fecha objetivo: los valores siguientes corresponden a t = 0. Introduzca un',
@@ -397,7 +398,8 @@ const I18N_ES = {
     'Elapsed': 'Transcurrido',
     'Activity lost': 'Actividad perdida',
     'Clearance assessment — RD 1217/2024, Annex IV Table A1': 'Evaluación de desclasificación — RD 1217/2024, anexo IV, tabla A1',
-    'Exemption assessment — RD 1217/2024, Annex IV Table B': 'Evaluación de exención — RD 1217/2024, anexo IV, tabla B',
+    'Exemption assessment — RD 1217/2024': 'Evaluación de exención — RD 1217/2024',
+    'Values of Annex IV Table B (Annex II A.1 a and b).': 'Valores de la tabla B del anexo IV (anexo II A.1 a y b).',
     '⚠ Above': '⚠ Por encima',
     '✓ Not above': '✓ No supera',
     'Enter the mass of material to evaluate this criterion.': 'Introduzca la masa del material para evaluar este criterio.',
@@ -442,7 +444,7 @@ const I18N_ES = {
     'Elapsed time must be a non-negative number.': 'El tiempo transcurrido no puede ser negativo.',
     'Enter a reference date and time before using a target date.': 'Introduzca una fecha y hora de referencia antes de usar una fecha objetivo.',
     'Reference and target dates must be valid.': 'Las fechas de referencia y objetivo deben ser válidas.',
-    'Target date must be after reference date.': 'La fecha objetivo debe ser posterior a la de referencia.',
+    'Target date must not be before the reference date.': 'La fecha objetivo no puede ser anterior a la de referencia.',
     'Mass of material must be a positive number.': 'La masa del material debe ser un número positivo.',
     'Target activity must be a non-negative number.': 'La actividad objetivo no puede ser negativa.',
     'Target activity is outside the representable range.': 'La actividad objetivo está fuera del intervalo representable.',
@@ -484,6 +486,8 @@ const I18N_ES = {
     'Clearance: individual Table A1 level for one nuclide (any quantity, any solid material); the mixture rule Σ(Cᵢ/Lᵢ) ≤ 1 of Annex III.1.a is not evaluated.':
       'Desclasificación: nivel individual de la tabla A1 para un nucleido (cualquier cantidad, cualquier material sólido); no se evalúa la regla de mezclas Σ(Cᵢ/Lᵢ) ≤ 1 del anexo III.1.a.',
     'Exemption assessment — RD 1217/2024 Annex IV Table B (Annex II A.1 a and b)': 'Evaluación de exención — RD 1217/2024, anexo IV, tabla B (anexo II A.1 a y b)',
+    'Exemption assessment — RD 1217/2024, CSN values (Annex II A.3.a)': 'Evaluación de exención — RD 1217/2024, valores del CSN (anexo II A.3.a)',
+    'CSN values': 'Valores del CSN',
     'not evaluated: no mass of material entered': 'no evaluado: no se ha introducido la masa del material',
     'not applicable: mass above 1000 kg (Annex II A.1.c — Table A1)': 'no aplicable: masa superior a 1000 kg (anexo II A.1.c — tabla A1)',
     'Table B': 'Tabla B',
@@ -520,12 +524,14 @@ const I18N_ES = {
     'Shield material': 'Material del blindaje',
     'Thickness': 'Espesor',
     'Thickness unit': 'Unidad del espesor',
-    'Patient transmission': 'Transmisión del paciente',
-    'Patient transmission (%)': 'Transmisión del paciente (%)',
+    'Transmission through the patient': 'Transmisión a través del paciente',
+    'Transmission through the patient (%)': 'Transmisión a través del paciente (%)',
     'Empty = no patient attenuation. No default: derive it for your geometry from a measurement or a published study.':
       'Vacío = sin atenuación del paciente. Sin valor por defecto: obténgalo para su geometría de una medida o de un estudio publicado.',
     '⚠ For': '⚠ Para',
-    'the external dose is a bremsstrahlung estimate and shielding is modelled': 'la dosis externa es una estimación de radiación de frenado y el blindaje se modela',
+    'the external dose is an illustrative bremsstrahlung calculation with': 'la dosis externa es un cálculo ilustrativo de radiación de frenado con valores de contenedor',
+    'container values (no documented derivation or measurement); direct beta dose is excluded. Shielding is selected':
+      '(sin derivación documentada ni medida); no incluye la dosis beta directa. El blindaje se elige',
     'through the container selector below the results (PMMA / Pb / W). The general slab material and thickness above do not apply and are disabled while Y-90 is selected.':
       'mediante el selector de contenedor que hay bajo los resultados (PMMA / Pb / W). El material y el espesor generales de lámina indicados arriba no se aplican y quedan desactivados mientras Y-90 esté seleccionado.',
     'Exposure Time': 'Tiempo de exposición',
@@ -603,7 +609,7 @@ const I18N_ES = {
     "H'(0.07), directional": "H'(0,07), direccional",
     'Distance (m)': 'Distancia (m)',
     'Dose-equivalent rate (μSv/h)': 'Tasa de equivalente de dosis (μSv/h)',
-    'Annual dose limit comparison': 'Comparación con los límites anuales de dosis',
+    'Dose limit comparison': 'Comparación con los límites de dosis',
     'Indicative screening only': 'Solo cribado orientativo',
     '— area-monitoring estimates compared with the annual limits of RD 1029/2022 (arts. 11 and 15); they do not establish compliance.':
       '— estimaciones de vigilancia de áreas comparadas con los límites anuales del RD 1029/2022 (arts. 11 y 15); no demuestran el cumplimiento.',
@@ -666,8 +672,8 @@ const I18N_ES = {
     'Exposure time per administration must be a valid number.': 'El tiempo de exposición por administración debe ser un número válido.',
     'Exposure time per administration must be a positive number.': 'El tiempo de exposición por administración debe ser un número positivo.',
     'Number of administrations per year must be a positive whole number.': 'El número de administraciones por año debe ser un entero positivo.',
-    'Patient transmission must be > 0 % and ≤ 100 %, or empty for no patient attenuation. There is no default: derive it from measurement or a published study for your geometry.':
-      'La transmisión del paciente debe ser > 0 % y ≤ 100 %, o quedar vacía si no hay atenuación del paciente. No hay valor por defecto: obténgalo de una medida o de un estudio publicado para su geometría.',
+    'Transmission through the patient must be > 0 % and ≤ 100 %, or empty for no patient attenuation. There is no default: derive it from measurement or a published study for your geometry.':
+      'La transmisión a través del paciente debe ser > 0 % y ≤ 100 %, o quedar vacía si no hay atenuación del paciente. No hay valor por defecto: obténgalo de una medida o de un estudio publicado para su geometría.',
     'The combination of activity, distance, time and administrations is outside the representable range.':
       'La combinación de actividad, distancia, tiempo y administraciones está fuera del intervalo representable.',
     // Dose report
@@ -701,7 +707,7 @@ const I18N_ES = {
     'H*(10) rate at d, after physical decay over the exposure': 'Tasa de H*(10) a d, tras el decaimiento físico durante la exposición',
     'H*(10) rate at 1 m (reference; same shielding and patient attenuation), t = 0': 'Tasa de H*(10) a 1 m (referencia; mismo blindaje y atenuación del paciente), t = 0',
     'Annual integrated H*(10)': 'H*(10) integrada anual',
-    'Annual dose limit comparison — indicative screening only (RD 1029/2022 arts. 11 and 15)': 'Comparación con los límites anuales de dosis — solo cribado orientativo (RD 1029/2022, arts. 11 y 15)',
+    'Dose limit comparison — indicative screening only (RD 1029/2022 arts. 11 and 15)': 'Comparación con los límites de dosis — solo cribado orientativo (RD 1029/2022, arts. 11 y 15)',
     'Effective dose (screened with H*(10))': 'Dosis efectiva (cribado con H*(10))',
     'Lens of the eye (screened with H*(10); the assessment requires Hp(3) and the dosimetric history)': 'Cristalino (cribado con H*(10); la evaluación requiere Hp(3) y el historial dosimétrico)',
     'No shielding applied.': 'Sin blindaje.',
@@ -755,7 +761,7 @@ const I18N_ES = {
     '), waste code LER 19 08 05.': '), código de residuo LER 19 08 05.',
     'External coefficient geometry': 'Geometría del coeficiente externo',
     'Sludge mass lateral extent': 'Extensión lateral de la masa de lodo',
-    'A value ≤ 0 means no comparison.': 'Un valor ≤ 0 significa que no se compara.',
+    'A value of 0 means no comparison.': 'Un valor de 0 significa que no se compara.',
     'Photon-only coefficients: bremsstrahlung from beta and positron emission is not included nor bounded — more severe for F-18 and I-131 than for Lu-177, least for Tc-99m.':
       'Coeficientes solo de fotones: la radiación de frenado de la emisión beta y de positrones no se incluye ni se acota; la limitación es mayor para F-18 e I-131 que para Lu-177, y menor para Tc-99m.',
     'The coefficient belongs to this model geometry; its use for a specific plant must be justified.':
@@ -861,13 +867,12 @@ const I18N_ES = {
       "Aire respirado por hora de exposición (trabajo ligero).",
     "Dose criterion for comparison":
       "Criterio de dosis para la comparación",
-    "Your own comparison value. The app attributes no regulatory basis to it; a value ≤ 0 means no comparison.":
-      "Valor de comparación propio. La app no le atribuye base reglamentaria; un valor ≤ 0 significa que no se compara.",
+    "Your own comparison value. The app attributes no regulatory basis to it; 0 means no comparison.":
+      "Valor de comparación propio. La app no le atribuye base reglamentaria; 0 significa que no se compara.",
     "Annual discharge from decay tanks (sum of controlled nuclides)":
       "Vertido anual de los depósitos de decaimiento (suma de los nucleidos controlados)",
-    "Total annual release from the decay tanks, shared among the nuclides marked “Tanks”; no decay credit.":
-      "Vertido anual total de los depósitos de decaimiento, repartido entre los nucleidos marcados como «Depósitos»; sin crédito por decaimiento.",
-    "Water discharged by the facility":
+    "Total annual discharge of the nuclides marked “Tanks”, shared in proportion; if less activity enters the tanks, all of it is discharged (no decay credit).":
+      "Vertido anual total de los nucleidos marcados como «Depósitos», repartido en proporción; si entra en los depósitos menos actividad, se vierte toda (sin crédito por decaimiento).",    "Water discharged by the facility":
       "Agua vertida por la instalación",
     "Annual water discharged by the facility; the activity leaving the hospital is diluted in it. Site-specific.":
       "Agua vertida al año por la instalación; en ella se diluye la actividad que sale del hospital. Propio del emplazamiento.",
@@ -1087,8 +1092,8 @@ const I18N_ES = {
     'Number of equal cycles': 'Número de ciclos iguales',
     'Category of the exposed person': 'Categoría de la persona expuesta',
     'Method › Criteria per category': 'Método › Criterios por categoría',
-    'Manual criterion (mSv per treatment)': 'Criterio manual (mSv por tratamiento)',
-    'Manual criterion': 'Criterio manual',
+    'Own criterion (mSv per treatment)': 'Criterio propio (mSv por tratamiento)',
+    'Own criterion': 'Criterio propio',
     'Required for «Other criterion».': 'Necesario para «Otro criterio».',
     'Minimum restriction of the product information (d, optional)': 'Restricción mínima de la ficha técnica (d, opcional)',
     'Minimum restriction of the product information': 'Restricción mínima de la ficha técnica',
@@ -1121,7 +1126,11 @@ const I18N_ES = {
     'Dose of the treatment': 'Dosis del tratamiento',
     'Applied criterion': 'Criterio aplicado',
     'Margin to the criterion': 'Margen respecto al criterio',
-    'Inverse calculations (same restriction in both rows)': 'Cálculos inversos (misma restricción en las dos filas)',
+    'Inverse calculations': 'Cálculos inversos',
+    'The maximum rate uses the restriction days entered; the minimum and adopted restriction apply one common duration to both rows.':
+      'La tasa máxima usa los días de restricción introducidos; la restricción mínima y la adoptada aplican una misma duración a las dos filas.',
+    'Inverse calculations (maximum rate with the restriction days entered; minimum and adopted restriction common to both rows)':
+      'Cálculos inversos (tasa máxima con los días de restricción introducidos; restricción mínima y adoptada comunes a las dos filas)',
     'Maximum rate at 1 m at discharge with the restrictions entered': 'Tasa máxima a 1 m en el alta con las restricciones introducidas',
     'Treatment dose with an indefinite restriction (floor)': 'Dosis del tratamiento con restricción indefinida (suelo)',
     'Treatment dose with an indefinite restriction (upper asymptote — restricting increases the dose)': 'Dosis del tratamiento con restricción indefinida (asíntota superior: restringir aumenta la dosis)',
@@ -1139,8 +1148,8 @@ const I18N_ES = {
     'No curve: the inputs are rejected (see the status above).': 'Sin curva: las entradas se rechazan (véase la situación arriba).',
     'No curve: with the same restriction in both rows the hours during the restriction would exceed 24 h/day.': 'Sin curva: con la misma restricción en las dos filas, las horas durante la restricción superarían 24 h/día.',
     'Self-check:': 'Autocomprobación:',
-    "A: the result is recomputed with an independent formulation in µSv and h for the current inputs. B: that formulation reproduces the reference cases computed with the author's original spreadsheet (restriction 3 d from discharge, 6 cycles, fast phase ending at 24 h). «REVIEW» means a formula has been altered.":
-      'A: el resultado se recalcula con una formulación independiente en µSv y h para las entradas actuales. B: esa formulación reproduce los casos de referencia calculados con la hoja de cálculo original del autor (restricción de 3 d desde el alta, 6 ciclos, fase rápida que termina a las 24 h). «REVISAR» significa que se ha alterado una fórmula.',
+    "A: the result is recomputed with an independent formulation in µSv and h for the current inputs. B: that formulation reproduces the reference cases computed with the author's original spreadsheet (restriction 3 d from discharge, 6 cycles, fast phase ending at 24 h). «REVIEW»: the formulations or a reference case disagree — do not use the result until the cause is found. The self-check verifies consistency; it does not replace an independent validation.":
+      'A: el resultado se recalcula con una formulación independiente en µSv y h para las entradas actuales. B: esa formulación reproduce los casos de referencia calculados con la hoja de cálculo original del autor (restricción de 3 d desde el alta, 6 ciclos, fase rápida que termina a las 24 h). «REVISAR»: las formulaciones o un caso de referencia no concuerdan; no use el resultado hasta encontrar la causa. La autocomprobación verifica la coherencia; no sustituye a una validación independiente.',
     'Check': 'Comprobación',
     'Value': 'Valor',
     'Status': 'Estado',
@@ -1218,8 +1227,8 @@ const I18N_ES = {
     'The cohabitation table covers the adopted restriction': 'La tabla de convivencia cubre la restricción adoptada',
     "Restriction days not entered: the minimum and adopted restriction do not depend on them. Enter the days, or use the adopted restriction, to get the dose of the table and the maximum rate.":
       "Días de restricción no introducidos: la restricción mínima y la adoptada no dependen de ellos. Introduzca los días, o use la restricción adoptada, para obtener la dosis de la tabla y la tasa máxima.",
-    '"Unattainable" = the criterion is not met however long the restriction lasts: contact during the restriction must be reduced.':
-      '«Inalcanzable» = el criterio no se cumple por larga que sea la restricción: hay que reducir el contacto durante la restricción.',
+    '"Unattainable" = the criterion is not met however long the restriction lasts: reduce contact during the restriction or the rate at discharge.':
+      '«Inalcanzable» = el criterio no se cumple por larga que sea la restricción: reduzca el contacto durante la restricción o la tasa en el alta.',
     "Quantity: the integral of the measured operational quantity estimates the external exposure of the person; it is not automatically the individual effective dose nor the fetal dose. Internal contamination, the dose before discharge and other sources are not included.":
       "Magnitud: la integral de la magnitud operacional medida estima la exposición externa de la persona; no es automáticamente la dosis efectiva individual ni la dosis fetal. No se incluyen la contaminación interna, la dosis antes del alta ni otras fuentes.",
     'With this restriction the treatment dose EXCEEDS the criterion': 'Con esta restricción la dosis del tratamiento SUPERA el criterio',
@@ -1266,8 +1275,8 @@ const I18N_ES = {
       "Los valores de la literatura describen una cohorte, no al paciente. Bajo cada cinética, «Dispersión en la fuente» da la dispersión que publica la fuente, con el estadístico indicado (media ± DE, mediana con cuartiles y extremos, o dispersión de los valores de la literatura). Describe la cohorte, no un intervalo para el paciente: media + 2 DE es solo un valor alto de referencia. Aquí no se deduce ninguna DE a partir de intervalos o cuartiles.",
     "Evaluation criteria adopted in this application, not values fixed by regulation for this treatment. Scope: one person, the whole treatment (all cycles together) — the ICRP «episode» (the duration of a given release after therapy) is applied to the complete treatment, which is the more restrictive reading. Carers are people who, outside their occupation, knowingly and voluntarily help in the care of the patient (RD 601/2019, art. 7.1); children and pregnant women are assessed with the public category. The criterion only changes the comparison and the inverse calculations, never the calculated dose.":
       "Criterios de evaluación adoptados en esta aplicación, no valores fijados por la normativa para este tratamiento. Alcance: una persona, el tratamiento completo (todos los ciclos juntos); el «episodio» de ICRP (la duración de una liberación concreta tras la terapia) se aplica al tratamiento completo, que es la lectura más restrictiva. Las personas cuidadoras son las que, fuera de su ocupación, ayudan consciente y voluntariamente en la atención del paciente (RD 601/2019, art. 7.1); los niños y las embarazadas se evalúan con la categoría de público. El criterio solo cambia la comparación y los cálculos inversos, nunca la dosis calculada.",
-    "Maximum rate: the discharge rate that exactly exhausts the criterion with the restrictions of the table (the dose is proportional to the rate). Minimum restriction: days that exhaust the criterion applying the same duration to both rows; \"Unattainable\" = not met however long it lasts: contact during the restriction must be reduced. To apply it, enter the adopted restriction in the days column of the cohabitation table.":
-      "Tasa máxima: la tasa en el alta que agota exactamente el criterio con las restricciones de la tabla (la dosis es proporcional a la tasa). Restricción mínima: días que agotan el criterio aplicando la misma duración a las dos filas; «Inalcanzable» = no se cumple por larga que sea: hay que reducir el contacto durante la restricción. Para aplicarla, introduzca la restricción adoptada en la columna de días de la tabla de convivencia.",
+    "Maximum rate: the discharge rate at which the treatment dose equals the criterion with the restriction days of the table (the dose is proportional to the rate). Minimum restriction: the shortest duration, common to both rows, that meets the criterion; it may be 0 d. \"Unattainable\" = not met however long it lasts: reduce contact during the restriction or the rate at discharge. To apply it, enter the adopted restriction in the days column of the cohabitation table.":
+      "Tasa máxima: la tasa en el alta con la que la dosis del tratamiento iguala el criterio con los días de restricción de la tabla (la dosis es proporcional a la tasa). Restricción mínima: la menor duración, común a las dos filas, que cumple el criterio; puede ser 0 d. «Inalcanzable» = no se cumple por larga que sea: reduzca el contacto durante la restricción o la tasa en el alta. Para aplicarla, introduzca la restricción adoptada en la columna de días de la tabla de convivencia.",
     "Own-measurement protocol to record: radiopharmaceutical, distance reference, posture, orientation and time of measurement.":
       "Protocolo de medida propia que debe registrarse: radiofármaco, referencia de distancia, postura, orientación y momento de la medida.",
     "The intermediate distances of the approximate profiles [2], [3] are model evaluations, not measurements, and 6.25 is not a measured ratio: the spatial ratios measured by Demir [4] vary with time. The d^-1.5 approximation of IAEA SRS-63 [10] is not adopted as a universal profile.":
@@ -1416,8 +1425,8 @@ const I18N_ES = {
       "RD 1029/2022, art. 15: límite anual del público, aplicado al tratamiento completo; ICRP 94 (2004) e ICRP 103, párr. 351: el límite del público se aplica a lactantes, niños y visitantes ocasionales",
     "EC RP 97 (1998) and Foro CSN-SEPR-SEFM (2011), table 2 (p. 13): 0.3 mSv for third persons":
       "EC RP 97 (1998) y Foro CSN-SEPR-SEFM (2011), tabla 2 (p. 13): 0,3 mSv para terceras personas",
-    "Value entered as manual criterion":
-      "Valor introducido como criterio manual",
+    "Value entered as own criterion":
+      "Valor introducido como criterio propio",
     "EC RP 97 [9] and Foro [2]":
       "EC RP 97 [9] y Foro [2]",
     "value entered":
@@ -1680,7 +1689,7 @@ const I18N_ES = {
     [/^(.+ mm) — first half-value layer \(later layers are thicker as the beam hardens\)$/, '$1 — primera capa hemirreductora (las siguientes son más gruesas a medida que el haz se endurece)'],
     [/^(.+ mm) — first tenth-value layer$/, '$1 — primera capa decimorreductora'],
     [/^Attenuation factor: (.+)$/, 'Factor de atenuación: $1'],
-    [/^(?:[\s\S]*of the dose weight[\s\S]*|OUT OF VALIDATED RANGE — [\s\S]*|⚠ Shielding out of validated range: [\s\S]*|the transmitted dose[\s\S]*)$/, m => esShield(m)],
+    [/^(?:[\s\S]*of the dose weight[\s\S]*|OUT OF TABULATED RANGE — [\s\S]*|⚠ Shielding out of tabulated range: [\s\S]*|the transmitted dose[\s\S]*)$/, m => esShield(m)],
     [/^Dose-equivalent rate vs distance \((.+), (.+ cm)((?: — .+)?)\)$/, (m, mat, th, meth) => `Tasa de equivalente de dosis frente a la distancia (${ES_MATERIALS[mat] || mat}, ${th}${({
       ' — Archer': ' — Archer', ' — narrow beam, spectrum + build-up': ' — haz estrecho, espectro + acumulación', ' — narrow beam + build-up': ' — haz estrecho + acumulación' })[meth] ?? meth})`],
     [/^H\*\(10\), ambient: (.+)$/, 'H*(10), ambiental: $1'],
@@ -1762,6 +1771,19 @@ const I18N_ES = {
       `mSv/a — ${al ? 'al menos el ' : ''}${p} % del criterio${ex ? ' — LO SUPERA' : ''}${part ? part.replace(' — PARTIAL SUM, missing: ', ' — SUMA PARCIAL, falta: ').replace(/ external$/, ' externa') : ''}`],
     [/^Criterion: (.+) mSv\/y, user-defined — the app attributes no regulatory basis to it\.$/, 'Criterio: $1 mSv/a, definido por el usuario; la app no le atribuye base reglamentaria.'],
     [/^Sc\. 2 PHITS \((L10|L45)\)$/, 'Esc. 2 PHITS ($1)'],
+    // Input errors with the visible field name and its range (v1.23.0)
+    [/^(Common|Scenario 1|Scenario 2) — (.+?): enter a value (.+)\.$/, (m, sc, label, rest) => {
+      const range = rest
+        .replace(/^greater than 0 and at most (.+)$/, 'mayor que 0 y no superior a $1')
+        .replace(/^greater than 0$/, 'mayor que 0')
+        .replace(/^between (.+) and (.+)$/, 'entre $1 y $2')
+        .replace(/^of at least (.+)$/, 'no inferior a $1')
+        .replace(/\/y$/, '/a');
+      return `${sc === 'Common' ? 'Comunes' : esText(sc)} — ${esText(label)}: introduzca un valor ${range}.`;
+    }],
+    [/^(.+): (patients per year|cycles per patient|the activity) cannot be negative\.$/, (m, id, w) =>
+      `${id}: ${({ 'patients per year': 'el número de pacientes al año', 'cycles per patient': 'el número de ciclos por paciente', 'the activity': 'la actividad' })[w]} no puede ser negativ${w === 'the activity' ? 'a' : 'o'}.`],
+    [/^(.+): the fraction excreted in hospital must be between 0 and 1\.$/, '$1: la fracción excretada en el hospital debe estar entre 0 y 1.'],
     [/^Sc\. 1: ([\s\S]+)$/, m => m.replace(/Sc\. /g, 'Esc. ').replace('Sc. 2: no coefficient', 'Esc. 2: sin coeficiente').replace('Esc. 2: no coefficient', 'Esc. 2: sin coeficiente').replace('one-sided model envelope', 'envolvente unilateral del modelo')],
     [/^(PHITS Scenario [12] report[\s\S]*)$/, m => esReport(m)],
     [/^This model \((L10|L45)\)$/, 'Este modelo ($1)'],

@@ -1,6 +1,6 @@
 {
   "meta": {
-    "version": "1.14",
+    "version": "1.15",
     "date": "2026-11-01",
     "author": { "name": "José Ramón Sendón del Río", "role": "Application, data compilation and verification" },
     "description": "Caregiver / family-member external dose after discharge of a radionuclide-therapy patient: proximity profiles, evaluation criteria per category, references and model assumptions.",
@@ -355,7 +355,7 @@
       "key": "other",
       "label": "Other criterion",
       "criterion_mSv": null,
-      "basis": "Value entered as manual criterion",
+      "basis": "Value entered as own criterion",
       "basis_short": "value entered"
     }
   ],
@@ -404,7 +404,7 @@
     "Each cycle is integrated to infinity: with several weeks between cycles, practically the whole dose of a cycle is received before the next one.",
     "Restriction days are counted from discharge. The criterion covers only the administrations entered; it does not by itself demonstrate annual compliance."
   ],
-  "inverse_note": "Maximum rate: the discharge rate that exactly exhausts the criterion with the restrictions of the table (the dose is proportional to the rate). Minimum restriction: days that exhaust the criterion applying the same duration to both rows; \"Unattainable\" = not met however long it lasts: contact during the restriction must be reduced. To apply it, enter the adopted restriction in the days column of the cohabitation table.",
+  "inverse_note": "Maximum rate: the discharge rate at which the treatment dose equals the criterion with the restriction days of the table (the dose is proportional to the rate). Minimum restriction: the shortest duration, common to both rows, that meets the criterion; it may be 0 d. \"Unattainable\" = not met however long it lasts: reduce contact during the restriction or the rate at discharge. To apply it, enter the adopted restriction in the days column of the cohabitation table.",
   "own_protocol_note": "Own-measurement protocol to record: radiopharmaceutical, distance reference, posture, orientation and time of measurement.",
   "references": [
     "[1] Monserrat Fuertes et al. (2023). Individualisation of radiation protection recommendations for patients treated with [177Lu]Lu-DOTA-TATE. EJNMMI Physics 10:50. https://doi.org/10.1186/s40658-023-00570-7 — proximity factors (medians of measurements at 0.1, 0.5 and 1 m) and DOTATATE kinetics.",

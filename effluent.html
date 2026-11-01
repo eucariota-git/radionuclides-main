@@ -307,7 +307,7 @@
   const HIDDEN_HINTS = new Set(['common.breathing_rate_m3_h', 's1.water_density_kg_m3', 's1.respirable_fraction', 's1.t_external_h_y', 's1.transit_h',
     's2.wet_density_kg_m3', 's2.respirable_fraction', 's2.t_external_h_y']);
   const SCREEN_HINTS = {
-    'common.dose_criterion_mSv_y': 'A value ≤ 0 means no comparison.',
+    'common.dose_criterion_mSv_y': 'A value of 0 means no comparison.',
     's2.wet_sludge_t_per_y': () => `PRTR-España (<a href="https://prtr-es.miteco.gob.es/" target="_blank" rel="noopener">prtr-es.miteco.gob.es</a>), waste code LER 19 08 05.`,
   };
   // Explanations go in an ⓘ next to the label; only a link stays visible under the field
@@ -406,29 +406,53 @@
     return readNumber(el);
   }
 
+  // Every parameter is checked against the range of the data file (min, max,
+  // > 0) with its visible name and unit: an out-of-range value used to reach the
+  // physics checks and show internal names in seconds (text audit 2026-11-01)
+  const outOfRange = (p, v) => v < (p.min ?? 0) || (p.max !== undefined && v > p.max) || (p.positive && !(v > 0));
+  const rangeText = p => {
+    const unit = p.unit && p.unit !== '–' ? ` ${p.unit}` : '';
+    const low = p.positive ? 'greater than 0' : null;
+    if (p.max !== undefined) return low ? `${low} and at most ${UTILS.num(p.max)}${unit}` : `between ${UTILS.num(p.min ?? 0)} and ${UTILS.num(p.max)}${unit}`;
+    return low || `of at least ${UTILS.num(p.min ?? 0)}${unit}`;
+  };
+  const sourceErr = (id, field, msg) => Object.assign(new RangeError(`${id}: ${msg}.`), { field });
+
   function readInputs() {
     const geometry = geoSel.value;
     const input = { geometry };
     for (const s of SCEN) {
       input[s] = {};
       for (const key of Object.keys(PG[s])) {
+        const p = PG[s][key];
         input[s][key] = readNumber(document.getElementById(`${s}_${key}`));
-        if (PG[s][key].positive && !(input[s][key] > 0)) throw Object.assign(new RangeError(`"${PG[s][key].label}" must be greater than 0`), { field: `${s}_${key}` });
+        if (outOfRange(p, input[s][key])) {
+          throw Object.assign(new RangeError(`${SCEN_NAME[s]} — ${p.label}: enter a value ${rangeText(p)}.`), { field: `${s}_${key}` });
+        }
       }
     }
-    input.nuclides = nuclides.map(({ nd, T }, i) => ({
-      id: nd.id,
-      include: document.getElementById(`st_${i}_include`).checked,
-      controlled: document.getElementById(`st_${i}_controlled`).checked,
-      half_life_s: T,
-      patients_per_y: readNumber(document.getElementById(`st_${i}_patients_per_y`)),
-      cycles_per_patient: nd.source_term.cycles_locked ? 1 : readNumber(document.getElementById(`st_${i}_cycles_per_patient`)),
-      activity_per_cycle_GBq: readActivity(document.getElementById(`st_${i}_activity_per_cycle_GBq`), document.getElementById(`st_${i}_include`).checked, nd.id),
-      fraction_in_hospital: readNumber(document.getElementById(`st_${i}_fraction_in_hospital`)),
-      k1_nSv_h_per_Bq_m3: nd.k_ext.s1.value,
-      k2_nSv_h_per_Bq_m3: nd.k_ext.s2 ? nd.k_ext.s2[geometry].value : null,
-      e_inh_Sv_per_Bq: nd.e_inh.value,
-    }));
+    input.nuclides = nuclides.map(({ nd, T }, i) => {
+      const el = f => document.getElementById(`st_${i}_${f}`);
+      const n = {
+        id: nd.id,
+        include: el('include').checked,
+        controlled: el('controlled').checked,
+        half_life_s: T,
+        patients_per_y: readNumber(el('patients_per_y')),
+        cycles_per_patient: nd.source_term.cycles_locked ? 1 : readNumber(el('cycles_per_patient')),
+        activity_per_cycle_GBq: readActivity(el('activity_per_cycle_GBq'), el('include').checked, nd.id),
+        fraction_in_hospital: readNumber(el('fraction_in_hospital')),
+        k1_nSv_h_per_Bq_m3: nd.k_ext.s1.value,
+        k2_nSv_h_per_Bq_m3: nd.k_ext.s2 ? nd.k_ext.s2[geometry].value : null,
+        e_inh_Sv_per_Bq: nd.e_inh.value,
+      };
+      const id = `st_${i}_`;
+      if (n.patients_per_y < 0) throw sourceErr(nd.id, id + 'patients_per_y', 'patients per year cannot be negative');
+      if (n.cycles_per_patient < 0) throw sourceErr(nd.id, id + 'cycles_per_patient', 'cycles per patient cannot be negative');
+      if (n.activity_per_cycle_GBq !== null && n.activity_per_cycle_GBq < 0) throw sourceErr(nd.id, id + 'activity_per_cycle_GBq', 'the activity cannot be negative');
+      if (!(n.fraction_in_hospital >= 0 && n.fraction_in_hospital <= 1)) throw sourceErr(nd.id, id + 'fraction_in_hospital', 'the fraction excreted in hospital must be between 0 and 1');
+      return n;
+    });
     return input;
   }
 

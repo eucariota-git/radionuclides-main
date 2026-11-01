@@ -2,7 +2,7 @@
 const EFFLUENT_DATA = {
   "meta": {
     "id": "effluent-scenarios",
-    "version": "2.7.0",
+    "version": "2.7.1",
     "date": "2026-11-01",
     "author": {
       "name": "José Ramón Sendón del Río",
@@ -27,7 +27,7 @@ const EFFLUENT_DATA = {
       },
       "dose_criterion_mSv_y": {
         "label": "Dose criterion for comparison",
-        "hint": "Your own comparison value. The app attributes no regulatory basis to it; a value ≤ 0 means no comparison.",
+        "hint": "Your own comparison value. The app attributes no regulatory basis to it; 0 means no comparison.",
         "value": 1,
         "unit": "mSv/y",
         "min": 0,
@@ -35,7 +35,7 @@ const EFFLUENT_DATA = {
       },
       "tank_limit_GBq_y": {
         "label": "Annual discharge from decay tanks (sum of controlled nuclides)",
-        "hint": "Total annual release from the decay tanks, shared among the nuclides marked “Tanks”; no decay credit.",
+        "hint": "Total annual discharge of the nuclides marked “Tanks”, shared in proportion; if less activity enters the tanks, all of it is discharged (no decay credit).",
         "value": 1,
         "unit": "GBq/y",
         "min": 0,

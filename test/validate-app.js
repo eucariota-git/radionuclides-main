@@ -409,7 +409,7 @@ async function main() {
     check('dose: shieldingValidity() returns the specific state for Y-90, Archer, warnings and unshielded',
       /^Experimental scenario with hypothetical container values/.test(f({ isY90: true, shieldWarnings: [] })) &&
       /^Published fit/.test(f({ method: 'archer', shieldWarnings: [] })) &&
-      /^OUT OF VALIDATED RANGE/.test(f({ method: 'narrow_beam_spectrum', shieldWarnings: ['x'] })) &&
+      /^OUT OF TABULATED RANGE/.test(f({ method: 'narrow_beam_spectrum', shieldWarnings: ['x'] })) &&
       f({ method: 'unshielded' }) === 'No shielding' &&
       /^Within the tabulated/.test(f({ method: 'narrow_beam', shieldWarnings: [] })));
   }
@@ -648,15 +648,16 @@ async function main() {
     /CALC\.sewerInspectorScenario1/.test(effluentJs) && /CALC\.sludgeOperatorScenario2/.test(effluentJs) &&
     !/document\./.test(effluentJs));
   check('effluent page reads every data-file parameter of all groups, both coefficients and locks I-131 cycles',
-    /for \(const key of Object\.keys\(PG\[s\]\)\) \{\s*input\[s\]\[key\] = readNumber/.test(effluentHtml) &&
-    /PG\[s\]\[key\]\.positive && !\(input\[s\]\[key\] > 0\)/.test(effluentHtml) &&
+    /for \(const key of Object\.keys\(PG\[s\]\)\) \{\s*const p = PG\[s\]\[key\];\s*input\[s\]\[key\] = readNumber/.test(effluentHtml) &&
+    /\(p\.positive && !\(v > 0\)\)/.test(effluentHtml) && /if \(outOfRange\(p, input\[s\]\[key\]\)\)/.test(effluentHtml) &&
     /const SCEN = \['common', 's1', 's2'\]/.test(effluentHtml) &&
     /k1_nSv_h_per_Bq_m3: nd\.k_ext\.s1\.value/.test(effluentHtml) &&
     /k2_nSv_h_per_Bq_m3: nd\.k_ext\.s2 \? nd\.k_ext\.s2\[geometry\]\.value : null/.test(effluentHtml) &&
     /cycles_locked \? 1 :/.test(effluentHtml));
   check('source term reads the in-hospital fraction and the decay-tank flag of every nuclide',
-    /fraction_in_hospital: readNumber\(document\.getElementById\(`st_\$\{i\}_fraction_in_hospital`\)\)/.test(effluentHtml) &&
-    /controlled: document\.getElementById\(`st_\$\{i\}_controlled`\)\.checked/.test(effluentHtml) &&
+    /const el = f => document\.getElementById\(`st_\$\{i\}_\$\{f\}`\);/.test(effluentHtml) &&
+    /fraction_in_hospital: readNumber\(el\('fraction_in_hospital'\)\)/.test(effluentHtml) &&
+    /controlled: el\('controlled'\)\.checked/.test(effluentHtml) &&
     !/fraction_to_sewer/.test(effluentHtml + effluentJs) &&
     /tank_limit_GBq_y/.test(effluentJs));
   check('facility selector fills the Scenario 1 water volume and a manual edit switches it to Custom',
@@ -1483,7 +1484,7 @@ async function main() {
       /id="btnIntermediate" type="button" aria-pressed="false"/.test(effluentHtml) &&
       /\.col-int \{ display: none; \}/.test(read('css/style.css')) && /\.show-intermediate \.col-int \{ display: table-cell; \}/.test(read('css/style.css')));
     check('Caregiver: the full inverse note stays in the report; the screen keeps the meaning of «Unattainable»',
-      /notes: \[data\.inverse_note,/.test(caregiverHtml) && /"Unattainable" = the criterion is not met however long the restriction lasts/.test(caregiverHtml) &&
+      /notes: \[data\.inverse_note,/.test(caregiverHtml) && /"Unattainable" = the criterion is not met however long the restriction lasts: reduce contact during the restriction or the rate at discharge/.test(caregiverHtml) &&
       !/Not used \(only for «Other criterion»\)/.test(caregiverHtml));
   }
 
@@ -1692,11 +1693,40 @@ async function main() {
     check('Effluent: catchment default 100 % (conservative), stated in its source; guide example 3330 GBq/y → 3.55 mSv/y',
       eff.parameters.s2.catchment_pct.value === 100 && /Default 100 %: all patients assumed to live in the catchment \(conservative\)/.test(eff.parameters.s2.catchment_pct.source) &&
       /100 % catchment, the default\): Lu-177 3330 GBq\/y → 3\.55 mSv\/y/.test(g) && /100 % de zona servida, el valor por defecto\): Lu-177 3330 GBq\/a → 3,55 mSv\/a/.test(ge) &&
-      eff.meta.version === '2.7.0');
+      eff.meta.version.localeCompare('2.7.0', undefined, { numeric: true }) >= 0);
     check('Caregiver: presets and self-check without «source workbook v6», «workbook preset» or sheet names; the port statement stays',
       !/workbook v6|source workbook|Source-workbook|workbook preset|Comprobación sheet/.test(JSON.stringify(cg.kinetic_presets) + cg.reference_cases.note + caregiverHtml) &&
       /^Port of the workbook Dosis_acompanantes_simple_v2\.1\.xlsx/.test(cg.meta.origin) &&
       /reference cases computed with the author's original spreadsheet/.test(caregiverHtml));
+  }
+
+  console.log('Test 37: review of another AI\'s text audit (v1.23.0)');
+  {
+    const eff = JSON.parse(read('data/effluent-scenarios.json'));
+    const cg = JSON.parse(read('data/caregiver.json'));
+    check('Effluent: every parameter checked against its data-file range with the visible name and unit before the physics; source-term fields named',
+      /const outOfRange = \(p, v\) => v < \(p\.min \?\? 0\) \|\| \(p\.max !== undefined && v > p\.max\) \|\| \(p\.positive && !\(v > 0\)\);/.test(effluentHtml) &&
+      /\$\{SCEN_NAME\[s\]\} — \$\{p\.label\}: enter a value \$\{rangeText\(p\)\}\./.test(effluentHtml) &&
+      /'patients per year cannot be negative'/.test(effluentHtml) && /'the fraction excreted in hospital must be between 0 and 1'/.test(effluentHtml) &&
+      Object.values(eff.parameters).flatMap(g => Object.values(g)).every(p => typeof p.min === 'number') &&
+      /no decay credit\)\.$/.test(eff.parameters.common.tank_limit_GBq_y.hint) && /if less activity enters the tanks, all of it is discharged/.test(eff.parameters.common.tank_limit_GBq_y.hint));
+    check('Dose: Y-90 note says hypothetical container values (never «estimate»); «tabulated range» with table-edge values; «Dose limit comparison»; «Transmission through the patient»',
+      /illustrative bremsstrahlung calculation with\s*<strong>hypothetical<\/strong> container values/.test(doseHtml) && !/bremsstrahlung estimate/.test(doseHtml) &&
+      !/VALIDATED RANGE|validated range:/i.test(doseHtml.replace(/\/\/[^\n]*/g, '')) && /OUT OF TABULATED RANGE — /.test(doseHtml) &&
+      /Values at the table edge are used; accuracy outside the tables is not established/.test(doseHtml) &&
+      /<h3 class="card-title">Dose limit comparison<\/h3>/.test(doseHtml) && !/Annual dose limit comparison/.test(doseHtml) &&
+      /for="patientTx">Transmission through the patient/.test(doseHtml));
+    check('Decay: exemption heading without «Table B», the values named per case (Table B or CSN values); mass hint names the per-mass criteria; target date «must not be before»',
+      /Exemption assessment &mdash; RD 1217\/2024<\/h3>/.test(decayHtml) && /Values of Annex IV Table B \(Annex II A\.1 a and b\)\./.test(decayHtml) &&
+      /'Exemption assessment — RD 1217\/2024, CSN values \(Annex II A\.3\.a\)'/.test(decayHtml) && /\['CSN values', /.test(decayHtml) &&
+      /the total-activity criterion needs no mass/.test(decayHtml) && /Target date must not be before the reference date\./.test(decayHtml));
+    check('Caregiver: inverse heading without «same restriction in both rows»; self-check «REVIEW» names a disagreement, not its cause; inverse note allows 0 d and the rate at discharge; «Own criterion»',
+      /<h3 class="card-title mt-2">Inverse calculations<\/h3>/.test(caregiverHtml) && /The maximum rate uses the restriction days entered/.test(caregiverHtml) &&
+      !/formula has been altered/.test(caregiverHtml) && /does not replace an independent validation/.test(caregiverHtml) &&
+      /it may be 0 d/.test(cg.inverse_note) && /or the rate at discharge/.test(cg.inverse_note) && !/exhaust/.test(cg.inverse_note) &&
+      /Own criterion \(mSv per treatment\)/.test(caregiverHtml) && !/Manual criterion/.test(caregiverHtml) && cg.meta.version === '1.15');
+    check('Properties: «no Cornejo et al. (2015) comparison value» instead of «no published comparison»',
+      /no Cornejo et al\. \(2015\) comparison value; calculated in the same way/.test(indexHtml) && !/no published comparison;/.test(indexHtml));
   }
 
   console.log(`\n=== SUMMARY ===\nTotal: ${passed} passed, ${failed} failed`);
