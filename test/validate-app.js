@@ -581,11 +581,14 @@ async function main() {
     check('README describes the Archer fit by its real quantity and keeps no change history (A02)',
       !/published fits are H\\\*\(10\) broad-beam/.test(readme5) && !/Recent Improvements/.test(readme5) &&
       /docs\/CHANGELOG\.md/.test(readme5) && /not a description of the current behaviour/.test(read('docs/CHANGELOG.md')));
-    check('acceptance sheet counts its A cases and treats Y-90 as an experimental scenario (A03)',
+    // v1.23.0: Y-90 is no longer a calculation case — its container values are
+    // hypothetical, so the sheet lists it under the accepted limits, outside the validation
+    check('acceptance sheet counts its A cases and keeps Y-90 out of the validation, as hypothetical values (A03)',
       (() => {
         const nA = (acceptance5.match(/^\| A\d+ \|/gm) || []).length;
-        return acceptance5.includes(`____ / ${nA} `) && /A10 \(Y-90\) es un \*\*escenario experimental\*\*/.test(acceptance5) &&
-          !/sin dispersión ni distribución de fuente/.test(acceptance5);
+        return acceptance5.includes(`____ / ${nA} `) && !/^\| A\d+ \|[^\n]*Y-90/m.test(acceptance5) &&
+          /Y-90: los valores de radiación de frenado de cada contenedor son \*\*hipotéticos\*\*[^\n]*queda fuera de esta validación/.test(acceptance5) &&
+          !/estimaciones|estimates/.test(acceptance5) && !/sin dispersión ni distribución de fuente/.test(acceptance5);
       })());
     check('notices state the ICRP 74 / ICRP 119 permission status apart from the ICRP-07 licence (A04)',
       [notices, about5].every(t => /No permission on file\./.test(t) &&

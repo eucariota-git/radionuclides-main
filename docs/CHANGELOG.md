@@ -4,6 +4,9 @@ History of changes, newest first. **This file is a record, not a description of 
 
 ## 2026-11
 
+### Not yet packaged (after v1.23.0)
+- **Acceptance sheet reduced to the independent checks** (`docs/ACCEPTANCE_TEST.md`): 9 calculation cases, one per model, each with a number checked by hand or against a published table (Cornejo 2015 Table III, Oumano 2025 Table 3, NCRP 155 Table 4.1, RD 1217/2024 Table A1, RD 783/2001 Annex III a, Foro 2011 Table 3.B 3), and 5 checks (automated evidence, report, real device, dark mode, Spanish). The state, warning and invalid-input cases are no longer repeated by hand: the four suites and browser-smoke cover them (B1). Y-90 leaves the calculation cases (hypothetical container values) and stays as an accepted limit; Cs-137 in Pb replaces Ga-67 for the spectral model (+8 % against NCRP 155, to review and justify: infinite-medium exposure build-up). All expected values read from the running v1.23.0.
+
 ### v1.23.0 — lists, Spanish coefficient notes, Effluent defaults without workbook references
 - **Lists** (all pages): the CSS reset left every list without padding, so the bullets hung outside the text column (Effluent and Caregiver collapsibles, Caregiver warnings, preset spread). One zero-specificity rule restores the indentation; list classes keep their own. Paragraphs and lists inside the collapsibles (Method, sources, self-check) are separated by 0.5 rem for the same reason.
 - **Spanish screens, decimal separator**: the catalog writes decimal commas; with the point selected in the header they are now shown as points, like the values the app formats, and they follow a later switch. Quotations «…» from a source keep their printed form (Forum «= 7,2 días», Kurth abstract «40.5 ± 9.6 h»). The Spanish guide in About is a separate hand-written text and keeps the comma.
