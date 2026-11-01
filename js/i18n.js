@@ -70,8 +70,17 @@ const I18N = (() => {
     }
     return t === undefined ? null : m[1] + t + m[3];
   }
+  // Decimal separator: the Spanish catalog writes decimal commas; with the point
+  // selected in the header they are shown as points, like the values the app
+  // formats (UTILS.dec). Text inside «…» is quoted from a source and kept as is.
+  const pointMode = () => typeof UTILS !== 'undefined' && UTILS.getDecimalMode() === 'point';
+  const withSeparator = s => (pointMode() ? s.replace(/«[^»]*»|(\d),(?=\d)/g, (m, d) => (d === undefined ? m : `${d}.`)) : s);
   /** The text to show for an English string in the current language. */
-  const t = (s, el) => (lang === 'es' ? (lookup(s, el) ?? s) : s);
+  const t = (s, el) => {
+    if (lang !== 'es') return s;
+    const r = lookup(s, el);
+    return r === null ? s : withSeparator(r);
+  };
 
   function skipped(el) {
     for (let e = el; e && e.nodeType === 1; e = e.parentElement) {
@@ -228,6 +237,8 @@ const I18N = (() => {
     window.addEventListener('beforeprint', () => {
       if (lang === 'es') walk(document.getElementById('printReport'));
     });
+    // Separator switched in the header: the Spanish texts already shown follow it
+    document.addEventListener('nm-decimal-change', () => { if (lang === 'es') translateAll(); });
     if (stored === 'es') setLang('es');
     return lang;
   }

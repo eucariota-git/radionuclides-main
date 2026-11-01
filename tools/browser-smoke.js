@@ -284,7 +284,15 @@ async function main() {
         check('effluent: lists in the collapsibles are indented (padding-left > 0)', pads.every(p => p > 0), JSON.stringify(pads));
         await ev(`document.getElementById('langToggle').click()`); await sleep(400);
         const cs = await text('#coeffSources');
-        await ev(`document.getElementById('langToggle').click()`); await sleep(300);
+        // v1.23.0: the decimal commas of the Spanish catalog follow the header separator
+        const setSep = mode => ev(`(() => { if (UTILS.getDecimalMode() !== '${mode}') document.getElementById('decimalToggle').click(); })()`);
+        await setSep('point'); await sleep(400);
+        const csPoint = await text('#coeffSources');
+        await setSep('comma'); await sleep(400);
+        const csComma = await text('#coeffSources');
+        check('effluent: ES — catalog decimals follow the separator (1.2 g/cm³ with the point, 1,2 g/cm³ with the comma)',
+          /\(1\.2 g\/cm³\)/.test(csPoint) && !/\d,\d/.test(csPoint.replace(/«[^»]*»/g, '')) && /\(1,2 g\/cm³\)/.test(csComma), csPoint.slice(0, 120));
+        await ev(`document.getElementById('langToggle').click(); localStorage.removeItem('nm_decimal')`); await sleep(300);
         check('effluent: ES — «Coefficients used» notes in Spanish (no «All nuclides», «Half-life:», «report of»)',
           /Todos los nucleidos/.test(cs) && /Periodo de semidesintegración:/.test(cs) && !/All nuclides|Half-life:|report of|Effective dose rate/.test(cs), cs.slice(0, 200));
       }
@@ -294,6 +302,13 @@ async function main() {
       const pads = await ev(`['#warningList', '#assumptionList', '#cohabCoworkers', '#methodDetails .text-sm > ul', '#presetList li ul']
         .map(s => { const e = document.querySelector(s); return e ? parseFloat(getComputedStyle(e).paddingLeft) : -1; })`);
       check('caregiver: lists indented (warnings, assumptions, co-workers, Method, preset spread)', pads.every(p => p > 0), JSON.stringify(pads));
+      // Spanish with the point: catalog decimals as points, quotations «…» as printed in their source
+      await ev(`(() => { if (UTILS.getDecimalMode() !== 'point') document.getElementById('decimalToggle').click(); document.getElementById('langToggle').click(); })()`);
+      await sleep(400);
+      const pl = await text('#presetList');
+      await ev(`document.getElementById('langToggle').click(); localStorage.removeItem('nm_decimal')`); await sleep(300);
+      check('caregiver: ES with the point — «T rápida 16.4 h» and «16.37 h», quotations kept («= 7,2 días», «40.5 ± 9.6 h»)',
+        /T rápida 16\.4 h/.test(pl) && /16\.37 h/.test(pl) && /= 7,2 días»/.test(pl) && /«40\.5 ± 9\.6 h»/.test(pl), pl.slice(0, 160));
     });
     await guard('Field help ⓘ (v1.20.0)', async () => {
       // Hidden until focused or tapped; the box spans the form group, inside a 390 px screen; translated in Spanish

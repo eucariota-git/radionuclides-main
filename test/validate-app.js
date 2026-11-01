@@ -1674,6 +1674,12 @@ async function main() {
     check('lists: one zero-specificity rule after the reset restores the indentation (class rules still win)',
       /:where\(ul, ol\) \{ padding-left: 1\.2rem; \}/.test(css) &&
       css.indexOf(':where(ul, ol)') > css.indexOf('box-sizing: border-box; margin: 0; padding: 0;'));
+    const i18nSrc = read('js/i18n.js');
+    check('collapsibles: paragraphs and lists separated (zero specificity); Spanish catalog decimals follow the header separator, quotations «…» kept, re-applied on nm-decimal-change',
+      /:where\(details\) :where\(p, ul, ol\) \+ :where\(p, ul, ol\),/.test(css) &&
+      /s\.replace\(\/«\[\^»\]\*»\|\(\\d\),\(\?=\\d\)\/g/.test(i18nSrc) && /return r === null \? s : withSeparator\(r\);/.test(i18nSrc) &&
+      /addEventListener\('nm-decimal-change', \(\) => \{ if \(lang === 'es'\) translateAll\(\); \}\)/.test(i18nSrc) &&
+      /«1\.5» o «1,5»/.test(read('js/i18n-es.js')));
     check('Effluent: «Coefficients used» notes translatable — no translate="no" on #coeffSources, each label and text in its own element, catalog entries present',
       /<ul class="ref-list text-sm mt-1" id="coeffSources"><\/ul>/.test(effluentHtml) && /const part = s => `<span>\$\{esc\(s\)\}<\/span>`;/.test(effluentHtml) &&
       ['All nuclides', 'k Sc. 2: not calculated.', 'Half-life:', eff.coefficient_notes.k_s1, eff.coefficient_notes.k_s2_quantity, eff.coefficient_notes.e_inh_basis]

@@ -107,6 +107,10 @@
    hanging outside the text column. Zero specificity, so any list class
    (.ref-list, .nuclide-dropdown, .history-list, .about-content) still wins. */
 :where(ul, ol) { padding-left: 1.2rem; }
+/* Paragraphs and lists in the collapsibles (Method, sources) ran together for
+   the same reason. Zero specificity: the .mt-* classes still win. */
+:where(details) :where(p, ul, ol) + :where(p, ul, ol),
+:where(details) :where(div) + :where(p) { margin-top: .5rem; }
 
 html { font-size: 15px; scroll-behavior: smooth; }
 

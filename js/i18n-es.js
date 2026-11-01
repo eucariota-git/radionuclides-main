@@ -438,7 +438,7 @@ const I18N_ES = {
     'Select a nuclide from the list.': 'Seleccione un nucleido de la lista.',
     'Activity must be a positive number.': 'La actividad debe ser un número positivo.',
     'Activity is outside the representable range.': 'La actividad está fuera del intervalo representable.',
-    'Elapsed time must be a valid number (e.g. 24, 1.5 or 1,5, 1e2).': 'El tiempo transcurrido debe ser un número válido (p. ej., 24, 1.5 o 1,5, 1e2).',
+    'Elapsed time must be a valid number (e.g. 24, 1.5 or 1,5, 1e2).': 'El tiempo transcurrido debe ser un número válido (p. ej., 24, «1.5» o «1,5», 1e2).',
     'Elapsed time must be a non-negative number.': 'El tiempo transcurrido no puede ser negativo.',
     'Enter a reference date and time before using a target date.': 'Introduzca una fecha y hora de referencia antes de usar una fecha objetivo.',
     'Reference and target dates must be valid.': 'Las fechas de referencia y objetivo deben ser válidas.',
